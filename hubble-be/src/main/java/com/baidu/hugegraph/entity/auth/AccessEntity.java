@@ -28,4 +28,7 @@ public class AccessEntity implements Identifiable {
 
     @JsonProperty("group_name")
     private String groupName;
+
+    @JsonProperty("graphspace")
+    private String graphSpace;
 }

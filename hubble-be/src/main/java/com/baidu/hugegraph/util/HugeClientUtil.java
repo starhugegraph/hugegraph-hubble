@@ -64,7 +64,7 @@ public final class HugeClientUtil {
         }
         HugeClient client;
         try {
-            client = HugeClient.builder(url, graph)
+            client = HugeClient.builder(url, "DEFAULT", graph)
                                .configUser(username, password)
                                .configTimeout(timeout)
                                .configSSL(trustStoreFile, trustStorePassword)

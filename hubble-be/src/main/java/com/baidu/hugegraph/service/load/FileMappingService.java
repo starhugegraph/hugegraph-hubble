@@ -38,6 +38,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.regex.Pattern;
 
+import com.baidu.hugegraph.driver.HugeClient;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -94,9 +95,11 @@ public class FileMappingService {
         return this.mapper.selectById(id);
     }
 
-    public FileMapping get(int connId, int jobId, String fileName) {
+    public FileMapping get(String graphSpace, String graph, int jobId,
+                           String fileName) {
         QueryWrapper<FileMapping> query = Wrappers.query();
-        query.eq("conn_id", connId)
+        query.eq("graphspace", graphSpace)
+             .eq("graph", graph)
              .eq("job_id", jobId)
              .eq("name", fileName);
         return this.mapper.selectOne(query);
@@ -106,9 +109,11 @@ public class FileMappingService {
         return this.mapper.selectList(null);
     }
 
-    public IPage<FileMapping> list(int connId, int jobId, int pageNo, int pageSize) {
+    public IPage<FileMapping> list(String graphSpace, String graph, int jobId,
+                                   int pageNo, int pageSize) {
         QueryWrapper<FileMapping> query = Wrappers.query();
-        query.eq("conn_id", connId);
+        query.eq("graphspace", graphSpace);
+        query.eq("graph", graph);
         query.eq("job_id", jobId);
         query.eq("file_status", FileMappingStatus.COMPLETED.getValue());
         query.orderByDesc("create_time");

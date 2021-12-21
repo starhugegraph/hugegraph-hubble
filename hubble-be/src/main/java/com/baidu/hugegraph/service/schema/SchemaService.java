@@ -62,15 +62,9 @@ public class SchemaService {
 
     @Autowired
     private HugeConfig config;
-    @Autowired
-    private HugeClientPoolService poolService;
 
     public HugeConfig config() {
         return this.config;
-    }
-
-    public HugeClient client(int connId) {
-        return this.poolService.getOrCreate(connId);
     }
 
     public static <T extends SchemaElement> List<String> collectNames(

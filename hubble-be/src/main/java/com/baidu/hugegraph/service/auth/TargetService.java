@@ -2,6 +2,7 @@ package com.baidu.hugegraph.service.auth;
 
 import java.util.List;
 
+import com.baidu.hugegraph.driver.HugeClient;
 import org.springframework.stereotype.Service;
 import lombok.extern.log4j.Log4j2;
 
@@ -13,29 +14,29 @@ import com.baidu.hugegraph.exception.ExternalException;
 public class TargetService extends AuthService{
 
 
-    public List<Target> list(int connId) {
-        List<Target> targets = auth(connId).listTargets();
+    public List<Target> list(HugeClient client) {
+        List<Target> targets = client.auth().listTargets();
 
         return targets;
     }
 
-    public Target get(int connId, String tid) {
-        Target target = auth(connId).getTarget(tid);
+    public Target get(HugeClient client, String tid) {
+        Target target = client.auth().getTarget(tid);
         if (target == null) {
             throw new ExternalException("auth.target.not-exist.id", tid);
         }
         return target;
     }
 
-    public void add(int connId, Target target) {
-        auth(connId).createTarget(target);
+    public void add(HugeClient client, Target target) {
+        client.auth().createTarget(target);
     }
 
-    public void update(int connId, Target target) {
-        auth(connId).updateTarget(target);
+    public void update(HugeClient client, Target target) {
+        client.auth().updateTarget(target);
     }
 
-    public void delete(int connId, String tid) {
-        auth(connId).deleteTarget(tid);
+    public void delete(HugeClient client, String tid) {
+        client.auth().deleteTarget(tid);
     }
 }

@@ -54,15 +54,15 @@ public class CustomInterceptor extends HandlerInterceptorAdapter {
             return true;
         }
 
-        String connIdValue = StringUtils.substringBetween(
-                             url, "/graph-connections/", "/");
-        if (StringUtils.isEmpty(connIdValue)) {
-            throw new InternalException("Not found conn id in url");
-        }
+        // String connIdValue = StringUtils.substringBetween(
+        //                      url, "/graph-connections/", "/");
+        // if (StringUtils.isEmpty(connIdValue)) {
+        //     throw new InternalException("Not found conn id in url");
+        // }
 
-        int connId = Integer.parseInt(connIdValue);
+        // int connId = Integer.parseInt(connIdValue);
         // Check graph connection valid
-        this.licenseService.checkGraphStatus(connId);
+        // this.licenseService.checkGraphStatus(connId);
         LicenseVerifier.instance().verifyIfNeeded();
         return true;
     }

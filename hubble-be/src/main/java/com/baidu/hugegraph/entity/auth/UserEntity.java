@@ -19,4 +19,17 @@ public class UserEntity implements Identifiable {
 
     @JsonProperty("user_name")
     private String name;
+
+    @JsonProperty("email")
+    private String email;
+
+    @JsonProperty("phone")
+    private String phone;
+
+    @JsonProperty("is_superadmin")
+    private boolean isSuperadmin;
+
+    @JsonProperty("description")
+    private String description;
 }
+

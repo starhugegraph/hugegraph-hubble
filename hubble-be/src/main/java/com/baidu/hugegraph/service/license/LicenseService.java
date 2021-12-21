@@ -156,8 +156,8 @@ public class LicenseService {
         }
     }
 
-    @Async
-    @Scheduled(fixedRate = 3 * 60 * 1000)
+    // @Async
+    // @Scheduled(fixedRate = 3 * 60 * 1000)
     public void updateAllGraphStatus() {
         List<GraphConnection> connections = this.connService.listAll();
         for (GraphConnection conn : connections) {

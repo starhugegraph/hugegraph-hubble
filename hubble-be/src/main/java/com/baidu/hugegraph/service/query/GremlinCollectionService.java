@@ -19,6 +19,7 @@
 
 package com.baidu.hugegraph.service.query;
 
+import com.baidu.hugegraph.driver.HugeClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
@@ -40,11 +41,13 @@ public class GremlinCollectionService {
     @Autowired
     private GremlinCollectionMapper mapper;
 
-    public IPage<GremlinCollection> list(int connId, String content,
+    public IPage<GremlinCollection> list(HugeClient client, String content,
                                          Boolean nameOrderAsc,
                                          Boolean timeOrderAsc,
                                          long current, long pageSize) {
         QueryWrapper<GremlinCollection> query = Wrappers.query();
+        String graphSpace = client.getGraphSpaceName();
+        String graph = client.getGraphName();
         IPage<GremlinCollection> page = new Page<>(current, pageSize);
         if (!StringUtils.isEmpty(content)) {
             // Select by content
@@ -52,35 +55,44 @@ public class GremlinCollectionService {
             if (nameOrderAsc != null) {
                 // order by name
                 assert timeOrderAsc == null;
-                query.eq("conn_id", connId).and(wrapper -> {
-                    wrapper.like("name", value).or().like("content", value);
-                });
+                query.eq("graphspace", graphSpace)
+                     .eq("graph", graph).and(wrapper -> {
+                         wrapper.like("name", value).or()
+                                .like("content", value);
+                     });
                 query.orderBy(true, nameOrderAsc, "name");
                 return this.mapper.selectPage(page, query);
             } else if (timeOrderAsc != null) {
                 // order by time
                 assert nameOrderAsc == null;
-                query.eq("conn_id", connId).and(wrapper -> {
-                    wrapper.like("name", value).or().like("content", value);
+                query.eq("graphspace", graphSpace)
+                     .eq("graph", graph).and(wrapper -> {
+                         wrapper.like("name", value).or()
+                                .like("content", value);
                 });
                 query.orderBy(true, timeOrderAsc, "create_time");
                 return this.mapper.selectPage(page, query);
             } else {
                 // order by relativity
                 assert nameOrderAsc == null && timeOrderAsc == null;
-                return this.mapper.selectByContentInPage(page, connId, content);
+                return this.mapper.selectByContentInPage(page, graphSpace, graph ,
+                                                         content);
             }
         } else {
             // Select all
             if (nameOrderAsc != null) {
                 // order by name
                 assert timeOrderAsc == null;
-                query.eq("conn_id", connId).orderBy(true, nameOrderAsc, "name");
+                query.eq("graphspace", graphSpace)
+                     .eq("graph", graph)
+                     .orderBy(true, nameOrderAsc, "name");
                 return this.mapper.selectPage(page, query);
             } else {
                 // order by time
                 boolean isAsc = timeOrderAsc != null && timeOrderAsc;
-                query.eq("conn_id", connId).orderBy(true, isAsc, "create_time");
+                query.eq("graphspace", graphSpace)
+                     .eq("graph", graph)
+                     .orderBy(true, isAsc, "create_time");
                 return this.mapper.selectPage(page, query);
             }
         }
@@ -90,9 +102,11 @@ public class GremlinCollectionService {
         return this.mapper.selectById(id);
     }
 
-    public GremlinCollection getByName(int connId, String name) {
+    public GremlinCollection getByName(String graphSpace, String graph,
+                                       String name) {
         QueryWrapper<GremlinCollection> query = Wrappers.query();
-        query.eq("conn_id", connId);
+        query.eq("graphspace", graphSpace);
+        query.eq("graph", graph);
         query.eq("name", name);
         return this.mapper.selectOne(query);
     }

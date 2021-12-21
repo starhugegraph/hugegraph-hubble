@@ -52,10 +52,15 @@ public class ExecuteHistory implements Identifiable, Mergeable {
     @JsonProperty("id")
     private Integer id;
 
-    @TableField(value = "conn_id")
+    @TableField(value = "graphspace")
     @MergeProperty
-    @JsonProperty("conn_id")
-    private Integer connId;
+    @JsonProperty("graphspace")
+    private String graphspace;
+
+    @TableField(value = "graph")
+    @MergeProperty
+    @JsonProperty("graphe")
+    private String graph;
 
     @TableField(value = "async_id")
     @MergeProperty

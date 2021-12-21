@@ -2,6 +2,7 @@ package com.baidu.hugegraph.controller.auth;
 
 import java.util.List;
 
+import com.baidu.hugegraph.driver.HugeClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,34 +19,38 @@ import com.baidu.hugegraph.structure.auth.Access;
 import com.baidu.hugegraph.entity.auth.AccessEntity;
 
 @RestController
-@RequestMapping(Constant.API_VERSION + "graph-connections/{connId}/auth/access")
+@RequestMapping(Constant.API_VERSION + "graphspaces/{graphspace}/auth/access")
 public class AccessController extends AuthController {
 
     @Autowired
     AccessService accessService;
 
     @GetMapping
-    public List<AccessEntity> list(@PathVariable("connId") int connId,
+    public List<AccessEntity> list(@PathVariable("graphspace") String graphSpace,
                                    @RequestParam(value="group_id", required = false) String gid,
                                    @RequestParam(value="target_id", required = false) String tid) {
-        return this.accessService.list(connId, gid, tid);
+        HugeClient client = this.authClient(graphSpace, null);
+        return this.accessService.list(client, gid, tid);
     }
 
     @GetMapping("{id}")
-    public AccessEntity get(@PathVariable("connId") int connId,
-                      @PathVariable("id") String aid) {
-        return this.accessService.get(connId, aid);
+    public AccessEntity get(@PathVariable("graphspace") String graphSpace,
+                            @PathVariable("id") String aid) {
+        HugeClient client = this.authClient(graphSpace, null);
+        return this.accessService.get(client, aid);
     }
 
     @PostMapping
-    public void add(@PathVariable("connId") int connId,
+    public void add(@PathVariable("graphspace") String graphSpace,
                     @RequestBody Access access) {
-        this.accessService.add(connId, access);
+        HugeClient client = this.authClient(graphSpace, null);
+        this.accessService.add(client, access);
     }
 
     @DeleteMapping("{id}")
-    public void delete(@PathVariable("connId") int connId,
+    public void delete(@PathVariable("graphspace") String graphSpace,
                        @PathVariable("id") String aid) {
-        this.accessService.delete(connId, aid);
+        HugeClient client = this.authClient(graphSpace, null);
+        this.accessService.delete(client, aid);
     }
 }

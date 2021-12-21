@@ -78,6 +78,16 @@ public class LoadTask implements Runnable {
     @JsonProperty("conn_id")
     private Integer connId;
 
+    @TableField(value = "graphspace")
+    @MergeProperty
+    @JsonProperty("graphspace")
+    private String graphSpace;
+
+    @TableField(value = "graph")
+    @MergeProperty
+    @JsonProperty("graph")
+    private String graph;
+
     @TableField(value = "job_id")
     @MergeProperty
     @JsonProperty("job_id")

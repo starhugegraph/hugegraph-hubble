@@ -22,6 +22,7 @@ package com.baidu.hugegraph.controller.load;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.baidu.hugegraph.driver.HugeClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -53,7 +54,8 @@ import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 @RestController
-@RequestMapping(Constant.API_VERSION + "graph-connections/{connId}/job-manager/{jobId}/load-tasks")
+@RequestMapping(Constant.API_VERSION + "graphspaces/{graphspace}/graphs" +
+        "/{graph}/job-manager/{jobId}/load-tasks")
 public class LoadTaskController extends BaseController {
 
     private static final int LIMIT = 500;
@@ -73,7 +75,8 @@ public class LoadTaskController extends BaseController {
     }
 
     @GetMapping
-    public IPage<LoadTask> list(@PathVariable("connId") int connId,
+    public IPage<LoadTask> list(@PathVariable("graphspace") String graphSpace,
+                                @PathVariable("graph") String graph,
                                 @PathVariable("jobId") int jobId,
                                 @RequestParam(name = "page_no",
                                               required = false,
@@ -83,13 +86,14 @@ public class LoadTaskController extends BaseController {
                                               required = false,
                                               defaultValue = "10")
                                 int pageSize) {
-        return this.service.list(connId, jobId, pageNo, pageSize);
+        return this.service.list(graphSpace, graph, jobId, pageNo, pageSize);
     }
 
     @GetMapping("ids")
-    public List<LoadTask> list(@PathVariable("connId") int connId,
+    public List<LoadTask> list(@PathVariable("graphspace") String graphSpace,
+                               @PathVariable("graph") String graph,
                                @RequestParam("task_ids") List<Integer> taskIds) {
-        return this.service.list(connId, taskIds);
+        return this.service.list(graphSpace, graph, taskIds);
     }
 
     @GetMapping("{id}")
@@ -102,7 +106,8 @@ public class LoadTaskController extends BaseController {
     }
 
     @PostMapping
-    public LoadTask create(@PathVariable("connId") int connId,
+    public LoadTask create(@PathVariable("graphspace") String graphSpace,
+                           @PathVariable("graph") String graph,
                            @PathVariable("jobId") int jobId,
                            @RequestBody LoadTask entity) {
         JobManager jobEntity = this.jobService.get(jobId);
@@ -112,7 +117,8 @@ public class LoadTaskController extends BaseController {
         synchronized (this.service) {
             Ex.check(this.service.count() < LIMIT,
                      "load.task.reached-limit", LIMIT);
-            entity.setConnId(connId);
+            entity.setGraphSpace(graphSpace);
+            entity.setGraph(graph);
             this.service.save(entity);
         }
         return entity;
@@ -128,13 +134,16 @@ public class LoadTaskController extends BaseController {
     }
 
     @PostMapping("start")
-    public List<LoadTask> start(@PathVariable("connId") int connId,
+    public List<LoadTask> start(@PathVariable("graphspace") String graphSpace,
+                                @PathVariable("graph") String graph,
                                 @PathVariable("jobId") int jobId,
                                 @RequestParam("file_mapping_ids")
                                 List<Integer> fileIds) {
-        GraphConnection connection = this.connService.get(connId);
+        // TODO build connection
+        GraphConnection connection = new GraphConnection();
         if (connection == null) {
-            throw new ExternalException("graph-connection.not-exist.id", connId);
+            throw new ExternalException("graph-connection.not-exist.id",
+                                        graphSpace, graph);
         }
         JobManager jobEntity = this.jobService.get(jobId);
         Ex.check(jobEntity != null, "job-manager.not-exist.id", jobId);
@@ -143,13 +152,14 @@ public class LoadTaskController extends BaseController {
         boolean existError = false;
         try {
             List<LoadTask> tasks = new ArrayList<>();
+            HugeClient client = this.authClient(graphSpace, graph);
             for (Integer fileId : fileIds) {
                 FileMapping fileMapping = this.fmService.get(fileId);
                 if (fileMapping == null) {
                     throw new ExternalException("file-mapping.not-exist.id",
                                                 fileId);
                 }
-                tasks.add(this.service.start(connection, fileMapping));
+                tasks.add(this.service.start(connection, fileMapping, client));
             }
             return tasks;
         } catch (Exception e) {
@@ -167,13 +177,8 @@ public class LoadTaskController extends BaseController {
     }
 
     @PostMapping("pause")
-    public LoadTask pause(@PathVariable("connId") int connId,
-                          @PathVariable("jobId") int jobId,
+    public LoadTask pause(@PathVariable("jobId") int jobId,
                           @RequestParam("task_id") int taskId) {
-        GraphConnection connection = this.connService.get(connId);
-        if (connection == null) {
-            throw new ExternalException("graph-connection.not-exist.id", connId);
-        }
         JobManager jobEntity = this.jobService.get(jobId);
         Ex.check(jobEntity != null, "job-manager.not-exist.id", jobId);
         Ex.check(jobEntity.getJobStatus() == JobStatus.LOADING,
@@ -188,13 +193,8 @@ public class LoadTaskController extends BaseController {
     }
 
     @PostMapping("resume")
-    public LoadTask resume(@PathVariable("connId") int connId,
-                           @PathVariable("jobId") int jobId,
+    public LoadTask resume(@PathVariable("jobId") int jobId,
                            @RequestParam("task_id") int taskId) {
-        GraphConnection connection = this.connService.get(connId);
-        if (connection == null) {
-            throw new ExternalException("graph-connection.not-exist.id", connId);
-        }
         JobManager jobEntity = this.jobService.get(jobId);
         Ex.check(jobEntity != null, "job-manager.not-exist.id", jobId);
         Ex.check(jobEntity.getJobStatus() == JobStatus.LOADING,
@@ -209,13 +209,8 @@ public class LoadTaskController extends BaseController {
     }
 
     @PostMapping("stop")
-    public LoadTask stop(@PathVariable("connId") int connId,
-                         @PathVariable("jobId") int jobId,
+    public LoadTask stop(@PathVariable("jobId") int jobId,
                          @RequestParam("task_id") int taskId) {
-        GraphConnection connection = this.connService.get(connId);
-        if (connection == null) {
-            throw new ExternalException("graph-connection.not-exist.id", connId);
-        }
         JobManager jobEntity = this.jobService.get(jobId);
         Ex.check(jobEntity != null, "job-manager.not-exist.id", jobId);
         Ex.check(jobEntity.getJobStatus() == JobStatus.LOADING,
@@ -230,13 +225,8 @@ public class LoadTaskController extends BaseController {
     }
 
     @PostMapping("retry")
-    public LoadTask retry(@PathVariable("connId") int connId,
-                          @PathVariable("jobId") int jobId,
+    public LoadTask retry(@PathVariable("jobId") int jobId,
                           @RequestParam("task_id") int taskId) {
-        GraphConnection connection = this.connService.get(connId);
-        if (connection == null) {
-            throw new ExternalException("graph-connection.not-exist.id", connId);
-        }
         JobManager jobEntity = this.jobService.get(jobId);
         Ex.check(jobEntity != null, "job-manager.not-exist.id", jobId);
         Ex.check(jobEntity.getJobStatus() == JobStatus.LOADING,
@@ -251,8 +241,7 @@ public class LoadTaskController extends BaseController {
     }
 
     @GetMapping("{id}/reason")
-    public Response reason(@PathVariable("connId") int connId,
-                           @PathVariable("jobId") int jobId,
+    public Response reason(@PathVariable("jobId") int jobId,
                            @PathVariable("id") int id) {
         LoadTask task = this.service.get(id);
         if (task == null) {

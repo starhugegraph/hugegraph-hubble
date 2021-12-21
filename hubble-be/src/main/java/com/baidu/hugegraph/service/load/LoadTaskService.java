@@ -29,6 +29,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.baidu.hugegraph.driver.HugeClient;
+import com.baidu.hugegraph.service.ClientService;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
@@ -90,6 +92,7 @@ public class LoadTaskService {
     @Autowired
     private HugeConfig config;
 
+
     private Map<Integer, LoadTask> runningTaskContainer;
 
     public LoadTaskService() {
@@ -104,16 +107,19 @@ public class LoadTaskService {
         return this.mapper.selectList(null);
     }
 
-    public IPage<LoadTask> list(int connId, int jobId, int pageNo, int pageSize) {
+    public IPage<LoadTask> list(String graphSpace, String graph, int jobId,
+                                int pageNo, int pageSize) {
         QueryWrapper<LoadTask> query = Wrappers.query();
-        query.eq("conn_id", connId);
+        query.eq("graphspace", graphSpace);
+        query.eq("graph", graph);
         query.eq("job_id", jobId);
         query.orderByDesc("create_time");
         Page<LoadTask> page = new Page<>(pageNo, pageSize);
         return this.mapper.selectPage(page, query);
     }
 
-    public List<LoadTask> list(int connId, List<Integer> taskIds) {
+    public List<LoadTask> list(String grpahSpace, String graph,
+                               List<Integer> taskIds) {
         return this.mapper.selectBatchIds(taskIds);
     }
 
@@ -161,9 +167,10 @@ public class LoadTaskService {
         return this.mapper.selectList(query);
     }
 
-    public LoadTask start(GraphConnection connection, FileMapping fileMapping) {
+    public LoadTask start(GraphConnection connection, FileMapping fileMapping,
+                          HugeClient client) {
         this.sslService.configSSL(this.config, connection);
-        LoadTask task = this.buildLoadTask(connection, fileMapping);
+        LoadTask task = this.buildLoadTask(connection, fileMapping, client);
         this.save(task);
         // Executed in other threads
         this.taskExecutor.execute(task, () -> this.update(task));
@@ -326,11 +333,12 @@ public class LoadTaskService {
     }
 
     private LoadTask buildLoadTask(GraphConnection connection,
-                                   FileMapping fileMapping) {
+                                   FileMapping fileMapping, HugeClient client) {
         try {
             LoadOptions options = this.buildLoadOptions(connection, fileMapping);
             // NOTE: For simplicity, one file corresponds to one import task
-            LoadMapping mapping = this.buildLoadMapping(connection, fileMapping);
+            LoadMapping mapping = this.buildLoadMapping(connection, fileMapping,
+                                                        client);
             this.bindMappingToOptions(options, mapping, fileMapping.getPath());
             return new LoadTask(options, connection, fileMapping);
         } catch (Exception e) {
@@ -382,13 +390,14 @@ public class LoadTaskService {
     }
 
     private LoadMapping buildLoadMapping(GraphConnection connection,
-                                         FileMapping fileMapping) {
+                                         FileMapping fileMapping,
+                                         HugeClient client) {
         FileSource source = this.buildFileSource(fileMapping);
 
         List<com.baidu.hugegraph.loader.mapping.VertexMapping> vMappings;
-        vMappings = this.buildVertexMappings(connection, fileMapping);
+        vMappings = this.buildVertexMappings(connection, fileMapping, client);
         List<com.baidu.hugegraph.loader.mapping.EdgeMapping> eMappings;
-        eMappings = this.buildEdgeMappings(connection, fileMapping);
+        eMappings = this.buildEdgeMappings(connection, fileMapping, client);
 
         InputStruct inputStruct = new InputStruct(vMappings, eMappings);
         inputStruct.id("1");
@@ -423,12 +432,12 @@ public class LoadTaskService {
 
     private List<com.baidu.hugegraph.loader.mapping.VertexMapping>
             buildVertexMappings(GraphConnection connection,
-                                FileMapping fileMapping) {
-        int connId = connection.getId();
+                                FileMapping fileMapping, HugeClient client) {
         List<com.baidu.hugegraph.loader.mapping.VertexMapping> vMappings =
                 new ArrayList<>();
         for (VertexMapping mapping : fileMapping.getVertexMappings()) {
-            VertexLabelEntity vl = this.vlService.get(mapping.getLabel(), connId);
+            VertexLabelEntity vl = this.vlService.get(mapping.getLabel(),
+                                                      client);
             List<String> idFields = mapping.getIdFields();
             Map<String, String> fieldMappings = mapping.fieldMappingToMap();
             com.baidu.hugegraph.loader.mapping.VertexMapping vMapping;
@@ -479,18 +488,17 @@ public class LoadTaskService {
 
     private List<com.baidu.hugegraph.loader.mapping.EdgeMapping>
             buildEdgeMappings(GraphConnection connection,
-                              FileMapping fileMapping) {
-        int connId = connection.getId();
+                              FileMapping fileMapping, HugeClient client) {
         List<com.baidu.hugegraph.loader.mapping.EdgeMapping> eMappings =
                 new ArrayList<>();
         for (EdgeMapping mapping : fileMapping.getEdgeMappings()) {
             List<String> sourceFields = mapping.getSourceFields();
             List<String> targetFields = mapping.getTargetFields();
-            EdgeLabelEntity el = this.elService.get(mapping.getLabel(), connId);
+            EdgeLabelEntity el = this.elService.get(mapping.getLabel(), client);
             VertexLabelEntity svl = this.vlService.get(el.getSourceLabel(),
-                                                       connId);
+                                                       client);
             VertexLabelEntity tvl = this.vlService.get(el.getTargetLabel(),
-                                                       connId);
+                                                       client);
             Map<String, String> fieldMappings = mapping.fieldMappingToMap();
             /*
              * When id strategy is customize or primaryKeys contains

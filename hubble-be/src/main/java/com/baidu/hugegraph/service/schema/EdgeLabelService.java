@@ -72,17 +72,17 @@ public class EdgeLabelService extends SchemaService {
     @Autowired
     private PropertyIndexService piService;
 
-    public List<EdgeLabelEntity> list(int connId) {
-        return this.list(Collections.emptyList(), connId);
+    public List<EdgeLabelEntity> list(HugeClient client) {
+        return this.list(Collections.emptyList(), client);
     }
 
-    public List<EdgeLabelEntity> list(Collection<String> names, int connId) {
-        return this.list(names, connId, true);
+    public List<EdgeLabelEntity> list(Collection<String> names,
+                                      HugeClient client) {
+        return this.list(names, client, true);
     }
 
-    public List<EdgeLabelEntity> list(Collection<String> names, int connId,
+    public List<EdgeLabelEntity> list(Collection<String> names, HugeClient client,
                                       boolean emptyAsAll) {
-        HugeClient client = this.client(connId);
         List<EdgeLabel> edgeLabels;
         if (CollectionUtils.isEmpty(names)) {
             if (emptyAsAll) {
@@ -102,8 +102,7 @@ public class EdgeLabelService extends SchemaService {
         return results;
     }
 
-    public EdgeLabelEntity get(String name, int connId) {
-        HugeClient client = this.client(connId);
+    public EdgeLabelEntity get(String name, HugeClient client) {
         try {
             EdgeLabel edgeLabel = client.schema().getEdgeLabel(name);
             List<IndexLabel> indexLabels = client.schema().getIndexLabels();
@@ -117,14 +116,14 @@ public class EdgeLabelService extends SchemaService {
         }
     }
 
-    public void checkExist(String name, int connId) {
+    public void checkExist(String name, HugeClient client) {
         // Throw exception if it doesn't exist
-        this.get(name, connId);
+        this.get(name, client);
     }
 
-    public void checkNotExist(String name, int connId) {
+    public void checkNotExist(String name, HugeClient client) {
         try {
-            this.get(name, connId);
+            this.get(name, client);
         } catch (ExternalException e) {
             Throwable cause = e.getCause();
             if (cause instanceof ServerException &&
@@ -136,8 +135,7 @@ public class EdgeLabelService extends SchemaService {
         throw new ExternalException("schema.edgelabel.exist", name);
     }
 
-    public void add(EdgeLabelEntity entity, int connId) {
-        HugeClient client = this.client(connId);
+    public void add(EdgeLabelEntity entity, HugeClient client) {
         EdgeLabel edgeLabel = convert(entity, client);
         try {
             client.schema().addEdgeLabel(edgeLabel);
@@ -149,8 +147,7 @@ public class EdgeLabelService extends SchemaService {
         this.piService.addBatch(indexLabels, client);
     }
 
-    public void update(EdgeLabelUpdateEntity entity, int connId) {
-        HugeClient client = this.client(connId);
+    public void update(EdgeLabelUpdateEntity entity, HugeClient client) {
         EdgeLabel edgeLabel = convert(entity, client);
 
         // All existed indexlabels
@@ -194,29 +191,29 @@ public class EdgeLabelService extends SchemaService {
         this.piService.removeBatch(removedIndexLabelNames, client);
     }
 
-    public void remove(String name, int connId) {
-        HugeClient client = this.client(connId);
+    public void remove(String name, HugeClient client) {
         client.schema().removeEdgeLabelAsync(name);
     }
 
     public ConflictDetail checkConflict(ConflictCheckEntity entity,
-                                        int connId, boolean compareEachOther) {
+                                        HugeClient client,
+                                        boolean compareEachOther) {
         ConflictDetail detail = new ConflictDetail(SchemaType.EDGE_LABEL);
         if (CollectionUtils.isEmpty(entity.getElEntities())) {
             return detail;
         }
 
         Map<String, EdgeLabelEntity> originElEntities = new HashMap<>();
-        for (EdgeLabelEntity e : this.list(connId)) {
+        for (EdgeLabelEntity e : this.list(client)) {
             originElEntities.put(e.getName(), e);
         }
 
         this.pkService.checkConflict(entity.getPkEntities(), detail,
-                                     connId, compareEachOther);
+                                     client, compareEachOther);
         this.piService.checkConflict(entity.getPiEntities(), detail,
-                                     connId, compareEachOther);
+                                     client, compareEachOther);
         this.vlService.checkConflict(entity.getVlEntities(), detail,
-                                     connId, compareEachOther);
+                                     client, compareEachOther);
         for (EdgeLabelEntity elEntity : entity.getElEntities()) {
             // Firstly check if any properties are conflicted
             if (detail.anyPropertyKeyConflict(elEntity.getPropNames())) {
@@ -246,9 +243,8 @@ public class EdgeLabelService extends SchemaService {
         return detail;
     }
 
-    public void reuse(ConflictDetail detail, int connId) {
+    public void reuse(ConflictDetail detail, HugeClient client) {
         Ex.check(!detail.hasConflict(), "schema.cannot-reuse-conflict");
-        HugeClient client = this.client(connId);
 
         List<PropertyKey> propertyKeys = this.pkService.filter(detail, client);
         if (!propertyKeys.isEmpty()) {

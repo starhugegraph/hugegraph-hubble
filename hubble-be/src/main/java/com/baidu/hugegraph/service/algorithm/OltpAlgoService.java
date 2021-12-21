@@ -54,21 +54,16 @@ import lombok.extern.log4j.Log4j2;
 public class OltpAlgoService {
 
     @Autowired
-    private HugeClientPoolService poolService;
-    @Autowired
     private ExecuteHistoryService historyService;
 
-    private HugeClient getClient(int connId) {
-        return this.poolService.getOrCreate(connId);
-    }
-
-    public GremlinResult shortestPath(int connId, ShortestPath body) {
-        HugeClient client = this.getClient(connId);
+    public GremlinResult shortestPath(HugeClient client, ShortestPath body) {
         TraverserManager traverser = client.traverser();
         Path result = traverser.shortestPath(body.getSource(), body.getTarget(),
                                              body.getDirection(), body.getLabel(),
                                              body.getMaxDepth(), body.getMaxDegree(),
                                              body.getSkipDegree(), body.getCapacity());
+        String graphSpace = client.getGraphSpaceName();
+        String graph = client.getGraphName();
         JsonView jsonView = new JsonView();
         jsonView.setData(result.objects());
         Date createTime = HubbleUtil.nowDate();
@@ -77,7 +72,8 @@ public class OltpAlgoService {
         // Insert execute history
         ExecuteStatus status = ExecuteStatus.SUCCESS;
         ExecuteHistory history;
-        history = new ExecuteHistory(null, connId, 0L, ExecuteType.ALGORITHM,
+        history = new ExecuteHistory(null, graphSpace, graph, 0L,
+                                     ExecuteType.ALGORITHM,
                                      body.toString(), status,
                                      AsyncTaskStatus.UNKNOWN, -1L, createTime);
         this.historyService.save(history);

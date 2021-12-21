@@ -23,9 +23,9 @@ public class BelongEntity implements Identifiable {
     @JsonProperty("user_name")
     private String userName;
 
-    @JsonProperty("role_id")
-    private String roleId;
+    @JsonProperty("group_id")
+    private String groupId;
 
-    @JsonProperty("role_name")
-    private String roleName;
+    @JsonProperty("group_name")
+    private String groupName;
 }

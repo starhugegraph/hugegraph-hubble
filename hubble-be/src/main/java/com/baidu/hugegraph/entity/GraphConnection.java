@@ -54,6 +54,10 @@ public class GraphConnection implements Identifiable, Mergeable {
     private String name;
 
     @MergeProperty
+    @JsonProperty("graphspace")
+    private String graphSpace;
+
+    @MergeProperty
     @JsonProperty("graph")
     private String graph;
 
