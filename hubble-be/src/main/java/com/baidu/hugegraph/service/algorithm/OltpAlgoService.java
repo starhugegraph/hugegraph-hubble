@@ -27,6 +27,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import com.google.common.collect.ImmutableMap;
 
 import com.baidu.hugegraph.driver.HugeClient;
 import com.baidu.hugegraph.driver.TraverserManager;
@@ -39,13 +40,11 @@ import com.baidu.hugegraph.entity.query.GraphView;
 import com.baidu.hugegraph.entity.query.GremlinResult;
 import com.baidu.hugegraph.entity.query.JsonView;
 import com.baidu.hugegraph.entity.query.TableView;
-import com.baidu.hugegraph.service.HugeClientPoolService;
 import com.baidu.hugegraph.service.query.ExecuteHistoryService;
 import com.baidu.hugegraph.structure.graph.Edge;
 import com.baidu.hugegraph.structure.graph.Path;
 import com.baidu.hugegraph.structure.graph.Vertex;
 import com.baidu.hugegraph.util.HubbleUtil;
-import com.google.common.collect.ImmutableMap;
 
 import lombok.extern.log4j.Log4j2;
 

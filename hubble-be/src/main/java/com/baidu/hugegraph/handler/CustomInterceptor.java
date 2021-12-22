@@ -24,12 +24,10 @@ import java.util.regex.Pattern;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
-import com.baidu.hugegraph.exception.InternalException;
 import com.baidu.hugegraph.license.LicenseVerifier;
 import com.baidu.hugegraph.service.license.LicenseService;
 

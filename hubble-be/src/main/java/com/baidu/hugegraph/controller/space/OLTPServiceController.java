@@ -13,7 +13,7 @@ import com.baidu.hugegraph.common.Constant;
 import com.baidu.hugegraph.driver.factory.ServiceConfigEntity;
 
 @RestController
-@RequestMapping(Constant.API_VERSION + "grapspaces/{graphspace}/services/oltp")
+@RequestMapping(Constant.API_VERSION + "graphspaces/{graphspace}/services/oltp")
 public class OLTPServiceController extends ServiceController {
 
     @PostMapping

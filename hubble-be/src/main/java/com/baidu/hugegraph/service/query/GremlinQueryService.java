@@ -54,7 +54,6 @@ import com.baidu.hugegraph.exception.InternalException;
 import com.baidu.hugegraph.exception.ServerException;
 import com.baidu.hugegraph.options.HubbleOptions;
 import com.baidu.hugegraph.rest.ClientException;
-import com.baidu.hugegraph.service.HugeClientPoolService;
 import com.baidu.hugegraph.service.schema.VertexLabelService;
 import com.baidu.hugegraph.structure.constant.Direction;
 import com.baidu.hugegraph.structure.constant.IdStrategy;

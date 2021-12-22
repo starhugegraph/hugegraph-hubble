@@ -84,7 +84,7 @@ public class PropertyKeyController extends SchemaController {
                                  @PathVariable("graph") String graph,
                                  @PathVariable("name") String name) {
         HugeClient client = this.authClient(graphSpace, graph);
-        return this.service.get(name,client);
+        return this.service.get(name, client);
     }
 
     @PostMapping
