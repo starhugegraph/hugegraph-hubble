@@ -2,7 +2,7 @@ package com.baidu.hugegraph.controller.auth;
 
 import java.util.List;
 
-import com.baidu.hugegraph.driver.HugeClient;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,11 +11,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.baidu.hugegraph.common.Constant;
 import com.baidu.hugegraph.service.auth.TargetService;
 import com.baidu.hugegraph.structure.auth.Target;
+import com.baidu.hugegraph.driver.HugeClient;
 
 @RestController
 @RequestMapping(Constant.API_VERSION + "graphspaces/{graphspace}/auth/targets")
@@ -23,11 +25,23 @@ public class TargetController extends AuthController {
     @Autowired
     TargetService targetService;
 
-    @GetMapping
     public List<Target> list(@PathVariable("graphspace") String graphSpace) {
 
         HugeClient client = this.authClient(graphSpace, null);
         return this.targetService.list(client);
+    }
+
+    @GetMapping
+    public IPage<Target> queryPage(@PathVariable("graphspace") String graphSpace,
+                                   @RequestParam(name = "query", required = false,
+                                           defaultValue = "") String query,
+                                   @RequestParam(name = "page_no", required = false,
+                                           defaultValue = "1") int pageNo,
+                                   @RequestParam(name = "page_size", required = false,
+                                           defaultValue = "10") int pageSize) {
+
+        HugeClient client = this.authClient(graphSpace, null);
+        return this.targetService.queryPage(client, query, pageNo, pageSize);
     }
 
     @GetMapping("{id}")
@@ -38,10 +52,13 @@ public class TargetController extends AuthController {
     }
 
     @PostMapping
-    public void add(@PathVariable("graphspace") String graphSpace,
+    public Target add(@PathVariable("graphspace") String graphSpace,
                     @RequestBody Target target) {
         HugeClient client = this.authClient(graphSpace, null);
-        this.targetService.add(client, target);
+        // The field `url` is not currently used
+        // The server requires that the field `url` cannot be null
+        target.url("");
+        return this.targetService.add(client, target);
     }
 
     @PutMapping("{id}")
@@ -51,9 +68,7 @@ public class TargetController extends AuthController {
         HugeClient client = this.authClient(graphSpace, null);
         Target t = this.targetService.get(client, tid);
         t.resources(target.resources());
-        this.targetService.update(client, t);
-
-        return t;
+        return this.targetService.update(client, t);
     }
 
     @DeleteMapping("{id}")
