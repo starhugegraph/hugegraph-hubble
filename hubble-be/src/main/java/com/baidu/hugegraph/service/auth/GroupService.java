@@ -1,8 +1,10 @@
 package com.baidu.hugegraph.service.auth;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import com.baidu.hugegraph.rest.ClientException;
+import com.baidu.hugegraph.util.PageUtil;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springframework.stereotype.Service;
 
 import lombok.extern.log4j.Log4j2;
@@ -32,6 +34,19 @@ public class GroupService extends AuthService {
         List<Group> roles = client.auth().listGroups();
 
         return roles;
+    }
+
+    public IPage<Group> queryPage(HugeClient client, String query,
+                                  int pageNo, int pageSize) {
+        List<Group> roles = client.auth().listGroups();
+
+        ArrayList<Group> results = new ArrayList<>();
+        client.auth().listGroups().stream().filter((g) -> g.name().contains(query))
+              .forEach((g) -> {
+                  results.add(g);
+              });
+
+        return PageUtil.page(results, pageNo, pageSize);
     }
 
     public void update(HugeClient client, Group group) {

@@ -3,12 +3,12 @@ package com.baidu.hugegraph.service.auth;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.baidu.hugegraph.driver.HugeClient;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.baidu.hugegraph.driver.AuthManager;
+import com.baidu.hugegraph.driver.HugeClient;
 import com.baidu.hugegraph.entity.auth.BelongEntity;
 import com.baidu.hugegraph.entity.auth.UserEntity;
 import com.baidu.hugegraph.exception.InternalException;
@@ -17,9 +17,6 @@ import com.baidu.hugegraph.structure.auth.Group;
 
 @Service
 public class BelongService extends AuthService{
-
-    @Autowired
-    protected BelongService belongService;
     @Autowired
     protected GroupService roleService;
     @Autowired
@@ -39,7 +36,13 @@ public class BelongService extends AuthService{
 
     public void delete(HugeClient client, String bid) {
         AuthManager auth = client.auth();
-        auth.deleteAccess(bid);
+        auth.deleteBelong(bid);
+    }
+
+    public void delete(HugeClient client, String groupId, String userId) {
+        list(client, groupId, userId).forEach((b) -> {
+            client.auth().deleteBelong(b.getId());
+        });
     }
 
     protected List<BelongEntity> listByUser(HugeClient client, String uid) {

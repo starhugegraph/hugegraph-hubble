@@ -30,6 +30,9 @@ public class LoginController extends BaseController {
         this.setSession("username", login.name());
         this.setToken(result.token());
 
+        // Set Expire: 1 Month
+        login.expire(60 * 60 * 24 * 30);
+
          return ImmutableMap.of("token", result.token());
     }
 

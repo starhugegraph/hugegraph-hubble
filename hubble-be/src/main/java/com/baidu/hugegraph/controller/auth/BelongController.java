@@ -11,11 +11,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.baidu.hugegraph.common.Constant;
 import com.baidu.hugegraph.service.auth.BelongService;
 import com.baidu.hugegraph.entity.auth.BelongEntity;
 
+@RestController
 @RequestMapping(Constant.API_VERSION + "graphspaces/{graphspace}/auth/belongs")
 public class BelongController extends AuthController{
     @Autowired
@@ -49,5 +51,14 @@ public class BelongController extends AuthController{
                        @PathVariable("id") String bid) {
         HugeClient client = this.authClient(graphSpace, null);
         belongService.delete(client, bid);
+    }
+
+    @DeleteMapping
+    public void delete(@PathVariable("graphspace") String graphSpace,
+                       @RequestParam("group_id") String groupId,
+                       @RequestParam("user_id") String userId) {
+
+        HugeClient client = this.authClient(graphSpace, null);
+        belongService.delete(client, groupId, userId);
     }
 }

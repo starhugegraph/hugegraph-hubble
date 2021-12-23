@@ -2,41 +2,69 @@ package com.baidu.hugegraph.controller.auth;
 
 import java.util.List;
 
-import com.baidu.hugegraph.driver.HugeClient;
-import com.baidu.hugegraph.service.auth.UserService;
+import com.google.common.collect.ImmutableMap;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.baidu.hugegraph.common.Constant;
+import com.baidu.hugegraph.controller.BaseController;
+import com.baidu.hugegraph.driver.HugeClient;
 import com.baidu.hugegraph.entity.auth.UserEntity;
+import com.baidu.hugegraph.service.auth.UserService;
+import com.baidu.hugegraph.structure.auth.User;
 
 @RestController
-@RequestMapping(Constant.API_VERSION + "graphspaces/{graphspace}/auth/users")
-public class UserController extends AuthController {
+@RequestMapping(Constant.API_VERSION + "auth/users")
+public class UserController extends BaseController {
+
     @Autowired
-    private UserService userService;
+    UserService userService;
+
+    @GetMapping("list")
+    public Object list() {
+
+        HugeClient client = this.clientService.createAuthClient(
+                null, null, this.getToken());
+
+        List<UserEntity> users = this.userService.listUsers(
+                this.authClient(null, null));
+        return ImmutableMap.of("users", users);
+    }
 
     @GetMapping
-    public List<UserEntity> get(@PathVariable("graphspace") String graphSpace) {
-        HugeClient client = this.authClient(graphSpace, null);
-        return this.userService.listUsers(client);
+    public Object queryPage(@RequestParam(name = "query", required = false,
+            defaultValue = "") String query,
+                            @RequestParam(name = "page_no", required = false,
+                                    defaultValue = "1") int pageNo,
+                            @RequestParam(name = "page_size", required = false,
+                                    defaultValue = "10") int pageSize) {
+        return userService.queryPage(this.authClient(null, null),
+                                           query, pageNo, pageSize);
     }
+
+    @PostMapping
+    public Object create(@RequestBody User user) {
+        HugeClient client = this.authClient(null, null);
+        return userService.create(client, user);
+    }
+
 
     @GetMapping("{id}")
-    public UserEntity get(@PathVariable("graphspace") String graphSpace,
-                          @PathVariable("id") String userId) {
-        HugeClient client = this.authClient(graphSpace, null);
-        return this.userService.get(client, userId);
+    public Object get(@PathVariable("id") String id) {
+        return userService.get(this.authClient(null, null),
+                                    id);
     }
 
-    @DeleteMapping("{id}")
-    public void delete(@PathVariable("graphspace") String graphSpace,
-                       @PathVariable("id") String userId) {
-        HugeClient client = this.authClient(graphSpace, null);
-        this.userService.delete(client, userId);
+    @PutMapping("{id}")
+    public Object update(@PathVariable("id") String id,
+                         @RequestBody User user) {
+        return userService.update(this.authClient(null, null), user);
     }
 }

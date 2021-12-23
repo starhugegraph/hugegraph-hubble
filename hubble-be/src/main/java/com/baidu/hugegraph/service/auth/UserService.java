@@ -47,7 +47,7 @@ public class UserService extends AuthService{
         AuthManager auth = hugeClient.auth();
         User user = auth.getUser(userId);
         if (user == null) {
-            throw new InternalException("auth.user.get.{} Not Exits",
+            throw new InternalException("auth.user.get.%s Not Exits",
                     userId);
         }
         return convert(user);

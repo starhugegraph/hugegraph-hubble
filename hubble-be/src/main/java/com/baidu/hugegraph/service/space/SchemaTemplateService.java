@@ -10,8 +10,6 @@ import com.baidu.hugegraph.driver.HugeClient;
 import com.baidu.hugegraph.structure.space.SchemaTemplate;
 import com.baidu.hugegraph.util.PageUtil;
 
-import javax.xml.validation.Schema;
-
 @Service
 public class SchemaTemplateService {
 
