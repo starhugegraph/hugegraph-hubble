@@ -43,6 +43,6 @@ public class SchemaTemplateService {
     }
 
     public SchemaTemplate update(HugeClient client, SchemaTemplate schemaTemplate) {
-        return client.schemaTemplateManager().updateSchemaTemplate(schemaTemplate);
+        return client.schemaTemplateManager().createSchemaTemplate(schemaTemplate);
     }
 }
