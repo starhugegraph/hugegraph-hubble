@@ -59,10 +59,10 @@ public class GroupService extends AuthService {
         auth.updateGroup(group);
     }
 
-    public void insert(HugeClient client, Group group) {
+    public Group insert(HugeClient client, Group group) {
         AuthManager auth = client.auth();
 
-        auth.createGroup(group);
+        return auth.createGroup(group);
     }
 
     public void delete(HugeClient client, String gid) {
@@ -74,6 +74,12 @@ public class GroupService extends AuthService {
         auth.listAccessesByGroup(group, -1).forEach(
             access -> {
                 auth.deleteAccess(access.id());
+            }
+        );
+
+        auth.listBelongsByGroup(group, -1).forEach(
+            belong -> {
+                auth.deleteBelong(belong.id());
             }
         );
     }

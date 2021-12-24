@@ -2,7 +2,8 @@ package com.baidu.hugegraph.controller.auth;
 
 import java.util.List;
 
-import com.baidu.hugegraph.driver.HugeClient;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,19 +17,34 @@ import org.springframework.web.bind.annotation.RestController;
 import com.baidu.hugegraph.common.Constant;
 import com.baidu.hugegraph.service.auth.BelongService;
 import com.baidu.hugegraph.entity.auth.BelongEntity;
+import com.baidu.hugegraph.driver.HugeClient;
 
 @RestController
 @RequestMapping(Constant.API_VERSION + "graphspaces/{graphspace}/auth/belongs")
-public class BelongController extends AuthController{
+public class BelongController extends AuthController {
     @Autowired
     BelongService belongService;
 
-    @GetMapping
-    public List<BelongEntity> list(@PathVariable("graphspace") String graphSpace,
-                                   @RequestParam(value="group_id", required = false) String gid,
-                                   @RequestParam(value="user_id", required = false) String uid) {
+    public List<BelongEntity> list(
+            @PathVariable("graphspace") String graphSpace,
+            @RequestParam(value = "group_id", required = false) String gid,
+            @RequestParam(value = "user_id", required = false) String uid) {
         HugeClient client = this.authClient(graphSpace, null);
         return belongService.list(client, gid, uid);
+    }
+
+    @GetMapping
+    public IPage<BelongEntity> listPage(
+            @PathVariable("graphspace") String graphSpace,
+            @RequestParam(value = "group_id", required = false) String gid,
+            @RequestParam(value = "user_id", required =
+                    false) String uid,
+            @RequestParam(name = "page_no", required = false,
+                    defaultValue = "1") int pageNo,
+            @RequestParam(name = "page_size", required = false,
+                    defaultValue = "10") int pageSize) {
+        HugeClient client = this.authClient(graphSpace, null);
+        return belongService.listPage(client, gid, uid, pageNo, pageSize);
     }
 
     @GetMapping("{id}")
@@ -59,6 +75,17 @@ public class BelongController extends AuthController{
                        @RequestParam("user_id") String userId) {
 
         HugeClient client = this.authClient(graphSpace, null);
-        belongService.delete(client, groupId, userId);
+        if (StringUtils.isNotEmpty(groupId) && !StringUtils.isNotEmpty(userId)) {
+            belongService.delete(client, groupId, userId);
+        }
+    }
+
+    @DeleteMapping("ids")
+    public void delete(@PathVariable("graphspace") String graphSpace,
+                       @RequestParam("ids") String[] ids) {
+
+        HugeClient client = this.authClient(graphSpace, null);
+
+        belongService.deleteMany(client, ids);
     }
 }

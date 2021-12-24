@@ -1,8 +1,10 @@
 package com.baidu.hugegraph.service.auth;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,6 +16,7 @@ import com.baidu.hugegraph.entity.auth.UserEntity;
 import com.baidu.hugegraph.exception.InternalException;
 import com.baidu.hugegraph.structure.auth.Belong;
 import com.baidu.hugegraph.structure.auth.Group;
+import com.baidu.hugegraph.util.PageUtil;
 
 @Service
 public class BelongService extends AuthService{
@@ -76,7 +79,7 @@ public class BelongService extends AuthService{
         List<BelongEntity> result = new ArrayList<>();
 
         client.auth().listBelongs().forEach(b -> {
-            Group group = roleService.get(client, b.user().toString());
+            Group group = roleService.get(client, b.group().toString());
             UserEntity user = userService.get(client, b.user().toString());
             result.add(convert(b, user, group));
         });
@@ -108,6 +111,11 @@ public class BelongService extends AuthService{
         return result;
     }
 
+    public IPage<BelongEntity> listPage(HugeClient client, String gid,
+                                        String uid, int pageNo, int pageSize) {
+        return PageUtil.page(list(client, gid, uid), pageNo, pageSize);
+    }
+
     public BelongEntity get(HugeClient client, String bid) {
         AuthManager auth = client.auth();
         Belong belong = auth.getBelong(bid);
@@ -129,4 +137,9 @@ public class BelongService extends AuthService{
                                 group.id().toString(), group.name());
     }
 
+    public void deleteMany(HugeClient client, String[] ids) {
+        Arrays.stream(ids).forEach(id -> {
+            client.auth().deleteBelong(id);
+        });
+    }
 }

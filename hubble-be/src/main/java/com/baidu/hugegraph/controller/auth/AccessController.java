@@ -19,7 +19,7 @@ import com.baidu.hugegraph.structure.auth.Access;
 import com.baidu.hugegraph.entity.auth.AccessEntity;
 
 @RestController
-@RequestMapping(Constant.API_VERSION + "graphspaces/{graphspace}/auth/access")
+@RequestMapping(Constant.API_VERSION + "graphspaces/{graphspace}/auth/accesses")
 public class AccessController extends AuthController {
 
     @Autowired
@@ -41,10 +41,10 @@ public class AccessController extends AuthController {
     }
 
     @PostMapping
-    public void add(@PathVariable("graphspace") String graphSpace,
+    public Access add(@PathVariable("graphspace") String graphSpace,
                     @RequestBody Access access) {
         HugeClient client = this.authClient(graphSpace, null);
-        this.accessService.add(client, access);
+        return this.accessService.add(client, access);
     }
 
     @DeleteMapping("{id}")

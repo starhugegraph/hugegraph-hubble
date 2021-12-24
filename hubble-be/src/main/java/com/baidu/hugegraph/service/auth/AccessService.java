@@ -52,8 +52,8 @@ public class AccessService extends AuthService {
         return result;
     }
 
-    public void add(HugeClient client, Access access) {
-        client.auth().createAccess(access);
+    public Access add(HugeClient client, Access access) {
+        return client.auth().createAccess(access);
     }
 
     public void delete(HugeClient client, String aid) {

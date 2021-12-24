@@ -57,10 +57,11 @@ public class GroupController<role> extends AuthController {
     }
 
     @PostMapping
-    public void add(@PathVariable("graphspace") String graphSpace,
+    public Group add(@PathVariable("graphspace") String graphSpace,
                     @RequestBody Group role) {
         HugeClient client = this.authClient(graphSpace, null);
-        this.groupService.insert(client, role);
+        role.graphSpace(graphSpace);
+        return this.groupService.insert(client, role);
     }
 
     @PutMapping("{id}")
@@ -69,10 +70,11 @@ public class GroupController<role> extends AuthController {
                         @RequestBody Group group) {
         HugeClient client = this.authClient(graphSpace, null);
         Group g = this.groupService.get(client, id);
-        g.name(group.name());
+        // Can't update group name;
+        // g.name(group.name());
         g.description(group.description());
 
-        this.groupService.update(client, group);
+        this.groupService.update(client, g);
 
         return g;
     }
