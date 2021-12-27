@@ -120,6 +120,10 @@
                     <groupId>org.eclipse.jetty</groupId>
                     <artifactId>jetty-runner</artifactId>
                 </exclusion>
+                <exclusion>
+                    <artifactId>hive-exec</artifactId>
+                    <groupId>org.apache.hive</groupId>
+                </exclusion>
             </exclusions>
         </dependency>
 
