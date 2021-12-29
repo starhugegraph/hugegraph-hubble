@@ -154,6 +154,8 @@ public class LoadTask implements Runnable {
         this.finished = false;
         this.id = null;
         this.connId = connection.getId();
+        this.graphSpace = connection.getGraphSpace();
+        this.graph = connection.getGraph();
         this.jobId = mapping.getJobId();
         this.fileId = mapping.getId();
         this.fileName = mapping.getName();

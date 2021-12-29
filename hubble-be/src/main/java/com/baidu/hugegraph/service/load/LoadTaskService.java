@@ -23,6 +23,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -66,7 +67,6 @@ import com.baidu.hugegraph.loader.source.file.FileFormat;
 import com.baidu.hugegraph.loader.source.file.FileSource;
 import com.baidu.hugegraph.loader.util.MappingUtil;
 import com.baidu.hugegraph.mapper.load.LoadTaskMapper;
-import com.baidu.hugegraph.service.SettingSSLService;
 import com.baidu.hugegraph.service.schema.EdgeLabelService;
 import com.baidu.hugegraph.service.schema.VertexLabelService;
 import com.baidu.hugegraph.util.Ex;
@@ -86,8 +86,6 @@ public class LoadTaskService {
     private EdgeLabelService elService;
     @Autowired
     private LoadTaskExecutor taskExecutor;
-    @Autowired
-    private SettingSSLService sslService;
     @Autowired
     private HugeConfig config;
 
@@ -168,7 +166,6 @@ public class LoadTaskService {
 
     public LoadTask start(GraphConnection connection, FileMapping fileMapping,
                           HugeClient client) {
-        this.sslService.configSSL(this.config, connection);
         LoadTask task = this.buildLoadTask(connection, fileMapping, client);
         this.save(task);
         // Executed in other threads
@@ -363,14 +360,17 @@ public class LoadTaskService {
         LoadOptions options = new LoadOptions();
         // Fill with input and server params
         options.file = fileMapping.getPath();
+        options.metaType = connection.getMetaType();
+        options.metaURL = Arrays.asList(connection.getEndpoints());
+        options.metaCa = connection.getCa();
+        options.metaClientCa = connection.getClientCa();
+        options.metaClientKey = connection.getClientKey();
+        options.cluster = connection.getCluster();
+        options.graphSpace = connection.getGraphSpace();
         // No need to specify a schema file
-        options.host = connection.getHost();
-        options.port = connection.getPort();
         options.graph = connection.getGraph();
         options.username = connection.getUsername();
         options.token = connection.getPassword();
-        options.protocol = connection.getProtocol();
-        options.trustStoreFile = connection.getTrustStoreFile();
         // options.trustStorePassword = connection.getTrustStorePassword();
         // Fill with load parameters
         LoadParameter parameter = fileMapping.getLoadParameter();

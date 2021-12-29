@@ -1,6 +1,5 @@
 package com.baidu.hugegraph.controller.space;
 
-import com.baidu.hugegraph.driver.HugeClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,9 +11,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.baidu.hugegraph.common.Constant;
-import com.baidu.hugegraph.driver.factory.ServiceConfigEntity;
 import com.baidu.hugegraph.controller.BaseController;
 import com.baidu.hugegraph.service.space.OLTPServerService;
+import com.baidu.hugegraph.driver.HugeClient;
+import com.baidu.hugegraph.structure.space.OLTPService;
 
 @RestController
 @RequestMapping(Constant.API_VERSION + "graphspaces/{graphspace}/services/oltp")
@@ -45,7 +45,7 @@ public class ServiceController extends BaseController {
     @PostMapping("{service}")
     public Object update(@PathVariable("graphspace") String graphspace,
                          @PathVariable("service") String service,
-                         @RequestBody ServiceConfigEntity serviceEntity) {
+                         @RequestBody OLTPService serviceEntity) {
 
         serviceEntity.setName(graphspace);
 

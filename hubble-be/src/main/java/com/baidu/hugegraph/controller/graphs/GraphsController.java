@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -64,6 +65,15 @@ public class GraphsController extends BaseController {
                                  String schema) {
         return this.graphsService.create(this.authClient(graphspace, null),
                                          graph, isAuth, schema);
+    }
+
+    @DeleteMapping("{graph}")
+    public void delete(@PathVariable("graphspace") String graphspace,
+                       @PathVariable("graph") String graph,
+                       @RequestParam("message") String message) {
+
+        this.graphsService.delete(this.authClient(graphspace, graph), graph,
+                                  message);
     }
 
 

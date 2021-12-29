@@ -22,7 +22,9 @@ package com.baidu.hugegraph.controller.load;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.baidu.hugegraph.config.HugeConfig;
 import com.baidu.hugegraph.driver.HugeClient;
+import com.baidu.hugegraph.options.HubbleOptions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -42,7 +44,6 @@ import com.baidu.hugegraph.entity.load.FileMapping;
 import com.baidu.hugegraph.entity.load.JobManager;
 import com.baidu.hugegraph.entity.load.LoadTask;
 import com.baidu.hugegraph.exception.ExternalException;
-import com.baidu.hugegraph.service.GraphConnectionService;
 import com.baidu.hugegraph.service.load.FileMappingService;
 import com.baidu.hugegraph.service.load.JobManagerService;
 import com.baidu.hugegraph.service.load.LoadTaskService;
@@ -61,11 +62,11 @@ public class LoadTaskController extends BaseController {
     private static final int LIMIT = 500;
 
     @Autowired
-    private GraphConnectionService connService;
-    @Autowired
     private FileMappingService fmService;
     @Autowired
     private JobManagerService jobService;
+    @Autowired
+    private HugeConfig config;
 
     private final LoadTaskService service;
 
@@ -139,12 +140,19 @@ public class LoadTaskController extends BaseController {
                                 @PathVariable("jobId") int jobId,
                                 @RequestParam("file_mapping_ids")
                                 List<Integer> fileIds) {
-        // TODO build connection
         GraphConnection connection = new GraphConnection();
-        if (connection == null) {
-            throw new ExternalException("graph-connection.not-exist.id",
-                                        graphSpace, graph);
-        }
+
+        connection.setMetaType(config.get(HubbleOptions.META_TYPE));
+        connection.setEndpoints(config.get(HubbleOptions.META_ENDPOINTS).split(","));
+        connection.setCa(config.get(HubbleOptions.META_CA));
+        connection.setClientCa(config.get(HubbleOptions.META_CLIENT_CA));
+        connection.setClientKey(config.get(HubbleOptions.META_CLIENT_KEY));
+        connection.setCluster(config.get(HubbleOptions.META_CLUSTER));
+        connection.setGraphSpace(graphSpace);
+        connection.setGraphSpace(graph);
+        connection.setUsername((String) this.getSession("username"));
+        connection.setPassword((String) this.getSession("password"));
+
         JobManager jobEntity = this.jobService.get(jobId);
         Ex.check(jobEntity != null, "job-manager.not-exist.id", jobId);
         Ex.check(jobEntity.getJobStatus() == JobStatus.SETTING,

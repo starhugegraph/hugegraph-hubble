@@ -62,4 +62,9 @@ public class GraphsService {
                          boolean isClearSchema) {
         client.graphs().clear(graph, isClearSchema);
     }
+
+    public void delete(HugeClient client, String graph, String confirmMessage) {
+
+        client.graphs().remove(graph, confirmMessage);
+    }
 }

@@ -24,14 +24,15 @@ public class LoginController extends BaseController {
 
     @PostMapping("/login")
     public Object login(@RequestBody Login login) {
+        // Set Expire: 1 Month
+        login.expire(60 * 60 * 24 * 30);
+
         HugeClient client = clientService.createUnauthClient();
         LoginResult result = client.auth().login(login);
 
         this.setSession("username", login.name());
+        this.setSession("password", login.password());
         this.setToken(result.token());
-
-        // Set Expire: 1 Month
-        login.expire(60 * 60 * 24 * 30);
 
          return ImmutableMap.of("token", result.token());
     }

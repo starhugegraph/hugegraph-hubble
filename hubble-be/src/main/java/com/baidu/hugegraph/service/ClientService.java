@@ -30,7 +30,7 @@ public class ClientService {
     public HugeClient createAuthClient(String graphSpace,
                                        String graph, String token) {
         return hugeClientFactory.createAuthClient(this.cluster, graphSpace,
-                                                  graph, token);
+                                                  graph, token, null, null);
     }
 
     public ImmutableSet<GraphEntity> listAllGraphs() {
