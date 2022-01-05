@@ -6,23 +6,6 @@ CREATE TABLE IF NOT EXISTS `user_info` (
     UNIQUE (`username`)
 );
 
-CREATE TABLE IF NOT EXISTS `graph_connection` (
-    `id` INT NOT NULL AUTO_INCREMENT,
-    `name` VARCHAR(48) NOT NULL,
-    `graph` VARCHAR(48) NOT NULL,
-    `host` VARCHAR(48) NOT NULL DEFAULT 'localhost',
-    `port` INT NOT NULL DEFAULT '8080',
-    `timeout` INT NOT NULL,
-    `username` VARCHAR(48),
-    `password` VARCHAR(48),
-    `enabled` BOOLEAN NOT NULL DEFAULT true,
-    `disable_reason` VARCHAR(65535) NOT NULL DEFAULT '',
-    `create_time` DATETIME(6) NOT NULL,
-    PRIMARY KEY (`id`),
-    UNIQUE (`name`),
-    UNIQUE (`graph`, `host`, `port`)
-);
-
 CREATE TABLE IF NOT EXISTS `execute_history` (
     `id` INT NOT NULL AUTO_INCREMENT,
     `conn_id` INT,
