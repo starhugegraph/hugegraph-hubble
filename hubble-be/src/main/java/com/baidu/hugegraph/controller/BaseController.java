@@ -22,6 +22,7 @@ package com.baidu.hugegraph.controller;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
+import com.baidu.hugegraph.common.Constant;
 import com.baidu.hugegraph.driver.HugeClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -46,7 +47,6 @@ public abstract class BaseController {
 
     public static final String ORDER_ASC = "asc";
     public static final String ORDER_DESC = "desc";
-    public static final String TOKEN_KEY = "auth_token";
 
     public void checkIdSameAsBody(Object id, Identifiable newEntity) {
         Ex.check(newEntity.getId() != null, () -> id.equals(newEntity.getId()),
@@ -95,16 +95,15 @@ public abstract class BaseController {
     }
 
     protected String getToken() {
-        return "eyJhbGciOiJIUzI1NiJ9" +
-            ".eyJ1c2VyX25hbWUiOiJhZG1pbiIsInVzZXJfaWQiOiJhZG1pbiIsImV4cCI6MTY0MDA4NzU0NH0.1xcIu7MPVEWXR_JPX_RHM2dKEJhzbzRSmnUq-3pRjG0";
+        return (String) getSession(Constant.TOKEN_KEY);
     }
 
     protected void setToken(String token) {
-        this.setSession(TOKEN_KEY, token);
+        this.setSession(Constant.TOKEN_KEY, token);
     }
 
     protected void delToken() {
-        this.delSession(TOKEN_KEY);
+        this.delSession(Constant.TOKEN_KEY);
     }
 
     protected HugeClient authClient(String graphspace, String graph) {

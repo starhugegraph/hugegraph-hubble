@@ -60,6 +60,8 @@ public final class Constant {
     public static final int STATUS_ILLEGAL_GREMLIN = 460;
     public static final int STATUS_INTERNAL_ERROR = 500;
 
+    public static final String TOKEN_KEY = "auth_token";
+
     public static final int NO_LIMIT = -1;
 
     public static final Pattern COMMON_NAME_PATTERN = Pattern.compile(
