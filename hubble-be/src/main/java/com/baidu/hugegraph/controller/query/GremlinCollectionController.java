@@ -19,6 +19,7 @@
 
 package com.baidu.hugegraph.controller.query;
 
+import com.baidu.hugegraph.driver.HugeClient;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -40,7 +41,8 @@ import com.baidu.hugegraph.util.HubbleUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 
 @RestController
-@RequestMapping(Constant.API_VERSION + "graph-connections/{connId}/gremlin-collections")
+@RequestMapping(Constant.API_VERSION + "graphspaces/{graphspace}/graphs" +
+        "/{graph}/gremlin-collections")
 public class GremlinCollectionController extends GremlinController {
 
     private static final int LIMIT = 100;
@@ -53,7 +55,8 @@ public class GremlinCollectionController extends GremlinController {
     }
 
     @GetMapping
-    public IPage<GremlinCollection> list(@PathVariable("connId") int connId,
+    public IPage<GremlinCollection> list(@PathVariable("graphspace") String graphSpace,
+                                         @PathVariable("graph") String graph,
                                          @RequestParam(name = "content",
                                                        required = false)
                                          String content,
@@ -86,7 +89,9 @@ public class GremlinCollectionController extends GremlinController {
                      "common.time-order.invalid", timeOrder);
             timeOrderAsc = ORDER_ASC.equals(timeOrder);
         }
-        return this.service.list(connId, content, nameOrderAsc, timeOrderAsc,
+
+        HugeClient client = this.authClient(graphSpace, graph);
+        return this.service.list(client, content, nameOrderAsc, timeOrderAsc,
                                  pageNo, pageSize);
     }
 
@@ -96,10 +101,12 @@ public class GremlinCollectionController extends GremlinController {
     }
 
     @PostMapping
-    public GremlinCollection create(@PathVariable("connId") int connId,
+    public GremlinCollection create(@PathVariable("graphspace") String graphSpace,
+                                    @PathVariable("graph") String graph,
                                     @RequestBody GremlinCollection newEntity) {
         this.checkParamsValid(newEntity, true);
-        newEntity.setConnId(connId);
+        newEntity.setGraphSpace(graphSpace);
+        newEntity.setGraph(graph);
         newEntity.setCreateTime(HubbleUtil.nowDate());
         this.checkEntityUnique(newEntity, true);
         // The service is an singleton object
@@ -164,10 +171,12 @@ public class GremlinCollectionController extends GremlinController {
 
     private void checkEntityUnique(GremlinCollection newEntity,
                                    boolean creating) {
-        int connId = newEntity.getConnId();
+        String graphSpace = newEntity.getGraphSpace();
+        String graph = newEntity.getGraph();
         String name = newEntity.getName();
         // NOTE: Full table scan may slow, it's better to use index
-        GremlinCollection oldEntity = this.service.getByName(connId, name);
+        GremlinCollection oldEntity = this.service.getByName(graphSpace, graph,
+                                                             name);
         if (creating) {
             Ex.check(oldEntity == null, "gremlin-collection.exist.name", name);
         } else {

@@ -19,6 +19,8 @@
 
 package com.baidu.hugegraph.controller.algorithm;
 
+import com.baidu.hugegraph.controller.BaseController;
+import com.baidu.hugegraph.driver.HugeClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -35,15 +37,18 @@ import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 @RestController
-@RequestMapping(Constant.API_VERSION + "graph-connections/{connId}/algorithms")
-public class OltpAlgoController {
+@RequestMapping(Constant.API_VERSION + "graphspaces/{graphspace}/graphs" +
+        "/{graph}/algorithms")
+public class OltpAlgoController extends BaseController {
 
     @Autowired
     private OltpAlgoService service;
 
     @PostMapping("shortestPath")
-    public GremlinResult shortPath(@PathVariable("connId") int connId,
+    public GremlinResult shortPath(@PathVariable("graphspace") String graphSpace,
+                                   @PathVariable("graph") String graph,
                                    @RequestBody ShortestPath body) {
-        return this.service.shortestPath(connId, body);
+        HugeClient client = this.authClient(graphSpace, graph);
+        return this.service.shortestPath(client, body);
     }
 }

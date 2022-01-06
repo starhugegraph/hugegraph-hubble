@@ -78,6 +78,16 @@ public class LoadTask implements Runnable {
     @JsonProperty("conn_id")
     private Integer connId;
 
+    @TableField(value = "graphspace")
+    @MergeProperty
+    @JsonProperty("graphspace")
+    private String graphSpace;
+
+    @TableField(value = "graph")
+    @MergeProperty
+    @JsonProperty("graph")
+    private String graph;
+
     @TableField(value = "job_id")
     @MergeProperty
     @JsonProperty("job_id")
@@ -144,6 +154,8 @@ public class LoadTask implements Runnable {
         this.finished = false;
         this.id = null;
         this.connId = connection.getId();
+        this.graphSpace = connection.getGraphSpace();
+        this.graph = connection.getGraph();
         this.jobId = mapping.getJobId();
         this.fileId = mapping.getId();
         this.fileName = mapping.getName();
