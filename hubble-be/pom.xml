@@ -5,7 +5,7 @@
     <parent>
         <artifactId>hugegraph-hubble</artifactId>
         <groupId>com.baidu.hugegraph</groupId>
-        <version>1.6.0</version>
+        <version>3.0.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -97,7 +97,7 @@
         <dependency>
             <groupId>com.baidu.hugegraph</groupId>
             <artifactId>hugegraph-loader</artifactId>
-            <version>0.13.0</version>
+            <version>3.0.0</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.apache.logging.log4j</groupId>
