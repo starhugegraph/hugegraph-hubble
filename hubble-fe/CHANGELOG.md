@@ -1,3 +1,11 @@
+## 3.0.0 (2022-01-10)
+
+#### :hubble: New Feature
+
+- Version 3.0 release
+
+<br />
+
 ## 1.6.0 (2020-08-14)
 
 #### :rocket: New Feature
