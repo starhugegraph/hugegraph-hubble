@@ -11,5 +11,3 @@ docker build -t hugegraph-hubble:3.0.0 -f Dockerfile .
 
 # save image
 # docker save hugegraph-hubble:3.0.0 > hugegraph-hubble-3.0.0.tar
-
-
