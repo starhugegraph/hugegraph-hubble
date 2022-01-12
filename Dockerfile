@@ -19,6 +19,7 @@ RUN set -e \
     && tar xzf /root/hugegraph-hubble-3.0.0.tar.gz --strip-components 1 -C /root/hugegraph-hubble \
     && rm -rf /root/hugegraph-hubble-3.0.0.tar.gz
 
+EXPOSE 8088
 WORKDIR /root
 VOLUME /root
 
