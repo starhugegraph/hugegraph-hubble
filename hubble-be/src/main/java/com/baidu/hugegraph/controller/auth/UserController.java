@@ -23,6 +23,7 @@ import java.util.List;
 
 import com.google.common.collect.ImmutableMap;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -69,9 +70,9 @@ public class UserController extends BaseController {
     }
 
     @PostMapping
-    public Object create(@RequestBody User user) {
+    public void create(@RequestBody User user) {
         HugeClient client = this.authClient(null, null);
-        return userService.create(client, user);
+        userService.create(client, user);
     }
 
 
@@ -82,8 +83,14 @@ public class UserController extends BaseController {
     }
 
     @PutMapping("{id}")
-    public Object update(@PathVariable("id") String id,
-                         @RequestBody User user) {
-        return userService.update(this.authClient(null, null), user);
+    public void update(@PathVariable("id") String id,
+                       @RequestBody User user) {
+        user.setId(id);
+        userService.update(this.authClient(null, null), user);
+    }
+
+    @DeleteMapping("{id}")
+    public void delete(@PathVariable("id") String id) {
+        userService.delete(this.authClient(null, null), id);
     }
 }

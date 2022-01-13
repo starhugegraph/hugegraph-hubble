@@ -23,6 +23,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.baidu.hugegraph.structure.space.GraphSpaceReq;
 import org.springframework.stereotype.Service;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 
@@ -61,14 +62,15 @@ public class GraphSpaceService {
     }
 
     public void delete(HugeClient authClient, String graphspace) {
-        authClient.graphSpace().deleteGraphSpace(graphspace);
+        authClient.graphSpace()
+                  .deleteGraphSpace(graphspace, "I'm sure to drop the graph space");
     }
 
-    public void create(HugeClient authClient, GraphSpace graphSpace) {
-        authClient.graphSpace().createGraphSpace(graphSpace);
+    public Object create(HugeClient authClient, GraphSpaceReq graphSpaceReq) {
+        return authClient.graphSpace().createGraphSpace(graphSpaceReq);
     }
 
-    public GraphSpace update(HugeClient authClient, GraphSpace graphSpace) {
-        return authClient.graphSpace().updateGraphSpace(graphSpace);
+    public GraphSpace update(HugeClient authClient, GraphSpaceReq graphSpaceReq) {
+        return authClient.graphSpace().updateGraphSpace(graphSpaceReq);
     }
 }

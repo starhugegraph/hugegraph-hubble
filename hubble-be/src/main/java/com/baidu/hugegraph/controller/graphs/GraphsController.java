@@ -47,7 +47,7 @@ public class GraphsController extends BaseController {
 
     @GetMapping("list")
     public Object listNames(@PathVariable("graphspace") String graphspace) {
-        // TODO GraphEntity
+        // GraphEntity
         ImmutableSet<GraphEntity> graphs = this.clientService.listAllGraphs();
 
         List<String> names =
@@ -98,9 +98,9 @@ public class GraphsController extends BaseController {
 
     @GetMapping("{graph}/truncate")
     public void truncate(@PathVariable("graphspace") String graphspace,
-                           @PathVariable("graph") String graph,
-                           @RequestParam(value = "clear_schema", required =
-                                   false, defaultValue = "true") boolean isClearSchema) {
+                         @PathVariable("graph") String graph,
+                         @RequestParam(value = "clear_schema", required =
+                                 false, defaultValue = "true") boolean isClearSchema) {
         this.graphsService.truncate(this.authClient(graphspace, graph), graph,
                                     isClearSchema);
     }

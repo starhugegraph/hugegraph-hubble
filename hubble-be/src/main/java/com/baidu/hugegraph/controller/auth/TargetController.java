@@ -44,6 +44,7 @@ public class TargetController extends AuthController {
     @Autowired
     TargetService targetService;
 
+    @GetMapping("list")
     public List<Target> list(@PathVariable("graphspace") String graphSpace) {
 
         HugeClient client = this.authClient(graphSpace, null);

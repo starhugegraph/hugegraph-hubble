@@ -19,6 +19,7 @@
 
 package com.baidu.hugegraph.controller.auth;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -81,6 +82,17 @@ public class BelongController extends AuthController {
                           belongEntity.getUserId());
     }
 
+    @PostMapping("ids")
+    public void createMany(@PathVariable("graphspace") String graphSpace,
+                           @RequestBody BelongService.BelongsReq belongsReq) {
+        HugeClient client = this.authClient(graphSpace, null);
+
+        for (String uid : belongsReq.getUserIds()) {
+            belongService.add(client, belongsReq.getGroupId(), uid);
+        }
+
+    }
+
     @DeleteMapping("{id}")
     public void delete(@PathVariable("graphspace") String graphSpace,
                        @PathVariable("id") String bid) {
@@ -99,12 +111,16 @@ public class BelongController extends AuthController {
         }
     }
 
-    @DeleteMapping("ids")
-    public void delete(@PathVariable("graphspace") String graphSpace,
-                       @RequestParam("ids") String[] ids) {
+    @PostMapping("delids")
+    public void deleteMany(@PathVariable("graphspace") String graphSpace,
+                           @RequestBody DelIdsReq delIdsReq) {
 
         HugeClient client = this.authClient(graphSpace, null);
 
-        belongService.deleteMany(client, ids);
+        belongService.deleteMany(client, delIdsReq.ids.toArray(new String[0]));
+    }
+
+    public static class DelIdsReq {
+        public List<String> ids = new ArrayList();
     }
 }

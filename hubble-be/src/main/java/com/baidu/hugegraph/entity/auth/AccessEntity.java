@@ -1,21 +1,19 @@
 package com.baidu.hugegraph.entity.auth;
 
+import java.util.Set;
+
+import com.baidu.hugegraph.structure.auth.HugePermission;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import com.baidu.hugegraph.common.Identifiable;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class AccessEntity implements Identifiable {
-
-    @JsonProperty("id")
-    private String id;
+public class AccessEntity {
 
     @JsonProperty("target_id")
     private String targetId;
@@ -31,4 +29,14 @@ public class AccessEntity implements Identifiable {
 
     @JsonProperty("graphspace")
     private String graphSpace;
+
+    @JsonProperty("graph")
+    private String graph;
+
+    @JsonProperty("permissions")
+    private Set<HugePermission> permissions;
+
+    public void addPermission(HugePermission p) {
+        permissions.add(p);
+    }
 }

@@ -29,6 +29,9 @@ public class UserEntity implements Identifiable {
     @JsonProperty("is_superadmin")
     private boolean isSuperadmin;
 
+    @JsonProperty("avatar")
+    private String avatar;
+
     @JsonProperty("description")
     private String description;
 }

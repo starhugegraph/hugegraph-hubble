@@ -21,9 +21,12 @@ package com.baidu.hugegraph.service.auth;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -38,7 +41,7 @@ import com.baidu.hugegraph.structure.auth.Group;
 import com.baidu.hugegraph.util.PageUtil;
 
 @Service
-public class BelongService extends AuthService{
+public class BelongService extends AuthService {
     @Autowired
     protected GroupService roleService;
     @Autowired
@@ -55,6 +58,16 @@ public class BelongService extends AuthService{
         AuthManager auth = client.auth();
         auth.createBelong(belong);
     }
+
+    public void addMany(HugeClient client, String gid, String[] uids) {
+        Belong belong = new Belong();
+        for (String uid : uids) {
+            belong.user(uid);
+            belong.group(gid);
+            this.add(client, belong);
+        }
+    }
+
 
     public void delete(HugeClient client, String bid) {
         AuthManager auth = client.auth();
@@ -149,7 +162,8 @@ public class BelongService extends AuthService{
         return convert(belong, user, group);
     }
 
-    protected BelongEntity convert(Belong belong, UserEntity user, Group group) {
+    protected BelongEntity convert(Belong belong, UserEntity user,
+                                   Group group) {
 
         return new BelongEntity(belong.id().toString(),
                                 user.getId(), user.getName(),
@@ -160,5 +174,52 @@ public class BelongService extends AuthService{
         Arrays.stream(ids).forEach(id -> {
             client.auth().deleteBelong(id);
         });
+    }
+
+    public boolean exists(HugeClient client, String gid, String uid) {
+        if (this.list(client, gid, uid).size() > 0) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public static class BelongsReq {
+        @JsonProperty("user_ids")
+        Set<String> userIds = new HashSet<String>();
+        @JsonProperty("group_id")
+        String groupId;
+        @JsonProperty("belong_description")
+        String description;
+
+        public BelongsReq() {
+        }
+
+        public Set<String> getUserIds() {
+            return userIds;
+        }
+
+        public BelongsReq setUserIds(Set<String> userIds) {
+            this.userIds = userIds;
+            return this;
+        }
+
+        public String getGroupId() {
+            return groupId;
+        }
+
+        public BelongsReq setGroupId(String groupId) {
+            this.groupId = groupId;
+            return this;
+        }
+
+        public String getDescription() {
+            return description;
+        }
+
+        public BelongsReq setDescription(String description) {
+            this.description = description;
+            return this;
+        }
     }
 }
