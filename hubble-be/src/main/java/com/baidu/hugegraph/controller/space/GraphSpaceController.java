@@ -19,7 +19,6 @@
 
 package com.baidu.hugegraph.controller.space;
 
-import com.baidu.hugegraph.structure.space.GraphSpaceReq;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,12 +65,12 @@ public class GraphSpaceController extends BaseController {
 
     @GetMapping("{graphspace}")
     public GraphSpace get(@PathVariable("graphspace") String graphspace) {
-        return graphSpaceService.get(this.authClient(graphspace, null),
+        return graphSpaceService.get(this.authClient(null, null),
                                      graphspace);
     }
 
     @PostMapping
-    public Object add(@RequestBody GraphSpaceReq graphSpaceEntity) {
+    public Object add(@RequestBody GraphSpace graphSpaceEntity) {
 
         return graphSpaceService.create(this.authClient(null, null),
                                         graphSpaceEntity);
@@ -79,12 +78,12 @@ public class GraphSpaceController extends BaseController {
 
     @PutMapping("{graphspace}")
     public GraphSpace update(@PathVariable("graphspace") String graphspace,
-                             @RequestBody GraphSpaceReq graphSpaceReq) {
+                             @RequestBody GraphSpace graphSpace) {
 
-        graphSpaceReq.setName(graphspace);
+        graphSpace.setName(graphspace);
 
         return graphSpaceService.update(this.authClient(null, null),
-                                        graphSpaceReq);
+                                        graphSpace);
     }
 
     @DeleteMapping("{graphspace}")
