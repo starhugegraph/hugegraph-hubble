@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -64,7 +65,16 @@ public class GraphSpaceUserController extends AuthController {
     public UserView create(@PathVariable("graphspace") String graphSpace,
                            @RequestBody UserView userView) {
         HugeClient client = this.authClient(graphSpace, null);
-        return userService.create(client, userView);
+        return userService.createOrUpdate(client, userView);
+    }
+
+    @PutMapping("{id}")
+    public UserView createOrUpdate(@PathVariable("graphspace") String graphSpace,
+                                   @PathVariable("id") String uid,
+                                   @RequestBody UserView userView) {
+        HugeClient client = this.authClient(graphSpace, null);
+        userView.setId(uid);
+        return userService.createOrUpdate(client, userView);
     }
 
     @DeleteMapping("{id}")

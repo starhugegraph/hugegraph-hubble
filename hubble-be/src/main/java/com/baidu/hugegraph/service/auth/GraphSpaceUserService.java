@@ -22,6 +22,7 @@ package com.baidu.hugegraph.service.auth;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.baidu.hugegraph.entity.auth.GroupEntity;
@@ -62,7 +63,7 @@ public class GraphSpaceUserService extends AuthService{
             tmp.put(belong.getUserId(), belong);
         });
 
-        tmp.keys().forEach((k) -> {
+        tmp.keySet().forEach((k) -> {
             UserView uv = new UserView(null, null, new ArrayList<GroupEntity>());
             tmp.get(k).forEach((b) -> {
                 uv.setId(b.getUserId());
@@ -104,21 +105,31 @@ public class GraphSpaceUserService extends AuthService{
         return PageUtil.page(results, pageNo, pageSize);
     }
 
-    public UserView create(HugeClient client, UserView userView) {
+    public UserView createOrUpdate(HugeClient client, UserView userView) {
         E.checkNotNull(userView.getId(), "User Id Not Null");
         E.checkArgument(userView.getGroups() != null
                                 && userView.getGroups().size() > 0
                 , "THe group info is empty");
 
-        int s = belongService.listByUser(client, userView.getId()).size();
-        E.checkState(s == 0, "The user has exists");
+        // Delete
+        Set<String> newGroups = userView.getGroups().stream()
+                                     .map(GroupEntity::getId)
+                                     .collect(Collectors.toSet());
+        belongService.listByUser(client, userView.getId())
+                     .forEach(belongEntity -> {
+                         if (!newGroups.contains(belongEntity.getGroupId())) {
+                             client.auth().deleteBelong(belongEntity.getId());
+                         }
+                     });
 
-
+        // Create
         userView.getGroups().forEach((g -> {
-            Belong belong = new Belong();
-            belong.user(userView.getId());
-            belong.group(g.getId());
-            belongService.add(client, belong);
+            if(!belongService.exists(client, g.getId(), userView.getId())) {
+                Belong belong = new Belong();
+                belong.user(userView.getId());
+                belong.group(g.getId());
+                belongService.add(client, belong);
+            }
         }));
 
         return getUser(client, userView.getId());

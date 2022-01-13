@@ -32,10 +32,10 @@ import com.baidu.hugegraph.structure.space.OLTPService;
 @Service
 public class OLTPServerService {
 
-    public IPage<OLTPService> queryPage(HugeClient client, String query,
+    public IPage<Object> queryPage(HugeClient client, String query,
                                         int pageNo, int pageSize) {
         List<String> serviceNames = client.serviceManager().listService();
-        List<OLTPService> result
+        List<Object> result
                 = serviceNames.stream().filter(s -> s.contains(query)).sorted()
                               .map((s) -> client.serviceManager().getService(s))
                               .collect(Collectors.toList());
@@ -43,19 +43,19 @@ public class OLTPServerService {
         return PageUtil.page(result, pageNo, pageSize);
     }
 
-    public OLTPService get(HugeClient client, String service) {
+    public Object get(HugeClient client, String service) {
         return client.serviceManager().getService(service);
     }
 
-    public OLTPService create(HugeClient client, OLTPService service) {
+    public Object create(HugeClient client, OLTPService service) {
         return client.serviceManager().addService(service);
     }
 
     public void delete(HugeClient client, String service) {
-        client.serviceManager().delService(service);
+        client.serviceManager().delService(service, "I'm sure to delete the service");
     }
 
-    public OLTPService update(HugeClient client, OLTPService service) {
+    public Object update(HugeClient client, OLTPService service) {
         return client.serviceManager().updateService(service);
     }
 }

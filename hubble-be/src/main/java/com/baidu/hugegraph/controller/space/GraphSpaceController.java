@@ -19,11 +19,14 @@
 
 package com.baidu.hugegraph.controller.space;
 
+import com.baidu.hugegraph.structure.space.GraphSpaceReq;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -67,13 +70,25 @@ public class GraphSpaceController extends BaseController {
                                      graphspace);
     }
 
+    @PostMapping
+    public Object add(@RequestBody GraphSpaceReq graphSpaceEntity) {
+
+        return graphSpaceService.create(this.authClient(null, null),
+                                        graphSpaceEntity);
+    }
+
     @PutMapping("{graphspace}")
     public GraphSpace update(@PathVariable("graphspace") String graphspace,
-                             @RequestBody GraphSpace graphSpaceEntity) {
+                             @RequestBody GraphSpaceReq graphSpaceReq) {
 
-        graphSpaceEntity.setName(graphspace);
+        graphSpaceReq.setName(graphspace);
 
-        return graphSpaceService.update(this.authClient(graphspace, null),
-                                        graphSpaceEntity);
+        return graphSpaceService.update(this.authClient(null, null),
+                                        graphSpaceReq);
+    }
+
+    @DeleteMapping("{graphspace}")
+    public void delete(@PathVariable("graphspace") String graphspace) {
+        graphSpaceService.delete(this.authClient(null, null), graphspace);
     }
 }

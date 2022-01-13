@@ -26,6 +26,7 @@ import com.baidu.hugegraph.exception.InternalException;
 import com.baidu.hugegraph.structure.auth.User;
 import com.baidu.hugegraph.util.PageUtil;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -37,6 +38,9 @@ import java.util.stream.Collectors;
 @Service
 public class UserService extends AuthService{
 
+    @Autowired
+    BelongService belongService;
+
     public List<UserEntity> listUsers(HugeClient hugeClient) {
         AuthManager auth = hugeClient.auth();
 
@@ -47,6 +51,11 @@ public class UserService extends AuthService{
         });
 
         return ues;
+    }
+
+    public UserEntity getUser(HugeClient client, String name) {
+        client.auth().getUser(name);
+        return convert(client.auth().getUser(name));
     }
 
     public Object queryPage(HugeClient hugeClient, String query,
@@ -80,6 +89,11 @@ public class UserService extends AuthService{
 
 
     public void delete(HugeClient hugeClient, String userId) {
+        // Delete All Belongs refer the user
+        belongService.listByUser(hugeClient, userId).forEach(belongEntity -> {
+            belongService.delete(hugeClient, belongEntity.getId());
+        });
+
         hugeClient.auth().deleteUser(userId);
     }
 
@@ -93,7 +107,8 @@ public class UserService extends AuthService{
         u.setName(user.name());
         u.setEmail(user.email());
         u.setPhone(user.phone());
-        u.setDescription(u.getDescription());
+        u.setDescription(user.description());
+        u.setAvatar(user.avatar());;
 
         return u;
     }

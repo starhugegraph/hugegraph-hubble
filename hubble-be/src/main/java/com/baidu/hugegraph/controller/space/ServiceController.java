@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -51,24 +52,38 @@ public class ServiceController extends BaseController {
                             @RequestParam(name = "page_size", required = false,
                                     defaultValue = "10") int pageSize) {
         return oltpService.queryPage(this.authClient(graphspace, null),
-                                           query, pageNo, pageSize);
+                                     query, pageNo, pageSize);
     }
 
     @GetMapping("{service}")
     public Object get(@PathVariable("graphspace") String graphspace,
                       @PathVariable("service") String service) {
         return oltpService.get(this.authClient(graphspace, null),
-                                   service);
+                               service);
     }
 
-    @PostMapping("{service}")
+    @PostMapping
+    public Object create(@PathVariable("graphspace") String graphspace,
+                         @RequestBody OLTPService serviceEntity) {
+
+        return serviceEntity;
+        // TODO
+        // return oltpService.create(this.authClient(graphspace, null),
+        //                           serviceEntity);
+    }
+
+    @PutMapping("{service}")
     public Object update(@PathVariable("graphspace") String graphspace,
                          @PathVariable("service") String service,
                          @RequestBody OLTPService serviceEntity) {
 
         serviceEntity.setName(graphspace);
 
-        return null;
+        return serviceEntity;
+
+        // TODO
+        // return oltpService.update(this.authClient(graphspace, null),
+        //                           serviceEntity);
     }
 
     @DeleteMapping("{service}")

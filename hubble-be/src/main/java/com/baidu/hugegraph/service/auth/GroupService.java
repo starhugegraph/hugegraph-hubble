@@ -68,14 +68,14 @@ public class GroupService extends AuthService {
         return PageUtil.page(results, pageNo, pageSize);
     }
 
-    public void update(HugeClient client, Group group) {
+    public Group update(HugeClient client, Group group) {
         AuthManager auth = client.auth();
         if (auth.getGroup(group.id()) == null ) {
             throw new ExternalException("auth.role.not-exist",
                                         group.id(), group.name());
         }
 
-        auth.updateGroup(group);
+        return auth.updateGroup(group);
     }
 
     public Group insert(HugeClient client, Group group) {
