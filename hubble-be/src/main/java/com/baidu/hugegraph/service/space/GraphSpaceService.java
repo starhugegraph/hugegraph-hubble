@@ -33,18 +33,12 @@ import com.baidu.hugegraph.util.PageUtil;
 
 @Service
 public class GraphSpaceService {
-    public IPage<GraphSpace> list(HugeClient client, int pageNo,
-                                  int pageSize) {
-        List<GraphSpace> results = client.graphSpace().listGraphSpace();
-
-        return PageUtil.page(results, pageNo, pageSize);
-    }
-
     public IPage<GraphSpace> queryPage(HugeClient client, String query,
                                        int pageNo, int pageSize) {
         List<GraphSpace> results =
                 client.graphSpace().listGraphSpace().stream()
-                      .filter((s) -> s.getName().contains(query))
+                      .filter((s) -> s.contains(query))
+                      .map((s) -> get(client, s))
                       .sorted(Comparator.comparing(GraphSpace::getName))
                       .collect(Collectors.toList());
 

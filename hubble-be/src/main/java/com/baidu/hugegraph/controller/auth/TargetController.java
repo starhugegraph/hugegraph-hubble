@@ -87,6 +87,7 @@ public class TargetController extends AuthController {
                          @RequestBody Target target) {
         HugeClient client = this.authClient(graphSpace, null);
         Target t = this.targetService.get(client, tid);
+        // Notice: Do Not Change target name
         t.resources(target.resources());
         return this.targetService.update(client, t);
     }

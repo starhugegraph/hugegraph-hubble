@@ -19,11 +19,10 @@
 
 package com.baidu.hugegraph.controller.graphs;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Set;
 
+import com.baidu.hugegraph.driver.HugeClient;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,7 +34,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.baidu.hugegraph.common.Constant;
 import com.baidu.hugegraph.controller.BaseController;
-import com.baidu.hugegraph.entity.graphs.GraphEntity;
 import com.baidu.hugegraph.service.grahps.GraphsService;
 
 @RestController
@@ -47,12 +45,17 @@ public class GraphsController extends BaseController {
 
     @GetMapping("list")
     public Object listNames(@PathVariable("graphspace") String graphspace) {
-        // GraphEntity
-        ImmutableSet<GraphEntity> graphs = this.clientService.listAllGraphs();
+        // Get Graphs From META
+        // ImmutableSet<GraphEntity> graphs = this.clientService
+        // // .listAllGraphs();//
+        // List<String> names =//
+        //         graphs.stream().map((graphEntity -> graphEnti// ty.getGraph()))
+        //              .collect(Collectors.toList());
 
-        List<String> names =
-                graphs.stream().map((graphEntity -> graphEntity.getGraph()))
-                      .collect(Collectors.toList());
+        // Get list of authorized graphs
+        HugeClient client = this.authClient(graphspace, null);
+        Set<String> names = graphsService.listGraphNames(client, graphspace,
+                                                         getUser());
 
         return ImmutableMap.of("graphs", names);
     }
@@ -65,8 +68,11 @@ public class GraphsController extends BaseController {
                                     defaultValue = "1") int pageNo,
                             @RequestParam(name = "page_size", required = false,
                                     defaultValue = "10") int pageSize) {
-        return this.graphsService.queryPage(this.authClient(graphspace, null)
-                , query, pageNo, pageSize);
+
+        HugeClient client = this.authClient(graphspace, null);
+
+        return this.graphsService.queryPage(client, graphspace, getUser(),
+                                            query, pageNo, pageSize);
     }
 
     @GetMapping("{graph}")
