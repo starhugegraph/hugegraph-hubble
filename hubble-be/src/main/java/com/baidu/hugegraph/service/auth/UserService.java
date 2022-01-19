@@ -23,6 +23,8 @@ import com.baidu.hugegraph.driver.AuthManager;
 import com.baidu.hugegraph.driver.HugeClient;
 import com.baidu.hugegraph.entity.auth.UserEntity;
 import com.baidu.hugegraph.exception.InternalException;
+import com.baidu.hugegraph.structure.auth.HugePermission;
+import com.baidu.hugegraph.structure.auth.HugeResource;
 import com.baidu.hugegraph.structure.auth.User;
 import com.baidu.hugegraph.util.PageUtil;
 import lombok.extern.log4j.Log4j2;
@@ -32,6 +34,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Log4j2
@@ -119,5 +122,36 @@ public class UserService extends AuthService{
 
     public Object create(HugeClient hugeClient, User user) {
         return hugeClient.auth().createUser(user);
+    }
+
+    public String userLevel(HugeClient client, String uid) {
+        User.UserRole role = client.auth().getUserRole(uid);
+        // Check: if user is admin
+        // {"*":{"*":{HugePermission.OP: xxx}}
+        Map<String, Map<HugePermission, List<HugeResource>>>
+                spaceMap = role.roles().getOrDefault("*", null);
+        if (spaceMap != null) {
+            Map<HugePermission, List<HugeResource>>
+                    graphMap = spaceMap.getOrDefault("*", null);
+            if (graphMap != null
+                    && graphMap.getOrDefault(HugePermission.OP, null) != null) {
+                return "ADMIN";
+            }
+        }
+
+        // Check: if user is spaceadmin
+        // Demo: {GRAPHSPACE:{"*":{}}
+        for (Map<String, Map<HugePermission, List<HugeResource>>>
+                sv: role.roles().values()) {
+            Map<HugePermission, List<HugeResource>>
+                    gv = sv.getOrDefault("*", null);
+            if (gv != null &&
+                    gv.getOrDefault(HugePermission.SPACE, null)!=null) {
+                return "SPACEADMIN";
+            }
+        }
+
+        // Default: user
+        return "USER";
     }
 }

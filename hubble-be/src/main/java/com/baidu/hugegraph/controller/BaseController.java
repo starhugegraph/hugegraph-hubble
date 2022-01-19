@@ -88,6 +88,14 @@ public abstract class BaseController {
 
     }
 
+    protected String getUser() {
+        return (String) getSession("username");
+    }
+
+    protected void setUser(String username) {
+        setSession("username", username);
+    }
+
     protected void delSession(String key) {
         HttpServletRequest request = ((ServletRequestAttributes)
                 RequestContextHolder.getRequestAttributes()).getRequest();
