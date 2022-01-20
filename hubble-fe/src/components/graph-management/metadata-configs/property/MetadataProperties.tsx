@@ -30,6 +30,7 @@ import CloseIcon from '../../../../assets/imgs/ic_close_16.svg';
 import WhiteCloseIcon from '../../../../assets/imgs/ic_close_white.svg';
 import './MetadataProperties.less';
 import ReuseProperties from './ReuseProperties';
+import { AppStoreContext } from '../../../../stores';
 
 const styles = {
   button: {
@@ -90,6 +91,7 @@ const MetadataProperties: React.FC = observer(() => {
   const [sortOrder, setSortOrder] = useState('');
   const [selectedRowKeys, mutateSelectedRowKeys] = useState<string[]>([]);
   const [isShowModal, switchShowModal] = useState(false);
+  const appStore = useContext(AppStoreContext)
 
   const isLoading =
     preLoading ||
@@ -397,7 +399,7 @@ const MetadataProperties: React.FC = observer(() => {
   }, [sortOrder]);
 
   useEffect(() => {
-    if (metadataConfigsRootStore.currentId !== null) {
+    if (appStore.graphs !== "null") {
       metadataPropertyStore.fetchMetadataPropertyList();
     }
 
@@ -406,7 +408,8 @@ const MetadataProperties: React.FC = observer(() => {
     };
   }, [
     metadataPropertyStore,
-    metadataConfigsRootStore.currentId,
+    appStore.graphs,
+    appStore.tenant,
     graphViewStore
   ]);
 

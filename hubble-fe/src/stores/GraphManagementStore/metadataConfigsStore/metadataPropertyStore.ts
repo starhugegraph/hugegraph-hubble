@@ -324,11 +324,6 @@ export class MetadataPropertyStore {
     options?: { fetchAll?: boolean; reuseId?: number }
   ) {
     this.requestStatus.fetchMetadataPropertyList = 'pending';
-    const conn_id =
-      options && typeof options.reuseId === 'number'
-        ? options.reuseId
-        : this.metadataConfigsRootStore.currentId;
-
     try {
       const result: AxiosResponse<responseData<
         MetadataPropertyListResponse

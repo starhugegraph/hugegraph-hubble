@@ -55,6 +55,7 @@ import NoSelectedSoilidArrowIcon from '../../../../assets/imgs/ic_arrow.svg';
 import NoSelectedSoilidStraightIcon from '../../../../assets/imgs/ic_straight.svg';
 
 import './EdgeTypeList.less';
+import { AppStoreContext } from '../../../../stores';
 
 const styles = {
   button: {
@@ -103,6 +104,7 @@ const propertyIndexTypeMappings: Record<string, string> = {
 
 const EdgeTypeList: React.FC = observer(() => {
   const metadataConfigsRootStore = useContext(MetadataConfigsRootStore);
+  const appStore = useContext(AppStoreContext);
   const { metadataPropertyStore, edgeTypeStore } = metadataConfigsRootStore;
   const [preLoading, switchPreLoading] = useState(true);
   const [sortOrder, setSortOrder] = useState('');
@@ -386,7 +388,7 @@ const EdgeTypeList: React.FC = observer(() => {
   });
 
   useEffect(() => {
-    if (metadataConfigsRootStore.currentId !== null) {
+    if (appStore.graphs != "null") {
       metadataPropertyStore.fetchMetadataPropertyList({ fetchAll: true });
       edgeTypeStore.fetchEdgeTypeList();
     }
@@ -396,7 +398,8 @@ const EdgeTypeList: React.FC = observer(() => {
     };
   }, [
     metadataPropertyStore,
-    metadataConfigsRootStore.currentId,
+    appStore.graphs,
+    appStore.tenant,
     edgeTypeStore
   ]);
 

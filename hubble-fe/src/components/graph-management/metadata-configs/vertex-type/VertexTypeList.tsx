@@ -49,6 +49,7 @@ import WhiteCloseIcon from '../../../../assets/imgs/ic_close_white.svg';
 import CloseIcon from '../../../../assets/imgs/ic_close_16.svg';
 
 import './VertexTypeList.less';
+import { AppStoreContext } from '../../../../stores';
 
 const styles = {
   button: {
@@ -105,6 +106,7 @@ const propertyIndexTypeMappings: Record<string, string> = {
 
 const VertexTypeList: React.FC = observer(() => {
   const metadataConfigsRootStore = useContext(MetadataConfigsRootStore);
+  const appStore = useContext(AppStoreContext)
   const { metadataPropertyStore, vertexTypeStore } = metadataConfigsRootStore;
   const [preLoading, switchPreLoading] = useState(true);
   const [sortOrder, setSortOrder] = useState('');
@@ -394,7 +396,7 @@ const VertexTypeList: React.FC = observer(() => {
   });
 
   useEffect(() => {
-    if (metadataConfigsRootStore.currentId !== null) {
+    if (appStore.graphs !== "null") {
       metadataPropertyStore.fetchMetadataPropertyList({ fetchAll: true });
       vertexTypeStore.fetchVertexTypeList();
     }
@@ -404,7 +406,8 @@ const VertexTypeList: React.FC = observer(() => {
     };
   }, [
     metadataPropertyStore,
-    metadataConfigsRootStore.currentId,
+    appStore.graphs,
+    appStore.tenant,
     vertexTypeStore
   ]);
 

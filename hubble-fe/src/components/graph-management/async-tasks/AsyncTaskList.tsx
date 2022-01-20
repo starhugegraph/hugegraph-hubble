@@ -318,7 +318,7 @@ const AsyncTaskList: React.FC = observer(() => {
   });
 
   useEffect(() => {
-    if (params !== null) {
+    if (appStore.graphs != "null") {
       graphManagementStore.fetchIdList();
       asyncTasksStore.setCurrentId(Number(params!.id));
       let startTime = new Date().getTime();

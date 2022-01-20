@@ -9,6 +9,7 @@ import { Button, Input, Table, Modal, Message } from '@baidu/one-ui';
 import LoadingDataView from '../../../common/LoadingDataView';
 import { Tooltip as CustomTooltip } from '../../../common';
 import {
+  AppStoreContext,
   DataImportRootStoreContext,
   ImportManagerStoreContext
 } from '../../../../stores';
@@ -34,6 +35,7 @@ const ImportTaskList: React.FC = observer(() => {
   );
   const [, setLocation] = useLocation();
   const { t } = useTranslation();
+  const appStore = useContext(AppStoreContext)
 
   const isLoading =
     preLoading ||
@@ -226,14 +228,14 @@ const ImportTaskList: React.FC = observer(() => {
   ];
 
   useEffect(() => {
-    if (importManagerStore.currentId !== null) {
+    if (appStore.graphs != "null") {
       setTimeout(() => {
         switchPreLoading(false);
       }, 800);
 
       importManagerStore.fetchImportJobList();
     }
-  }, [importManagerStore.currentId]);
+  }, [appStore.tenant,appStore.graphs]);
 
   return (
     <div className="import-manager-content-wrapper">

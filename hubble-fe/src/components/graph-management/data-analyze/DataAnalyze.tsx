@@ -65,9 +65,9 @@ const DataAnalyze: React.FC = observer(() => {
   // which is not equal each time
   /* eslint-disable */
   useEffect(() => {
-    if (match && params !== null) {
-      appStore.setCurrentId(Number(params.id));
-      dataAnalyzeStore.setCurrentId(Number(params.id));
+    if (match && appStore.graphs!= "null") {
+      appStore.setCurrentId(0);
+      dataAnalyzeStore.setCurrentId(0);
       dataAnalyzeStore.fetchValueTypes();
       dataAnalyzeStore.fetchVertexTypes();
       dataAnalyzeStore.fetchAllPropertyIndexes('vertex');
@@ -75,7 +75,7 @@ const DataAnalyze: React.FC = observer(() => {
       dataAnalyzeStore.fetchAllNodeStyle();
       dataAnalyzeStore.fetchAllEdgeStyle();
     }
-  }, [dataAnalyzeStore, match, params?.id,appStore.tenant,appStore.graphs]);
+  }, [dataAnalyzeStore, match, appStore.tenant,appStore.graphs]);
 
   return (
     <section className="data-analyze">
