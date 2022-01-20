@@ -1,6 +1,14 @@
+/*
+ * @Author: your name
+ * @Date: 2022-01-13 23:22:23
+ * @LastEditTime: 2022-01-14 11:10:08
+ * @LastEditors: your name
+ * @Description: 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+ * @FilePath: /hubble-fe/src/components/graph-management/data-analyze/DataAnalyze.tsx
+ */
 import React, { useContext, useEffect } from 'react';
 import { observer } from 'mobx-react';
-import { useRoute, useLocation, Params } from 'wouter';
+import { useRoute, useLocation } from 'wouter';
 import { Modal, Button } from '@baidu/one-ui';
 
 import DataAnalyzeContent from './DataAnalyzeContent';
@@ -15,18 +23,38 @@ import {
 import './DataAnalyze.less';
 
 const DataAnalyze: React.FC = observer(() => {
+  
   const graphManagementStore = useContext(GraphManagementStoreContext);
   const appStore = useContext(AppStoreContext);
   const dataAnalyzeStore = useContext(DataAnalyzeStoreContext);
   const [match, params] = useRoute('/graph-management/:id/data-analyze');
   const [_, setLocation] = useLocation();
 
+/* 
+  const [tenant] = useState(appStore.tenant)
+  const [graphs] = useState(appStore.graphs)
+  const [refresh, setRefresh] = useState(false);
   useEffect(() => {
+    if (tenant !== appStore.tenant || graphs !== appStore.graphs) {
+      setRefresh(true)
+    }
+  }, [appStore.tenant, appStore.graphs]) */
+
+
+  useEffect(() => {
+    appStore.setMenuObj({
+      c_key: "1",
+      f_key: "sub1"
+    })
+    appStore.setCurrentKey("0")
+  }, [])
+  useEffect(() => {
+
     window.scrollTo(0, 0);
 
-    if (graphManagementStore.requestStatus.fetchIdList !== 'success') {
-      graphManagementStore.fetchIdList();
-    }
+    // if (graphManagementStore.requestStatus.fetchIdList !== 'success') {
+    //   graphManagementStore.fetchIdList();
+    // }
 
     return () => {
       dataAnalyzeStore.dispose();
@@ -42,11 +70,12 @@ const DataAnalyze: React.FC = observer(() => {
       dataAnalyzeStore.setCurrentId(Number(params.id));
       dataAnalyzeStore.fetchValueTypes();
       dataAnalyzeStore.fetchVertexTypes();
+      dataAnalyzeStore.fetchAllPropertyIndexes('vertex');
       dataAnalyzeStore.fetchEdgeTypes();
       dataAnalyzeStore.fetchAllNodeStyle();
       dataAnalyzeStore.fetchAllEdgeStyle();
     }
-  }, [dataAnalyzeStore, match, params?.id]);
+  }, [dataAnalyzeStore, match, params?.id,appStore.tenant,appStore.graphs]);
 
   return (
     <section className="data-analyze">
@@ -68,9 +97,9 @@ const DataAnalyze: React.FC = observer(() => {
             返回首页
           </Button>
         ]}
-        visible={Object.values(dataAnalyzeStore.errorInfo)
-          .map(({ code }) => code)
-          .includes(401)}
+        visible={graphManagementStore.graphData.some(
+          ({ id, enabled }) => dataAnalyzeStore.currentId === id && !enabled
+        )}
         destroyOnClose
         needCloseIcon={false}
       >

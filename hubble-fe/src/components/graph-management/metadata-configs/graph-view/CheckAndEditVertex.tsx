@@ -78,7 +78,7 @@ const CheckAndEditVertex: React.FC = observer(() => {
   const handleOutSideClick = useCallback(
     (e: MouseEvent) => {
       const drawerWrapper = document.querySelector(
-        '.new-fc-one-drawer-content-wrapper'
+        '.metadata-graph-drawer-vertex .new-fc-one-drawer-content-wrapper'
       );
 
       if (
@@ -192,6 +192,7 @@ const CheckAndEditVertex: React.FC = observer(() => {
       title={!isEditVertex ? '顶点类型详情' : '编辑顶点类型'}
       width={580}
       destroyOnClose
+      className="metadata-graph-drawer-vertex"
       visible={['check-vertex', 'edit-vertex'].includes(
         graphViewStore.currentDrawer
       )}
@@ -325,7 +326,7 @@ const CheckAndEditVertex: React.FC = observer(() => {
             }
           }}
           tooltipWrapperProps={{
-            className: 'metadata-properties-tooltips',
+            className: 'metadata-graph-tooltips',
             style: {
               zIndex: 1042
             }
@@ -339,9 +340,11 @@ const CheckAndEditVertex: React.FC = observer(() => {
                 <p style={{ width: 200 }}>当前顶点类型正在使用中，不可删除。</p>
               ) : (
                 <>
-                  <p style={{ marginBottom: 8 }}>确认删除此顶点类型？</p>
-                  <p>删除后无法恢复，请谨慎操作</p>
-                  <p>删除元数据耗时较久，详情可在任务管理中查看</p>
+                  <p className="metadata-graph-tooltips-title">
+                    确认删除此顶点类型？
+                  </p>
+                  <p>删除后无法恢复，请谨慎操作。</p>
+                  <p>删除元数据耗时较久，详情可在任务管理中查看。</p>
                   <div
                     style={{
                       display: 'flex',
@@ -399,7 +402,9 @@ const CheckAndEditVertex: React.FC = observer(() => {
           <div className="metadata-drawer-options-name">
             <span>顶点类型名称：</span>
           </div>
-          {vertexTypeStore.selectedVertexType!.name}
+          <div style={{ maxWidth: 420 }}>
+            {vertexTypeStore.selectedVertexType!.name}
+          </div>
         </div>
 
         <div className="metadata-drawer-options">
@@ -560,7 +565,7 @@ const CheckAndEditVertex: React.FC = observer(() => {
             {vertexTypeStore.selectedVertexType!.properties.map(
               ({ name, nullable }) => (
                 <div className="metadata-drawer-options-list-row" key={name}>
-                  <div>{name}</div>
+                  <div style={{ maxWidth: 260 }}>{name}</div>
                   <div style={{ width: 70, textAlign: 'center' }}>
                     <Switch
                       checkedChildren="开"
@@ -676,7 +681,9 @@ const CheckAndEditVertex: React.FC = observer(() => {
           <div className="metadata-drawer-options-name">
             <span>主键属性：</span>
           </div>
-          {vertexTypeStore.selectedVertexType!.primary_keys.join(';')}
+          <div style={{ maxWidth: 420 }}>
+            {vertexTypeStore.selectedVertexType!.primary_keys.join(';')}
+          </div>
         </div>
         <div className="metadata-drawer-options">
           <div className="metadata-drawer-options-name">
@@ -761,7 +768,7 @@ const CheckAndEditVertex: React.FC = observer(() => {
                 })}
             </Select>
           ) : (
-            <div>
+            <div style={{ maxWidth: 420 }}>
               {vertexTypeStore.selectedVertexType?.style.display_fields
                 .map((field) => formatVertexIdText(field, '顶点ID'))
                 .join('-')}
@@ -937,11 +944,11 @@ const CheckAndEditVertex: React.FC = observer(() => {
                     className="metadata-drawer-options-list-row metadata-drawer-options-list-row-normal"
                     style={{
                       display: 'flex',
-                      alignItems: 'start',
+                      alignItems: 'flex-start',
                       position: 'relative'
                     }}
                   >
-                    <div>
+                    <div className="disable-input-absolute">
                       <Input
                         size="medium"
                         width={100}

@@ -334,6 +334,9 @@ const GraphManagementListItem: React.FC<
                 'password',
                 'edit'
               )}
+              originInputProps={{
+                type: 'password'
+              }}
             />
           </div>
           <div>

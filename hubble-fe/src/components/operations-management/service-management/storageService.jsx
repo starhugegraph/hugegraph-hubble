@@ -1,0 +1,135 @@
+import { Table, Space, Button, Input } from 'antd';
+import React, { useContext, useEffect, useState } from 'react'
+import DetailModal from './storage-detail'
+import './queryServiceList.less'
+import { AppStoreContext } from '../../../stores';
+let demoData = {
+    "status": 200,
+    data: {
+        records: [
+            {
+                "node": "模拟数据",
+                "total": "1000G",
+                "used": "10G",
+                "status": "",
+                "shards": "10",
+            },
+        ],
+        total: 2,
+        size: 10,
+        current: 1,
+        orders: [],
+        searchCount: true,
+        pages: 1
+    },
+    "message": "msg",
+    "cause": ""
+}
+
+export default function StorageService() {
+    const [dataList, setDataList] = useState({})//数据列表
+    const [page, setPage] = useState({})//分页条件
+    const [isModalVisible, setIsModalVisible] = useState(false);//详情的显隐 
+    const [detailNode, setDetailNode] = useState();//详情node
+    const [search, setSearch] = useState("");//详情node
+    const appStore = useContext(AppStoreContext)
+    // 获取数据
+    useEffect(() => {
+        setDataList(demoData.data)
+        appStore.setMenuObj({
+            c_key:"4",
+            f_key:"sub2"
+        })
+        appStore.setCurrentKey("1")
+    }, [])
+    // 详情
+    const detailHandle = (params) => {
+        setDetailNode(params.node)
+        setIsModalVisible(true)
+    }
+    // 分页条件
+    const pageChange = (params) => {
+        setPage({ page_no: params.current, page_size: params.pageSize })
+    }
+    // 创建
+    const createHandle = () => {
+
+    }
+
+    const columns = [
+        {
+            title: '节点名称',
+            dataIndex: 'node',
+            key: 'node',
+            align: 'center'
+        },
+        {
+            title: '总空间',
+            dataIndex: 'total',
+            key: 'node',
+            align: 'center',
+        },
+        {
+            title: '占用储存空间',
+            dataIndex: 'used',
+            key: 'node',
+            align: 'center',
+        },
+        {
+            title: '状态',
+            key: 'node',
+            align: 'center',
+            render: (tag) => (
+                <Space size="middle">
+                    <span>OK</span>
+                </Space>
+            ),
+        },
+        {
+            title: '分片数量',
+            dataIndex: 'shards',
+            key: 'node',
+            align: 'center',
+        },
+        {
+            title: '操作',
+            align: 'center',
+            fixed: "right",
+            render: (tag) => (
+                <Button type="primary" onClick={() => detailHandle(tag)}>详情</Button>
+            )
+        },
+    ];
+    return (
+        <div className='query_list_container graphData_wrapper'>
+            <div className='topDiv'>
+                <Input.Group compact className='inputBox'>
+                    <Input.Search allowClear style={{ width: '100%' }} placeholder='请输入实例名称' onSearch={(params) => setSearch(params)} />
+                </Input.Group>
+                <Button onClick={createHandle} type="primary" className='query_list_addButton'>创建储存服务</Button>
+            </div>
+            <Table
+                scroll={{ x: 1200 }}
+                columns={columns}
+                dataSource={dataList.records}
+                rowKey={'node'}
+                pagination={
+                    {
+                        pageSizeOptions: ['5', '10', '15', '20'],
+                        defaultPageSize: 10,
+                        defaultCurrent: 1,
+                        showSizeChanger: true,
+                        total:dataList.total
+                    }
+                }
+                onChange={pageChange}
+            />
+            <DetailModal
+                node={detailNode}
+                isModalVisible={isModalVisible}
+                setIsModalVisible={setIsModalVisible}
+            >
+            </DetailModal>
+        </div>
+    )
+}

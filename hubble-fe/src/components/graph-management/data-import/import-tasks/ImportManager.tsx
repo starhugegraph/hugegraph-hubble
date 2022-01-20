@@ -10,8 +10,9 @@ import { JobDetails } from './job-details';
 import ImportTaskList from './ImportTaskList';
 import {
   GraphManagementStoreContext,
-  DataImportRootStoreContext,
-  ImportManagerStoreContext
+  // DataImportRootStoreContext,
+  ImportManagerStoreContext,
+  AppStoreContext
 } from '../../../../stores';
 
 import './ImportManager.less';
@@ -19,9 +20,10 @@ import ImportTasks from './ImportTasks';
 
 const ImportManager: React.FC = observer(() => {
   const graphManagementStore = useContext(GraphManagementStoreContext);
-  const dataImportRootStore = useContext(DataImportRootStoreContext);
+  // const dataImportRootStore = useContext(DataImportRootStoreContext);
   const importManagerStore = useContext(ImportManagerStoreContext);
-  const { dataMapStore, serverDataImportStore } = dataImportRootStore;
+  const appStore = useContext(AppStoreContext);
+  // const { dataMapStore, serverDataImportStore } = dataImportRootStore;
   const [_, params] = useRoute(
     '/graph-management/:id/data-import/import-manager/:rest*'
   );
@@ -33,16 +35,23 @@ const ImportManager: React.FC = observer(() => {
     'import-manager-with-expand-sidebar': graphManagementStore.isExpanded
   });
 
+  useEffect(()=>{
+    appStore.setMenuObj({
+      c_key:"2",
+      f_key:"sub1"
+    })
+    appStore.setCurrentKey("1")
+  },[])
+
   useEffect(() => {
     window.scrollTo(0, 0);
-
     graphManagementStore.fetchIdList();
     importManagerStore.setCurrentId(Number(params!.id));
 
     return () => {
       importManagerStore.dispose();
     };
-  }, []);
+  }, [appStore.tenant,appStore.graphs]);
 
   return (
     <section className={wrapperClassName}>

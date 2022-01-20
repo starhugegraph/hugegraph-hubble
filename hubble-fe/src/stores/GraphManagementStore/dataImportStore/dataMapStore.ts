@@ -2,6 +2,7 @@ import { observable, action, flow, computed, toJS } from 'mobx';
 import axios, { AxiosResponse } from 'axios';
 import { isUndefined, isEmpty, cloneDeep, remove, flatMap } from 'lodash-es';
 import i18next from '../../../i18n';
+import { useContext } from 'react';
 
 import { DataImportRootStore } from './dataImportRootStore';
 import { baseUrl, responseData } from '../../types/common';
@@ -28,12 +29,15 @@ import type {
   VertexType,
   EdgeType
 } from '../../types/GraphManagementStore/metadataConfigsStore';
+import AppStoreContext from '../../appStore';
 
 export class DataMapStore {
   dataImportRootStore: DataImportRootStore;
+  appStore: any
 
   constructor(dataImportRootStore: DataImportRootStore) {
     this.dataImportRootStore = dataImportRootStore;
+    this.appStore = AppStoreContext
   }
 
   // v1.3.1: check details from import-manager
@@ -233,6 +237,16 @@ export class DataMapStore {
     this.editedEdgeMap![key] = value;
   }
 
+  // ie11 compatibility (mobx 4)
+  @action
+  setVertexIdColumn(type: 'new' | 'edit', fieldIndex: number, value: string) {
+    if (type === 'new') {
+      this.newVertexType.id_fields[fieldIndex] = value;
+    } else {
+      this.editedVertexMap!.id_fields[fieldIndex] = value;
+    }
+  }
+
   @action
   setVertexFieldMappingKey(type: 'new' | 'edit', key: string, value?: string) {
     if (type === 'new') {
@@ -245,6 +259,21 @@ export class DataMapStore {
         column_name: key,
         mapped_name: isUndefined(value) ? '' : value
       });
+    }
+  }
+
+  // ie11 compatibility (mobx 4)
+  @action
+  setEdgeIdColumn(
+    type: 'new' | 'edit',
+    direction: 'source_fields' | 'target_fields',
+    fieldIndex: number,
+    value: string
+  ) {
+    if (type === 'new') {
+      this.newEdgeType[direction][fieldIndex] = value;
+    } else {
+      this.editedEdgeMap![direction][fieldIndex] = value;
     }
   }
 
@@ -808,8 +837,8 @@ export class DataMapStore {
         this.validateAdvanceConfigErrorMessage.value_mapping[
           optionIndex
         ].column_name = isEmpty(column_name)
-          ? i18next.t('data-configs.validator.no-empty')
-          : '';
+            ? i18next.t('data-configs.validator.no-empty')
+            : '';
       } else {
         const { column_value, mapped_value } = values[
           valueMapOptions?.valueIndex!
@@ -821,8 +850,8 @@ export class DataMapStore {
           ].values[valueMapOptions!.valueIndex!].column_value = isEmpty(
             column_value
           )
-            ? i18next.t('data-configs.validator.no-empty')
-            : '';
+              ? i18next.t('data-configs.validator.no-empty')
+              : '';
         }
 
         if (valueMapOptions?.field === 'mapped_value') {
@@ -831,8 +860,8 @@ export class DataMapStore {
           ].values[valueMapOptions!.valueIndex!].mapped_value = isEmpty(
             mapped_value
           )
-            ? i18next.t('data-configs.validator.no-empty')
-            : '';
+              ? i18next.t('data-configs.validator.no-empty')
+              : '';
         }
       }
     }
@@ -898,7 +927,6 @@ export class DataMapStore {
     valueMappingValueIndex?: number
   ) {
     let mapping;
-
     if (type === 'vertex') {
       mapping = status === 'new' ? this.newVertexType : this.editedVertexMap;
     } else {
@@ -1041,7 +1069,7 @@ export class DataMapStore {
     try {
       const result: AxiosResponse<responseData<FileMapResult>> = yield axios
         .get<responseData<FileMapResult>>(
-          `${baseUrl}/${this.dataImportRootStore.currentId}/job-manager/${this.dataImportRootStore.currentJobId}/file-mappings`,
+          `${baseUrl}/${this.appStore._currentValue.tenant}/graphs/${this.appStore._currentValue.graphs}/job-manager/${this.dataImportRootStore.currentJobId}/file-mappings`,
           {
             params: {
               page_size: -1
@@ -1073,7 +1101,7 @@ export class DataMapStore {
     try {
       const result: AxiosResponse<responseData<FileMapInfo>> = yield axios
         .post<responseData<FileMapInfo>>(
-          `${baseUrl}/${this.dataImportRootStore.currentId}/job-manager/${this.dataImportRootStore.currentJobId}/file-mappings/${fileId}/file-setting`,
+          `${baseUrl}/${this.appStore._currentValue.tenant}/graphs/${this.appStore._currentValue.graphs}/job-manager/${this.dataImportRootStore.currentJobId}/file-mappings/${fileId}/file-setting`,
           this.selectedFileInfo?.file_setting
         )
         .catch(checkIfLocalNetworkOffline);
@@ -1104,7 +1132,8 @@ export class DataMapStore {
 
       switch (method) {
         case 'add': {
-          const newVertexType = cloneDeep(this.newVertexType);
+          // mobx 4 compatibility, no includes method in mobx#array
+          const newVertexType = cloneDeep(toJS(this.newVertexType));
 
           if (
             newVertexType.null_values.checked.includes('NULL') &&
@@ -1115,14 +1144,14 @@ export class DataMapStore {
 
           result = yield axios
             .post(
-              `${baseUrl}/${this.dataImportRootStore.currentId}/job-manager/${this.dataImportRootStore.currentJobId}/file-mappings/${fileId}/vertex-mappings`,
+              `${baseUrl}/${this.appStore._currentValue.tenant}/graphs/${this.appStore._currentValue.graphs}/job-manager/${this.dataImportRootStore.currentJobId}/file-mappings/${fileId}/vertex-mappings`,
               newVertexType
             )
             .catch(checkIfLocalNetworkOffline);
           break;
         }
         case 'upgrade': {
-          const editedVertexMap = cloneDeep(this.editedVertexMap);
+          const editedVertexMap = cloneDeep(toJS(this.editedVertexMap));
 
           if (
             editedVertexMap!.null_values.checked.includes('NULL') &&
@@ -1133,7 +1162,7 @@ export class DataMapStore {
 
           result = yield axios
             .put(
-              `${baseUrl}/${this.dataImportRootStore.currentId}/job-manager/${this.dataImportRootStore.currentJobId}/file-mappings/${fileId}/vertex-mappings/${this.editedVertexMap?.id}`,
+              `${baseUrl}/${this.appStore._currentValue.tenant}/graphs/${this.appStore._currentValue.graphs}/job-manager/${this.dataImportRootStore.currentJobId}/file-mappings/${fileId}/vertex-mappings/${this.editedVertexMap?.id}`,
               editedVertexMap
             )
             .catch(checkIfLocalNetworkOffline);
@@ -1142,7 +1171,7 @@ export class DataMapStore {
         case 'delete':
           result = yield axios
             .delete(
-              `${baseUrl}/${this.dataImportRootStore.currentId}/job-manager/${this.dataImportRootStore.currentJobId}/file-mappings/${fileId}/vertex-mappings/${this.editedVertexMap?.id}`
+              `${baseUrl}/${this.appStore._currentValue.tenant}/graphs/${this.appStore._currentValue.graphs}/job-manager/${this.dataImportRootStore.currentJobId}/file-mappings/${fileId}/vertex-mappings/${this.editedVertexMap?.id}`
             )
             .catch(checkIfLocalNetworkOffline);
           break;
@@ -1174,7 +1203,7 @@ export class DataMapStore {
 
       switch (method) {
         case 'add': {
-          const newEdgeType = cloneDeep(this.newEdgeType);
+          const newEdgeType = cloneDeep(toJS(this.newEdgeType));
 
           if (
             newEdgeType.null_values.checked.includes('NULL') &&
@@ -1185,14 +1214,14 @@ export class DataMapStore {
 
           result = yield axios
             .post(
-              `${baseUrl}/${this.dataImportRootStore.currentId}/job-manager/${this.dataImportRootStore.currentJobId}/file-mappings/${fileId}/edge-mappings`,
+              `${baseUrl}/${this.appStore._currentValue.tenant}/graphs/${this.appStore._currentValue.graphs}/job-manager/${this.dataImportRootStore.currentJobId}/file-mappings/${fileId}/edge-mappings`,
               newEdgeType
             )
             .catch(checkIfLocalNetworkOffline);
           break;
         }
         case 'upgrade': {
-          const editedEdgeMap = cloneDeep(this.editedEdgeMap);
+          const editedEdgeMap = cloneDeep(toJS(this.editedEdgeMap));
 
           if (
             editedEdgeMap!.null_values.checked.includes('NULL') &&
@@ -1203,7 +1232,7 @@ export class DataMapStore {
 
           result = yield axios
             .put(
-              `${baseUrl}/${this.dataImportRootStore.currentId}/job-manager/${this.dataImportRootStore.currentJobId}/file-mappings/${fileId}/edge-mappings/${this.editedEdgeMap?.id}`,
+              `${baseUrl}/${this.appStore._currentValue.tenant}/graphs/${this.appStore._currentValue.graphs}/job-manager/${this.dataImportRootStore.currentJobId}/file-mappings/${fileId}/edge-mappings/${this.editedEdgeMap?.id}`,
               this.editedEdgeMap
             )
             .catch(checkIfLocalNetworkOffline);
@@ -1212,7 +1241,7 @@ export class DataMapStore {
         case 'delete':
           result = yield axios
             .delete(
-              `${baseUrl}/${this.dataImportRootStore.currentId}/job-manager/${this.dataImportRootStore.currentJobId}/file-mappings/${fileId}/edge-mappings/${this.editedEdgeMap?.id}`
+              `${baseUrl}/${this.appStore._currentValue.tenant}/graphs/${this.appStore._currentValue.graphs}/job-manager/${this.dataImportRootStore.currentJobId}/file-mappings/${fileId}/edge-mappings/${this.editedEdgeMap?.id}`
             )
             .catch(checkIfLocalNetworkOffline);
           break;
@@ -1243,10 +1272,8 @@ export class DataMapStore {
         FileMapInfo
       >> = yield axios
         .delete<responseData<FileMapInfo>>(
-          `${baseUrl}/${this.dataImportRootStore.currentId}/job-manager/${
-            this.dataImportRootStore.currentJobId
-          }/file-mappings/${this.selectedFileInfo!.id}/vertex-mappings/${
-            this.selectedFileInfo?.vertex_mappings[mapIndex].id
+          `${baseUrl}/${this.appStore._currentValue.tenant}/graphs/${this.appStore._currentValue.graphs}/job-manager/${this.dataImportRootStore.currentJobId
+          }/file-mappings/${this.selectedFileInfo!.id}/vertex-mappings/${this.selectedFileInfo?.vertex_mappings[mapIndex].id
           }`
         )
         .catch(checkIfLocalNetworkOffline);
@@ -1276,10 +1303,8 @@ export class DataMapStore {
         FileMapInfo
       >> = yield axios
         .delete<responseData<FileMapInfo>>(
-          `${baseUrl}/${this.dataImportRootStore.currentId}/job-manager/${
-            this.dataImportRootStore.currentJobId
-          }/file-mappings/${this.selectedFileInfo!.id}/edge-mappings/${
-            this.selectedFileInfo?.edge_mappings[mapIndex].id
+          `${baseUrl}/${this.appStore._currentValue.tenant}/graphs/${this.appStore._currentValue.graphs}/job-manager/${this.dataImportRootStore.currentJobId
+          }/file-mappings/${this.selectedFileInfo!.id}/edge-mappings/${this.selectedFileInfo?.edge_mappings[mapIndex].id
           }`
         )
         .catch(checkIfLocalNetworkOffline);

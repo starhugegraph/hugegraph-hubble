@@ -2,7 +2,7 @@ import React, { useState, useCallback, useContext, useEffect } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import { useLocation, useRoute } from 'wouter';
-import { Select, Tooltip, PopLayer, Menu } from '@baidu/one-ui';
+import { Select, PopLayer, Menu } from '@baidu/one-ui';
 
 import {
   GraphManagementStoreContext,
@@ -10,7 +10,6 @@ import {
   ImportManagerStoreContext
 } from '../../stores';
 
-import BackIcon from '../../assets/imgs/ic_topback.svg';
 import ArrowIcon from '../../assets/imgs/ic_arrow_white.svg';
 import DataAnalyzeIconNormal from '../../assets/imgs/ic_shuju_normal.svg';
 import DataAnalyzeIconPressed from '../../assets/imgs/ic_shuju_pressed.svg';
@@ -38,11 +37,6 @@ const GraphManagementSidebar: React.FC = observer(() => {
 
   const sidebarWrapperClassName = classnames({
     'data-analyze-sidebar': true,
-    expand: graphManagementStore.isExpanded
-  });
-
-  const sidebarGoBackClassName = classnames({
-    'data-analyze-sidebar-go-back': true,
     expand: graphManagementStore.isExpanded
   });
 
@@ -141,126 +135,112 @@ const GraphManagementSidebar: React.FC = observer(() => {
   }
 
   return (
-    <ul className={sidebarWrapperClassName}>
-      <li className={sidebarGraphSelectionClassName}>
-        {!graphManagementStore.isExpanded ? (
-          <PopLayer
-            overlay={
-              <GraphSelectMenu
-                routeId={Number(params && params.id)}
-                isShowNamePop={isShowNamePop}
-                switchShowPop={switchShowNamePop}
-              />
-            }
-            visible={isShowNamePop}
-          >
-            <div
-              className="data-analyze-sidebar-dropdown-selection"
-              onClick={() => {
-                switchShowNamePop(!isShowNamePop);
-              }}
-            >
-              <div className={sidebarGraphSelectionIconClassName}>G</div>
-              <div className="data-analyze-sidebar-graph-selection-instruction">
-                <img
-                  src={ArrowIcon}
-                  alt="选择图"
-                  style={{
-                    transform: isShowNamePop ? 'rotate(180deg)' : 'rotate(0deg)'
-                  }}
+    <div style={{display: 'none'}}>
+      <ul className={sidebarWrapperClassName}>
+        <li className={sidebarGraphSelectionClassName}>
+          {!graphManagementStore.isExpanded ? (
+            <PopLayer
+              overlay={
+                <GraphSelectMenu
+                  routeId={Number(params && params.id)}
+                  isShowNamePop={isShowNamePop}
+                  switchShowPop={switchShowNamePop}
                 />
-              </div>
-            </div>
-          </PopLayer>
-        ) : (
-          <>
-            <div className={sidebarGraphSelectionIconClassName}>G</div>
-            <div>
-              <Select
-                options={graphManagementStore.idList.map(({ name }) => name)}
-                size="medium"
-                trigger="click"
-                value={
-                  graphManagementStore.idList.find(
-                    ({ id }) => String(id) === params!.id
-                  )!.name
-                }
-                width={150}
-                onChange={handleSelectId}
-                dropdownClassName="data-analyze-sidebar-select"
+              }
+              visible={isShowNamePop}
+            >
+              <div
+                className="data-analyze-sidebar-dropdown-selection"
+                onClick={() => {
+                  switchShowNamePop(!isShowNamePop);
+                }}
               >
-                {graphManagementStore.idList.map(({ id, name }) => (
-                  <Select.Option
-                    value={name}
-                    disabled={id === Number(params && params.id)}
-                    key={id}
-                  >
-                    {name}
-                  </Select.Option>
-                ))}
-              </Select>
-            </div>
-          </>
-        )}
-      </li>
-      <div>
-        <Menu
-          mode="inline"
-          selectedKeys={[sidebarKey]}
-          inlineCollapsed={!graphManagementStore.isExpanded}
-          onClick={(e: any) => {
-            handleOptionClick(e.key);
-          }}
-          style={{
-            width: graphManagementStore.isExpanded ? 200 : 60
-          }}
-        >
-          <Menu.Item key="data-analyze">
-            <div className={sidebarMenuItemClassName}>
-              <img
-                src={
-                  sidebarKey === 'data-analyze'
-                    ? DataAnalyzeIconPressed
-                    : DataAnalyzeIconNormal
-                }
-                alt="数据分析"
-              />
-              <div>数据分析</div>
-            </div>
-          </Menu.Item>
-          <Menu.Item key="metadata-configs">
-            <div className={sidebarMenuItemClassName}>
-              <img
-                src={
-                  sidebarKey === 'metadata-configs'
-                    ? MetaDataManagementIconPressed
-                    : MetaDataManagementIconNormal
-                }
-                alt="元数据配置"
-              />
-              <div>元数据配置</div>
-            </div>
-          </Menu.Item>
-          <Menu.Item key="data-import">
-            <div className={sidebarMenuItemClassName}>
-              <img
-                src={
-                  sidebarKey === 'data-import'
-                    ? DataImportIconPressed
-                    : DataImportIconNormal
-                }
-                alt="数据导入"
-              />
-              <div>数据导入</div>
-            </div>
-          </Menu.Item>
-          {/* <Menu.SubMenu
-            key="sub-data-import"
-            title={
+                <div className={sidebarGraphSelectionIconClassName}>G</div>
+                <div className="data-analyze-sidebar-graph-selection-instruction">
+                  <img
+                    src={ArrowIcon}
+                    alt="选择图"
+                    style={{
+                      transform: isShowNamePop ? 'rotate(180deg)' : 'rotate(0deg)'
+                    }}
+                  />
+                </div>
+              </div>
+            </PopLayer>
+          ) : (
+            <>
+              <div className={sidebarGraphSelectionIconClassName}>G</div>
+              <div>
+                <Select
+                  options={graphManagementStore.idList.map(({ name }) => name)}
+                  size="medium"
+                  trigger="click"
+                  value={
+                    graphManagementStore.idList.find(
+                      ({ id }) => String(id) === params!.id
+                    )!.name
+                  }
+                  width={150}
+                  onChange={handleSelectId}
+                  dropdownClassName="data-analyze-sidebar-select"
+                >
+                  {graphManagementStore.idList.map(({ id, name }) => (
+                    <Select.Option
+                      value={name}
+                      disabled={id === Number(params && params.id)}
+                      key={id}
+                    >
+                      {name}
+                    </Select.Option>
+                  ))}
+                </Select>
+              </div>
+            </>
+          )}
+        </li>
+        <div>
+          <Menu
+            mode="inline"
+            selectedKeys={[sidebarKey]}
+            inlineCollapsed={!graphManagementStore.isExpanded}
+            onClick={(e: any) => {
+              handleOptionClick(e.key);
+            }}
+            style={{
+              width: graphManagementStore.isExpanded ? 200 : 60
+            }}
+          >
+            <Menu.Item key="data-analyze">
               <div className={sidebarMenuItemClassName}>
                 <img
                   src={
-                    sidebarKey === 'import-tasks'
+                    sidebarKey === 'data-analyze'
+                      ? DataAnalyzeIconPressed
+                      : DataAnalyzeIconNormal
+                  }
+                  alt="数据分析"
+                />
+                <div>数据分析</div>
+              </div>
+            </Menu.Item>
+            <Menu.Item key="metadata-configs">
+              <div className={sidebarMenuItemClassName}>
+                <img
+                  src={
+                    sidebarKey === 'metadata-configs'
+                      ? MetaDataManagementIconPressed
+                      : MetaDataManagementIconNormal
+                  }
+                  alt="元数据配置"
+                />
+                <div>元数据配置</div>
+              </div>
+            </Menu.Item>
+            <Menu.Item key="data-import">
+              <div className={sidebarMenuItemClassName}>
+                <img
+                  src={
+                    sidebarKey === 'data-import'
                       ? DataImportIconPressed
                       : DataImportIconNormal
                   }
@@ -268,38 +248,54 @@ const GraphManagementSidebar: React.FC = observer(() => {
                 />
                 <div>数据导入</div>
               </div>
-            }
-          >
-            <Menu.Item key="import-tasks">
-              <div style={{ marginLeft: 24 }}>导入任务</div>
             </Menu.Item>
-          </Menu.SubMenu> */}
-          <Menu.Item key="async-tasks">
-            <div className={sidebarMenuItemClassName}>
-              <img
-                src={
-                  sidebarKey === 'async-tasks'
-                    ? AsyncTaskManagerIconPressed
-                    : AsyncTaskManagerIconNormal
-                }
-                alt="任务管理"
-              />
-              <div>任务管理</div>
-            </div>
-          </Menu.Item>
-        </Menu>
-      </div>
-      <li
-        className="data-analyze-sidebar-expand-control"
-        onClick={handleExpandClick}
-      >
-        {graphManagementStore.isExpanded ? (
-          <img src={SidebarCollapseIcon} alt="折叠" />
-        ) : (
-          <img src={SidebarExpandIcon} alt="展开" />
-        )}
-      </li>
-    </ul>
+            {/* <Menu.SubMenu
+              key="sub-data-import"
+              title={
+                <div className={sidebarMenuItemClassName}>
+                  <img
+                    src={
+                      sidebarKey === 'import-tasks'
+                        ? DataImportIconPressed
+                        : DataImportIconNormal
+                    }
+                    alt="数据导入"
+                  />
+                  <div>数据导入</div>
+                </div>
+              }
+            >
+              <Menu.Item key="import-tasks">
+                <div style={{ marginLeft: 24 }}>导入任务</div>
+              </Menu.Item>
+            </Menu.SubMenu> */}
+            <Menu.Item key="async-tasks">
+              <div className={sidebarMenuItemClassName}>
+                <img
+                  src={
+                    sidebarKey === 'async-tasks'
+                      ? AsyncTaskManagerIconPressed
+                      : AsyncTaskManagerIconNormal
+                  }
+                  alt="任务管理"
+                />
+                <div>任务管理</div>
+              </div>
+            </Menu.Item>
+          </Menu>
+        </div>
+        <li
+          className="data-analyze-sidebar-expand-control"
+          onClick={handleExpandClick}
+        >
+          {graphManagementStore.isExpanded ? (
+            <img src={SidebarCollapseIcon} alt="折叠" />
+          ) : (
+            <img src={SidebarExpandIcon} alt="展开" />
+          )}
+        </li>
+      </ul>
+    </div>
   );
 });
 

@@ -6,7 +6,7 @@ import React, {
   useEffect
 } from 'react';
 import { observer } from 'mobx-react';
-import { isUndefined, isEmpty, size, cloneDeep } from 'lodash-es';
+import { isUndefined, isEmpty, size } from 'lodash-es';
 import { useTranslation } from 'react-i18next';
 import classnames from 'classnames';
 import { Input, Select, Checkbox, Message } from '@baidu/one-ui';
@@ -159,6 +159,9 @@ const VertexMap: React.FC<VertexMapProps> = observer(
               selectorName={t(
                 'data-configs.type.placeholder.select-vertex-type'
               )}
+              notFoundContent={t(
+                'data-configs.type.placeholder.select-vertex-type'
+              )}
               value={
                 isEdit
                   ? dataMapStore.editedVertexMap!.label
@@ -290,15 +293,16 @@ const VertexMap: React.FC<VertexMapProps> = observer(
                   disabled={isUndefined(selectedVertex) || isStrategyAutomatic}
                   value={idField}
                   onChange={(value: string) => {
-                    const clonedIdField = cloneDeep(vertexMap.id_fields);
-                    clonedIdField[fieldIndex] = value;
+                    // const clonedIdField = cloneDeep(vertexMap.id_fields);
+                    // clonedIdField[fieldIndex] = value;
 
                     if (isEdit) {
-                      dataMapStore.editVertexMapConfig(
-                        'id_fields',
-                        clonedIdField,
-                        vertexMapIndex!
-                      );
+                      // dataMapStore.editVertexMapConfig(
+                      //   'id_fields',
+                      //   clonedIdField,
+                      //   vertexMapIndex!
+                      // );
+                      dataMapStore.setVertexIdColumn('edit', fieldIndex, value);
 
                       // remove selected field mappings after reselect column name
                       if (
@@ -311,10 +315,11 @@ const VertexMap: React.FC<VertexMapProps> = observer(
                         dataMapStore.removeVertexFieldMapping('edit', value);
                       }
                     } else {
-                      dataMapStore.setNewVertexConfig(
-                        'id_fields',
-                        clonedIdField
-                      );
+                      // dataMapStore.setNewVertexConfig(
+                      //   'id_fields',
+                      //   clonedIdField
+                      // );
+                      dataMapStore.setVertexIdColumn('new', fieldIndex, value);
 
                       if (
                         !isUndefined(
@@ -442,11 +447,20 @@ const VertexMap: React.FC<VertexMapProps> = observer(
                             );
                           }}
                         >
-                          {selectedVertex?.properties.map(({ name }) => (
-                            <Select.Option value={name} key={name}>
-                              {name}
-                            </Select.Option>
-                          ))}
+                          {selectedVertex?.properties
+                            .filter(
+                              ({ name }) =>
+                                !(
+                                  selectedVertex.id_strategy ===
+                                    'PRIMARY_KEY' &&
+                                  selectedVertex.primary_keys.includes(name)
+                                )
+                            )
+                            .map(({ name }) => (
+                              <Select.Option value={name} key={name}>
+                                {name}
+                              </Select.Option>
+                            ))}
                         </Select>
                       )}
                     </div>
@@ -477,7 +491,13 @@ const VertexMap: React.FC<VertexMapProps> = observer(
               <>
                 <div
                   className="import-tasks-data-options-expand-value"
-                  style={{ marginBottom: 8, height: 32, width: 'fit-content' }}
+                  style={{
+                    marginBottom: 8,
+                    height: 32,
+                    width: 'fit-content',
+                    display: 'flex',
+                    alignItems: 'center'
+                  }}
                   onClick={() => {
                     if (
                       size(filteredColumnNamesInSelection) === 0 ||

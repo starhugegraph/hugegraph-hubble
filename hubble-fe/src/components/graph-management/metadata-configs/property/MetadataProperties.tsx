@@ -20,7 +20,7 @@ import {
 import Highlighter from 'react-highlight-words';
 
 import { Tooltip, LoadingDataView } from '../../../common';
-import DataAnalyzeStore from '../../../../stores/GraphManagementStore/dataAnalyzeStore/dataAnalyzeStore';
+// import DataAnalyzeStore from '../../../../stores/GraphManagementStore/dataAnalyzeStore/dataAnalyzeStore';
 import MetadataConfigsRootStore from '../../../../stores/GraphManagementStore/metadataConfigsStore/metadataConfigsStore';
 
 import type { MetadataProperty } from '../../../../stores/types/GraphManagementStore/metadataConfigsStore';
@@ -83,7 +83,7 @@ const variants = {
 };
 
 const MetadataProperties: React.FC = observer(() => {
-  const dataAnalyzeStore = useContext(DataAnalyzeStore);
+  // const dataAnalyzeStore = useContext(DataAnalyzeStore);
   const metadataConfigsRootStore = useContext(MetadataConfigsRootStore);
   const { metadataPropertyStore, graphViewStore } = metadataConfigsRootStore;
   const [preLoading, switchPreLoading] = useState(true);
@@ -747,8 +747,7 @@ const MetadataPropertiesManipulation: React.FC<MetadataPropertiesManipulationPro
                   <p className="metadata-properties-tooltips-title">
                     确认删除此属性？
                   </p>
-                  <p>确认删除此属性？删除后无法恢复，请谨慎操作</p>
-                  <p>删除元数据耗时较久，详情可在任务管理中查看</p>
+                  <p>删除后无法恢复，请谨慎操作。</p>
                   <div className="metadata-properties-tooltips-footer">
                     <Button
                       size="medium"

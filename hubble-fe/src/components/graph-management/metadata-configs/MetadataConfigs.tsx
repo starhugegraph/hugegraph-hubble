@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { observer } from 'mobx-react';
-import { useRoute, useLocation, Params } from 'wouter';
+import { useRoute, useLocation } from 'wouter';
 import classnames from 'classnames';
 import { AnimatePresence } from 'framer-motion';
 import { Radio, Menu, Modal, Button } from '@baidu/one-ui';
@@ -36,6 +36,10 @@ const MetadataConfig: React.FC = observer(() => {
   const handleMenuItemChange = ({ key }: { key: string }) => {
     // reset store current tab status to default
     switch (selectedMenuItem) {
+      case 'property':
+        metadataConfigRootStore.metadataPropertyStore.changeCurrentTabStatus(
+          'list'
+        );
       case 'vertex-type':
         metadataConfigRootStore.vertexTypeStore.changeCurrentTabStatus('list');
       case 'edge-type':
@@ -45,6 +49,13 @@ const MetadataConfig: React.FC = observer(() => {
     setSelectedMenuItem(key);
   };
 
+  useEffect(() => {
+    appStore.setMenuObj({
+      c_key: "2",
+      f_key: "sub1"
+    })
+    appStore.setCurrentKey("0")
+  }, [])
   const wrapperClassName = classnames({
     'metadata-configs': true,
     'metadata-configs-with-expand-sidebar': graphManagementStore.isExpanded
@@ -73,17 +84,17 @@ const MetadataConfig: React.FC = observer(() => {
     if (match && params !== null) {
       appStore.setCurrentId(Number(params.id));
       // fetch node colors
-      dataAnalyzeStore.setCurrentId(Number(params.id));
       dataAnalyzeStore.fetchAllNodeStyle();
       dataAnalyzeStore.fetchAllEdgeStyle();
       metadataConfigRootStore.setCurrentId(Number(params.id));
-      metadataConfigRootStore.fetchIdList();
+      dataAnalyzeStore.setCurrentId(Number(params.id));
+      // metadataConfigRootStore.fetchIdList();
     }
 
     return () => {
       metadataConfigRootStore.dispose();
     };
-  }, [metadataConfigRootStore, match, params?.id]);
+  }, [metadataConfigRootStore, match, params?.id,appStore.tenant,appStore.graphs]);
 
   return (
     <section className={wrapperClassName}>
@@ -141,20 +152,17 @@ const MetadataConfig: React.FC = observer(() => {
             type="primary"
             style={{ width: 88 }}
             onClick={() => {
+              metadataConfigRootStore.setCurrentId(null);
               setLocation('/');
             }}
           >
-            返回首页
+            返回
           </Button>
         ]}
-        visible={
-          !metadataConfigRootStore.metadataPropertyStore
-            .validateLicenseOrMemories ||
-          !metadataConfigRootStore.vertexTypeStore.validateLicenseOrMemories ||
-          !metadataConfigRootStore.edgeTypeStore.validateLicenseOrMemories ||
-          !metadataConfigRootStore.metadataPropertyIndexStore
-            .validateLicenseOrMemories
-        }
+        visible={graphManagementStore.graphData.some(
+          ({ id, enabled }) =>
+            metadataConfigRootStore.currentId === id && !enabled
+        )}
         destroyOnClose
         needCloseIcon={false}
       >

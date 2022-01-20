@@ -1,6 +1,6 @@
 import { observable, action, flow, computed } from 'mobx';
 import axios, { AxiosResponse } from 'axios';
-import { size, isUndefined } from 'lodash-es';
+import { size } from 'lodash-es';
 import isInt from 'validator/lib/isInt';
 
 import { DataImportRootStore } from './dataImportRootStore';
@@ -17,12 +17,15 @@ import {
   createValidateFileInfoErrorMessage
 } from '../../../stores/factory/dataImportStore/serverDataImportStore';
 import { checkIfLocalNetworkOffline } from '../../utils';
+import AppStoreContext from '../../appStore';
 
 export class ServerDataImportStore {
   dataImportRootStore: DataImportRootStore;
+  appStore:any
 
   constructor(dataImportRootStore: DataImportRootStore) {
     this.dataImportRootStore = dataImportRootStore;
+    this.appStore = AppStoreContext
   }
 
   @observable requestStatus = initRequestStatus();
@@ -192,7 +195,7 @@ export class ServerDataImportStore {
         ImportTasks[]
       >> = yield axios
         .get<responseData<ImportTasks[]>>(
-          `${baseUrl}/${this.dataImportRootStore.currentId}/job-manager/${
+          `${baseUrl}/${this.appStore._currentValue.tenant}/graphs/${this.appStore._currentValue.graphs}/job-manager/${
             this.dataImportRootStore.currentJobId
           }/load-tasks/ids?${taskIds.map((id) => 'task_ids=' + id).join('&')}`
         )
@@ -229,7 +232,7 @@ export class ServerDataImportStore {
         AllImportTasksRecords
       >> = yield axios
         .get<responseData<AllImportTasksRecords>>(
-          `${baseUrl}/${this.dataImportRootStore.currentId}/job-manager/${this.dataImportRootStore.currentJobId}/load-tasks`
+          `${baseUrl}/${this.appStore._currentValue.tenant}/graphs/${this.appStore._currentValue.graphs}/job-manager/${this.dataImportRootStore.currentJobId}/load-tasks`
         )
         .catch(checkIfLocalNetworkOffline);
 
@@ -262,7 +265,7 @@ export class ServerDataImportStore {
     try {
       const result: AxiosResponse<responseData<null>> = yield axios
         .post(
-          `${baseUrl}/${this.dataImportRootStore.currentId}/job-manager/${this.dataImportRootStore.currentJobId}/file-mappings/load-parameter`,
+          `${baseUrl}/${this.appStore._currentValue.tenant}/graphs/${this.appStore._currentValue.graphs}/job-manager/${this.dataImportRootStore.currentJobId}/file-mappings/load-parameter`,
           this.importConfigs
         )
         .catch(checkIfLocalNetworkOffline);
@@ -291,7 +294,7 @@ export class ServerDataImportStore {
         ImportTasks[]
       >> = yield axios
         .post<responseData<ImportTasks[]>>(
-          `${baseUrl}/${this.dataImportRootStore.currentId}/job-manager/${
+          `${baseUrl}/${this.appStore._currentValue.tenant}/graphs/${this.appStore._currentValue.graphs}/job-manager/${
             this.dataImportRootStore.currentJobId
           }/load-tasks/start?${fileIds
             .map((id) => 'file_mapping_ids=' + id)
@@ -323,7 +326,7 @@ export class ServerDataImportStore {
     try {
       const result: AxiosResponse<responseData<ImportTasks>> = yield axios
         .post<responseData<ImportTasks>>(
-          `${baseUrl}/${this.dataImportRootStore.currentId}/job-manager/${this.dataImportRootStore.currentJobId}/load-tasks/pause`,
+          `${baseUrl}/${this.appStore._currentValue.tenant}/graphs/${this.appStore._currentValue.graphs}/job-manager/${this.dataImportRootStore.currentJobId}/load-tasks/pause`,
           {},
           {
             params: {
@@ -355,7 +358,7 @@ export class ServerDataImportStore {
     try {
       const result: AxiosResponse<responseData<ImportTasks>> = yield axios
         .post<responseData<ImportTasks>>(
-          `${baseUrl}/${this.dataImportRootStore.currentId}/job-manager/${this.dataImportRootStore.currentJobId}/load-tasks/resume`,
+          `${baseUrl}/${this.appStore._currentValue.tenant}/graphs/${this.appStore._currentValue.graphs}/job-manager/${this.dataImportRootStore.currentJobId}/load-tasks/resume`,
           {},
           {
             params: {
@@ -387,7 +390,7 @@ export class ServerDataImportStore {
     try {
       const result: AxiosResponse<responseData<ImportTasks>> = yield axios
         .post<responseData<ImportTasks>>(
-          `${baseUrl}/${this.dataImportRootStore.currentId}/job-manager/${this.dataImportRootStore.currentJobId}/load-tasks/stop`,
+          `${baseUrl}/${this.appStore._currentValue.tenant}/graphs/${this.appStore._currentValue.graphs}/job-manager/${this.dataImportRootStore.currentJobId}/load-tasks/stop`,
           {},
           {
             params: {
@@ -419,7 +422,7 @@ export class ServerDataImportStore {
     try {
       const result: AxiosResponse<responseData<ImportTasks>> = yield axios
         .post<responseData<ImportTasks>>(
-          `${baseUrl}/${this.dataImportRootStore.currentId}/job-manager/${this.dataImportRootStore.currentJobId}/load-tasks/retry`,
+          `${baseUrl}/${this.appStore._currentValue.tenant}/graphs/${this.appStore._currentValue.graphs}/job-manager/${this.dataImportRootStore.currentJobId}/load-tasks/retry`,
           {},
           {
             params: {
@@ -451,7 +454,7 @@ export class ServerDataImportStore {
     try {
       const result: AxiosResponse<responseData<null>> = yield axios
         .delete<responseData<null>>(
-          `${baseUrl}/${this.dataImportRootStore.currentId}/job-manager/${this.dataImportRootStore.currentJobId}/load-tasks/${taskId}`
+          `${baseUrl}/${this.appStore._currentValue.tenant}/graphs/${this.appStore._currentValue.graphs}/job-manager/${this.dataImportRootStore.currentJobId}/load-tasks/${taskId}`
         )
         .catch(checkIfLocalNetworkOffline);
 
@@ -479,7 +482,7 @@ export class ServerDataImportStore {
     try {
       const result: AxiosResponse<responseData<string>> = yield axios
         .get<responseData<string>>(
-          `${baseUrl}/${id}/job-manager/${jobId}/load-tasks/${taskId}/reason`
+          `${baseUrl}/${this.appStore._currentValue.tenant}/graphs/${this.appStore._currentValue.graphs}/job-manager/${jobId}/load-tasks/${taskId}/reason`
         )
         .catch(checkIfLocalNetworkOffline);
 
