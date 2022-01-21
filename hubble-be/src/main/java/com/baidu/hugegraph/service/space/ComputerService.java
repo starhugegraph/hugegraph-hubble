@@ -21,27 +21,32 @@ package com.baidu.hugegraph.service.space;
 
 import java.util.ArrayList;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import org.springframework.stereotype.Service;
+
 import com.baidu.hugegraph.driver.HugeClient;
 import com.baidu.hugegraph.entity.space.ComputerServiceEntity;
 import com.baidu.hugegraph.structure.Task;
 import com.baidu.hugegraph.util.PageUtil;
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import org.springframework.stereotype.Service;
 
 @Service
 public class ComputerService {
-    public IPage<ComputerServiceEntity> queryPgae(HugeClient client, String query,
-                                             int pageNo,
-                                 int pageSize) {
+    public IPage<ComputerServiceEntity> queryPage(HugeClient client,
+                                                  String query,
+                                                  int pageNo,
+                                                  int pageSize) {
         ArrayList results = new ArrayList<ComputerService>();
-        client.computer().list(-1).forEach((t) -> {
+        client.computer().list(pageSize).forEach((t) -> {
             ComputerServiceEntity entity = convert(t);
             entity.setGraphSpace(client.getGraphSpaceName());
             entity.setGraph(client.getGraphName());
             results.add(entity);
         });
 
-        return PageUtil.page(results, pageNo, pageSize);
+        // TODO: get job count
+        int count = 0;
+
+        return PageUtil.newPage(results, pageNo, pageSize, count);
     }
 
     public void cancel(HugeClient client, long id) {
@@ -58,5 +63,9 @@ public class ComputerService {
 
 
         return entity;
+    }
+
+    public void delete(HugeClient client, long id) {
+        client.computer().delete(id);
     }
 }
