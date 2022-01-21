@@ -117,6 +117,6 @@ public class GraphsService {
 
     public void delete(HugeClient client, String graph, String confirmMessage) {
 
-        client.graphs().remove(graph, confirmMessage);
+        client.graphs().remove(graph);
     }
 }

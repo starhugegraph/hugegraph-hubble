@@ -56,7 +56,7 @@ public class GraphSpaceService {
 
     public void delete(HugeClient authClient, String graphspace) {
         authClient.graphSpace()
-                  .deleteGraphSpace(graphspace, "I'm sure to drop the graph space");
+                  .deleteGraphSpace(graphspace);
     }
 
     public Object create(HugeClient authClient, GraphSpace graphSpace) {
