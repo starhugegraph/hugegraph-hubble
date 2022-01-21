@@ -19,6 +19,9 @@
 
 package com.baidu.hugegraph.controller.space;
 
+import com.baidu.hugegraph.driver.HugeClient;
+import com.baidu.hugegraph.entity.space.GraphSpaceEntity;
+import com.baidu.hugegraph.service.auth.BelongService;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,30 +67,51 @@ public class GraphSpaceController extends BaseController {
     }
 
     @GetMapping("{graphspace}")
-    public GraphSpace get(@PathVariable("graphspace") String graphspace) {
-        return graphSpaceService.get(this.authClient(null, null),
-                                     graphspace);
+    public GraphSpaceEntity get(@PathVariable("graphspace") String graphspace) {
+        HugeClient client = this.authClient(null, null);
+        // Get GraphSpace Info
+        GraphSpace graphSpace
+                = graphSpaceService.get(client, graphspace);
+
+        GraphSpaceEntity graphSpaceEntity
+                = GraphSpaceEntity.fromGraphSpace(graphSpace);
+
+        // TODO: Get GraphSpace Admin List
+
+        return graphSpaceEntity;
     }
 
     @PostMapping
-    public Object add(@RequestBody GraphSpace graphSpaceEntity) {
+    public Object add(@RequestBody GraphSpaceEntity graphSpaceEntity) {
+        // Create GraphSpace
+        graphSpaceService.create(this.authClient(null, null),
+                                 graphSpaceEntity.convertGraphSpace());
 
-        return graphSpaceService.create(this.authClient(null, null),
-                                        graphSpaceEntity);
+        // TODO: Add GraphSpace Admin
+
+        return get(graphSpaceEntity.getName());
     }
 
     @PutMapping("{graphspace}")
     public GraphSpace update(@PathVariable("graphspace") String graphspace,
-                             @RequestBody GraphSpace graphSpace) {
+                             @RequestBody GraphSpaceEntity graphSpaceEntity) {
 
-        graphSpace.setName(graphspace);
+        graphSpaceEntity.setName(graphspace);
 
-        return graphSpaceService.update(this.authClient(null, null),
-                                        graphSpace);
+        // Update graphspace
+        graphSpaceService.update(this.authClient(null, null),
+                                 graphSpaceEntity.convertGraphSpace());
+
+        // TODO: Update graphspace admin
+
+        return get(graphSpaceEntity.getName());
     }
 
     @DeleteMapping("{graphspace}")
     public void delete(@PathVariable("graphspace") String graphspace) {
+        // TODO: Delete graphspace admin
+
+        // delete graphspace
         graphSpaceService.delete(this.authClient(null, null), graphspace);
     }
 }
