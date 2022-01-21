@@ -6,7 +6,7 @@
  * @Description: 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  * @FilePath: /hubble-fe/src/components/home/home.js
  */
-import React, { useState, useContext, useEffect} from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import './Home.less';
 import { Select, Menu, Layout } from 'antd';
 import { SnippetsOutlined,/* QrcodeOutlined, ToolOutlined */ } from '@ant-design/icons';
@@ -174,14 +174,16 @@ const Home = () => {
     useEffect(() => {
         getTenantList();
         api.getSiderAuthUser().then(res => {
-          let target=  userAuthArray.find(item=>item.name===res.data.level)
-          setUserMenu(target.authArray)
+            let target = userAuthArray.find(item => item.name === res.data.level)
+            setUserMenu(target.authArray)
         })
     }, []);
 
     useEffect(() => {
-        setObj(appStore.menuObj);
-        setMenuList(defaultMenuList[appStore.menuObj.c_key - 1].data)
+        if (JSON.stringify(keyObj) !== JSON.stringify(appStore.menuObj)) {
+            setObj(appStore.menuObj);
+            setMenuList(defaultMenuList[appStore.menuObj.c_key - 1].data)
+        }
     }, [appStore.menuObj]);
 
     useEffect(() => {
@@ -189,11 +191,12 @@ const Home = () => {
     }, [appStore.currentKey]);
 
     useEffect(() => {
-        if(appStore.graphs!=="")setGraphsActive(appStore.graphs);
+        if (appStore.graphs !== "") setGraphsActive(appStore.graphs);
     }, [appStore.graphs]);
 
     useEffect(() => {
         setUserActive(appStore.tenant);
+        getGraphsList()
     }, [appStore.tenant]);
 
     // 获取租户列表
@@ -220,9 +223,9 @@ const Home = () => {
                         appStore.setGraphs("null");
                         setGraphsActive("暂无")
                     }
-                }else{
-                     appStore.setGraphs("null");
-                     setGraphsActive("暂无")
+                } else {
+                    appStore.setGraphs("null");
+                    setGraphsActive("暂无")
                 }
             });
         }
@@ -275,7 +278,6 @@ const Home = () => {
             return;
         }
         setCurrent('0');
-        // setObj({ c_key: e.key, f_key: e.keyPath[1] });
         appStore.setMenuObj({
             c_key: e.key,
             f_key: e.keyPath[1]
@@ -299,25 +301,12 @@ const Home = () => {
     };
     // 点击切换下拉key
     const menuLeftSelect = (e) => {
-        // appStore.setMenuObj({
-        //     c_key: appStore.c_key,s
-        //     f_key: e[1]
-        // })
-        setObj((obj) => ({ ...obj, f_key: e[1] }))
+        setObj((obj) => ({ ...obj, f_key: e[1] || [] }))
+        appStore.setMenuObj({
+            ...appStore.menuObj,
+            f_key: e[1] || []
+        })
     }
-    // 截取域名
-    // const getUrlRelativePath  = () => {
-    //     let url = document.location.toString();
-    //     let arrUrl = url.split('//');
-
-    //     let start = arrUrl[1].indexOf('/');
-    //     let relUrl = arrUrl[1].substring(start); // stop省略，截取从start开始到结尾的所有字符
-
-    //     if(relUrl.indexOf('?') != -1){
-    //         relUrl = relUrl.split('?')[0];
-    //     }
-    //     return relUrl;
-    // }
     // 租户选择器渲染函数
     const selectRender = (arr) => {
         if (!arr.length) {
@@ -350,7 +339,7 @@ const Home = () => {
         if (f_key !== 'sub1') {
             return false;
         }
-        if (c_key === '3') {
+        if (+c_key > (+"2")) {
             return false;
         }
         if ((header_key === '0') || (header_key === '1')) {
@@ -414,20 +403,6 @@ const Home = () => {
                                 mode="inline"
                             >
                                 {leftMenuAuth(userMenu)}
-                                {/* <SubMenu key="sub1" icon={<SnippetsOutlined />} title="图管理">
-                                    <Menu.Item key="1">数据分析</Menu.Item>
-                                    <Menu.Item key="2">数据维护</Menu.Item>
-                                    <Menu.Item key="3">权限管理</Menu.Item>
-                                </SubMenu>
-                                <SubMenu key="sub2" icon={<QrcodeOutlined />} title="运维管理">
-                                    <Menu.Item key="4">服务</Menu.Item>
-                                    <Menu.Item key="5">监控报警</Menu.Item>
-                                    <Menu.Item key="6">日志</Menu.Item>
-                                </SubMenu>
-                                <SubMenu key="sub3" icon={<ToolOutlined />} title="系统管理">
-                                    <Menu.Item key="5">租户管理</Menu.Item>
-                                    <Menu.Item key="6">用户管理</Menu.Item>
-                                </SubMenu> */}
                             </Menu>
                         </div>
                     </Sider>
@@ -450,7 +425,7 @@ const Home = () => {
                                     </Select>
                                 </div>
                             </div>
-                            {appStore.tenant!="null"?<Router hook={useLocationWithConfirmation}>
+                            {appStore.tenant != "null" ? <Router hook={useLocationWithConfirmation}>
                                 <Switch>
                                     <Route
                                         path="/graph-management/:id/data-import/:jobId/task-error-log/:taskId"
@@ -531,7 +506,7 @@ const Home = () => {
                                     />
                                     <Redirect from="/" to="/graph-management/0/data-analyze" />
                                 </Switch>
-                            </Router>:null}
+                            </Router> : null}
                         </div>
                     </Content>
                 </Layout>

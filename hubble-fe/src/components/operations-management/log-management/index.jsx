@@ -5,13 +5,6 @@ import { DownOutlined } from '@ant-design/icons';
 import ProTable from '@ant-design/pro-table';
 import api from '../../../api/api'
 
-const valueEnum = {
-    0: 'close',
-    1: 'running',
-    2: 'online',
-    3: 'error',
-};
-
 const tableListDataSource = [];
 
 const columns = [
@@ -20,19 +13,19 @@ const columns = [
         width: 80,
         align: "center",
         dataIndex: 'log_datetime',
-        sorter: (a, b) => a.log_datetime - b.log_datetime,
+        // sorter: (a, b) => a.log_datetime - b.log_datetime,
         formItemProps: {
             label: "检索内容",
             name: "query",
             initialValue: ""
         },
-        fixed: "left"
+        fixed: "left",
     },
     {
         title: '服务',
         dataIndex: 'log_service',
         align: 'center',
-        sorter: (a, b) => a.log_service - b.log_service,
+        // sorter: (a, b) => a.log_service - b.log_service,
         formItemProps: {
             name: "services",
         },
@@ -113,7 +106,6 @@ const columns = [
 
 export default () => {
     const appStore = useContext(AppStoreContext)
-
     useEffect(() => {
         appStore.setMenuObj({
             c_key: "7",
@@ -126,7 +118,7 @@ export default () => {
             <ProTable
                 columns={columns}
                 search={{ defaultCollapsed: false }}
-                x-scroll={1500}
+                scroll={{ x: 1500 }}
                 request={(params, sorter, filter) => {
                     // 表单搜索项会从 params 传入，传递给后端接口。
                     console.log(params);

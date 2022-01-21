@@ -1,28 +1,11 @@
-import { Modal, Descriptions, Tag, Space } from 'antd';
-import React, { useEffect } from 'react'
+import { Modal, Table } from 'antd';
+import React, { useEffect,useState} from 'react'
 
-/* const demoData = {
-    "status": 200,
-    data: {
-        shards: [
-            {
-                shard_id: "",
-                shard_name: "",
-                status: "",
-            },
-        ]
-    },
-    "message": "msg",
-    "cause": ""
-} */
-
-const tagStyle = {
-    width: "100px",
-    height: "25px",
-}
 const Index = (props) => {
     const { isModalVisible, setIsModalVisible, node } = props
-
+    const [page,setPage] = useState("")
+    const [dataList,setDataList] = useState({})
+    // 获取详情数据
     useEffect(() => {
         if (node) {
 
@@ -37,25 +20,60 @@ const Index = (props) => {
         setIsModalVisible(false);
     };
 
+    // 分页条件
+    const pageChange = (params) => {
+        setPage({ page_no: params.current, page_size: params.pageSize })
+    }
+
+    const columns = [
+        {
+            title: 'Partition_id',
+            dataIndex: 'partiton_id',
+            align: 'center'
+        },
+        {
+            title: 'Graph_name',
+            dataIndex: 'graph_name',
+            align: 'center',
+        }
+        /* {
+            title: '操作',
+            align: 'center',
+            fixed: "right",
+            render: (tag) => [
+                <Button
+                    type="primary"
+                    onClick={() => detailHandle(tag)}
+                >
+                    详情
+                </Button>
+            ]
+        }, */
+    ];
+
     return (
         <>
-            <Modal title="详情"
+            <Modal title="储存服务详情"
                 visible={isModalVisible}
                 onOk={handleOk}
                 onCancel={handleCancel}
                 footer={null}
             >
-                <Descriptions>
-                    <Descriptions.Item label="节点名称">{node}</Descriptions.Item>
-                    <Descriptions.Item label="状态图例">
-                        <Space style={{ display: "flex", flexDirection: "column" }} size={'small'}>
-                            <Tag style={tagStyle} color={'#f50'}></Tag>
-                            <Tag style={tagStyle} color={'#2db7f5'}></Tag>
-                            <Tag style={tagStyle} color={'#87d068'}></Tag>
-                            <Tag style={tagStyle} color={'#108ee9'}></Tag>
-                        </Space>
-                    </Descriptions.Item>
-                </Descriptions>
+                <Table
+                    columns={columns}
+                    // dataSource={dataList.shards}
+                    rowKey={'partiton_id'}
+                    pagination={
+                        {
+                            pageSizeOptions: ['2', '4', '6'],
+                            defaultPageSize: 10,
+                            defaultCurrent: 1,
+                            showSizeChanger: true,
+                            // total: dataList.total
+                        }
+                    }
+                    onChange={pageChange}
+                />
             </Modal>
         </>
     );

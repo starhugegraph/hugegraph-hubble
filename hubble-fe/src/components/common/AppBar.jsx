@@ -6,7 +6,7 @@
  * @Description: 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  * @FilePath: /hubble-fe/src/components/common/AppBar.tsx
  */
-import React, { useCallback, useState, useLayoutEffect } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import { useLocation } from 'wouter';
 import { message, Popconfirm } from 'antd';
 import api from '../../api/api'
@@ -25,12 +25,13 @@ const AppBar = (props) => {
     [setLocation]
   );
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (!(userInfo.user_name)) {
       setLogin(false)
       localStorage.setItem("lg","false")
     }
   }, [])
+
   // 登出
   const outLog = () => {
     setLoading(true)
@@ -48,7 +49,7 @@ const AppBar = (props) => {
   return (
     <nav className="navigator">
       <div className="navigator-logo" onClick={setRoute('/')}></div>
-      {/* <div className="navigator-items">
+      {/* < className="navigator-items">
         <div
           className="navigator-item active"
           onClick={setRoute('/graph-management')}

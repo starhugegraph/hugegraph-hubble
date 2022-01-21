@@ -3,6 +3,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import DetailModal from './storage-detail'
 import './queryServiceList.less'
 import { AppStoreContext } from '../../../stores';
+import api from '../../../api/api'
 let demoData = {
     "status": 200,
     data: {
@@ -31,20 +32,28 @@ export default function StorageService() {
     const [page, setPage] = useState({})//分页条件
     const [isModalVisible, setIsModalVisible] = useState(false);//详情的显隐 
     const [detailNode, setDetailNode] = useState();//详情node
-    const [search, setSearch] = useState("");//详情node
+    const [query, setSearch] = useState("");//详情node
     const appStore = useContext(AppStoreContext)
-    // 获取数据
+    // 设置当前展开
     useEffect(() => {
-        setDataList(demoData.data)
         appStore.setMenuObj({
-            c_key:"4",
-            f_key:"sub2"
+            c_key: "4",
+            f_key: "sub2"
         })
         appStore.setCurrentKey("1")
     }, [])
+
+    // 获取数据
+    useEffect(() => {
+        setDataList(demoData.data)
+        api.getStorageTableData(appStore.tenant, page).then(res => {
+            console.log(res, "storage");
+        })
+    }, [appStore.tenant, page])
+
     // 详情
     const detailHandle = (params) => {
-        setDetailNode(params.node)
+        setDetailNode(params.node_id)
         setIsModalVisible(true)
     }
     // 分页条件
@@ -59,27 +68,24 @@ export default function StorageService() {
     const columns = [
         {
             title: '节点名称',
-            dataIndex: 'node',
-            key: 'node',
+            dataIndex: 'node_id',
             align: 'center'
         },
         {
             title: '总空间',
-            dataIndex: 'total',
-            key: 'node',
+            dataIndex: 'node_capacity',
             align: 'center',
         },
         {
             title: '占用储存空间',
-            dataIndex: 'used',
-            key: 'node',
+            dataIndex: 'node_used',
             align: 'center',
         },
         {
             title: '状态',
-            key: 'node',
             align: 'center',
-            render: (tag) => (
+            dataIndex: 'node_status',
+            render: (status) => (
                 <Space size="middle">
                     <span>OK</span>
                 </Space>
@@ -87,17 +93,21 @@ export default function StorageService() {
         },
         {
             title: '分片数量',
-            dataIndex: 'shards',
-            key: 'node',
+            dataIndex: 'node_partitions',
             align: 'center',
         },
         {
             title: '操作',
             align: 'center',
             fixed: "right",
-            render: (tag) => (
-                <Button type="primary" onClick={() => detailHandle(tag)}>详情</Button>
-            )
+            render: (tag) => [
+                <Button
+                    type="primary"
+                    onClick={() => detailHandle(tag)}
+                >
+                    详情
+                </Button>
+            ]
         },
     ];
     return (
@@ -112,14 +122,14 @@ export default function StorageService() {
                 scroll={{ x: 1200 }}
                 columns={columns}
                 dataSource={dataList.records}
-                rowKey={'node'}
+                rowKey={'node_id'}
                 pagination={
                     {
                         pageSizeOptions: ['5', '10', '15', '20'],
                         defaultPageSize: 10,
                         defaultCurrent: 1,
                         showSizeChanger: true,
-                        total:dataList.total
+                        total: dataList.total
                     }
                 }
                 onChange={pageChange}

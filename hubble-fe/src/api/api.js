@@ -578,7 +578,7 @@ const getServicesList = () => {
         });
     });
 };
-// 服务list
+// 主机list
 const getHostList = () => {
     return new Promise((resolve, reject) => {
         myaxios.post(`/logs/hosts/list`).then(res => {
@@ -588,8 +588,19 @@ const getHostList = () => {
         });
     });
 };
+// 储存服务
+const getStorageTableData = (graphspace, data) => {
+    return new Promise((resolve, reject) => {
+        myaxios.get(`/graphspaces/${graphspace}/services/storage`, data).then(res => {
+            resolve(res);
+        }, error => {
+            reject(error);
+        });
+    });
+};
 
 const obj = {
+    getStorageTableData,
     getHostList,
     getServicesList,
     getLogTableData,

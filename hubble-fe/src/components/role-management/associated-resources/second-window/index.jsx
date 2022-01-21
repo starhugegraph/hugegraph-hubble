@@ -192,7 +192,7 @@ export default function Index(props) {
                 // properties级别渲染
                 if (item.type === 'properties') {
                     return (
-                        <div style={{padding: '8px 0px'}}>
+                        <div key={item.title} style={{padding: '8px 0px'}}>
                             <span style={{margin: '0 20px'}}>{item.title}</span>
                         </div>
                     );
@@ -200,7 +200,7 @@ export default function Index(props) {
                 // 没有children且不可添加渲染
                 if (!item.isAdd) {
                     return (
-                        <div style={{padding: '8px 0px'}}>
+                        <div key={item.title} style={{padding: '8px 0px'}}>
                             <span style={{margin: '0 20px'}}>{item.title}:</span>
                             <Switch
                                 checked={item.checked}
@@ -211,7 +211,7 @@ export default function Index(props) {
                 }
                 // 没有children且可添加渲染
                 return (
-                    <div style={{padding: '8px 0px'}}>
+                    <div key={item.title} style={{padding: '8px 0px'}}>
                         <span style={{margin: '0 20px'}}>{item.title}:</span>
                         <Switch
                             checked={item.checked}

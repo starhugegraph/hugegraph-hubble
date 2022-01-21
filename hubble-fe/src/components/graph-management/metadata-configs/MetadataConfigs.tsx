@@ -81,7 +81,7 @@ const MetadataConfig: React.FC = observer(() => {
     window.scrollTo(0, 0);
     graphManagementStore.fetchIdList();
 
-    if (match && params !== null) {
+    if (match && params && appStore.graphs != "null") {
       appStore.setCurrentId(Number(params.id));
       // fetch node colors
       dataAnalyzeStore.fetchAllNodeStyle();
@@ -94,7 +94,7 @@ const MetadataConfig: React.FC = observer(() => {
     return () => {
       metadataConfigRootStore.dispose();
     };
-  }, [metadataConfigRootStore, match, params?.id,appStore.tenant,appStore.graphs]);
+  }, [metadataConfigRootStore, match, params?.id, appStore.tenant, appStore.graphs]);
 
   return (
     <section className={wrapperClassName}>
