@@ -17,6 +17,7 @@
         <skip.dump>true</skip.dump>
         <app.host>localhost</app.host>
         <app.port>36320</app.port>
+        <es.version>7.16.1</es.version>
     </properties>
 
     <dependencies>
@@ -40,6 +41,11 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>co.elastic.clients</groupId>
+            <artifactId>elasticsearch-java</artifactId>
+            <version>${es.version}</version>
         </dependency>
         <dependency>
             <groupId>org.mybatis.spring.boot</groupId>
