@@ -21,16 +21,22 @@ package com.baidu.hugegraph.service.grahps;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
-import com.baidu.hugegraph.loader.util.JsonUtil;
-import com.baidu.hugegraph.util.PageUtil;
+import com.baidu.hugegraph.structure.auth.HugePermission;
+import com.baidu.hugegraph.structure.auth.HugeResource;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
 import com.baidu.hugegraph.driver.HugeClient;
+import com.baidu.hugegraph.loader.util.JsonUtil;
+import com.baidu.hugegraph.structure.auth.User;
+import com.baidu.hugegraph.util.PageUtil;
 
 @Log4j2
 @Service
@@ -40,18 +46,45 @@ public class GraphsService {
         return client.graphs().getGraph(graph);
     }
 
-    public IPage<Map<String, String>> queryPage(HugeClient client, String query,
-                                       int pageNo, int pageSize) {
+    public IPage<Map<String, String>> queryPage(HugeClient client,
+                                                String graphSpace, String uid,
+                                                String query, int pageNo,
+                                                int pageSize) {
         ArrayList<Map<String, String>> results = new ArrayList<>();
-        client.graphs().listGraph().stream().filter((g) -> g.contains(query))
-              .forEach((g) -> {
-                  results.add(client.graphs().getGraph(g));
-              });
+        // Get All graphs
+        // client.graphs().listGraph().stream().filter((g) -> g.contains(query))
+        //       .forEach((g) -> {
+        //           results.add(client.graphs().getGraph(g));
+        //       });
+
+        // Get authorized graphs
+        listGraphNames(client, graphSpace, uid)
+                .stream().filter((g) -> g.contains(query))
+                .forEach((g) -> {
+                    results.add(client.graphs().getGraph(g));
+                });
 
         return PageUtil.page(results, pageNo, pageSize);
     }
 
+    public Set<String> listGraphNames(HugeClient client, String graphSpace,
+                                      String uid) {
+        if (uid == null) {
+            // Get All GraphNames
+            return new HashSet<>(client.graphs().listGraph());
+        }
 
+        HashSet<String> result = new HashSet<String>();
+
+        // Get All authorized graphs
+        User.UserRole role = client.auth().getUserRole(uid);
+        Map<String, Map<HugePermission, List<HugeResource>>>
+                graphs = role.roles().getOrDefault(graphSpace, null);
+        if (graphs != null) {
+            result.addAll(graphs.keySet());
+        }
+        return result;
+    }
 
     public Map<String, String> create(HugeClient client, String graph,
                                       boolean isAuth, String schemaTemplate) {
@@ -84,6 +117,6 @@ public class GraphsService {
 
     public void delete(HugeClient client, String graph, String confirmMessage) {
 
-        client.graphs().remove(graph, confirmMessage);
+        client.graphs().remove(graph);
     }
 }

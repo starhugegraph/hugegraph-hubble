@@ -25,6 +25,7 @@ import com.baidu.hugegraph.driver.HugeClient;
 import com.baidu.hugegraph.service.space.ComputerService;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,8 +34,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(Constant.API_VERSION + "graphspaces/{graphspace}/graphs" +
-        "/{graph}/services/computer")
-public class ComputerController extends BaseController {
+        "/{graph}/jobs/computerdis")
+public class ComputerDisController extends BaseController {
 
     @Autowired
     ComputerService computerService;
@@ -49,7 +50,7 @@ public class ComputerController extends BaseController {
                            @RequestParam(name = "page_size", required = false,
                                    defaultValue = "10") int pageSize) {
         HugeClient client = this.authClient(graphspace, graph);
-        return computerService.queryPgae(client, query, pageNo, pageSize);
+        return computerService.queryPage(client, query, pageNo, pageSize);
     }
 
     @GetMapping("{id}/cancel")
@@ -59,5 +60,14 @@ public class ComputerController extends BaseController {
 
         HugeClient client = this.authClient(graphspace, graph);
         computerService.cancel(client, id);
+    }
+
+    @DeleteMapping("{id}")
+    public void delete(@PathVariable("graphspace") String graphspace,
+                       @PathVariable("graph") String graph,
+                       @PathVariable("id") long id) {
+        HugeClient client = this.authClient(graphspace, graph);
+        computerService.delete(client, id);
+
     }
 }

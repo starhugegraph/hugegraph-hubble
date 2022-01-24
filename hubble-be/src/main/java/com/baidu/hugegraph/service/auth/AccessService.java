@@ -21,20 +21,15 @@ package com.baidu.hugegraph.service.auth;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import com.baidu.hugegraph.entity.auth.BelongEntity;
 import com.baidu.hugegraph.structure.auth.HugePermission;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Multimap;
-import org.apache.commons.collections.MultiMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import lombok.extern.log4j.Log4j2;
@@ -169,32 +164,5 @@ public class AccessService extends AuthService {
         });
 
         return ae;
-    }
-
-    public static class AccessReq {
-        public static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
-
-        @JsonProperty("id")
-        protected Object id;
-
-        @JsonProperty("graphspace")
-        protected String graphSpace;
-        @JsonProperty("group")
-        protected Object group;
-        @JsonProperty("target")
-        protected Object target;
-        @JsonProperty("access_permission")
-        protected Set<String> permissions;
-        @JsonProperty("access_description")
-        protected String description;
-
-        @JsonProperty("access_create")
-        @JsonFormat(pattern = DATE_FORMAT)
-        protected Date create;
-        @JsonProperty("access_update")
-        @JsonFormat(pattern = DATE_FORMAT)
-        protected Date update;
-        @JsonProperty("access_creator")
-        protected String creator;
     }
 }

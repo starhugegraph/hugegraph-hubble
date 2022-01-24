@@ -54,6 +54,7 @@ public class ResponseAdvisor implements ResponseBodyAdvice<Object> {
         return Response.builder()
                        .status(HttpStatus.OK.value())
                        .data(body)
+                       .message("Success")
                        .build();
     }
 }

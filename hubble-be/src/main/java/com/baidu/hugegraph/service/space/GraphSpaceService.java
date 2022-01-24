@@ -23,7 +23,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.baidu.hugegraph.structure.space.GraphSpaceReq;
 import org.springframework.stereotype.Service;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 
@@ -34,18 +33,12 @@ import com.baidu.hugegraph.util.PageUtil;
 
 @Service
 public class GraphSpaceService {
-    public IPage<GraphSpace> list(HugeClient client, int pageNo,
-                                  int pageSize) {
-        List<GraphSpace> results = client.graphSpace().listGraphSpace();
-
-        return PageUtil.page(results, pageNo, pageSize);
-    }
-
     public IPage<GraphSpace> queryPage(HugeClient client, String query,
                                        int pageNo, int pageSize) {
         List<GraphSpace> results =
                 client.graphSpace().listGraphSpace().stream()
-                      .filter((s) -> s.getName().contains(query))
+                      .filter((s) -> s.contains(query))
+                      .map((s) -> get(client, s))
                       .sorted(Comparator.comparing(GraphSpace::getName))
                       .collect(Collectors.toList());
 
@@ -63,14 +56,14 @@ public class GraphSpaceService {
 
     public void delete(HugeClient authClient, String graphspace) {
         authClient.graphSpace()
-                  .deleteGraphSpace(graphspace, "I'm sure to drop the graph space");
+                  .deleteGraphSpace(graphspace);
     }
 
-    public Object create(HugeClient authClient, GraphSpaceReq graphSpaceReq) {
-        return authClient.graphSpace().createGraphSpace(graphSpaceReq);
+    public Object create(HugeClient authClient, GraphSpace graphSpace) {
+        return authClient.graphSpace().createGraphSpace(graphSpace);
     }
 
-    public GraphSpace update(HugeClient authClient, GraphSpaceReq graphSpaceReq) {
-        return authClient.graphSpace().updateGraphSpace(graphSpaceReq);
+    public GraphSpace update(HugeClient authClient, GraphSpace graphSpace) {
+        return authClient.graphSpace().updateGraphSpace(graphSpace);
     }
 }
