@@ -276,4 +276,12 @@ public class HubbleOptions extends OptionHolder {
                     null,
                     ""
             );
+
+    public static final ConfigOption<String> MONITOR_URL =
+            new ConfigOption<>(
+                    "monitor.url",
+                    "monitor URL",
+                    null,
+                    ""
+            );
 }
