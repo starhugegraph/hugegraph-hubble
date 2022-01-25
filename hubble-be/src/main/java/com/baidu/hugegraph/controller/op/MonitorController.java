@@ -19,5 +19,35 @@
 
 package com.baidu.hugegraph.controller.op;
 
-public class MonitorController {
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.logging.log4j.util.Strings;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.baidu.hugegraph.common.Constant;
+import com.baidu.hugegraph.config.HugeConfig;
+import com.baidu.hugegraph.controller.BaseController;
+import com.baidu.hugegraph.options.HubbleOptions;
+import com.baidu.hugegraph.util.E;
+
+@RestController
+@RequestMapping(Constant.API_VERSION + "monitor")
+public class MonitorController extends BaseController {
+
+    @Autowired
+    private HugeConfig config;
+
+    @GetMapping
+    public void monitor(HttpServletResponse httpServletResponse) {
+        String monitorURL = config.get(HubbleOptions.MONITOR_URL);
+
+        E.checkArgument(!Strings.isEmpty(monitorURL), "No config " +
+                "\"monitor.url\" in config file: hugegraph-hubble.properties");
+
+        httpServletResponse.setStatus(302);
+        httpServletResponse.setHeader("Location", monitorURL);
+    }
 }
