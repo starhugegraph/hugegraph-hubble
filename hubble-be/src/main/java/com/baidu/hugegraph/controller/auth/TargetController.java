@@ -41,6 +41,7 @@ import com.baidu.hugegraph.driver.HugeClient;
 @RestController
 @RequestMapping(Constant.API_VERSION + "graphspaces/{graphspace}/auth/targets")
 public class TargetController extends AuthController {
+
     @Autowired
     TargetService targetService;
 
