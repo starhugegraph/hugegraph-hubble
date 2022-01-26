@@ -6,7 +6,7 @@
  * @Description: 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  * @FilePath: /hubble-fe/src/components/home/home.js
  */
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useContext, useEffect, useMemo } from 'react';
 import './Home.less';
 import { Select, Menu, Layout } from 'antd';
 import { SnippetsOutlined,/* QrcodeOutlined, ToolOutlined */ } from '@ant-design/icons';
@@ -23,9 +23,8 @@ import {
 import GraphData from '../graphManagementHook/graphManagement/graphData/GraphData';
 import GraphSchema from '../graphManagementHook/graphManagement/graphSchema/GraphSchema';
 import Resources from '../graphManagementHook/graphManagement/resources/Resources';
-import { QueryServiceList, StorageService, ComputingServices } from '../operations-management'
+import { QueryServiceList, StorageService, ComputingServices,LogManagement,AuditManagement,PdService} from '../operations-management'
 import { TenantManagement, UserManagement } from '../system-management'
-import LogManagement from '../operations-management/log-management'
 import RoleManagement from '../role-management';
 import PerUserManagement from '../user-management'
 import api from '../../api/api';
@@ -109,6 +108,10 @@ const defaultMenuList = [
                 key: '2',
                 name: '计算服务'
             },
+            {
+                key: '3',
+                name: 'PD状态'
+            },
         ]
     },
     {
@@ -135,6 +138,24 @@ const defaultMenuList = [
             {
                 key: '0',
                 name: '日志检索'
+            }
+        ]
+    },
+    {
+        tab: 'auditManagement',
+        data: [
+            {
+                key: '0',
+                name: '审计'
+            }
+        ]
+    },
+    {
+        tab: 'monitoringManagement',
+        data: [
+            {
+                key: '0',
+                name: '监控'
             }
         ]
     },
@@ -171,19 +192,22 @@ const Home = () => {
             }
         })
     }
+
     useEffect(() => {
         getTenantList();
         api.getSiderAuthUser().then(res => {
-            let target = userAuthArray.find(item => item.name === res.data.level)
-            setUserMenu(target.authArray)
+            if (res.status === 200) {
+                let target = userAuthArray.find(item => item.name === res.data.level)
+                setUserMenu(target.authArray)
+            }
         })
     }, []);
 
     useEffect(() => {
         if (JSON.stringify(keyObj) !== JSON.stringify(appStore.menuObj)) {
             setObj(appStore.menuObj);
-            setMenuList(defaultMenuList[appStore.menuObj.c_key - 1].data)
         }
+        setMenuList(defaultMenuList[appStore.menuObj.c_key - 1].data)
     }, [appStore.menuObj]);
 
     useEffect(() => {
@@ -213,7 +237,7 @@ const Home = () => {
     };
     // 获取图列表
     const getGraphsList = () => {
-        if (appStore.tenant) {
+        if (appStore.tenant != 'null') {
             api.getGraphsName(appStore.tenant).then((res) => {
                 if (res.status === 200) {
                     if (res.data.graphs && res.data.graphs.length) {
@@ -265,6 +289,8 @@ const Home = () => {
                 setLocation(`/operations-management/1/storage`)
             } else if (e.key === "2") {
                 setLocation(`/operations-management/1/computing`)
+            } else if (e.key === "3") {
+                setLocation(`/operations-management/1/pd`)
             }
         } else if (appStore.menuObj.c_key === '5') {
             if (e.key === "0") {
@@ -282,7 +308,7 @@ const Home = () => {
             c_key: e.key,
             f_key: e.keyPath[1]
         });
-        setMenuList(defaultMenuList[e.key - 1].data);
+       if(_!=='/monitor')setMenuList(defaultMenuList[e.key - 1].data);
         if (e.key === '1') {
             setLocation(`/graph-management/0/data-analyze`);
         } else if (e.key === '2') {
@@ -297,6 +323,10 @@ const Home = () => {
             setLocation(`/system-management/2/User`)
         } else if (e.key === '7') {
             setLocation(`/operations-management/1/log`)
+        } else if (e.key === '8') {
+            setLocation(`/operations-management/1/Audit`)
+        } else if (e.key === '9') {
+            setLocation(`/monitor`)
         }
     };
     // 点击切换下拉key
@@ -335,18 +365,17 @@ const Home = () => {
      * @param {头部导航} header_key
      * @return {是否展示} bool
      */
-    const show_right_header = (f_key, c_key, header_key) => {
-        if (f_key !== 'sub1') {
-            return false;
-        }
-        if (+c_key > (+"2")) {
-            return false;
-        }
-        if ((header_key === '0') || (header_key === '1')) {
-            return true;
-        }
-        return false;
-    };
+
+    const show_right_header = useMemo(() => {
+        if (_ === "/graph-management/0/data-analyze"
+            || _ === "/graph-management/0/async-tasks"
+            || _ === "/graph-management/0/metadata-configs"
+            || _ === "/graph-management/0/data-import/import-manager"
+            || _ === "/operations-management/1/computing"
+        ) return true
+        return false
+    }, [_])
+
     // 切换租户时触发
     const selectChange = (value) => {
         appStore.setTenant(value);
@@ -410,7 +439,7 @@ const Home = () => {
                         <div className="right_content">
                             <div
                                 className={
-                                    show_right_header(appStore.menuObj.f_key, appStore.menuObj.c_key, current) ?
+                                    show_right_header ?
                                         'right_content_header' : 'right_content_header none'
                                 }
                             >
@@ -504,7 +533,15 @@ const Home = () => {
                                         path="/operations-management/1/log"
                                         component={LogManagement}
                                     />
-                                    <Redirect from="/" to="/graph-management/0/data-analyze" />
+                                    <Route
+                                        path="/operations-management/1/Audit"
+                                        component={AuditManagement}
+                                    />
+                                    <Route
+                                        path="/operations-management/1/pd"
+                                        component={PdService}
+                                    />
+                                    <Redirect exact={true} from="/" to="/graph-management/0/data-analyze" />
                                 </Switch>
                             </Router> : null}
                         </div>

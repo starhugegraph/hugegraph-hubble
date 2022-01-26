@@ -9,11 +9,11 @@ let demoData = {
     data: {
         records: [
             {
-                "node": "模拟数据",
-                "total": "1000G",
-                "used": "10G",
-                "status": "",
-                "shards": "10",
+                "node_id": "模拟数据",
+                "node_capacity": "1000G",
+                "node_used": "10G",
+                "node_status": "",
+                "node_partitions": "10",
             },
         ],
         total: 2,
@@ -32,7 +32,7 @@ export default function StorageService() {
     const [page, setPage] = useState({})//分页条件
     const [isModalVisible, setIsModalVisible] = useState(false);//详情的显隐 
     const [detailNode, setDetailNode] = useState();//详情node
-    const [query, setSearch] = useState("");//详情node
+    const [query, setSearch] = useState("");//搜索值
     const appStore = useContext(AppStoreContext)
     // 设置当前展开
     useEffect(() => {
@@ -47,7 +47,9 @@ export default function StorageService() {
     useEffect(() => {
         setDataList(demoData.data)
         api.getStorageTableData(appStore.tenant, page).then(res => {
-            console.log(res, "storage");
+            if(res.status===200){
+                console.log(res, "storage");
+            }
         })
     }, [appStore.tenant, page])
 
@@ -60,10 +62,11 @@ export default function StorageService() {
     const pageChange = (params) => {
         setPage({ page_no: params.current, page_size: params.pageSize })
     }
-    // 创建
+
+    /* // 创建
     const createHandle = () => {
 
-    }
+    } */
 
     const columns = [
         {
@@ -113,10 +116,20 @@ export default function StorageService() {
     return (
         <div className='query_list_container graphData_wrapper'>
             <div className='topDiv'>
-                <Input.Group compact className='inputBox'>
-                    <Input.Search allowClear style={{ width: '100%' }} placeholder='请输入实例名称' onSearch={(params) => setSearch(params)} />
+                {/* <Input.Group compact className='inputBox'>
+                    <Input.Search
+                        allowClear
+                        style={{ width: '100%' }}
+                        placeholder='请输入实例名称'
+                        onSearch={(params) => setSearch(params)} />
                 </Input.Group>
-                <Button onClick={createHandle} type="primary" className='query_list_addButton'>创建储存服务</Button>
+                <Button
+                    onClick={createHandle}
+                    type="primary"
+                    className='query_list_addButton'
+                >
+                    创建储存服务
+                </Button> */}
             </div>
             <Table
                 scroll={{ x: 1200 }}

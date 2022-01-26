@@ -84,7 +84,7 @@ export class AppStore {
 
     try {
       const result: AxiosResponse<responseData<string[]>> = yield axios.get(
-        `${baseUrl}/${this.currentId}/schema/vertexlabels/optional-colors`
+        `${baseUrl}/${this.tenant}/graphs/${this.graphs}/schema/vertexlabels/optional-colors`
       );
 
       if (result.data.status !== 200) {

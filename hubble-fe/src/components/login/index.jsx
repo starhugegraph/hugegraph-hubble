@@ -42,7 +42,7 @@ export default function Index(props) {
         if (res.test(value)) {
             return Promise.resolve()
         } else {
-            return Promise.reject("格式错误,并且长度为8-16位")
+            return Promise.reject("格式错误,并且长度要求为8-16位")
         }
     }
 
@@ -81,7 +81,7 @@ export default function Index(props) {
                             }
                         ]}
                     >
-                        <Input placeholder='账号类型提醒,如手机号/邮箱/用户名' />
+                        <Input placeholder='手机号、邮箱、用户名' />
                     </Form.Item>
 
                     <Form.Item

@@ -598,8 +598,52 @@ const getStorageTableData = (graphspace, data) => {
         });
     });
 };
+// 计算服务
+const getComputeTableData = (graphspace, graph, data) => {
+    return new Promise((resolve, reject) => {
+        myaxios.get(`/graphspaces/${graphspace}/graphs/${graph}/jobs/computerdis`, data).then(res => {
+            resolve(res);
+        }, error => {
+            reject(error);
+        });
+    });
+};
+// 审计
+const getAuditTableData = (data) => {
+    return new Promise((resolve, reject) => {
+        myaxios.post(`/audits/query`, data).then(res => {
+            resolve(res);
+        }, error => {
+            reject(error);
+        });
+    });
+};
+// 审计操作类型list
+const getOperationList = () => {
+    return new Promise((resolve, reject) => {
+        myaxios.get(`/audits/operations/list`).then(res => {
+            resolve(res);
+        }, error => {
+            reject(error);
+        });
+    });
+};
+// 审计操作类型list
+const gotoMonitoring = () => {
+    return new Promise((resolve, reject) => {
+        myaxios.get(`/monitor`).then(res => {
+            resolve(res);
+        }, error => {
+            reject(error);
+        });
+    });
+};
 
 const obj = {
+    gotoMonitoring,
+    getOperationList,
+    getAuditTableData,
+    getComputeTableData,
     getStorageTableData,
     getHostList,
     getServicesList,

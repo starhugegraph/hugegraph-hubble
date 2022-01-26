@@ -7,6 +7,8 @@ import api from '../../../api/api'
 
 const tableListDataSource = [];
 
+
+
 const columns = [
     {
         title: '时间',
@@ -24,24 +26,18 @@ const columns = [
     {
         title: '服务',
         dataIndex: 'log_service',
+        valueType: 'select',
         align: 'center',
         // sorter: (a, b) => a.log_service - b.log_service,
         formItemProps: {
             name: "services",
         },
-        valueType: 'select',
         fieldProps: () => ({ mode: "multiple" }),
-        valueEnum: {
-            all: { text: '全部', status: 'Default' },
-            open: {
-                text: '未解决',
-                status: 'Error',
-            },
-            closed: {
-                text: '已解决',
-                status: 'Success',
-            },
-        },
+        request: async () => {
+            let res = await api.getServicesList()
+            console.log(res, "log-servicesList");
+        }
+
     },
     {
         title: '主机名',
@@ -49,33 +45,38 @@ const columns = [
         align: 'center',
         valueType: 'select',
         fieldProps: () => ({ mode: "multiple" }),
-        valueEnum: {
-            all: { text: '全部', status: 'Default' },
-            open: {
-                text: '未解决',
-                status: 'Error',
-            },
-            closed: {
-                text: '已解决',
-                status: 'Success',
-            },
-        },
         formItemProps: {
             name: "hosts",
             label: "主机范围",
         },
+        request: async () => {
+            let data = await api.getHostList()
+            console.log(data, "log-hostList");
+        }
     },
     {
-        title: '位置',
-        dataIndex: 'log_location',
+        title: '开始时间',
+        dataIndex: 'time',
+        valueType: "dateTime",
         align: 'center',
-        hideInSearch: true
+        hideInTable: true,
+        order: 10,
+        formItemProps: {
+            name: "start_datetime",
+        },
+        // fieldProps:()=>({format: 'YYYY-MM-DD hh:mm:ss'}),
     },
     {
-        title: '行号',
-        dataIndex: 'log_file_rownu',
+        title: '结束时间',
+        dataIndex: 'over_time',
+        valueType: "dateTime",
         align: 'center',
-        hideInSearch: true
+        hideInTable: true,
+        order: 9,
+        formItemProps: {
+            name: "end_datetime",
+        },
+        fieldProps: () => ({ showNow: true }),
     },
     {
         title: '级别',
@@ -113,23 +114,27 @@ export default () => {
         })
         appStore.setCurrentKey("0")
     }, [])
+
     return (
-        <div className='graphData_wrapper' style={{ width: "100%", height: "calc(100vh - 130px)", margin: "20px 0px" }}>
+        <div className='query_list_container graphData_wrapper'>
             <ProTable
                 columns={columns}
                 search={{ defaultCollapsed: false }}
-                scroll={{ x: 1500 }}
+                x-scroll={1500}
                 request={(params, sorter, filter) => {
                     // 表单搜索项会从 params 传入，传递给后端接口。
-                    console.log(params);
+                    if (!params.start_datetime)
+                        params.start_datetime = new Date().Format("yyyy-MM-dd") + " 00:00:00"
+                    if (!params.end_datetime)
+                        params.end_datetime = new Date().Format("yyyy-MM-dd HH:mm:ss")
                     api.getLogTableData(
                         {
                             ...params,
                             page_no: params.current,
-                            page_size: params.pageSize
+                            page_size: params.pageSize,
                         }
                     ).then(res => {
-                        console.log(res);
+                        console.log(res, "log");
                     })
                     return Promise.resolve({
                         data: tableListDataSource,

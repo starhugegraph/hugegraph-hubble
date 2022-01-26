@@ -1,19 +1,20 @@
 import React, { useState, useEffect, useContext } from 'react'
-import { Table, Space, Button, message, Popconfirm,Input } from 'antd';
+import { Table, Space, Button, message, Popconfirm, Input } from 'antd';
 import DetailComputing from './computing-detail'
 import './queryServiceList.less'
 import { AppStoreContext } from '../../../stores';
+import api from '../../../api/api'
 let demoData = {
     "status": 200,
     data: {
         records: [
             {
-                "service": "模拟数据", //
+                "task_name": "模拟数据", //
                 "graphspace": "模拟数据", //
-                "ready": "1/3",
-                "status": "running",
-                "algorithm": "Pagerank", //
-                "create_time": "2020/10/11" //
+                "task_progress": "1/3",
+                "task_status": "running",
+                "task_algorithm": "Pagerank", //
+                "task_create": "2020/10/11" //
             },
         ],
         "total": 2,  //
@@ -32,15 +33,31 @@ export default function ComputingServices() {
     const [isModalVisible, setIsModalVisible] = useState(false);//详情的显隐 
     const [search, setSearch] = useState(false);//详情的显隐 
     const appStore = useContext(AppStoreContext)
-    // 获取数据
+
     useEffect(() => {
-        setDataList(demoData.data)
         appStore.setMenuObj({
-            c_key:"4",
-            f_key:"sub2"
+            c_key: "4",
+            f_key: "sub2"
         })
         appStore.setCurrentKey("2")
     }, [])
+
+    // 获取数据
+    useEffect(() => {
+        setDataList(demoData.data)
+        if (appStore.graphs !== "null") {
+            getComputedTable()
+        }
+    }, [appStore.tenant, appStore.graphs, page])
+
+    // 获取计算table数据
+    const getComputedTable = () => {
+        api.getComputeTableData(appStore.tenant, appStore.graphs, page).then(res => {
+            console.log(res, "res");
+        })
+    };
+
+
     // 分页条件
     const pageChange = (params) => {
         setPage({ page_no: params.current, page_size: params.pageSize })
@@ -66,38 +83,32 @@ export default function ComputingServices() {
     const columns = [
         {
             title: '实例名称',
-            dataIndex: 'service',
-            key: 'service',
+            dataIndex: 'task_name',
             align: 'center'
         },
         {
             title: '租户',
             dataIndex: 'graphspace',
-            key: 'service',
             align: 'center',
         },
         {
             title: '就绪',
-            dataIndex: 'ready',
-            key: 'service',
+            dataIndex: 'task_progress',
             align: 'center',
         },
         {
             title: '状态',
-            dataIndex: 'status',
-            key: 'service',
+            dataIndex: 'task_status',
             align: 'center',
         },
         {
             title: '算法名称',
-            dataIndex: 'algorithm',
-            key: 'service',
+            dataIndex: 'task_algorithm',
             align: 'center',
         },
         {
             title: '创建时间',
-            dataIndex: 'create_time',
-            key: 'service',
+            dataIndex: 'task_create',
             align: 'center',
         },
         {
@@ -123,10 +134,20 @@ export default function ComputingServices() {
     return (
         <div className='query_list_container graphData_wrapper'>
             <div className='topDiv'>
-                <Input.Group compact className='inputBox'>
-                    <Input.Search allowClear style={{ width: '100%' }} placeholder='请输入实例名称' onSearch={(params) => setSearch(params)} />
+                {/* <Input.Group compact className='inputBox'>
+                    <Input.Search
+                        allowClear
+                        style={{ width: '100%' }}
+                        placeholder='请输入实例名称'
+                        onSearch={(params) => setSearch(params)} />
                 </Input.Group>
-                <Button onClick={createHandle} type="primary" className='query_list_addButton'>创建计算服务</Button>
+                <Button
+                    onClick={createHandle}
+                    type="primary"
+                    className='query_list_addButton'
+                >
+                    创建计算服务
+                </Button> */}
             </div>
             <Table
                 scroll={{ x: 1200 }}
@@ -143,7 +164,11 @@ export default function ComputingServices() {
                 }
                 onChange={pageChange}
             />
-            <DetailComputing isModalVisible={isModalVisible} setIsModalVisible={setIsModalVisible}></DetailComputing>
+            <DetailComputing
+                isModalVisible={isModalVisible}
+                setIsModalVisible={setIsModalVisible}
+            >
+            </DetailComputing>
         </div>
     )
 }

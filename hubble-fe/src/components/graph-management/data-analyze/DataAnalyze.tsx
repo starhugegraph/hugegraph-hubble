@@ -42,20 +42,19 @@ const DataAnalyze: React.FC = observer(() => {
 
 
   useEffect(() => {
+    console.log(1);
     appStore.setMenuObj({
       c_key: "1",
       f_key: "sub1"
     })
     appStore.setCurrentKey("0")
   }, [])
+
   useEffect(() => {
-
     window.scrollTo(0, 0);
-
     // if (graphManagementStore.requestStatus.fetchIdList !== 'success') {
     //   graphManagementStore.fetchIdList();
     // }
-
     return () => {
       dataAnalyzeStore.dispose();
     };

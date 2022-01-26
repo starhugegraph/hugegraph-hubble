@@ -28,7 +28,7 @@ const AppBar = (props) => {
   useEffect(() => {
     if (!(userInfo.user_name)) {
       setLogin(false)
-      localStorage.setItem("lg","false")
+      localStorage.setItem("lg", "false")
     }
   }, [])
 
@@ -69,7 +69,7 @@ const AppBar = (props) => {
           onConfirm={outLog}
           loading={loading}
         >
-          <span style={{ color: "#69c0ff", cursor: "pointer" }}>{userInfo!=null? userInfo.user_name : null}</span>
+          <span style={{ color: "#69c0ff", cursor: "pointer" }}>{userInfo != null ? userInfo.user_name : null}</span>
         </Popconfirm>
       </div>
     </nav>

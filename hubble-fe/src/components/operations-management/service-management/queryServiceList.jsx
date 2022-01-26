@@ -4,7 +4,7 @@ import DetailModal from './detail-query'
 import { Button, Table, Space, Popconfirm, message, Input } from 'antd'
 import api from '../../../api/api'
 import { AppStoreContext } from '../../../stores'
-import './queryServiceList.less'
+// import './queryServiceList.less'
 
 export default function QueryServiceList() {
     const [listData, setListData] = useState({})//列表数据

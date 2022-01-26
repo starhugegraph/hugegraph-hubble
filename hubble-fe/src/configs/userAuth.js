@@ -28,6 +28,14 @@ export const userAuthArray = [{
                         key: "7",
                         name: "日志"
                     },
+                    {
+                        key: "8",
+                        name: "审计"
+                    },
+                    {
+                        key: "9",
+                        name: "监控"
+                    }
                 ]
             },
             {
@@ -75,6 +83,14 @@ export const userAuthArray = [{
                         key: "7",
                         name: "日志"
                     },
+                    {
+                        key: "8",
+                        name: "审计"
+                    },
+                    {
+                        key: "9",
+                        name: "监控"
+                    }
                 ]
             },
         ]
@@ -95,4 +111,5 @@ export const userAuthArray = [{
             ]
         }, ]
     },
+
 ]
