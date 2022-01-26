@@ -75,9 +75,6 @@ public class TargetController extends AuthController {
     public Target add(@PathVariable("graphspace") String graphSpace,
                     @RequestBody Target target) {
         HugeClient client = this.authClient(graphSpace, null);
-        // The field `url` is not currently used
-        // The server requires that the field `url` cannot be null
-        target.url("");
         return this.targetService.add(client, target);
     }
 
