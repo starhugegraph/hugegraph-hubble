@@ -42,7 +42,6 @@ const DataAnalyze: React.FC = observer(() => {
 
 
   useEffect(() => {
-    console.log(1);
     appStore.setMenuObj({
       c_key: "1",
       f_key: "sub1"

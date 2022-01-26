@@ -907,10 +907,9 @@ export default function Resources() {
                 onOk={confirmDelete}
                 okText="确认"
                 cancelText="取消"
+                style={{"height":200}}
             >
-                <div style={{ minHeight: '200px' }}>
                     确定要删除{deleteData}吗？
-                </div>
             </Modal>
             <Modal
                 title={eidtKey ? '确认编辑' : '确认创建'}
@@ -1042,6 +1041,8 @@ export default function Resources() {
                                         </div>
                                     )
                                 }}
+                                fixed="right"
+                                width={250}
                             />
                         </Table>
                     </div>

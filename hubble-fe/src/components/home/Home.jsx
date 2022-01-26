@@ -23,10 +23,18 @@ import {
 import GraphData from '../graphManagementHook/graphManagement/graphData/GraphData';
 import GraphSchema from '../graphManagementHook/graphManagement/graphSchema/GraphSchema';
 import Resources from '../graphManagementHook/graphManagement/resources/Resources';
-import { QueryServiceList, StorageService, ComputingServices,LogManagement,AuditManagement,PdService} from '../operations-management'
+import {
+    QueryServiceList,
+    StorageService,
+    ComputingServices,
+    LogManagement,
+    AuditManagement,
+    PdService
+} from '../operations-management'
 import { TenantManagement, UserManagement } from '../system-management'
 import RoleManagement from '../role-management';
 import PerUserManagement from '../user-management'
+import Not404Find from '../404'
 import api from '../../api/api';
 
 import {
@@ -211,11 +219,11 @@ const Home = () => {
     }, [appStore.menuObj]);
 
     useEffect(() => {
-        setCurrent(appStore.currentKey);
+        current !== appStore.currentKey && setCurrent(appStore.currentKey);
     }, [appStore.currentKey]);
 
     useEffect(() => {
-        if (appStore.graphs !== "") setGraphsActive(appStore.graphs);
+        appStore.graphs !== "" && setGraphsActive(appStore.graphs);
     }, [appStore.graphs]);
 
     useEffect(() => {
@@ -237,7 +245,7 @@ const Home = () => {
     };
     // 获取图列表
     const getGraphsList = () => {
-        if (appStore.tenant != 'null') {
+        if (appStore.tenant !== 'null') {
             api.getGraphsName(appStore.tenant).then((res) => {
                 if (res.status === 200) {
                     if (res.data.graphs && res.data.graphs.length) {
@@ -308,7 +316,7 @@ const Home = () => {
             c_key: e.key,
             f_key: e.keyPath[1]
         });
-       if(_!=='/monitor')setMenuList(defaultMenuList[e.key - 1].data);
+        if (_ !== '/monitor') setMenuList(defaultMenuList[e.key - 1].data);
         if (e.key === '1') {
             setLocation(`/graph-management/0/data-analyze`);
         } else if (e.key === '2') {
@@ -367,11 +375,17 @@ const Home = () => {
      */
 
     const show_right_header = useMemo(() => {
+        if (_ === "/") {
+            setCurrent("0")
+            setObj({ f_key: 'sub1', c_key: "1" })
+            setMenuList(defaultMenuList[0].data)
+        }
         if (_ === "/graph-management/0/data-analyze"
             || _ === "/graph-management/0/async-tasks"
             || _ === "/graph-management/0/metadata-configs"
             || _ === "/graph-management/0/data-import/import-manager"
             || _ === "/operations-management/1/computing"
+            || _ === "/"
         ) return true
         return false
     }, [_])
@@ -541,7 +555,15 @@ const Home = () => {
                                         path="/operations-management/1/pd"
                                         component={PdService}
                                     />
-                                    <Redirect exact={true} from="/" to="/graph-management/0/data-analyze" />
+                                    <Route
+                                        path="/"
+                                        component={DataAnalyze}
+                                    />
+                                    <Route
+                                        path="/404"
+                                        component={Not404Find}
+                                    />
+                                    <Redirect from="*" to="/404" />
                                 </Switch>
                             </Router> : null}
                         </div>

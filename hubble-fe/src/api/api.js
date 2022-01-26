@@ -549,7 +549,7 @@ const getDetailTenant = (name) => {
     });
 };
 // 用户管理员权限
-const getSiderAuthUser = (name) => {
+const getSiderAuthUser = () => {
     return new Promise((resolve, reject) => {
         myaxios.get(`/auth/status`).then(res => {
             resolve(res);
@@ -639,7 +639,7 @@ const gotoMonitoring = () => {
     });
 };
 
-const obj = {
+export default {
     gotoMonitoring,
     getOperationList,
     getAuditTableData,
@@ -704,4 +704,3 @@ const obj = {
     putGraphspaces,
     deleteGraphspaces
 };
-export default obj;

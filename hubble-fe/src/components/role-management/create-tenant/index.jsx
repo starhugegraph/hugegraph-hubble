@@ -97,7 +97,7 @@ const Index = (props) => {
                         ]
                     }
                 >
-                    <Input/>
+                    <Input disabled={isDisabled}/>
                 </Form.Item>
 
                 <Form.Item
