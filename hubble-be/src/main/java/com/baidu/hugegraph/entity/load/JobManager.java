@@ -55,6 +55,16 @@ public class JobManager {
     @JsonProperty("conn_id")
     private Integer connId;
 
+    @TableField(value = "graphspace")
+    @MergeProperty
+    @JsonProperty("graphspace")
+    private String graphSpace;
+
+    @TableField(value = "graph")
+    @MergeProperty
+    @JsonProperty("graph")
+    private String graph;
+
     @TableField(value = "job_name")
     @MergeProperty
     @JsonProperty("job_name")

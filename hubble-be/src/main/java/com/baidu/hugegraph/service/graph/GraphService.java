@@ -57,21 +57,14 @@ import lombok.extern.log4j.Log4j2;
 public class GraphService {
 
     @Autowired
-    private HugeClientPoolService poolService;
-    @Autowired
     private PropertyKeyService pkService;
     @Autowired
     private VertexLabelService vlService;
     @Autowired
     private EdgeLabelService elService;
 
-    public HugeClient client(int connId) {
-        return this.poolService.getOrCreate(connId);
-    }
-
-    public GraphView addVertex(int connId, VertexEntity entity) {
-        HugeClient client = this.client(connId);
-        Vertex vertex = this.buildVertex(connId, entity);
+    public GraphView addVertex(HugeClient client, VertexEntity entity) {
+        Vertex vertex = this.buildVertex(client, entity);
         vertex = client.graph().addVertex(vertex);
         return GraphView.builder()
                         .vertices(ImmutableSet.of(vertex))
@@ -79,31 +72,29 @@ public class GraphService {
                         .build();
     }
 
-    public Vertex updateVertex(int connId, VertexEntity entity) {
-        HugeClient client = this.client(connId);
+    public Vertex updateVertex(HugeClient client, VertexEntity entity) {
         GraphManager graph = client.graph();
-        Vertex vertex = this.buildVertex(connId, entity);
+        Vertex vertex = this.buildVertex(client, entity);
         // TODO: client should add updateVertex() method
         return graph.addVertex(vertex);
     }
 
-    private Vertex buildVertex(int connId, VertexEntity entity) {
+    private Vertex buildVertex(HugeClient client, VertexEntity entity) {
         Vertex vertex = new Vertex(entity.getLabel());
-        VertexLabelEntity vl = this.vlService.get(entity.getLabel(), connId);
+        VertexLabelEntity vl = this.vlService.get(entity.getLabel(), client);
         // Allowed front-end always pass id
         if (vl.getIdStrategy().isCustomize()) {
             Object vid = this.convertVertexId(vl.getIdStrategy(), entity.getId());
             vertex.id(vid);
         }
-        this.fillProperties(connId, vl, vertex, entity.getProperties());
+        this.fillProperties(client, vl, vertex, entity.getProperties());
         return vertex;
     }
 
-    public GraphView addEdge(int connId, EdgeEntity entity) {
-        HugeClient client = this.client(connId);
+    public GraphView addEdge(HugeClient client, EdgeEntity entity) {
         GraphManager graph = client.graph();
 
-        EdgeHolder edgeHolder = this.buildEdge(connId, entity);
+        EdgeHolder edgeHolder = this.buildEdge(client, entity);
         Edge edge = graph.addEdge(edgeHolder.edge);
         Vertex source = edgeHolder.source;
         Vertex target = edgeHolder.target;
@@ -113,22 +104,20 @@ public class GraphService {
                         .build();
     }
 
-    public Edge updateEdge(int connId, EdgeEntity entity) {
-        HugeClient client = this.client(connId);
+    public Edge updateEdge(HugeClient client, EdgeEntity entity) {
         GraphManager graph = client.graph();
-        EdgeHolder edgeHolder = this.buildEdge(connId, entity);
+        EdgeHolder edgeHolder = this.buildEdge(client, entity);
         // TODO: client should add updateEdge()
         return graph.addEdge(edgeHolder.edge);
     }
 
-    private EdgeHolder buildEdge(int connId, EdgeEntity entity) {
-        HugeClient client = this.client(connId);
+    private EdgeHolder buildEdge(HugeClient client, EdgeEntity entity) {
         GraphManager graph = client.graph();
-        EdgeLabelEntity el = this.elService.get(entity.getLabel(), connId);
+        EdgeLabelEntity el = this.elService.get(entity.getLabel(), client);
         VertexLabelEntity sourceVl = this.vlService.get(el.getSourceLabel(),
-                                                        connId);
+                                                        client);
         VertexLabelEntity targetVl = this.vlService.get(el.getTargetLabel(),
-                                                        connId);
+                                                        client);
         Object realSourceId = this.convertVertexId(sourceVl.getIdStrategy(),
                                                    entity.getSourceId());
         Object realTargetId = this.convertVertexId(targetVl.getIdStrategy(),
@@ -145,7 +134,7 @@ public class GraphService {
         Edge edge = new Edge(entity.getLabel());
         edge.source(sourceVertex);
         edge.target(targetVertex);
-        this.fillProperties(connId, el, edge, entity.getProperties());
+        this.fillProperties(client, el, edge, entity.getProperties());
         return new EdgeHolder(edge, sourceVertex, targetVertex);
     }
 
@@ -160,10 +149,9 @@ public class GraphService {
         }
     }
 
-    private void fillProperties(int connId, SchemaLabelEntity schema,
+    private void fillProperties(HugeClient client, SchemaLabelEntity schema,
                                 GraphElement element,
                                 Map<String, Object> properties) {
-        HugeClient client = this.client(connId);
         for (Map.Entry<String, Object> entry : properties.entrySet()) {
             String key = entry.getKey();
             Object rawValue = entry.getValue();
@@ -174,7 +162,7 @@ public class GraphService {
                     continue;
                 }
             }
-            PropertyKeyEntity pkEntity = this.pkService.get(key, connId);
+            PropertyKeyEntity pkEntity = this.pkService.get(key, client);
             PropertyKey propertyKey = PropertyKeyService.convert(pkEntity,
                                                                  client);
             assert propertyKey != null;

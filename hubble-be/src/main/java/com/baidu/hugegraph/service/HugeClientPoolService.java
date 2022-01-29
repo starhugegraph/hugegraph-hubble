@@ -43,8 +43,6 @@ public final class HugeClientPoolService
     @Autowired
     private HugeConfig config;
     @Autowired
-    private GraphConnectionService connService;
-    @Autowired
     private SettingSSLService sslService;
 
     @PreDestroy
@@ -57,25 +55,6 @@ public final class HugeClientPoolService
 
     public void put(GraphConnection connection, HugeClient client) {
         super.put(connection.getId(), client);
-    }
-
-    public synchronized HugeClient getOrCreate(Integer id) {
-        HugeClient client = super.get(id);
-        if (client != null) {
-            return client;
-        }
-        GraphConnection connection = this.connService.get(id);
-        if (connection == null) {
-            throw new ExternalException("graph-connection.get.failed", id);
-        }
-        if (connection.getTimeout() == null) {
-            int timeout = this.config.get(HubbleOptions.CLIENT_REQUEST_TIMEOUT);
-            connection.setTimeout(timeout);
-        }
-        this.sslService.configSSL(this.config, connection);
-        client = HugeClientUtil.tryConnect(connection);
-        this.put(id, client);
-        return client;
     }
 
     public void remove(GraphConnection connection) {

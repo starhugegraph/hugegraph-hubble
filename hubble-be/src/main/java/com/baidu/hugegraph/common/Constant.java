@@ -45,7 +45,8 @@ public final class Constant {
     public static final String COOKIE_USER = "user";
     public static final String API_V1_1 = "/api/v1.1/";
     public static final String API_V1_2 = "/api/v1.2/";
-    public static final String API_VERSION = API_V1_2;
+    public static final String API_V1_3 = "/api/v1.3/";
+    public static final String API_VERSION = API_V1_3;
 
     public static final String EDITION_COMMUNITY = "community";
     public static final String EDITION_COMMERCIAL = "commercial";
@@ -58,6 +59,8 @@ public final class Constant {
     public static final int STATUS_NOT_FOUND = 404;
     public static final int STATUS_ILLEGAL_GREMLIN = 460;
     public static final int STATUS_INTERNAL_ERROR = 500;
+
+    public static final String TOKEN_KEY = "auth_token";
 
     public static final int NO_LIMIT = -1;
 

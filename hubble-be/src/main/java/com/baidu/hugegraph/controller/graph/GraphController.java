@@ -22,6 +22,7 @@ package com.baidu.hugegraph.controller.graph;
 import java.util.Map;
 import java.util.Set;
 
+import com.baidu.hugegraph.driver.HugeClient;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -48,7 +49,8 @@ import com.baidu.hugegraph.structure.graph.Vertex;
 import com.baidu.hugegraph.util.Ex;
 
 @RestController
-@RequestMapping(Constant.API_VERSION + "graph-connections/{connId}/graph")
+@RequestMapping(Constant.API_VERSION + "graphspaces/{graphspace}/graphs" +
+        "/{graph}")
 public class GraphController extends BaseController {
 
     @Autowired
@@ -59,46 +61,54 @@ public class GraphController extends BaseController {
     private GraphService graphService;
 
     @PostMapping("vertex")
-    public GraphView addVertex(@PathVariable("connId") int connId,
+    public GraphView addVertex(@PathVariable("graphspace") String graphSpace,
+                               @PathVariable("graph") String graph,
                                @RequestBody VertexEntity entity) {
-        this.checkParamsValid(connId, entity, true);
-        return this.graphService.addVertex(connId, entity);
+        HugeClient client = this.authClient(graphSpace, graph);
+        this.checkParamsValid(client, entity, true);
+        return this.graphService.addVertex(client, entity);
     }
 
     @PutMapping("vertex/{id}")
-    public Vertex updateVertex(@PathVariable("connId") int connId,
+    public Vertex updateVertex(@PathVariable("graphspace") String graphSpace,
+                               @PathVariable("graph") String graph,
                                @PathVariable("id") String vertexId,
                                @RequestBody VertexEntity entity) {
+        HugeClient client = this.authClient(graphSpace, graph);
         vertexId = UriUtils.decode(vertexId, Constant.CHARSET);
-        this.checkParamsValid(connId, entity, false);
+        this.checkParamsValid(client, entity, false);
         this.checkIdSameAsBody(vertexId, entity);
-        return this.graphService.updateVertex(connId, entity);
+        return this.graphService.updateVertex(client, entity);
     }
 
     @PostMapping("edge")
-    public GraphView addEdge(@PathVariable("connId") int connId,
+    public GraphView addEdge(@PathVariable("graphspace") String graphSpace,
+                             @PathVariable("graph") String graph,
                              @RequestBody EdgeEntity entity) {
-        this.checkParamsValid(connId, entity, true);
-        return this.graphService.addEdge(connId, entity);
+        HugeClient client = this.authClient(graphSpace, graph);
+        this.checkParamsValid(client, entity, true);
+        return this.graphService.addEdge(client, entity);
     }
 
     @PutMapping("edge/{id}")
-    public Edge updateEdge(@PathVariable("connId") int connId,
+    public Edge updateEdge(@PathVariable("graphspace") String graphSpace,
+                           @PathVariable("graph") String graph,
                            @PathVariable("id") String edgeId,
                            @RequestBody EdgeEntity entity) {
         edgeId = UriUtils.decode(edgeId, Constant.CHARSET);
-        this.checkParamsValid(connId, entity, false);
+        HugeClient client = this.authClient(graphSpace, graph);
+        this.checkParamsValid(client, entity, false);
         this.checkIdSameAsBody(edgeId, entity);
-        return this.graphService.updateEdge(connId, entity);
+        return this.graphService.updateEdge(client, entity);
     }
 
-    private void checkParamsValid(int connId, VertexEntity entity,
+    private void checkParamsValid(HugeClient client, VertexEntity entity,
                                   boolean create) {
         Ex.check(!StringUtils.isEmpty(entity.getLabel()),
                  "common.param.cannot-be-null-or-empty", "label");
         // If schema doesn't exist, it will throw exception
         VertexLabelEntity vlEntity = this.vlService.get(entity.getLabel(),
-                                                        connId);
+                                                        client);
         IdStrategy idStrategy = vlEntity.getIdStrategy();
         if (create) {
             Ex.check(idStrategy.isCustomize(), () -> entity.getId() != null,
@@ -114,12 +124,12 @@ public class GraphController extends BaseController {
                  "graph.vertex.all-nonnullable-prop.should-be-setted");
     }
 
-    private void checkParamsValid(int connId, EdgeEntity entity,
+    private void checkParamsValid(HugeClient client, EdgeEntity entity,
                                   boolean create) {
         Ex.check(!StringUtils.isEmpty(entity.getLabel()),
                  "common.param.cannot-be-null-or-empty", "label");
         // If schema doesn't exist, it will throw exception
-        EdgeLabelEntity elEntity = this.elService.get(entity.getLabel(), connId);
+        EdgeLabelEntity elEntity = this.elService.get(entity.getLabel(), client);
         if (create) {
             Ex.check(entity.getId() == null,
                      "common.param.must-be-null", "id");

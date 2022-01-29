@@ -19,6 +19,9 @@
 
 package com.baidu.hugegraph.controller.schema;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
@@ -29,6 +32,8 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import com.baidu.hugegraph.driver.HugeClient;
+import com.google.common.collect.ImmutableMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -59,8 +64,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.AllArgsConstructor;
 
+import javax.servlet.http.HttpServletResponse;
+
 @RestController
-@RequestMapping(Constant.API_VERSION + "graph-connections/{connId}/schema")
+@RequestMapping(Constant.API_VERSION + "graphspaces/{graphspace}/graphs" +
+        "/{graph}/schema")
 public class SchemaController extends BaseController {
 
     @Autowired
@@ -70,11 +78,40 @@ public class SchemaController extends BaseController {
     @Autowired
     private EdgeLabelService elService;
 
+    @GetMapping("groovy")
+    public Object schemaGroovy(@PathVariable("graphspace") String graphSpace,
+                               @PathVariable("graph") String graph) {
+        HugeClient client = this.authClient(graphSpace, graph);
+        return ImmutableMap.of("schema", client.schema().getGroovySchema());
+    }
+
+    @GetMapping("groovy/export")
+    public void schemaGroovyExport(@PathVariable("graphspace") String graphSpace,
+                                     @PathVariable("graph") String graph,
+                                     HttpServletResponse response) {
+        HugeClient client = this.authClient(graphSpace, graph);
+        String schema = client.schema().getGroovySchema();
+
+        response.setCharacterEncoding("UTF-8");
+        response.setContentType("text/html");
+        String fileName = String.format("%s_%s.schema", graphSpace, graph);
+        response.setHeader("Content-Disposition", "attachment;fileName=" + fileName);
+        try {
+            OutputStream os = response.getOutputStream();
+            os.write(schema.getBytes(StandardCharsets.UTF_8));
+            os.close();
+        } catch (IOException e) {
+            throw new InternalException("Schema File Write Error", e);
+        }
+    }
+
     @GetMapping("graphview")
-    public SchemaView displayInSchemaView(@PathVariable("connId") int connId) {
-        List<PropertyKeyEntity> propertyKeys = this.pkService.list(connId);
-        List<VertexLabelEntity> vertexLabels = this.vlService.list(connId);
-        List<EdgeLabelEntity> edgeLabels = this.elService.list(connId);
+    public SchemaView displayInSchemaView(@PathVariable("graphspace") String graphSpace,
+                                          @PathVariable("graph") String graph) {
+        HugeClient client = this.authClient(graphSpace, graph);
+        List<PropertyKeyEntity> propertyKeys = this.pkService.list(client);
+        List<VertexLabelEntity> vertexLabels = this.vlService.list(client);
+        List<EdgeLabelEntity> edgeLabels = this.elService.list(client);
 
         List<Map<String, Object>> vertices = new ArrayList<>(vertexLabels.size());
         for (VertexLabelEntity entity : vertexLabels) {
@@ -148,8 +185,8 @@ public class SchemaController extends BaseController {
     }
 
     public <T extends SchemaEntity> IPage<T> listInPage(
-                                             Function<Integer, List<T>> fetcher,
-                                             int connId, String content,
+                                             Function<HugeClient, List<T>> fetcher,
+                                             HugeClient client, String content,
                                              String nameOrder,
                                              int pageNo, int pageSize) {
         Boolean nameOrderAsc = null;
@@ -159,7 +196,7 @@ public class SchemaController extends BaseController {
             nameOrderAsc = ORDER_ASC.equals(nameOrder);
         }
 
-        List<T> entities = fetcher.apply(connId);
+        List<T> entities = fetcher.apply(client);
         if (!StringUtils.isEmpty(content)) {
             // Select by content
             entities = entities.stream()
@@ -239,20 +276,21 @@ public class SchemaController extends BaseController {
      */
     public static void checkProperties(PropertyKeyService service,
                                        Set<Property> properties,
-                                       boolean mustNullable, int connId) {
+                                       boolean mustNullable,
+                                       HugeClient client) {
         if (properties == null) {
             return;
         }
         for (Property property : properties) {
             String pkName = property.getName();
-            service.checkExist(pkName, connId);
+            service.checkExist(pkName, client);
             Ex.check(mustNullable, property::isNullable,
                      "schema.propertykey.must-be-nullable", pkName);
         }
     }
 
     public static void checkPropertyIndexes(SchemaLabelEntity entity,
-                                            int connId) {
+                                            HugeClient client) {
         List<PropertyIndex> propertyIndexes = entity.getPropertyIndexes();
         if (propertyIndexes != null) {
             for (PropertyIndex propertyIndex : propertyIndexes) {
@@ -269,8 +307,9 @@ public class SchemaController extends BaseController {
     }
 
     public static void checkParamsValid(PropertyKeyService service,
-                                        LabelUpdateEntity entity, int connId) {
+                                        LabelUpdateEntity entity,
+                                        HugeClient client) {
         // All append property should be nullable
-        checkProperties(service, entity.getAppendProperties(), true, connId);
+        checkProperties(service, entity.getAppendProperties(), true, client);
     }
 }

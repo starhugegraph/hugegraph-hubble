@@ -23,6 +23,7 @@ import java.util.Date;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+import com.baidu.hugegraph.driver.HugeClient;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.StopWatch;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,7 +53,8 @@ import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 @RestController
-@RequestMapping(Constant.API_VERSION + "graph-connections/{connId}/gremlin-query")
+@RequestMapping(Constant.API_VERSION + "graphspaces/{graphspace}/graphs" +
+        "/{graph}/gremlin-query")
 public class GremlinQueryController extends GremlinController {
 
     private static final Set<String> CONDITION_OPERATORS = ImmutableSet.of(
@@ -65,7 +67,8 @@ public class GremlinQueryController extends GremlinController {
     private ExecuteHistoryService historyService;
 
     @PostMapping
-    public GremlinResult execute(@PathVariable("connId") int connId,
+    public GremlinResult execute(@PathVariable("graphspace") String graphSpace,
+                                 @PathVariable("graph") String graph,
                                  @RequestBody GremlinQuery query) {
         this.checkParamsValid(query);
 
@@ -73,14 +76,17 @@ public class GremlinQueryController extends GremlinController {
         // Insert execute history
         ExecuteStatus status = ExecuteStatus.RUNNING;
         ExecuteHistory history;
-        history = new ExecuteHistory(null, connId, 0L, ExecuteType.GREMLIN,
-                                     query.getContent(), status, AsyncTaskStatus.UNKNOWN,
+        history = new ExecuteHistory(null, graphSpace, graph, 0L,
+                                     ExecuteType.GREMLIN, query.getContent(),
+                                     status, AsyncTaskStatus.UNKNOWN,
                                      -1L, createTime);
         this.historyService.save(history);
 
         StopWatch timer = StopWatch.createStarted();
         try {
-            GremlinResult result = this.queryService.executeQuery(connId, query);
+            HugeClient client = this.authClient(graphSpace, graph);
+            GremlinResult result =
+                    this.queryService.executeQuery(client, query);
             status = ExecuteStatus.SUCCESS;
             return result;
         } catch (Throwable e) {
@@ -96,7 +102,8 @@ public class GremlinQueryController extends GremlinController {
     }
 
     @PostMapping("async-task")
-    public ExecuteStatus executeAsyncTask(@PathVariable("connId") int connId,
+    public ExecuteStatus executeAsyncTask(@PathVariable("graphspace") String graphSpace,
+                                          @PathVariable("graph") String graph,
                                           @RequestBody GremlinQuery query) {
         this.checkParamsValid(query);
 
@@ -104,7 +111,8 @@ public class GremlinQueryController extends GremlinController {
         // Insert execute history
         ExecuteStatus status = ExecuteStatus.ASYNC_TASK_RUNNING;
         ExecuteHistory history;
-        history = new ExecuteHistory(null, connId, 0L, ExecuteType.GREMLIN_ASYNC,
+        history = new ExecuteHistory(null, graphSpace, graph, 0L,
+                                     ExecuteType.GREMLIN_ASYNC,
                                      query.getContent(), status,
                                      AsyncTaskStatus.UNKNOWN, -1L, createTime);
         this.historyService.save(history);
@@ -112,7 +120,8 @@ public class GremlinQueryController extends GremlinController {
         StopWatch timer = StopWatch.createStarted();
         long asyncId = 0L;
         try {
-            asyncId = this.queryService.executeAsyncTask(connId, query);
+            HugeClient client = this.authClient(graphSpace, graph);
+            asyncId = this.queryService.executeAsyncTask(client, query);
             status = ExecuteStatus.ASYNC_TASK_SUCCESS;
             return status;
         } catch (Throwable e) {
@@ -129,11 +138,13 @@ public class GremlinQueryController extends GremlinController {
     }
 
     @PutMapping
-    public GremlinResult expand(@PathVariable("connId") int connId,
+    public GremlinResult expand(@PathVariable("graphspace") String graphSpace,
+                                @PathVariable("graph") String graph,
                                 @RequestBody AdjacentQuery query) {
         this.checkParamsValid(query);
         try {
-            return this.queryService.expandVertex(connId, query);
+            HugeClient client = this.authClient(graphSpace, graph);
+            return this.queryService.expandVertex(client, query);
         } catch (Exception e) {
             Throwable rootCause = Ex.rootCause(e);
             throw new ExternalException("gremlin.expand.failed", rootCause,

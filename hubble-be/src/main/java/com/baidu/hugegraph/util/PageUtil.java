@@ -53,4 +53,18 @@ public final class PageUtil {
         page.setPages(pages);
         return page;
     }
+
+    public static <T> IPage<T> newPage(List<T> records, int pageNo,
+                                       int pageSize, int total) {
+
+        int current = pageNo > 1 ? pageNo : 1;
+        int pages = 0;
+
+        Page<T> page = new Page<>(current, pageSize, total, true);
+        page.setRecords(records);
+        page.setOrders(Collections.emptyList());
+        page.setPages(pages);
+
+        return page;
+    }
 }

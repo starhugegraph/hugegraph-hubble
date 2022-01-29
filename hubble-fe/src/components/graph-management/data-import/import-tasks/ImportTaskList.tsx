@@ -545,8 +545,14 @@ export const ImportManagerManipulation: React.FC<ImportManagerManipulationProps>
           <a
             target="_blank"
             className="import-manager-table-manipulations-outlink"
+<<<<<<< HEAD
             href={`/graph-management/${params!.id
               }/data-import/job-error-log/${jobId}`}
+=======
+            href={`/graph-management/${
+              params!.id
+            }/data-import/job-error-log/${jobId}`}
+>>>>>>> bba1f2ec74c011a9a7aa09b8e9bfe70e86fa5c9d
           >
             {t('import-manager.list-column-manipulations.check-error-log')}
           </a>

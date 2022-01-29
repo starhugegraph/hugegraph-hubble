@@ -21,6 +21,7 @@ import ArrowIcon from '../../../../../assets/imgs/ic_arrow_16.svg';
 import BlueArrowIcon from '../../../../../assets/imgs/ic_arrow_blue.svg';
 import CloseIcon from '../../../../../assets/imgs/ic_close_16.svg';
 import MapIcon from '../../../../../assets/imgs/ic_yingshe_16.svg';
+import { toJS } from 'mobx';
 
 export interface VertexMapProps {
   checkOrEdit: 'check' | 'edit' | boolean;

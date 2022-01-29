@@ -41,6 +41,7 @@ import { Algorithm } from '../../../stores/factory/dataAnalyzeStore/algorithmSto
 
 import ArrowIcon from '../../../assets/imgs/ic_arrow_16.svg';
 import EmptyIcon from '../../../assets/imgs/ic_sousuo_empty.svg';
+import { toJS } from 'mobx';
 
 export const AlgorithmInternalNameMapping: Record<string, string> = {
   rings: 'loop-detection',

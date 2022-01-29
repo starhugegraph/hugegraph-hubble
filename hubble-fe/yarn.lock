@@ -1549,6 +1549,22 @@
     "@nodelib/fs.scandir" "2.1.3"
     fastq "^1.6.0"
 
+"@popmotion/easing@^1.0.1", "@popmotion/easing@^1.0.2":
+  version "1.0.2"
+  resolved "http://registry.npm.baidu-int.com/@popmotion%2feasing/-/easing-1.0.2.tgz#17d925c45b4bf44189e5a38038d149df42d8c0b4"
+  integrity sha1-F9klxFtL9EGJ5aOAONFJ30LYwLQ=
+
+"@popmotion/popcorn@^0.4.2", "@popmotion/popcorn@^0.4.4":
+  version "0.4.4"
+  resolved "http://registry.npm.baidu-int.com/@popmotion%2fpopcorn/-/popcorn-0.4.4.tgz#a5f906fccdff84526e3fcb892712d7d8a98d6adc"
+  integrity sha512-jYO/8319fKoNLMlY4ZJPiPu8Ea8occYwRZhxpaNn/kZsK4QG2E7XFlXZMJBsTWDw7I1i0uaqyC4zn1nwEezLzg==
+  dependencies:
+    "@popmotion/easing" "^1.0.1"
+    framesync "^4.0.1"
+    hey-listen "^1.0.8"
+    style-value-types "^3.1.7"
+    tslib "^1.10.0"
+
 "@react-dnd/asap@^4.0.0":
   version "4.0.0"
   resolved "http://registry.npm.baidu-int.com/@react-dnd%2fasap/-/asap-4.0.0.tgz"
@@ -2077,7 +2093,7 @@
 
 "@types/qs@^6.9.5":
   version "6.9.5"
-  resolved "http://registry.npm.baidu-int.com/@types%2fqs/-/qs-6.9.5.tgz"
+  resolved "http://registry.npm.baidu-int.com/@types%2fqs/-/qs-6.9.5.tgz#434711bdd49eb5ee69d90c1d67c354a9a8ecb18b"
   integrity sha1-Q0cRvdSete5p2QwdZ8NUqajssYs=
 
 "@types/react-dom@16.9.8":
@@ -3932,6 +3948,11 @@ core-js@^3.5.0, core-js@^3.6.5:
   resolved "http://registry.npm.baidu-int.com/core-js/-/core-js-3.9.1.tgz"
   integrity sha1-zsjeWT246yqF/7Db3rMSy25UYK4=
 
+core-js@^3.6.5:
+  version "3.9.1"
+  resolved "http://registry.npm.baidu-int.com/core-js/-/core-js-3.9.1.tgz#cec8de593db8eb2a85ffb0dbdeb312cb6e5460ae"
+  integrity sha1-zsjeWT246yqF/7Db3rMSy25UYK4=
+
 core-util-is@1.0.2, core-util-is@~1.0.0:
   version "1.0.2"
   resolved "http://registry.npm.baidu-int.com/core-util-is/-/core-util-is-1.0.2.tgz"
@@ -5620,10 +5641,10 @@ fragment-cache@^0.2.1:
   dependencies:
     map-cache "^0.2.2"
 
-framer-motion@^2.1.2:
-  version "2.9.5"
-  resolved "https://registry.npmmirror.com/framer-motion/download/framer-motion-2.9.5.tgz#bbb185325d531c57f494cf3f6cf7719fc2c225c7"
-  integrity sha1-u7GFMl1THFf0lM8/bPdxn8LCJcc=
+framer-motion@1:
+  version "1.11.1"
+  resolved "http://registry.npm.baidu-int.com/framer-motion/-/framer-motion-1.11.1.tgz#b031d1556a78854e0989b8c7e96418c6e15aa474"
+  integrity sha1-sDHRVWp4hU4JibjH6WQYxuFapHQ=
   dependencies:
     framesync "^4.1.0"
     hey-listen "^1.0.8"
@@ -5633,9 +5654,9 @@ framer-motion@^2.1.2:
   optionalDependencies:
     "@emotion/is-prop-valid" "^0.8.2"
 
-framesync@^4.1.0:
+framesync@^4.0.0, framesync@^4.0.1, framesync@^4.0.4:
   version "4.1.0"
-  resolved "https://registry.npmmirror.com/framesync/download/framesync-4.1.0.tgz#69a8db3ca432dc70d6a76ba882684a1497ef068a"
+  resolved "http://registry.npm.baidu-int.com/framesync/-/framesync-4.1.0.tgz#69a8db3ca432dc70d6a76ba882684a1497ef068a"
   integrity sha1-aajbPKQy3HDWp2uogmhKFJfvBoo=
   dependencies:
     hey-listen "^1.0.5"
@@ -8201,20 +8222,20 @@ mkdirp@^0.5.1, mkdirp@^0.5.3, mkdirp@~0.5.1:
 
 mobx-react-lite@^2.2.0:
   version "2.2.2"
-  resolved "https://registry.npmmirror.com/mobx-react-lite/download/mobx-react-lite-2.2.2.tgz"
+  resolved "http://registry.npm.baidu-int.com/mobx-react-lite/-/mobx-react-lite-2.2.2.tgz#87c217dc72b4e47b22493daf155daf3759f868a6"
   integrity sha1-h8IX3HK05HsiST2vFV2vN1n4aKY=
 
-mobx-react@^6.2.2:
+mobx-react@6:
   version "6.3.1"
-  resolved "https://registry.npmmirror.com/mobx-react/download/mobx-react-6.3.1.tgz#204f9756e42e19d91cb6598837063b7e7de87c52"
+  resolved "http://registry.npm.baidu-int.com/mobx-react/-/mobx-react-6.3.1.tgz#204f9756e42e19d91cb6598837063b7e7de87c52"
   integrity sha1-IE+XVuQuGdkctlmINwY7fn3ofFI=
   dependencies:
     mobx-react-lite "^2.2.0"
 
-mobx@^5.13.0:
-  version "5.15.7"
-  resolved "https://registry.npmmirror.com/mobx/download/mobx-5.15.7.tgz#b9a5f2b6251f5d96980d13c78e9b5d8d4ce22665"
-  integrity sha1-uaXytiUfXZaYDRPHjptdjUziJmU=
+mobx@4:
+  version "4.15.7"
+  resolved "http://registry.npm.baidu-int.com/mobx/-/mobx-4.15.7.tgz#933281268c3b4658b6cf2526e872cf78ea48ab95"
+  integrity sha1-kzKBJow7Rli2zyUm6HLPeOpIq5U=
 
 moment@^2.22.2, moment@^2.24.0, moment@^2.25.3, moment@^2.27.0:
   version "2.29.1"
@@ -8310,7 +8331,7 @@ neo-async@^2.5.0, neo-async@^2.6.1:
 
 new-event-polyfill@^1.0.1:
   version "1.0.1"
-  resolved "http://registry.npm.baidu-int.com/new-event-polyfill/-/new-event-polyfill-1.0.1.tgz"
+  resolved "http://registry.npm.baidu-int.com/new-event-polyfill/-/new-event-polyfill-1.0.1.tgz#9ec8d8b8e90ba70ac27204dd2bcc8370345798e5"
   integrity sha1-nsjYuOkLpwrCcgTdK8yDcDRXmOU=
 
 next-tick@~1.0.0:
@@ -10025,7 +10046,7 @@ qs@6.7.0:
 
 qs@^6.9.6:
   version "6.9.6"
-  resolved "http://registry.npm.baidu-int.com/qs/-/qs-6.9.6.tgz"
+  resolved "http://registry.npm.baidu-int.com/qs/-/qs-6.9.6.tgz#26ed3c8243a431b2924aca84cc90471f35d5a0ee"
   integrity sha1-Ju08gkOkMbKSSsqEzJBHHzXVoO4=
 
 qs@~6.5.2:
@@ -10585,7 +10606,7 @@ react-app-polyfill@^1.0.6:
 
 react-app-polyfill@^2.0.0:
   version "2.0.0"
-  resolved "http://registry.npm.baidu-int.com/react-app-polyfill/-/react-app-polyfill-2.0.0.tgz"
+  resolved "http://registry.npm.baidu-int.com/react-app-polyfill/-/react-app-polyfill-2.0.0.tgz#a0bea50f078b8a082970a9d853dc34b6dcc6a3cf"
   integrity sha1-oL6lDweLiggpcKnYU9w0ttzGo88=
   dependencies:
     core-js "^3.6.5"
@@ -10994,7 +11015,7 @@ regenerator-runtime@^0.13.3, regenerator-runtime@^0.13.4:
 
 regenerator-runtime@^0.13.7:
   version "0.13.7"
-  resolved "http://registry.npm.baidu-int.com/regenerator-runtime/-/regenerator-runtime-0.13.7.tgz"
+  resolved "http://registry.npm.baidu-int.com/regenerator-runtime/-/regenerator-runtime-0.13.7.tgz#cac2dacc8a1ea675feaabaeb8ae833898ae46f55"
   integrity sha1-ysLazIoepnX+qrrriugziYrkb1U=
 
 regenerator-transform@^0.14.2:
@@ -12177,12 +12198,23 @@ style-search@^0.1.0:
   resolved "http://registry.npm.baidu-int.com/style-search/-/style-search-0.1.0.tgz"
   integrity sha1-eVjHk+R+MuB9K1yv5cC/jhLneQI=
 
-style-value-types@^3.1.9:
+style-value-types@^3.1.6, style-value-types@^3.1.7:
   version "3.2.0"
-  resolved "https://registry.npmmirror.com/style-value-types/download/style-value-types-3.2.0.tgz#eb89cab1340823fa7876f3e289d29d99c92111bb"
+  resolved "http://registry.npm.baidu-int.com/style-value-types/-/style-value-types-3.2.0.tgz#eb89cab1340823fa7876f3e289d29d99c92111bb"
   integrity sha1-64nKsTQII/p4dvPiidKdmckhEbs=
   dependencies:
     hey-listen "^1.0.8"
+    tslib "^1.10.0"
+
+stylefire@^7.0.2:
+  version "7.0.3"
+  resolved "http://registry.npm.baidu-int.com/stylefire/-/stylefire-7.0.3.tgz#9120ecbb084111788e0ddaa04074799750f20d1d"
+  integrity sha1-kSDsuwhBEXiODdqgQHR5l1DyDR0=
+  dependencies:
+    "@popmotion/popcorn" "^0.4.4"
+    framesync "^4.0.0"
+    hey-listen "^1.0.8"
+    style-value-types "^3.1.7"
     tslib "^1.10.0"
 
 stylehacks@^4.0.0:
@@ -13194,7 +13226,7 @@ whatwg-fetch@>=0.10.0, whatwg-fetch@^3.0.0:
 
 whatwg-fetch@^3.4.1:
   version "3.6.2"
-  resolved "http://registry.npm.baidu-int.com/whatwg-fetch/-/whatwg-fetch-3.6.2.tgz"
+  resolved "http://registry.npm.baidu-int.com/whatwg-fetch/-/whatwg-fetch-3.6.2.tgz#dced24f37f2624ed0281725d51d0e2e3fe677f8c"
   integrity sha1-3O0k838mJO0CgXJdUdDi4/5nf4w=
 
 whatwg-mimetype@^2.1.0, whatwg-mimetype@^2.2.0, whatwg-mimetype@^2.3.0:
