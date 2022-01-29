@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react'
 import { Table, Space, Button, message, Popconfirm, Input } from 'antd';
 import DetailComputing from './computing-detail'
-import './queryServiceList.less'
 import { AppStoreContext } from '../../../stores';
 import api from '../../../api/api'
 let demoData = {

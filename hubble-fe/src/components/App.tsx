@@ -12,7 +12,7 @@ import Login from './login'
 import 'antd/dist/antd.css';
 import GraphManagementSidebar from './graph-management/GraphManagementSidebar';
 import Home from './home/Home';
-import './operations-management/service-management/queryServiceList.less'
+import './App.less'
 
 (Date.prototype as any).Format = function (fmt:string) {
     var o = {

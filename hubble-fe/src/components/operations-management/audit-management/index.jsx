@@ -123,6 +123,7 @@ export default () => {
     const actionRef = useRef();
     return (
         <div className='graphData_wrapper query_list_container'>
+            <p style={{color:"#fa8c16"}}>本搜索结果包括所有图空间相关数据</p>
             <ProTable
                 columns={columns}
                 actionRef={actionRef}

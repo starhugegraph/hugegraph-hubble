@@ -918,10 +918,9 @@ export default function Resources() {
                 onOk={confirmCreate}
                 okText="确认"
                 cancelText="取消"
+                style={{"height":200}}
             >
-                <div style={{ minHeight: '200px' }}>
                     确定要{eidtKey ? '修改' : '创建'}吗？
-                </div>
             </Modal>
             {/* 创建资源弹窗 */}
             <Modal

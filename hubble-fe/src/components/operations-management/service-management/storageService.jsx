@@ -1,7 +1,6 @@
 import { Table, Space, Button, Input } from 'antd';
 import React, { useContext, useEffect, useState } from 'react'
 import DetailModal from './storage-detail'
-import './queryServiceList.less'
 import { AppStoreContext } from '../../../stores';
 import api from '../../../api/api'
 let demoData = {
@@ -27,7 +26,7 @@ let demoData = {
     "cause": ""
 }
 
-export default function StorageService() {
+function StorageService() {
     const [dataList, setDataList] = useState({})//数据列表
     const [page, setPage] = useState({})//分页条件
     const [isModalVisible, setIsModalVisible] = useState(false);//详情的显隐 
@@ -156,3 +155,4 @@ export default function StorageService() {
         </div>
     )
 }
+export default React.memo(StorageService)

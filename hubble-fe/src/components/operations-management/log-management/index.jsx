@@ -117,6 +117,7 @@ export default () => {
 
     return (
         <div className='query_list_container graphData_wrapper'>
+            <p style={{color:"#fa8c16"}}>本搜索结果包括所有图空间相关数据</p>
             <ProTable
                 columns={columns}
                 search={{ defaultCollapsed: false }}
