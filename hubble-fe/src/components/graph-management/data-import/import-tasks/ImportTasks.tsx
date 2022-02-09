@@ -16,7 +16,6 @@ import {
   DataImportRootStoreContext
 } from '../../../../stores';
 
-import PassIcon from '../../../../assets/imgs/ic_pass.svg';
 
 import './ImportTasks.less';
 

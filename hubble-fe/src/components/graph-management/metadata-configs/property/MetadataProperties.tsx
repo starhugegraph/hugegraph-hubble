@@ -20,7 +20,7 @@ import {
 import Highlighter from 'react-highlight-words';
 
 import { Tooltip, LoadingDataView } from '../../../common';
-import DataAnalyzeStore from '../../../../stores/GraphManagementStore/dataAnalyzeStore/dataAnalyzeStore';
+// import DataAnalyzeStore from '../../../../stores/GraphManagementStore/dataAnalyzeStore/dataAnalyzeStore';
 import MetadataConfigsRootStore from '../../../../stores/GraphManagementStore/metadataConfigsStore/metadataConfigsStore';
 
 import type { MetadataProperty } from '../../../../stores/types/GraphManagementStore/metadataConfigsStore';
@@ -30,6 +30,7 @@ import CloseIcon from '../../../../assets/imgs/ic_close_16.svg';
 import WhiteCloseIcon from '../../../../assets/imgs/ic_close_white.svg';
 import './MetadataProperties.less';
 import ReuseProperties from './ReuseProperties';
+import { AppStoreContext } from '../../../../stores';
 
 const styles = {
   button: {
@@ -83,13 +84,14 @@ const variants = {
 };
 
 const MetadataProperties: React.FC = observer(() => {
-  const dataAnalyzeStore = useContext(DataAnalyzeStore);
+  // const dataAnalyzeStore = useContext(DataAnalyzeStore);
   const metadataConfigsRootStore = useContext(MetadataConfigsRootStore);
   const { metadataPropertyStore, graphViewStore } = metadataConfigsRootStore;
   const [preLoading, switchPreLoading] = useState(true);
   const [sortOrder, setSortOrder] = useState('');
   const [selectedRowKeys, mutateSelectedRowKeys] = useState<string[]>([]);
   const [isShowModal, switchShowModal] = useState(false);
+  const appStore = useContext(AppStoreContext)
 
   const isLoading =
     preLoading ||
@@ -397,7 +399,7 @@ const MetadataProperties: React.FC = observer(() => {
   }, [sortOrder]);
 
   useEffect(() => {
-    if (metadataConfigsRootStore.currentId !== null) {
+    if (appStore.graphs !== "null") {
       metadataPropertyStore.fetchMetadataPropertyList();
     }
 
@@ -406,7 +408,8 @@ const MetadataProperties: React.FC = observer(() => {
     };
   }, [
     metadataPropertyStore,
-    metadataConfigsRootStore.currentId,
+    appStore.graphs,
+    appStore.tenant,
     graphViewStore
   ]);
 

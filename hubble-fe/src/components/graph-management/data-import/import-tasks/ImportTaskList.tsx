@@ -9,6 +9,7 @@ import { Button, Input, Table, Modal, Message } from '@baidu/one-ui';
 import LoadingDataView from '../../../common/LoadingDataView';
 import { Tooltip as CustomTooltip } from '../../../common';
 import {
+  AppStoreContext,
   DataImportRootStoreContext,
   ImportManagerStoreContext
 } from '../../../../stores';
@@ -34,6 +35,7 @@ const ImportTaskList: React.FC = observer(() => {
   );
   const [, setLocation] = useLocation();
   const { t } = useTranslation();
+  const appStore = useContext(AppStoreContext)
 
   const isLoading =
     preLoading ||
@@ -93,8 +95,7 @@ const ImportTaskList: React.FC = observer(() => {
                   dataImportRootStore.fetchEdgeTypeList();
 
                   setLocation(
-                    `/graph-management/${
-                      params!.id
+                    `/graph-management/${params!.id
                     }/data-import/import-manager/${rowData.id}/details`
                   );
 
@@ -227,14 +228,14 @@ const ImportTaskList: React.FC = observer(() => {
   ];
 
   useEffect(() => {
-    if (importManagerStore.currentId !== null) {
+    if (appStore.graphs != "null") {
       setTimeout(() => {
         switchPreLoading(false);
       }, 800);
 
       importManagerStore.fetchImportJobList();
     }
-  }, [importManagerStore.currentId]);
+  }, [appStore.tenant,appStore.graphs]);
 
   return (
     <div className="import-manager-content-wrapper">
@@ -284,14 +285,14 @@ const ImportTaskList: React.FC = observer(() => {
             isLoading
               ? null
               : {
-                  hideOnSinglePage: false,
-                  pageNo: importManagerStore.importJobListPageConfig.pageNumber,
-                  pageSize: 10,
-                  showSizeChange: false,
-                  showPageJumper: false,
-                  total: importManagerStore.importJobListPageConfig.pageTotal,
-                  onPageNoChange: handlePageChange
-                }
+                hideOnSinglePage: false,
+                pageNo: importManagerStore.importJobListPageConfig.pageNumber,
+                pageSize: 10,
+                showSizeChange: false,
+                showPageJumper: false,
+                total: importManagerStore.importJobListPageConfig.pageTotal,
+                onPageNoChange: handlePageChange
+              }
           }
         />
       </div>
@@ -438,7 +439,6 @@ export const ImportManagerManipulation: React.FC<ImportManagerManipulationProps>
 
     const jumpToLoaction = (step: number, jobName: string) => async () => {
       importManagerStore.setSelectedJob(jobId);
-
       dataImportRootStore.setCurrentId(Number(params!.id));
       dataImportRootStore.setCurrentJobId(jobId);
       dataImportRootStore.setCurrentStatus(status);
@@ -508,8 +508,7 @@ export const ImportManagerManipulation: React.FC<ImportManagerManipulationProps>
       dataImportRootStore.setCurrentStep(step);
 
       setLocation(
-        `/graph-management/${
-          params!.id
+        `/graph-management/${params!.id
         }/data-import/import-manager/${jobId}/import-tasks/${route}`
       );
     };

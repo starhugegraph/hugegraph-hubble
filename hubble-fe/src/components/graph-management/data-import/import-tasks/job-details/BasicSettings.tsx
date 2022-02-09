@@ -2,7 +2,6 @@ import React, { useState, useContext, useEffect } from 'react';
 import { observer } from 'mobx-react';
 import { isEmpty, isNull, isUndefined } from 'lodash-es';
 import { useRoute } from 'wouter';
-import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { Button, Modal, Input, Message } from '@baidu/one-ui';
 

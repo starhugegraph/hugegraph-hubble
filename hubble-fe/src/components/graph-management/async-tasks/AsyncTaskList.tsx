@@ -21,7 +21,8 @@ import {
 
 import {
   GraphManagementStoreContext,
-  AsyncTasksStoreContext
+  AsyncTasksStoreContext,
+  AppStoreContext
 } from '../../../stores';
 import { LoadingDataView, Tooltip } from '../../common';
 import AddIcon from '../../../assets/imgs/ic_add.svg';
@@ -41,11 +42,19 @@ const AsyncTaskList: React.FC = observer(() => {
   const [isShowBatchDeleteModal, switchShowBatchDeleteModal] = useState(false);
   const [preLoading, switchPreLoading] = useState(true);
   const [isInLoop, switchInLoop] = useState(false);
+  const appStore = useContext(AppStoreContext)
 
   const deleteWrapperRef = useRef<HTMLDivElement>(null);
 
   const { t } = useTranslation();
 
+  useEffect(() => {
+    appStore.setMenuObj({
+      c_key: "1",
+      f_key: "sub1"
+    })
+    appStore.setCurrentKey("1")
+  }, [])
   const currentSelectedRowKeys = intersection(
     selectedRowKeys,
     asyncTasksStore.asyncTaskList.map(({ id }) => id)
@@ -182,9 +191,8 @@ const AsyncTaskList: React.FC = observer(() => {
       width: '18%',
       render(timeStamp: string) {
         const date = new Date(timeStamp);
-        const convertedDate = `${date.toISOString().split('T')[0]} ${
-          date.toTimeString().split(' ')[0]
-        }`;
+        const convertedDate = `${date.toISOString().split('T')[0]} ${date.toTimeString().split(' ')[0]
+          }`;
 
         return (
           <div className="no-line-break" title={convertedDate}>
@@ -310,7 +318,7 @@ const AsyncTaskList: React.FC = observer(() => {
   });
 
   useEffect(() => {
-    if (params !== null) {
+    if (appStore.graphs != "null") {
       graphManagementStore.fetchIdList();
       asyncTasksStore.setCurrentId(Number(params!.id));
       let startTime = new Date().getTime();
@@ -366,7 +374,7 @@ const AsyncTaskList: React.FC = observer(() => {
       };
     }
     // when page number changed, dispatch current useEffect to loop again
-  }, [params?.id, asyncTasksStore.asyncTasksPageConfig.pageNumber]);
+  }, [params?.id, asyncTasksStore.asyncTasksPageConfig.pageNumber,appStore.tenant,appStore.graphs]);
 
   useEffect(() => {
     document.addEventListener('click', handleOutSideClick, false);
@@ -495,7 +503,7 @@ const AsyncTaskList: React.FC = observer(() => {
                                 .fetchAsyncTaskList === 'success' &&
                               size(asyncTasksStore.asyncTaskList) === 0 &&
                               asyncTasksStore.asyncTasksPageConfig.pageNumber >
-                                1
+                              1
                             ) {
                               asyncTasksStore.mutateAsyncTasksPageNumber(
                                 asyncTasksStore.asyncTasksPageConfig
@@ -777,16 +785,16 @@ export const AsyncTaskListManipulation: React.FC<AsyncTaskListManipulationProps>
           status === 'queued' ||
           status === 'running' ||
           status === 'restoring') && (
-          <span
-            onClick={async () => {
-              await asyncTasksStore.abortAsyncTask(id);
-              asyncTasksStore.fetchAsyncTaskList();
-            }}
-            style={{ marginLeft: shouldLeftMargin ? '16px' : 0 }}
-          >
-            {t('async-tasks.manipulations.abort')}
-          </span>
-        )}
+            <span
+              onClick={async () => {
+                await asyncTasksStore.abortAsyncTask(id);
+                asyncTasksStore.fetchAsyncTaskList();
+              }}
+              style={{ marginLeft: shouldLeftMargin ? '16px' : 0 }}
+            >
+              {t('async-tasks.manipulations.abort')}
+            </span>
+          )}
         {status === 'cancelling' && (
           <div style={{ marginLeft: shouldLeftMargin ? '16px' : 0 }}>
             <Loading type="strong" style={{ padding: 0 }} />

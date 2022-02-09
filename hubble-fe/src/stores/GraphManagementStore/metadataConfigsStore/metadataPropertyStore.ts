@@ -14,12 +14,14 @@ import {
   CheckedReusableData,
   NewMetadataProperty
 } from '../../types/GraphManagementStore/metadataConfigsStore';
+import AppStoreContext from '../../appStore';
 
 export class MetadataPropertyStore {
   metadataConfigsRootStore: MetadataConfigsRootStore;
-
+  appStore: any
   constructor(MetadataConfigsRootStore: MetadataConfigsRootStore) {
     this.metadataConfigsRootStore = MetadataConfigsRootStore;
+    this.appStore = AppStoreContext
   }
 
   @observable validateLicenseOrMemories = true;
@@ -322,16 +324,11 @@ export class MetadataPropertyStore {
     options?: { fetchAll?: boolean; reuseId?: number }
   ) {
     this.requestStatus.fetchMetadataPropertyList = 'pending';
-    const conn_id =
-      options && typeof options.reuseId === 'number'
-        ? options.reuseId
-        : this.metadataConfigsRootStore.currentId;
-
     try {
       const result: AxiosResponse<responseData<
         MetadataPropertyListResponse
       >> = yield axios
-        .get(`${baseUrl}/${conn_id}/schema/propertykeys`, {
+        .get(`${baseUrl}/${this.appStore._currentValue.tenant}/graphs/${this.appStore._currentValue.graphs}/schema/propertykeys`, {
           params: {
             page_no: this.metadataPropertyPageConfig.pageNumber,
             page_size: !options ? 10 : -1,
@@ -391,7 +388,7 @@ export class MetadataPropertyStore {
         Record<string, boolean>
       >> = yield axios
         .post(
-          `${baseUrl}/${this.metadataConfigsRootStore.currentId}/schema/propertykeys/check_using`,
+          `${baseUrl}/${this.appStore._currentValue.tenant}/graphs/${this.appStore._currentValue.graphs}/schema/propertykeys/check_using`,
           {
             names: selectedPropertyNames
           }
@@ -418,7 +415,7 @@ export class MetadataPropertyStore {
     try {
       const result: AxiosResponse<responseData<null>> = yield axios
         .post(
-          `${baseUrl}/${this.metadataConfigsRootStore.currentId}/schema/propertykeys`,
+          `${baseUrl}/${this.appStore._currentValue.tenant}/graphs/${this.appStore._currentValue.graphs}/schema/propertykeys`,
           {
             name: this.newMetadataProperty._name,
             data_type:
@@ -450,11 +447,11 @@ export class MetadataPropertyStore {
     try {
       const result: AxiosResponse<responseData<null>> = yield axios
         .delete(
-          `${baseUrl}/${this.metadataConfigsRootStore.currentId}/schema/propertykeys?` +
-            selectedPropertyNames
-              .map((name) => 'names=' + encodeURIComponent(name))
-              .join('&') +
-            `&skip_using=${String(selectedPropertyNames.length !== 1)}`
+          `${baseUrl}/${this.appStore._currentValue.tenant}/graphs/${this.appStore._currentValue.graphs}/schema/propertykeys?` +
+          selectedPropertyNames
+            .map((name) => 'names=' + encodeURIComponent(name))
+            .join('&') +
+          `&skip_using=${String(selectedPropertyNames.length !== 1)}`
         )
         .catch(checkIfLocalNetworkOffline);
 
@@ -465,7 +462,7 @@ export class MetadataPropertyStore {
       if (
         selectedPropertyNames.length === this.metadataProperties.length &&
         this.metadataPropertyPageConfig.pageNumber ===
-          Math.ceil(this.metadataPropertyPageConfig.pageTotal / 10) &&
+        Math.ceil(this.metadataPropertyPageConfig.pageTotal / 10) &&
         this.metadataPropertyPageConfig.pageNumber > 1
       ) {
         this.metadataPropertyPageConfig.pageNumber =
@@ -490,7 +487,7 @@ export class MetadataPropertyStore {
         CheckedReusableData
       >> = yield axios
         .post(
-          `${baseUrl}/${this.metadataConfigsRootStore.currentId}/schema/propertykeys/check_conflict`,
+          `${baseUrl}/${this.appStore._currentValue.tenant}/graphs/${this.appStore._currentValue.graphs}/schema/propertykeys/check_conflict`,
           {
             propertykeys: selectedNameList.map((selectedName) =>
               this.reuseableProperties.find(({ name }) => name === selectedName)
@@ -522,7 +519,7 @@ export class MetadataPropertyStore {
         CheckedReusableData
       >> = yield axios
         .post(
-          `${baseUrl}/${this.metadataConfigsRootStore.currentId}/schema/propertykeys/recheck_conflict`,
+          `${baseUrl}/${this.appStore._currentValue.tenant}/graphs/${this.appStore._currentValue.graphs}/schema/propertykeys/recheck_conflict`,
           {
             propertykeys: this.editedCheckedReusableProperties!.propertykey_conflicts.map(
               ({ entity }) => ({
@@ -554,7 +551,7 @@ export class MetadataPropertyStore {
     try {
       const result: AxiosResponse<responseData<null>> = yield axios
         .post(
-          `${baseUrl}/${this.metadataConfigsRootStore.currentId}/schema/propertykeys/reuse`,
+          `${baseUrl}/${this.appStore._currentValue.tenant}/graphs/${this.appStore._currentValue.graphs}/schema/propertykeys/reuse`,
           this.editedCheckedReusableProperties!
         )
         .catch(checkIfLocalNetworkOffline);
