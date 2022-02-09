@@ -31,9 +31,9 @@ import type { EdgeTypeValidatePropertyIndexes } from '../../../../stores/types/G
 
 import BlueArrowIcon from '../../../../assets/imgs/ic_arrow_blue.svg';
 import CloseIcon from '../../../../assets/imgs/ic_close_16.svg';
-import SelectedSoilidArrowIcon from '../../../../assets/imgs/ic_arrow_selected.svg';
+// import SelectedSoilidArrowIcon from '../../../../assets/imgs/ic_arrow_selected.svg';
 import NoSelectedSoilidArrowIcon from '../../../../assets/imgs/ic_arrow.svg';
-import SelectedSoilidStraightIcon from '../../../../assets/imgs/ic_straight_selected.svg';
+// import SelectedSoilidStraightIcon from '../../../../assets/imgs/ic_straight_selected.svg';
 import NoSelectedSoilidStraightIcon from '../../../../assets/imgs/ic_straight.svg';
 
 const propertyIndexTypeMappings: Record<string, string> = {

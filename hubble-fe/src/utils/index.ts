@@ -1,5 +1,7 @@
 import convertStringToJSON from './convertStringToJSON';
 import getUnicodeLength from './getUnicodeLength';
+import userStorage from './storage'
+
 import {
   AlgorithmInternalNameMapping,
   formatAlgorithmStatement
@@ -12,6 +14,7 @@ import {
 } from './filterEmptyAlgorightmParams';
 
 export {
+  userStorage,
   convertStringToJSON,
   getUnicodeLength,
   AlgorithmInternalNameMapping,

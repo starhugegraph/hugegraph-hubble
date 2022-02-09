@@ -35,7 +35,7 @@ import MetadataConfigsRootStore from '../../../../stores/GraphManagementStore/me
 
 import NewEdgeType from './NewEdgeType';
 import ReuseEdgeTypes from './ReuseEdgeTypes';
-import DataAnalyzeStore from '../../../../stores/GraphManagementStore/dataAnalyzeStore/dataAnalyzeStore';
+// import DataAnalyzeStore from '../../../../stores/GraphManagementStore/dataAnalyzeStore/dataAnalyzeStore';
 import { formatVertexIdText } from '../../../../stores/utils';
 
 import type {
@@ -47,14 +47,15 @@ import AddIcon from '../../../../assets/imgs/ic_add.svg';
 import BlueArrowIcon from '../../../../assets/imgs/ic_arrow_blue.svg';
 import WhiteCloseIcon from '../../../../assets/imgs/ic_close_white.svg';
 import CloseIcon from '../../../../assets/imgs/ic_close_16.svg';
-import LoadingBackIcon from '../../../../assets/imgs/ic_loading_back.svg';
-import LoadingFrontIcon from '../../../../assets/imgs/ic_loading_front.svg';
-import SelectedSoilidArrowIcon from '../../../../assets/imgs/ic_arrow_selected.svg';
+// import LoadingBackIcon from '../../../../assets/imgs/ic_loading_back.svg';
+// import LoadingFrontIcon from '../../../../assets/imgs/ic_loading_front.svg';
+// import SelectedSoilidArrowIcon from '../../../../assets/imgs/ic_arrow_selected.svg';
 import NoSelectedSoilidArrowIcon from '../../../../assets/imgs/ic_arrow.svg';
-import SelectedSoilidStraightIcon from '../../../../assets/imgs/ic_straight_selected.svg';
+// import SelectedSoilidStraightIcon from '../../../../assets/imgs/ic_straight_selected.svg';
 import NoSelectedSoilidStraightIcon from '../../../../assets/imgs/ic_straight.svg';
 
 import './EdgeTypeList.less';
+import { AppStoreContext } from '../../../../stores';
 
 const styles = {
   button: {
@@ -103,6 +104,7 @@ const propertyIndexTypeMappings: Record<string, string> = {
 
 const EdgeTypeList: React.FC = observer(() => {
   const metadataConfigsRootStore = useContext(MetadataConfigsRootStore);
+  const appStore = useContext(AppStoreContext);
   const { metadataPropertyStore, edgeTypeStore } = metadataConfigsRootStore;
   const [preLoading, switchPreLoading] = useState(true);
   const [sortOrder, setSortOrder] = useState('');
@@ -386,7 +388,7 @@ const EdgeTypeList: React.FC = observer(() => {
   });
 
   useEffect(() => {
-    if (metadataConfigsRootStore.currentId !== null) {
+    if (appStore.graphs != "null") {
       metadataPropertyStore.fetchMetadataPropertyList({ fetchAll: true });
       edgeTypeStore.fetchEdgeTypeList();
     }
@@ -396,7 +398,8 @@ const EdgeTypeList: React.FC = observer(() => {
     };
   }, [
     metadataPropertyStore,
-    metadataConfigsRootStore.currentId,
+    appStore.graphs,
+    appStore.tenant,
     edgeTypeStore
   ]);
 

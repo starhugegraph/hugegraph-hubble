@@ -1,4 +1,4 @@
-import { createContext } from 'react';
+import { createContext, useContext } from 'react';
 import { observable, action, flow, computed, runInAction } from 'mobx';
 import axios, { AxiosResponse } from 'axios';
 import {
@@ -56,7 +56,7 @@ import type {
   FavoriteQuery,
   FavoriteQueryResponse,
   EditableProperties,
-  ShortestPathAlgorithmParams,
+/*   ShortestPathAlgorithmParams,
   LoopDetectionParams,
   FocusDetectionParams,
   ShortestPathAllAlgorithmParams,
@@ -72,7 +72,7 @@ import type {
   Jaccard,
   PersonalRank,
   CustomPathRule,
-  KStepNeighbor
+  KStepNeighbor */
 } from '../../types/GraphManagementStore/dataAnalyzeStore';
 import type {
   VertexTypeListResponse,
@@ -86,6 +86,8 @@ import {
   removeLabelKey,
   filterEmptyAlgorightmParams
 } from '../../../utils';
+import { AppStore } from '../../appStore';
+import AppStoreContext from '../../appStore';
 
 const ruleMap: RuleMap = {
   大于: 'gt',
@@ -115,11 +117,14 @@ const monthMaps: Record<string, string> = {
 export class DataAnalyzeStore {
   [key: string]: any;
   algorithmAnalyzerStore: AlgorithmAnalyzerStore;
+  appStore:any
 
   constructor() {
     this.algorithmAnalyzerStore = new AlgorithmAnalyzerStore(this);
+    this.appStore = AppStoreContext
+    
   }
-
+  
   @observable currentId: number | null = null;
   @observable currentTab = 'gremlin-analyze';
   @observable searchText = '';
@@ -143,9 +148,9 @@ export class DataAnalyzeStore {
     'time' | 'name',
     'desc' | 'asc' | ''
   > = {
-    time: '',
-    name: ''
-  };
+      time: '',
+      name: ''
+    };
 
   // vis instance
   @observable.ref visNetwork: vis.Network | null = null;
@@ -224,21 +229,21 @@ export class DataAnalyzeStore {
       pageSize?: number;
     };
   } = {
-    tableResult: {
-      pageNumber: 1,
-      pageTotal: 0
-    },
-    executionLog: {
-      pageNumber: 1,
-      pageSize: 10,
-      pageTotal: 0
-    },
-    favoriteQueries: {
-      pageNumber: 1,
-      pageSize: 10,
-      pageTotal: 0
-    }
-  };
+      tableResult: {
+        pageNumber: 1,
+        pageTotal: 0
+      },
+      executionLog: {
+        pageNumber: 1,
+        pageSize: 10,
+        pageTotal: 0
+      },
+      favoriteQueries: {
+        pageNumber: 1,
+        pageSize: 10,
+        pageTotal: 0
+      }
+    };
 
   @observable.shallow requestStatus = initalizeRequestStatus();
   @observable errorInfo = initalizeErrorInfo();
@@ -260,9 +265,9 @@ export class DataAnalyzeStore {
         // rather in schema manager, there's no style in default
         const joinedLabel = !isUndefined(this.vertexWritingMappings[label])
           ? this.vertexWritingMappings[label]
-              .map((field) => (field === '~id' ? id : properties[field]))
-              .filter((label) => label !== undefined && label !== null)
-              .join('-')
+            .map((field) => (field === '~id' ? id : properties[field]))
+            .filter((label) => label !== undefined && label !== null)
+            .join('-')
           : id;
 
         return {
@@ -338,8 +343,8 @@ export class DataAnalyzeStore {
         // rather in schema manager, there's no style in default
         const joinedLabel = !isUndefined(this.edgeWritingMappings[label])
           ? this.edgeWritingMappings[label]
-              .map((field) => (field === '~id' ? label : properties[field]))
-              .join('-')
+            .map((field) => (field === '~id' ? label : properties[field]))
+            .join('-')
           : label;
 
         return {
@@ -491,11 +496,11 @@ export class DataAnalyzeStore {
     const selectedLabel =
       type === 'vertex'
         ? this.vertexTypes.find(
-            ({ name }) => name === this.selectedGraphData.label
-          )
+          ({ name }) => name === this.selectedGraphData.label
+        )
         : this.edgeTypes.find(
-            ({ name }) => name === this.selectedGraphLinkData.label
-          );
+          ({ name }) => name === this.selectedGraphLinkData.label
+        );
 
     if (!isUndefined(selectedLabel)) {
       const selectedGraphData =
@@ -698,16 +703,16 @@ export class DataAnalyzeStore {
       algorithm_name:
         this.currentTab === 'algorithm-analyze'
           ? invert(AlgorithmInternalNameMapping)[
-              this.algorithmAnalyzerStore.currentAlgorithm
-            ]
+          this.algorithmAnalyzerStore.currentAlgorithm
+          ]
           : '',
       async_status: 'UNKNOWN',
       type:
         this.currentTab === 'algorithm-analyze'
           ? 'ALGORITHM'
           : this.queryMode === 'query'
-          ? 'GREMLIN'
-          : 'GREMLIN_ASYNC',
+            ? 'GREMLIN'
+            : 'GREMLIN_ASYNC',
       content:
         this.currentTab === 'algorithm-analyze'
           ? JSON.stringify(this.algorithmAnalyzerStore.currentAlgorithmParams)
@@ -1188,18 +1193,17 @@ export class DataAnalyzeStore {
       this.requestStatus.fetchIdList = 'success';
     } catch (error) {
       this.requestStatus.fetchIdList = 'failed';
-      this.errorInfo.fetchIdList.message = error.message;
-      console.error(error.message);
+      this.errorInfo.fetchIdList.message = (error as any).message;
+      console.error((error as any).message);
     }
   });
 
   // to know the type of properties
   fetchValueTypes = flow(function* fetchValueTypes(this: DataAnalyzeStore) {
     this.requestStatus.fetchValueTypes = 'pending';
-
     try {
       const result = yield axios.get<ValueTypes>(
-        `${baseUrl}/${this.currentId}/schema/propertykeys`,
+        `${baseUrl}/${this.appStore._currentValue.tenant}/graphs/${this.appStore._currentValue.graphs}/schema/propertykeys`,
         {
           params: {
             page_size: -1
@@ -1232,13 +1236,12 @@ export class DataAnalyzeStore {
     this: DataAnalyzeStore
   ) {
     this.requestStatus.fetchVertexTypeList = 'pending';
-
     try {
       const result: AxiosResponse<responseData<
         VertexTypeListResponse
       >> = yield axios
         .get<responseData<VertexTypeListResponse>>(
-          `${baseUrl}/${this.currentId}/schema/vertexlabels`,
+          `${baseUrl}/${this.appStore._currentValue.tenant}/graphs/${this.appStore._currentValue.graphs}/schema/vertexlabels`,
           {
             params: {
               page_size: -1
@@ -1262,11 +1265,10 @@ export class DataAnalyzeStore {
 
   fetchColorSchemas = flow(function* fetchColorSchemas(this: DataAnalyzeStore) {
     this.requestStatus.fetchColorSchemas = 'pending';
-
     try {
       const result: AxiosResponse<FetchColorSchemas> = yield axios.get<
         FetchGraphResponse
-      >(`${baseUrl}/${this.currentId}/schema/vertexlabels/style`);
+      >(`${baseUrl}/${this.appStore._currentValue.tenant}/graphs/${this.appStore._currentValue.graphs}/schema/vertexlabels/style`);
 
       if (result.data.status !== 200) {
         this.errorInfo.fetchColorSchemas.code = result.data.status;
@@ -1284,10 +1286,9 @@ export class DataAnalyzeStore {
 
   fetchColorList = flow(function* fetchColorList(this: DataAnalyzeStore) {
     this.requestStatus.fetchColorList = 'pending';
-
     try {
       const result: AxiosResponse<responseData<string[]>> = yield axios.get(
-        `${baseUrl}/${this.currentId}/schema/vertexlabels/optional-colors`
+        `${baseUrl}/${this.appStore._currentValue.tenant}/graphs/${this.appStore._currentValue.graphs}/schema/vertexlabels/optional-colors`
       );
 
       if (result.data.status !== 200) {
@@ -1308,7 +1309,7 @@ export class DataAnalyzeStore {
     try {
       const result: AxiosResponse<responseData<
         VertexTypeListResponse
-      >> = yield axios.get(`${baseUrl}/${this.currentId}/schema/vertexlabels`, {
+      >> = yield axios.get(`${baseUrl}/${this.appStore._currentValue.tenant}/graphs/${this.appStore._currentValue.graphs}/schema/vertexlabels`, {
         params: {
           page_no: 1,
           page_size: -1
@@ -1341,11 +1342,10 @@ export class DataAnalyzeStore {
 
   fetchEdgeTypes = flow(function* fetchEdgeTypes(this: DataAnalyzeStore) {
     this.requestStatus.fetchEdgeTypes = 'pending';
-
     try {
       const result: AxiosResponse<responseData<
         EdgeTypeListResponse
-      >> = yield axios.get(`${baseUrl}/${this.currentId}/schema/edgelabels`, {
+      >> = yield axios.get(`${baseUrl}/${this.appStore._currentValue.tenant}/graphs/${this.appStore._currentValue.graphs}/schema/edgelabels`, {
         params: {
           page_no: 1,
           page_size: -1
@@ -1367,11 +1367,10 @@ export class DataAnalyzeStore {
 
   fetchAllEdgeStyle = flow(function* fetchAllEdgeStyle(this: DataAnalyzeStore) {
     this.requestStatus.fetchAllEdgeStyle = 'pending';
-
     try {
       const result: AxiosResponse<responseData<
         EdgeTypeListResponse
-      >> = yield axios.get(`${baseUrl}/${this.currentId}/schema/edgelabels`, {
+      >> = yield axios.get(`${baseUrl}/${this.appStore._currentValue.tenant}/graphs/${this.appStore._currentValue.graphs}/schema/edgelabels`, {
         params: {
           page_no: 1,
           page_size: -1
@@ -1413,7 +1412,7 @@ export class DataAnalyzeStore {
 
     try {
       const result = yield axios
-        .get(`${baseUrl}/${this.currentId}/schema/propertyindexes`, {
+        .get(`${baseUrl}/${this.appStore._currentValue.tenant}/graphs/${this.appStore._currentValue.graphs}/schema/propertyindexes`, {
           params: {
             page_size: -1,
             is_vertex_label: indexType === 'vertex'
@@ -1807,7 +1806,7 @@ export class DataAnalyzeStore {
       if (!isUndefined(algorithmConfigs)) {
         result = yield axios
           .post<FetchGraphResponse>(
-            `${baseUrl}/${this.currentId}/algorithms/${algorithmConfigs.url}`,
+            `${baseUrl}/${this.appStore._currentValue.tenant}/graphs/${this.appStore._currentValue.graphs}/algorithms/${algorithmConfigs.url}`,
             {
               ...params
             }
@@ -1816,7 +1815,7 @@ export class DataAnalyzeStore {
       } else {
         result = yield axios
           .post<FetchGraphResponse>(
-            `${baseUrl}/${this.currentId}/gremlin-query`,
+            `${baseUrl}/${this.appStore._currentValue.tenant}/graphs/${this.appStore._currentValue.graphs}/gremlin-query`,
             {
               content: this.codeEditorText
             }
@@ -1872,7 +1871,7 @@ export class DataAnalyzeStore {
     try {
       const result: AxiosResponse<FetchGraphResponse> = yield axios
         .post<FetchGraphResponse>(
-          `${baseUrl}/${this.currentId}/gremlin-query/async-task`,
+          `${baseUrl}/${this.appStore._currentValue.tenant}/graphs/${this.appStore._currentValue.graphs}/gremlin-query/async-task`,
           {
             content: this.codeEditorText
           }
@@ -1905,7 +1904,7 @@ export class DataAnalyzeStore {
       });
 
       const result: AxiosResponse<responseData<GraphView>> = yield axios.post(
-        `${baseUrl}/${this.currentId}/graph/vertex`,
+        `${baseUrl}/${this.appStore._currentValue.tenant}/graphs/${this.appStore._currentValue.graphs}/graph/vertex`,
         {
           id: this.newGraphNodeConfigs.id,
           label: this.newGraphNodeConfigs.label,
@@ -1940,7 +1939,7 @@ export class DataAnalyzeStore {
       const result: AxiosResponse<responseData<string[]>> = yield axios.get<
         responseData<string[]>
       >(
-        `${baseUrl}/${this.currentId}/schema/vertexlabels/${this.rightClickedGraphData.label}/link`
+        `${baseUrl}/${this.appStore._currentValue.tenant}/graphs/${this.appStore._currentValue.graphs}/schema/vertexlabels/${this.rightClickedGraphData.label}/link`
       );
 
       if (result.data.status !== 200) {
@@ -1979,7 +1978,7 @@ export class DataAnalyzeStore {
       });
 
       const result: AxiosResponse<responseData<GraphView>> = yield axios.post(
-        `${baseUrl}/${this.currentId}/graph/edge`,
+        `${baseUrl}/${this.appStore._currentValue.tenant}/graphs/${this.appStore._currentValue.graphs}/graph/edge`,
         {
           label: this.newGraphEdgeConfigs.label,
           source: vertices[0],
@@ -2030,7 +2029,7 @@ export class DataAnalyzeStore {
 
     try {
       const result: AxiosResponse<FetchGraphResponse> = yield axios.put(
-        `${baseUrl}/${this.currentId}/gremlin-query`,
+        `${baseUrl}/${this.appStore._currentValue.tenant}/graphs/${this.appStore._currentValue.graphs}/gremlin-query`,
         {
           vertex_id: nodeId || this.rightClickedGraphData.id,
           vertex_label: label || this.rightClickedGraphData.label
@@ -2164,22 +2163,21 @@ export class DataAnalyzeStore {
       const result: AxiosResponse<responseData<
         GraphNode | GraphEdge
       >> = yield axios.put<responseData<GraphNode | GraphEdge>>(
-        `${baseUrl}/${this.currentId}/graph/${
-          this.graphInfoDataSet === 'node' ? 'vertex' : 'edge'
+        `${baseUrl}/${this.appStore._currentValue.tenant}/graphs/${this.appStore._currentValue.graphs}/graph/${this.graphInfoDataSet === 'node' ? 'vertex' : 'edge'
         }/${encodeURIComponent(id)}`,
         this.graphInfoDataSet === 'node'
           ? {
-              id,
-              label,
-              properties: editedProperties
-            }
+            id,
+            label,
+            properties: editedProperties
+          }
           : {
-              id,
-              label,
-              properties: editedProperties,
-              source: this.selectedGraphLinkData.source,
-              target: this.selectedGraphLinkData.target
-            }
+            id,
+            label,
+            properties: editedProperties,
+            source: this.selectedGraphLinkData.source,
+            target: this.selectedGraphLinkData.target
+          }
       );
 
       if (result.data.status !== 200) {
@@ -2228,7 +2226,7 @@ export class DataAnalyzeStore {
 
     try {
       const result = yield axios.get(
-        `${baseUrl}/${this.currentId}/schema/vertexlabels/${this.rightClickedGraphData.label}/link`
+        `${baseUrl}/${this.appStore._currentValue.tenant}/graphs/${this.appStore._currentValue.graphs}/schema/vertexlabels/${this.rightClickedGraphData.label}/link`
       );
 
       if (result.data.status !== 200) {
@@ -2258,7 +2256,7 @@ export class DataAnalyzeStore {
 
     try {
       const result: AxiosResponse<FetchFilteredPropertyOptions> = yield axios.get(
-        `${baseUrl}/${this.currentId}/schema/edgelabels/${edgeName}`
+        `${baseUrl}/${this.appStore._currentValue.tenant}/graphs/${this.appStore._currentValue.graphs}/schema/edgelabels/${edgeName}`
       );
 
       if (result.data.status !== 200) {
@@ -2281,7 +2279,7 @@ export class DataAnalyzeStore {
 
     try {
       const result: AxiosResponse<FetchGraphResponse> = yield axios.put(
-        `${baseUrl}/${this.currentId}/gremlin-query`,
+        `${baseUrl}/${this.appStore._currentValue.tenant}/graphs/${this.appStore._currentValue.graphs}/gremlin-query`,
         {
           vertex_id: this.rightClickedGraphData.id,
           vertex_label: this.rightClickedGraphData.label,
@@ -2381,7 +2379,7 @@ export class DataAnalyzeStore {
 
     try {
       const result = yield axios.post<AddQueryCollectionParams>(
-        `${baseUrl}/${this.currentId}/gremlin-collections`,
+        `${baseUrl}/${this.appStore._currentValue.tenant}/graphs/${this.appStore._currentValue.graphs}/gremlin-collections`,
         {
           name,
           content: content || this.codeEditorText
@@ -2411,7 +2409,7 @@ export class DataAnalyzeStore {
 
     try {
       const result = yield axios.put<AddQueryCollectionParams>(
-        `${baseUrl}/${this.currentId}/gremlin-collections/${id}`,
+        `${baseUrl}/${this.appStore._currentValue.tenant}/graphs/${this.appStore._currentValue.graphs}/gremlin-collections/${id}`,
         {
           name,
           content
@@ -2439,7 +2437,7 @@ export class DataAnalyzeStore {
 
     try {
       const result = yield axios.delete(
-        `${baseUrl}/${this.currentId}/gremlin-collections/${id}`
+        `${baseUrl}/${this.appStore._currentValue.tenant}/graphs/${this.appStore._currentValue.graphs}/gremlin-collections/${id}`
       );
 
       if (result.data.status !== 200) {
@@ -2472,7 +2470,7 @@ export class DataAnalyzeStore {
     try {
       const result: AxiosResponse<ExecutionLogsResponse> = yield axios.get<
         ExecutionLogsResponse
-      >(`${baseUrl}/${this.currentId}/execute-histories`, {
+      >(`${baseUrl}/${this.appStore._currentValue.tenant}/graphs/${this.appStore._currentValue.graphs}/execute-histories`, {
         params: {
           page_size: this.pageConfigs.executionLog.pageSize,
           page_no: this.pageConfigs.executionLog.pageNumber
@@ -2498,7 +2496,7 @@ export class DataAnalyzeStore {
     this: DataAnalyzeStore
   ) {
     const url =
-      `${baseUrl}/${this.currentId}/gremlin-collections?` +
+      `${baseUrl}/${this.appStore._currentValue.tenant}/graphs/${this.appStore._currentValue.graphs}/gremlin-collections?` +
       `&page_no=${this.pageConfigs.favoriteQueries.pageNumber}` +
       `&page_size=${this.pageConfigs.favoriteQueries.pageSize}` +
       (this.favoriteQueriesSortOrder.time !== ''

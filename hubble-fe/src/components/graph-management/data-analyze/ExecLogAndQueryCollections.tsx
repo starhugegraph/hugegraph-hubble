@@ -35,7 +35,7 @@ import type {
   ModelSimilarityParams,
   NeighborRankParams,
   CustomPathParams,
-  CustomPathRule
+  // CustomPathRule
 } from '../../../stores/types/GraphManagementStore/dataAnalyzeStore';
 import { Algorithm } from '../../../stores/factory/dataAnalyzeStore/algorithmStore';
 
