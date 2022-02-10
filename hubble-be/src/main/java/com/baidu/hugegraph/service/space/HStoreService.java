@@ -17,23 +17,30 @@
  * under the License.
  */
 
-package com.baidu.hugegraph.controller.op;
+package com.baidu.hugegraph.service.space;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import com.baomidou.mybatisplus.core.metadata.IPage;
 
 import com.baidu.hugegraph.driver.HugeClient;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.baidu.hugegraph.structure.space.HStoreNodeInfo;
+import com.baidu.hugegraph.util.PageUtil;
+import org.springframework.stereotype.Service;
 
-import com.baidu.hugegraph.common.Constant;
-import com.baidu.hugegraph.controller.BaseController;
+@Service
+public class HStoreService {
+    public IPage<HStoreNodeInfo> listPage(HugeClient client, int pageNo,
+                                          int pageSize) {
+        List<String> nodeNames = client.hStoreManager().list();
+        List<HStoreNodeInfo> result = new ArrayList<>(nodeNames.size());
+        nodeNames.stream().sorted().forEach(node -> {
+            HStoreNodeInfo nodeInfo = client.hStoreManager()
+                                            .get(node);
+            result.add(nodeInfo);
+        });
 
-@RestController
-@RequestMapping(Constant.API_VERSION + "pds")
-public class PDController extends BaseController {
-
-    @GetMapping("status")
-    public Object status() {
-        HugeClient client = this.authClient(null, null);
-        return client.pdManager().status();
+        return PageUtil.page(result, pageNo, pageSize);
     }
 }
