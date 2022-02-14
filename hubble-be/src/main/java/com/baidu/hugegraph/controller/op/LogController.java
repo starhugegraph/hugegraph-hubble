@@ -19,8 +19,12 @@
 
 package com.baidu.hugegraph.controller.op;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.google.common.collect.ImmutableMap;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +37,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.baidu.hugegraph.common.Constant;
 import com.baidu.hugegraph.controller.BaseController;
 import com.baidu.hugegraph.service.op.LogService;
+import com.baidu.hugegraph.entity.op.LogEntity;
+import com.baidu.hugegraph.exception.InternalException;
+import com.baidu.hugegraph.util.JsonUtil;
+
+import javax.servlet.http.HttpServletResponse;
 
 @RestController
 @RequestMapping(Constant.API_VERSION + "logs")
@@ -58,7 +67,34 @@ public class LogController extends BaseController {
 
     @SneakyThrows
     @PostMapping("query")
-    public Object query(@RequestBody LogService.LogReq logReq) {
+    public IPage<LogEntity> query(@RequestBody LogService.LogReq logReq) {
+        logReq.level = "";
         return logService.queryPage(logReq);
+    }
+
+    @SneakyThrows
+    @PostMapping("export")
+    public void export(HttpServletResponse response,
+                       @RequestBody LogService.LogReq logReq) {
+        String fileName = String.format("log.txt", logReq.startDatetime,
+                                        logReq.endDatetime);
+
+        logReq.level = "";
+        response.setCharacterEncoding("UTF-8");
+        response.setContentType("application/octet-stream");
+        response.setHeader("Access-Control-Expose-Headers",
+                           "Content-Disposition");
+        response.setHeader("Content-Disposition",
+                           "attachment;filename=" + fileName);
+        try {
+            OutputStream os = response.getOutputStream();
+            for(LogEntity logEntity : logService.export(logReq)) {
+                os.write((logEntity.getMessage() + "\n")
+                                 .getBytes(StandardCharsets.UTF_8));
+            }
+            os.close();
+        } catch (IOException e) {
+            throw new InternalException("Log Write Error", e);
+        }
     }
 }

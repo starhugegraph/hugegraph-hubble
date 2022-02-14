@@ -21,6 +21,9 @@
 
 package com.baidu.hugegraph.controller.op;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -33,9 +36,15 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.baidu.hugegraph.entity.op.AuditEntity;
+import com.baidu.hugegraph.exception.InternalException;
+import com.baidu.hugegraph.logger.AuditOperationEnum;
+import com.baidu.hugegraph.util.JsonUtil;
 import com.baidu.hugegraph.common.Constant;
 import com.baidu.hugegraph.controller.BaseController;
 import com.baidu.hugegraph.service.op.AuditService;
+
+import javax.servlet.http.HttpServletResponse;
 
 @RestController
 @RequestMapping(Constant.API_VERSION + "audits")
@@ -45,8 +54,8 @@ public class AuditController extends BaseController {
 
     @GetMapping("operations/list")
     public Object listOperations() {
-        // TODO Get Info From Enum
-        List<String> operations = Arrays.stream(Demo.values()).map(Demo::name)
+        List<String> operations = Arrays.stream(AuditOperationEnum.values())
+                                        .map(AuditOperationEnum::getName)
                                         .collect(Collectors.toList());
 
         return operations;
@@ -55,11 +64,30 @@ public class AuditController extends BaseController {
     @SneakyThrows
     @PostMapping("query")
     public Object query(@RequestBody AuditService.AuditReq auditReq) {
-       return auditService.queryPage(auditReq) ;
+        return auditService.queryPage(auditReq);
     }
 
-    enum Demo {
-        Login,
-        Computer
+    @PostMapping("export")
+    public void export(HttpServletResponse response,
+                         @RequestBody AuditService.AuditReq auditReq) {
+        String fileName = String.format("audit.txt", auditReq.startDatetime,
+                                        auditReq.endDatetime);
+
+        response.setCharacterEncoding("UTF-8");
+        response.setContentType("application/octet-stream");
+        response.setHeader("Access-Control-Expose-Headers",
+                           "Content-Disposition");
+        response.setHeader("Content-Disposition",
+                           "attachment;filename=" + fileName);
+        try {
+            OutputStream os = response.getOutputStream();
+            for (AuditEntity auditEntity : auditService.export(auditReq)) {
+                os.write((JsonUtil.toJson(auditEntity) + "\n")
+                                 .getBytes(StandardCharsets.UTF_8));
+            }
+            os.close();
+        } catch (IOException e) {
+            throw new InternalException("Audit Log Write Error", e);
+        }
     }
 }

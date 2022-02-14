@@ -38,29 +38,47 @@ import co.elastic.clients.elasticsearch._types.query_dsl.TermsQueryField;
 import co.elastic.clients.elasticsearch.core.SearchResponse;
 import co.elastic.clients.elasticsearch.core.search.Hit;
 import co.elastic.clients.json.JsonData;
-import com.baidu.hugegraph.entity.op.AuditEntity;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+import com.baidu.hugegraph.util.PageUtil;
+import com.baidu.hugegraph.entity.op.AuditEntity;
+
+@Service
 public class AuditService {
 
     @Autowired
     ElasticsearchClient esClient;
 
-    protected final String indexName = "";
+    @Autowired
+    LogService logService;
 
-    public Object queryPage(AuditReq auditReq) throws IOException {
+    protected final List<String> indexes = new ArrayList<>();
+
+    public IPage<AuditEntity> queryPage(AuditReq auditReq) throws IOException {
 
         List<AuditEntity> logs = new ArrayList<>();
 
+        List<String> services = new ArrayList<>();
+        if (CollectionUtils.isNotEmpty(auditReq.services)) {
+            services.addAll(auditReq.services);
+        } else {
+            services.addAll(logService.listServices());
+        }
+        services.forEach(s -> indexes.add(s + "-audit-*"));
+
+
         List<Query> querys = buildESQuery(auditReq);
         SearchResponse<Map> search = esClient.search((s) ->
-            s.index(indexName).from(auditReq.pageNo).size(auditReq.pageSize)
+            s.index(indexes).from(auditReq.pageNo).size(auditReq.pageSize)
              .query(q -> q.bool( boolQuery -> boolQuery.must(querys))
              ), Map.class);
 
@@ -68,8 +86,37 @@ public class AuditService {
             logs.add(AuditEntity.fromMap((Map<String, Object>) hit.source()));
         }
 
-        return logs;
+        return PageUtil.newPage(logs, auditReq.pageNo, auditReq.pageSize,
+                                (int) (search.hits().total().value()));
     }
+
+    public List<AuditEntity> export(AuditReq auditReq) throws IOException {
+        List<AuditEntity> audits = new ArrayList<>();
+
+        List<String> indexes = new ArrayList<>();
+        // services
+        List<String> services = new ArrayList<>();
+        if (CollectionUtils.isNotEmpty(auditReq.services)) {
+            services.addAll(auditReq.services);
+        } else {
+            services.addAll(logService.listServices());
+        }
+        services.forEach(s -> indexes.add(s + "-*"));
+
+        List<Query> querys = buildESQuery(auditReq);
+
+        SearchResponse<Map> search = esClient.search((s) ->
+                 s.index(indexes).from(0).size(5000)
+                  .query(q -> q.bool( boolQuery -> boolQuery.must(querys))
+                  ), Map.class);
+
+        for (Hit<Map> hit: search.hits().hits()) {
+            audits.add(AuditEntity.fromMap((Map<String, Object>) hit.source()));
+        }
+
+        return audits;
+    }
+
 
     protected List<Query> buildESQuery(AuditReq auditReq) {
         List<Query> querys = new ArrayList<>();
@@ -92,7 +139,7 @@ public class AuditService {
             Query.Builder builder = new Query.Builder();
 
             MatchQuery.Builder mBuilder = new MatchQuery.Builder();
-            mBuilder.field("message").query(FieldValue.of(auditReq.graphSpace));
+            mBuilder.field("audit_graphspace").query(FieldValue.of(auditReq.graphSpace));
 
             querys.add(builder.match(mBuilder.build()).build());
         }
@@ -102,7 +149,7 @@ public class AuditService {
             Query.Builder builder = new Query.Builder();
 
             MatchQuery.Builder mBuilder = new MatchQuery.Builder();
-            mBuilder.field("message").query(FieldValue.of(auditReq.graph));
+            mBuilder.field("audit_graph").query(FieldValue.of(auditReq.graph));
 
             querys.add(builder.match(mBuilder.build()).build());
         }
@@ -112,7 +159,7 @@ public class AuditService {
             Query.Builder builder = new Query.Builder();
 
             MatchQuery.Builder mBuilder = new MatchQuery.Builder();
-            mBuilder.field("message").query(FieldValue.of(auditReq.user));
+            mBuilder.field("userId").query(FieldValue.of(auditReq.user));
 
             querys.add(builder.match(mBuilder.build()).build());
         }
@@ -122,32 +169,20 @@ public class AuditService {
             Query.Builder builder = new Query.Builder();
 
             MatchQuery.Builder mBuilder = new MatchQuery.Builder();
-            mBuilder.field("message").query(FieldValue.of(auditReq.ip));
+            mBuilder.field("audit_ip").query(FieldValue.of(auditReq.ip));
 
             querys.add(builder.match(mBuilder.build()).build());
         }
-        // services
-        if (auditReq.services.size() > 0) {
-            Query.Builder builder = new Query.Builder();
-
-            TermsQuery.Builder tBuilder = new TermsQuery.Builder();
-            TermsQueryField.Builder fieldBuilder = new TermsQueryField.Builder();
-            fieldBuilder.value(auditReq.services.stream().map(FieldValue::of)
-                                              .collect(Collectors.toList()));
-            tBuilder.field("fields.source.keyword").terms(fieldBuilder.build());
-
-            querys.add(builder.terms(tBuilder.build()).build());
-        }
 
         // operations
-        if (auditReq.operations.size() > 0) {
+        if (CollectionUtils.isNotEmpty(auditReq.operations)) {
             Query.Builder builder = new Query.Builder();
 
             TermsQuery.Builder tBuilder = new TermsQuery.Builder();
             TermsQueryField.Builder fieldBuilder = new TermsQueryField.Builder();
             fieldBuilder.value(auditReq.operations.stream().map(FieldValue::of)
-                                                .collect(Collectors.toList()));
-            tBuilder.field("fields.source.keyword").terms(fieldBuilder.build());
+                                                  .collect(Collectors.toList()));
+            tBuilder.field("audit_operation").terms(fieldBuilder.build());
 
             querys.add(builder.terms(tBuilder.build()).build());
         }
@@ -176,7 +211,7 @@ public class AuditService {
         @JsonProperty("operations")
         public List<String> operations;
         @JsonProperty("services")
-        public List<String> services;
+        public List<String> services = new ArrayList<>();
         @JsonProperty("graphspace")
         public String graphSpace;
         @JsonProperty("graph")
