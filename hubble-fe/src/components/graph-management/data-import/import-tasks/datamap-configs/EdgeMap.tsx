@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react';
 import { observer } from 'mobx-react';
-import { isUndefined, isEmpty, size, cloneDeep } from 'lodash-es';
+import { isUndefined, isEmpty, size } from 'lodash-es';
 import { useTranslation } from 'react-i18next';
 import classnames from 'classnames';
 import { Input, Select, Checkbox, Message } from '@baidu/one-ui';
@@ -70,9 +70,9 @@ const EdgeMap: React.FC<EdgeMapProps> = observer(
       selectedSourceVertex?.id_strategy === 'AUTOMATIC' ||
       selectedTargetVertex?.id_strategy === 'AUTOMATIC';
 
-    const handleExpand = () => {
+    /* const handleExpand = () => {
       dataMapStore.switchExpand('type', !dataMapStore.isExpandTypeConfig);
-    };
+    }; */
 
     const handleExpandAdvance = () => {
       switchExpandAdvance(!isExpandAdvance);

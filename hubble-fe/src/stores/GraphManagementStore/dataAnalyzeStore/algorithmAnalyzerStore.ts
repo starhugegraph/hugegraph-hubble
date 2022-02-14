@@ -1,6 +1,6 @@
 import { DataAnalyzeStore } from './dataAnalyzeStore';
 import { observable, action, computed } from 'mobx';
-import { isEmpty, remove, isEqual, isUndefined, flatten } from 'lodash-es';
+import { isEmpty, remove, flatten } from 'lodash-es';
 import { v4 } from 'uuid';
 import isInt from 'validator/lib/isInt';
 
