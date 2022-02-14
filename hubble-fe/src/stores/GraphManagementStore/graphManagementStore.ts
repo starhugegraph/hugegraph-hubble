@@ -344,7 +344,6 @@ export class GraphManagementStore {
   fetchIdList = flow(function* fetchIdList(this: GraphManagementStore) {
     this.resetErrorInfo();
     this.requestStatus.fetchIdList = 'pending';
-
     try {
       const result: AxiosResponse<GraphDataResponse> = yield axios.get<
         GraphData
@@ -382,6 +381,7 @@ export class GraphManagementStore {
   fetchGraphDataList = flow(function* fetchGraphDataList(
     this: GraphManagementStore
   ) {
+    
     this.resetErrorInfo();
     const url =
       `${baseUrl}?page_no=${this.graphDataPageConfig.pageNumber}&page_size=${this.graphDataPageConfig.pageSize}` +

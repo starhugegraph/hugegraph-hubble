@@ -32,7 +32,7 @@ const styles = {
 };
 
 const FileConfigs: React.FC = observer(() => {
-  const { dataMapStore, serverDataImportStore } = useContext(
+  const { dataMapStore } = useContext(
     DataImportRootStoreContext
   );
   const { t } = useTranslation();

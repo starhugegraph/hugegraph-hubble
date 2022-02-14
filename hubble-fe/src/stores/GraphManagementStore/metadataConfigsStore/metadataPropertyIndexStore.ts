@@ -10,12 +10,14 @@ import {
   MetadataPropertyIndexResponse,
   PageConfig
 } from '../../types/GraphManagementStore/metadataConfigsStore';
+import { AppStoreContext } from '../..';
 
 export class MetadataPropertyIndexStore {
   metadataConfigsRootStore: MetadataConfigsRootStore;
-
+  appStore: any
   constructor(MetadataConfigsRootStore: MetadataConfigsRootStore) {
     this.metadataConfigsRootStore = MetadataConfigsRootStore;
+    this.appStore = AppStoreContext
   }
 
   @observable validateLicenseOrMemories = true;
@@ -194,7 +196,7 @@ export class MetadataPropertyIndexStore {
         responseData<MetadataPropertyIndexResponse>
       > = yield axios
         .get(
-          `${baseUrl}/${this.metadataConfigsRootStore.currentId}/schema/propertyindexes`,
+          `${baseUrl}/${this.appStore._currentValue.tenant}/graphs/${this.appStore._currentValue.graphs}/schema/propertyindexes`,
           {
             params: {
               page_no: this.metadataPropertyIndexPageConfig.pageNumber,

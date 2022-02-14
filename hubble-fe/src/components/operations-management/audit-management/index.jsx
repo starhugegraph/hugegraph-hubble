@@ -1,0 +1,172 @@
+import React, { useRef, useContext, useEffect,useState } from 'react';
+import { DownOutlined } from '@ant-design/icons';
+import { Button } from 'antd';
+import ProTable, { TableDropdown } from '@ant-design/pro-table';
+import { AppStoreContext } from '../../../stores';
+import api from '../../../api/api'
+import { defaultDateTimeParams } from '../../../stores/utils';
+
+const columns = [
+    {
+        title: "操作",
+        dataIndex: 'audit_operation',
+        valueType: 'select',
+        width: 50,
+        initialValue: [],
+        formItemProps: {
+            label: "操作类型",
+            name: "operations",
+        },
+        fieldProps: () => ({ mode: "multiple" }),
+        request: async () => {
+            let res = await api.getOperationList()
+            if(res.status===200)return res.data.map(item => ({ label: item, value: item }))
+        }
+    },
+    {
+        title: '开始时间',
+        dataIndex: 'audit_datetime',
+        valueType: 'dateTime',
+        width: 50,
+        formItemProps: {
+            name: "start_datetime",
+        },
+        order: 13,
+        sorter: true,
+    },
+    {
+        title: "服务",
+        dataIndex: 'audit_service',
+        valueType: 'select',
+        fieldProps: () => ({ mode: "multiple" }),
+        width: 50,
+        initialValue: [],
+        formItemProps: {
+            name: "services"
+        },
+        request: async () => {
+            let res = await api.getServicesList()
+            if (res.status === 200) {
+                return res.data.services.map(item => ({ label: item, value: item }))
+            }
+        }
+    },
+    {
+        title: '结束时间',
+        valueType: 'dateTime',
+        order: 12,
+        hideInTable: true,
+        formItemProps: {
+            name: "end_datetime",
+        },
+    },
+    {
+        title: "图空间",
+        dataIndex: 'audit_graphspace',
+        valueType: 'text',
+        width: 50,
+        formItemProps: {
+            name: "graphspace",
+            label: "图空间"
+        }
+    },
+    {
+        title: "图",
+        dataIndex: 'audit_graph',
+        valueType: 'text',
+        width: 50,
+        formItemProps: {
+            name: "graph",
+        }
+    },
+    {
+        title: '安全级别',
+        dataIndex: 'audit_level',
+        width: 50,
+        hideInSearch: true
+    },
+    {
+        title: "用户",
+        dataIndex: 'audit_user',
+        valueType: 'text',
+        width: 50,
+        formItemProps: {
+            name: "user",
+        }
+    },
+    {
+        title: "用户IP",
+        dataIndex: 'audit_ip',
+        valueType: 'text',
+        width: 50,
+        formItemProps: {
+            name: "ip",
+            label: "IP"
+        }
+    },
+    {
+        title: "操作结果",
+        dataIndex: 'audit_result',
+        width: 50,
+        hideInSearch: true
+    },
+];
+
+export default () => {
+    const appStore = useContext(AppStoreContext)
+    const [outParams,setParams] = useState(null)
+    useEffect(() => {
+        appStore.setMenuObj({
+            c_key: "8",
+            f_key: "sub2"
+        })
+        appStore.setCurrentKey("0")
+    }, [])
+    const actionRef = useRef();
+    return (
+        <div className='graphData_wrapper query_list_container'>
+            <p style={{ color: "#fa8c16" }}>本搜索结果包括所有图空间相关数据</p>
+            <ProTable
+                columns={columns}
+                actionRef={actionRef}
+                request={async (params = {}) => {
+                    // 表单搜索项会从 params 传入，传递给后端接口。
+                    let apiParams = defaultDateTimeParams(params)
+                    setParams(apiParams)
+                    let res = await api.getAuditTableData(apiParams)
+                    if (res.status === 200) {
+                        return {
+                            data: res.data.records,
+                            total: res.data.total,
+                            success: true
+                        }
+                    }
+                }}
+                editable={{
+                    type: 'multiple',
+                }}
+                columnsState={{
+                    persistenceKey: 'pro-table-singe-demos',
+                    persistenceType: 'localStorage',
+                }}
+                rowKey="id"
+                search={{
+                    labelWidth: '100',
+                    span: 12,
+                    defaultCollapsed: false
+                }}
+                pagination={{
+                    pageSizeOptions: ['5', '10', '15', '20'],
+                    defaultPageSize:20
+                }}
+                dateFormatter="string"
+                headerTitle="审计"
+                toolBarRender={() => [
+                    <Button key="out" onClick={()=>api.outTheData('/audits/export',outParams)}>
+                        导出数据
+                    </Button>,
+                ]}
+            />
+        </div>
+    );
+};

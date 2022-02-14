@@ -116,9 +116,9 @@ export function addGraphNodes(
   collection.forEach(({ id, label, properties }) => {
     const joinedLabel = !isUndefined(displayFieldMappings[label])
       ? displayFieldMappings[label]
-          .map((field) => (field === '~id' ? id : properties[field]))
-          .filter((label) => label !== undefined && label !== null)
-          .join('-')
+        .map((field) => (field === '~id' ? id : properties[field]))
+        .filter((label) => label !== undefined && label !== null)
+        .join('-')
       : id;
 
     visGraphNodes.add({
@@ -141,13 +141,13 @@ export function addGraphNodes(
               <div>${id}</div>
             </div>
             ${Object.entries(properties)
-              .map(([key, value]) => {
-                return `<div class="tooltip-fields">
+          .map(([key, value]) => {
+            return `<div class="tooltip-fields">
                           <div>${key}: </div>
                           <div>${convertArrayToString(value)}</div>
                         </div>`;
-              })
-              .join('')}
+          })
+          .join('')}
           `,
       color: {
         background: colorMappings[label] || '#5c73e6',
@@ -219,13 +219,13 @@ export function addGraphEdges(
               <div>${id}</div>
             </div>
             ${Object.entries(properties)
-              .map(([key, value]) => {
-                return `<div class="tooltip-fields">
+          .map(([key, value]) => {
+            return `<div class="tooltip-fields">
                             <div>${key}: </div>
                             <div>${convertArrayToString(value)}</div>
                           </div>`;
-              })
-              .join('')}
+          })
+          .join('')}
           `
     });
   });
@@ -252,4 +252,24 @@ export function isGtNegativeOneButZero(value: string | number) {
     !isEmpty(value) &&
     (!isInt(value as string, { min: -1 }) || String(Number(value)) === '0')
   );
+}
+
+interface _params {
+  start_datetime: string,
+  end_datetime: string,
+  current: number,
+  pageSize: number
+}
+
+export function defaultDateTimeParams(params: _params) {
+  if (!params.start_datetime)
+    params.start_datetime = (new Date() as any).Format("yyyy-MM-dd") + " 00:00:00"
+  if (!params.end_datetime)
+    params.end_datetime = (new Date() as any).Format("yyyy-MM-dd") + " 23:59:59"
+  let apiParams = {
+    ...params,
+    page_no: params.current,
+    page_size: params.pageSize,
+  }
+  return apiParams
 }
