@@ -20,6 +20,7 @@
 package com.baidu.hugegraph.service.space;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -36,11 +37,11 @@ public class SchemaTemplateService {
         return client.schemaTemplateManager().listSchemTemplate();
     }
 
-    public IPage<SchemaTemplate> queryPage(HugeClient client, String query, int pageNo,
+    public IPage<Map> queryPage(HugeClient client, String query, int pageNo,
                                            int pageSize) {
         List<String> names = client.schemaTemplateManager().listSchemTemplate();
 
-        List<SchemaTemplate> results =
+        List<Map> results =
                 names.stream().filter((s) -> s.contains(query)).sorted()
                      .map((s) -> client.schemaTemplateManager()
                                        .getSchemaTemplate(s)
@@ -49,11 +50,11 @@ public class SchemaTemplateService {
         return PageUtil.page(results, pageNo, pageSize);
     }
 
-    public SchemaTemplate get(HugeClient client, String name) {
+    public Map get(HugeClient client, String name) {
         return client.schemaTemplateManager().getSchemaTemplate(name);
     }
 
-    public SchemaTemplate create(HugeClient client, SchemaTemplate schemaTemplate) {
+    public Map create(HugeClient client, SchemaTemplate schemaTemplate) {
         return client.schemaTemplateManager().createSchemaTemplate(schemaTemplate);
     }
 
@@ -61,7 +62,8 @@ public class SchemaTemplateService {
         client.schemaTemplateManager().deleteSchemaTemplate(name);
     }
 
-    public SchemaTemplate update(HugeClient client, SchemaTemplate schemaTemplate) {
+    public Map update(HugeClient client,
+                      SchemaTemplate schemaTemplate) {
         return client.schemaTemplateManager().createSchemaTemplate(schemaTemplate);
     }
 }

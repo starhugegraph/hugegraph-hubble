@@ -21,6 +21,10 @@
 
     <properties>
         <top.level.dir>${project.basedir}/..</top.level.dir>
+        <!--
+        修改springboot 绑定的ES版本
+        -->
+        <elasticsearch.version>7.16.1</elasticsearch.version>
     </properties>
 
 </project>

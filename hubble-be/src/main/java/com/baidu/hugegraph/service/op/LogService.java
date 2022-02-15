@@ -29,7 +29,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import co.elastic.clients.elasticsearch._types.FieldValue;
 import co.elastic.clients.elasticsearch._types.aggregations.Aggregation;
 import co.elastic.clients.elasticsearch._types.aggregations.Buckets;
@@ -54,15 +53,13 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import com.baidu.hugegraph.entity.op.LogEntity;
 
 @Service
-public class LogService {
-    @Autowired
-    ElasticsearchClient esClient;
-
+public class LogService extends ESService {
     protected final String allIndexName = "*";
 
     protected final String[] logLevels = new String[]{"TRACE", "OFF", "FATAL"
@@ -84,7 +81,7 @@ public class LogService {
 
         List<Query> querys = buildQuery(logReq);
 
-        SearchResponse<Map> search = esClient.search((s) ->
+        SearchResponse<Map> search = esClient().search((s) ->
             s.index(indexes).from(logReq.pageNo).size(logReq.pageSize)
              .query(q -> q.bool( boolQuery ->
                         boolQuery.must(querys)
@@ -114,7 +111,7 @@ public class LogService {
 
         List<Query> querys = buildQuery(logReq);
 
-        SearchResponse<Map> search = esClient.search((s) ->
+        SearchResponse<Map> search = esClient().search((s) ->
              s.index(indexes).from(0).size(5000)
               .query(q -> q.bool( boolQuery -> boolQuery.must(querys))
               ), Map.class);
@@ -190,18 +187,20 @@ public class LogService {
         return querys;
     }
 
+    @Cacheable("ES_QUERY")
     public List<String> listServices() throws IOException {
         Set<String> services = new HashSet<>();
 
         final String serviceField = "fields.source.keyword";
 
-        GetAliasResponse res = esClient.indices().getAlias();
+        GetAliasResponse res = esClient().indices().getAlias();
         res.result().keySet().stream().filter(x -> !x.startsWith("."))
            .forEach(indexName -> services.add(indexName.split("-")[0]));
 
         return services.stream().sorted().collect(Collectors.toList());
     }
 
+    @Cacheable("ES_QUERY")
     public List<String> listHosts() throws IOException {
 
         List<String> hosts = new ArrayList<>();
@@ -219,7 +218,7 @@ public class LogService {
 
         // DO Request
         SearchResponse<Object> response
-                = esClient.search((s) -> s.index(indexNames)
+                = esClient().search((s) -> s.index(indexNames)
                                           .aggregations(key, agg),
                                   Object.class);
 

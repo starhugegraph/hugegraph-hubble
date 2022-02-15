@@ -38,6 +38,7 @@ import co.elastic.clients.elasticsearch._types.query_dsl.TermsQueryField;
 import co.elastic.clients.elasticsearch.core.SearchResponse;
 import co.elastic.clients.elasticsearch.core.search.Hit;
 import co.elastic.clients.json.JsonData;
+import com.baidu.hugegraph.util.E;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -53,10 +54,7 @@ import com.baidu.hugegraph.util.PageUtil;
 import com.baidu.hugegraph.entity.op.AuditEntity;
 
 @Service
-public class AuditService {
-
-    @Autowired
-    ElasticsearchClient esClient;
+public class AuditService extends ESService {
 
     @Autowired
     LogService logService;
@@ -64,7 +62,6 @@ public class AuditService {
     protected final List<String> indexes = new ArrayList<>();
 
     public IPage<AuditEntity> queryPage(AuditReq auditReq) throws IOException {
-
         List<AuditEntity> logs = new ArrayList<>();
 
         List<String> services = new ArrayList<>();
@@ -77,7 +74,7 @@ public class AuditService {
 
 
         List<Query> querys = buildESQuery(auditReq);
-        SearchResponse<Map> search = esClient.search((s) ->
+        SearchResponse<Map> search = esClient().search((s) ->
             s.index(indexes).from(auditReq.pageNo).size(auditReq.pageSize)
              .query(q -> q.bool( boolQuery -> boolQuery.must(querys))
              ), Map.class);
@@ -105,7 +102,7 @@ public class AuditService {
 
         List<Query> querys = buildESQuery(auditReq);
 
-        SearchResponse<Map> search = esClient.search((s) ->
+        SearchResponse<Map> search = esClient().search((s) ->
                  s.index(indexes).from(0).size(5000)
                   .query(q -> q.bool( boolQuery -> boolQuery.must(querys))
                   ), Map.class);
