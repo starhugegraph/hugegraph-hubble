@@ -284,4 +284,12 @@ public class HubbleOptions extends OptionHolder {
                     null,
                     ""
             );
+
+    public static final ConfigOption<String> ES_URL =
+            new ConfigOption<>(
+                    "es.urls",
+                    "The addresses of Elasticsearch Cluster",
+                    null,
+                    ""
+            );
 }
