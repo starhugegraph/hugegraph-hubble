@@ -188,6 +188,8 @@ const Home = () => {
     let [graphsActive, setGraphsActive] = useState('');
     // 当前选中的租户
     let [userActive, setUserActive] = useState('');
+    // 图名选择框loading
+    let [graphsLoading, setGraphsLoading] = useState(false);
 
     // 左侧菜单根据用户权限渲染
     const leftMenuAuth = (arr) => {
@@ -224,7 +226,7 @@ const Home = () => {
     }, [appStore.currentKey]);
 
     useEffect(() => {
-        appStore.graphs !== "" && setGraphsActive(appStore.graphs);
+        appStore.graphs !== "null" && setGraphsActive(appStore.graphs);
     }, [appStore.graphs]);
 
     useEffect(() => {
@@ -249,8 +251,10 @@ const Home = () => {
 
     // 获取图列表
     const getGraphsList = () => {
+        setGraphsLoading(true)
         if (appStore.tenant !== 'null') {
             api.getGraphsName(appStore.tenant).then(res => {
+                setGraphsLoading(false)
                 if (res.status === 200
                     && res.data.graphs
                     && res.data.graphs.length) {
@@ -465,8 +469,8 @@ const Home = () => {
                             >
                                 <div className="right_content_header_select">
                                     <Select
-                                        value={graphsActive === "null" ? '加载中' : graphsActive}
-                                        loading={graphsActive === "null" ? true : false}
+                                        value={graphsActive}
+                                        loading={graphsLoading}
                                         style={{ width: 120 }}
                                         bordered={false}
                                         onChange={selectGraphsChange}
