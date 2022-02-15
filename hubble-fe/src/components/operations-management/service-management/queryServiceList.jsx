@@ -76,6 +76,7 @@ export default function QueryServiceList() {
     const pageChange = (params) => {
         setPage({ page_no: params.current, page_size: params.pageSize })
     }
+    
     const columns = [
         {
             title: '实例名称',

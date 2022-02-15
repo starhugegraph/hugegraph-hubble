@@ -29,7 +29,7 @@ export default function GraphSchema() {
     const tableKeyList = [
         {
             key: 'name',
-            title: 'schema名称'
+            title: 'schema模版名称'
         },
         {
             key: 'create_time',
@@ -282,7 +282,7 @@ export default function GraphSchema() {
                     form={form}
                 >
                     <Form.Item
-                        label="schema名称"
+                        label="schema模版名称"
                         name="name"
                         rules={[
                             {required: true, message: '请输入schema名称!' },
@@ -319,7 +319,7 @@ export default function GraphSchema() {
                         />
                     </div>
                     <div className="header_right_btn">
-                        <Button type="primary" onClick={openCreate}>创建schema</Button>
+                        <Button type="primary" onClick={openCreate}>创建schema模版</Button>
                     </div>
                 </div>
                 <div className="graphData_box">

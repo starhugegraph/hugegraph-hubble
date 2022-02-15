@@ -80,7 +80,7 @@ const defaultMenuList = [
             },
             {
                 key: '3',
-                name: 'schema管理'
+                name: 'schema模版管理'
             },
         ]
     },
@@ -231,7 +231,7 @@ const Home = () => {
 
     useEffect(() => {
         if (appStore.tenant !== "null") {
-            setUserActive(appStore.tenant)
+            localStorage.setItem("tenant",appStore.tenant)
             getGraphsList();
         };
     }, [appStore.tenant]);
@@ -243,7 +243,15 @@ const Home = () => {
                 && res.data.graphspaces
                 && res.data.graphspaces.length
             ) {
-                appStore.setTenant(res.data.graphspaces[0]);
+                const tenant = localStorage.getItem("tenant")
+                if(tenant){
+                    appStore.setTenant(tenant);
+                    setUserActive(tenant)
+                }else{
+                    const defaultTenant =res.data.graphspaces[res.data.graphspaces.length-1]
+                    appStore.setTenant(defaultTenant);
+                    setUserActive(defaultTenant)
+                }
                 setUserListSelect(res.data.graphspaces);
             }
         });
@@ -423,7 +431,7 @@ const Home = () => {
                     <div className="header">
                         <div className="header_user">
                             <Select
-                                value={userActive ? userActive : "加载中"}
+                                value={userActive ? userActive : "加载中......"}
                                 loading={userActive ? false : true}
                                 style={{ width: 120 }}
                                 bordered={false}
