@@ -5,29 +5,6 @@ import api from '../../api/api'
 import './Index.less'
 import { AppStoreContext } from '../../stores'
 
-/* let demoData = {
-    "status": 200,
-    "data": {
-        records: [
-            {
-                "id": "1", // id
-                "user_name": "张三", //
-                "groups": ["大数据1", "大数据2", "大数据3"], //
-                "phone": "10022332221", //
-                "mail": "www.xxx.com", //
-            },
-        ],
-        "total": 2,  //
-        "size": 10,  //
-        "current": 1, //
-        "orders": [],
-        "searchCount": true,
-        "pages": 1 //
-    },
-    "message": "msg",
-    "cause": ""
-} */
-
 let textStyle = {
     textOverflow: "ellipsis",
     overflow: "hidden",
@@ -35,7 +12,7 @@ let textStyle = {
     width: "250px",
 }
 export default function Index() {
-    const [page, setPage] = useState({})//分页条件
+    const [page, setPage] = useState(null)//分页条件
     const [listData, setListData] = useState({})//列表数据
     const [detailData, setDetailData] = useState({})//具体项的查询条件
     const [visible, setVisible] = useState(false)//编辑与创建的模态框
@@ -44,10 +21,10 @@ export default function Index() {
     const appStore = useContext(AppStoreContext)
     useEffect(() => {
         appStore.setMenuObj({
-            c_key:'3',
+            c_key: '3',
             f_key: 'sub1'
-          })
-          appStore.setCurrentKey("2")
+        })
+        appStore.setCurrentKey("2")
     }, [])
     // 获取数据
     useEffect(() => {
@@ -56,9 +33,10 @@ export default function Index() {
         return () => {
             setListData({})
         }
-    }, [page, query,appStore.tenant])
+    }, [page, query, appStore.tenant])
     // 获取用户数据
     const getUserData = () => {
+        console.log(appStore.tenant);
         api.getAuthUser(appStore.tenant, { ...page, query }).then(res => {
             if (res && res.status === 200) {
                 setListData(res.data)
@@ -153,7 +131,7 @@ export default function Index() {
         },
     ];
     return (
-        <div className='graphData_wrapper' style={{ width: "100%",height:"calc(100vh - 130px)"}}>
+        <div className='graphData_wrapper' style={{ width: "100%", height: "calc(100vh - 130px)" }}>
             <div className='topDiv'>
                 <Input.Group compact className='inputBox'>
                     <Input.Search allowClear style={{ width: '100%' }} placeholder='请输入用户名' onSearch={searchHandle} />

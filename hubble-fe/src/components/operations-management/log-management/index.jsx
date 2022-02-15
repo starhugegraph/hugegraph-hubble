@@ -31,6 +31,7 @@ const columns = [
         fieldProps: () => ({ mode: "multiple" }),
         request: async () => {
             let res = await api.getServicesList()
+            if(res.status===200)
             return res.data.services.map(item => ({ label: item, value: item }))
         }
 
@@ -47,6 +48,7 @@ const columns = [
         },
         request: async () => {
             let res = await api.getHostList()
+            if(res.status===200)
             return res.data.hosts.map(item => ({ label: item, value: item }))
         }
     },

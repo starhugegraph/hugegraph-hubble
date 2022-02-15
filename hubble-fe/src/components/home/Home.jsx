@@ -169,6 +169,7 @@ const defaultMenuList = [
     },
 ];
 const Home = () => {
+    // console.log(1);
     let appStore = useContext(AppStoreContext);
     let [keyObj, setObj] = useState(appStore.menuObj);
     // 左侧菜单栏
@@ -217,12 +218,12 @@ const Home = () => {
     useEffect(() => {
         if (JSON.stringify(keyObj) !== JSON.stringify(appStore.menuObj)) {
             setObj(appStore.menuObj);
+            setMenuList(defaultMenuList[appStore.menuObj.c_key - 1].data)
         }
-        setMenuList(defaultMenuList[appStore.menuObj.c_key - 1].data)
     }, [appStore.menuObj]);
 
     useEffect(() => {
-        current !== appStore.currentKey && setCurrent(appStore.currentKey);
+        appStore.currentKey && setCurrent(appStore.currentKey);
     }, [appStore.currentKey]);
 
     useEffect(() => {
@@ -231,7 +232,7 @@ const Home = () => {
 
     useEffect(() => {
         if (appStore.tenant !== "null") {
-            localStorage.setItem("tenant",appStore.tenant)
+            localStorage.setItem("tenant", appStore.tenant)
             getGraphsList();
         };
     }, [appStore.tenant]);
@@ -244,11 +245,11 @@ const Home = () => {
                 && res.data.graphspaces.length
             ) {
                 const tenant = localStorage.getItem("tenant")
-                if(tenant){
+                if (tenant) {
                     appStore.setTenant(tenant);
                     setUserActive(tenant)
-                }else{
-                    const defaultTenant =res.data.graphspaces[res.data.graphspaces.length-1]
+                } else {
+                    const defaultTenant = res.data.graphspaces[res.data.graphspaces.length - 1]
                     appStore.setTenant(defaultTenant);
                     setUserActive(defaultTenant)
                 }
@@ -271,6 +272,7 @@ const Home = () => {
                     return;
                 }
                 appStore.setGraphs("null");
+                setGraphsSelect([]);
                 setGraphsActive("暂无");
             });
         }

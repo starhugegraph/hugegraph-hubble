@@ -18,9 +18,8 @@ const tailLayout = {
     },
 };
 
-const Index = (props) => {
+const Index = ({ visible, setVisible, detailData, getUserData }) => {
     const [form] = Form.useForm();
-    const { visible, setVisible, detailData, getUserData } = props
     const [userList, setUserList] = useState(null)
     const [groupList, setGroupList] = useState(null)
     const [finishLoading, setFinishLoading] = useState(false)
@@ -30,6 +29,7 @@ const Index = (props) => {
         if (Object.keys(detailData).length !== 0) return true
         return false
     }, [detailData])
+
     // 是否回显
     useEffect(() => {
         if (isDisabled) {
@@ -42,7 +42,7 @@ const Index = (props) => {
     useEffect(() => {
         getUserListData()
         getRoleList()
-    }, [])
+    }, [appStore.tenant])
     // 获取用户List
     const getUserListData = () => {
         api.getUserList().then(res => {
@@ -65,7 +65,7 @@ const Index = (props) => {
         let groups = values.groups.map(item => ({ group_id: item.split(" ")[0], group_name: item.split(" ")[1] }))
         api.postAuthUser(appStore.tenant, { ...values, groups }).then(res => {
             if (res && res.status === 200) {
-                message.success(isDisabled?"编辑成功":"新增成功")
+                message.success(isDisabled ? "编辑成功":"新增成功")
                 getUserData()
             }
             setFinishLoading(false)
@@ -88,7 +88,7 @@ const Index = (props) => {
 
     return (
         <Modal
-            title={isDisabled? "新增" : "编辑"}
+            title={isDisabled ? "编辑" : "新增"}
             closable={false}
             visible={visible}
             footer={null}

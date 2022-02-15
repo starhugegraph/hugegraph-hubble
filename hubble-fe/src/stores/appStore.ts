@@ -22,7 +22,7 @@ export class AppStore {
     f_key: 'sub1'
   };
   @observable userInfo: any ={}
-  @observable currentKey: any ={}
+  @observable currentKey: any = 0
 
   @observable colorList: string[] = [];
 

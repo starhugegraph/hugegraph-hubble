@@ -244,8 +244,14 @@ export default function GraphData() {
                 onOk={openDeleteConfirm}
                 okText="确认"
                 cancelText="取消"
+                style={
+                    {
+                        height:"200px",
+                        width:"200px"
+                    }
+                }
             >
-                <div style={{minHeight: '200px'}}>
+                <div>
                     <p style={{marginBottom: '20px'}}>
                         图名:
                         <span style={{marginLeft: '20px'}}>
