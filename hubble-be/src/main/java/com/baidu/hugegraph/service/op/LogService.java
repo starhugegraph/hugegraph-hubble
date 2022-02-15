@@ -53,6 +53,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import com.baidu.hugegraph.entity.op.LogEntity;
@@ -186,6 +187,7 @@ public class LogService extends ESService {
         return querys;
     }
 
+    @Cacheable("ES_QUERY")
     public List<String> listServices() throws IOException {
         Set<String> services = new HashSet<>();
 
@@ -198,6 +200,7 @@ public class LogService extends ESService {
         return services.stream().sorted().collect(Collectors.toList());
     }
 
+    @Cacheable("ES_QUERY")
     public List<String> listHosts() throws IOException {
 
         List<String> hosts = new ArrayList<>();
