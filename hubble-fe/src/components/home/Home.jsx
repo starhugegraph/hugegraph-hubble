@@ -80,7 +80,7 @@ const defaultMenuList = [
             },
             {
                 key: '3',
-                name: 'schema管理'
+                name: 'schema模版管理'
             },
         ]
     },
@@ -169,6 +169,7 @@ const defaultMenuList = [
     },
 ];
 const Home = () => {
+    // console.log(1);
     let appStore = useContext(AppStoreContext);
     let [keyObj, setObj] = useState(appStore.menuObj);
     // 左侧菜单栏
@@ -217,12 +218,12 @@ const Home = () => {
     useEffect(() => {
         if (JSON.stringify(keyObj) !== JSON.stringify(appStore.menuObj)) {
             setObj(appStore.menuObj);
+            setMenuList(defaultMenuList[appStore.menuObj.c_key - 1].data)
         }
-        setMenuList(defaultMenuList[appStore.menuObj.c_key - 1].data)
     }, [appStore.menuObj]);
 
     useEffect(() => {
-        current !== appStore.currentKey && setCurrent(appStore.currentKey);
+        appStore.currentKey && setCurrent(appStore.currentKey);
     }, [appStore.currentKey]);
 
     useEffect(() => {
@@ -231,7 +232,7 @@ const Home = () => {
 
     useEffect(() => {
         if (appStore.tenant !== "null") {
-            setUserActive(appStore.tenant)
+            localStorage.setItem("tenant", appStore.tenant)
             getGraphsList();
         };
     }, [appStore.tenant]);
@@ -243,7 +244,15 @@ const Home = () => {
                 && res.data.graphspaces
                 && res.data.graphspaces.length
             ) {
-                appStore.setTenant(res.data.graphspaces[0]);
+                const tenant = localStorage.getItem("tenant")
+                if (tenant) {
+                    appStore.setTenant(tenant);
+                    setUserActive(tenant)
+                } else {
+                    const defaultTenant = res.data.graphspaces[res.data.graphspaces.length - 1]
+                    appStore.setTenant(defaultTenant);
+                    setUserActive(defaultTenant)
+                }
                 setUserListSelect(res.data.graphspaces);
             }
         });
@@ -263,6 +272,7 @@ const Home = () => {
                     return;
                 }
                 appStore.setGraphs("null");
+                setGraphsSelect([]);
                 setGraphsActive("暂无");
             });
         }
@@ -423,7 +433,7 @@ const Home = () => {
                     <div className="header">
                         <div className="header_user">
                             <Select
-                                value={userActive ? userActive : "加载中"}
+                                value={userActive ? userActive : "加载中......"}
                                 loading={userActive ? false : true}
                                 style={{ width: 120 }}
                                 bordered={false}

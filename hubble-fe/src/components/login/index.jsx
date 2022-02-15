@@ -4,10 +4,9 @@ import api from '../../api/api'
 import { userStorage } from '../../utils';
 import { useLocation } from 'wouter';
 
-export default function Index(props) {
+export default function Index({ setLogin }) {
     const [form] = Form.useForm()
     const [loading, setLoading] = useState(false)
-    const { setLogin } = props
     const [_, setLocation] = useLocation()
     // const appStore = useContext(AppStoreContext)
     // 登陆

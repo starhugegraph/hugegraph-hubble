@@ -479,10 +479,10 @@ const AssUsers = (graphspace, data) => {
         });
     });
 };
-// 所有角色list
-const allRoleList = (graphspace, data) => {
+// 所有角色query
+const allRoleList = (graphspace) => {
     return new Promise((resolve, reject) => {
-        myaxios.get(`/graphspaces/${graphspace}/auth/groups/list`, data).then(res => {
+        myaxios.get(`/graphspaces/${graphspace}/auth/groups/list`).then(res => {
             resolve(res);
         }, error => {
             reject(error);
