@@ -44,7 +44,6 @@ const Index = ({ visible, setVisible, detailData, getUserData }) => {
         getUserListData()
         getRoleList()
     }, [appStore.tenant])
-
     // 获取用户List
     const getUserListData = () => {
         api.getUserList().then(res => {

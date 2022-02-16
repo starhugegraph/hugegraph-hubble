@@ -217,8 +217,8 @@ const Home = () => {
     useEffect(() => {
         if (JSON.stringify(keyObj) !== JSON.stringify(appStore.menuObj)) {
             setObj(appStore.menuObj);
+            setMenuList(defaultMenuList[appStore.menuObj.c_key - 1].data)
         }
-        setMenuList(defaultMenuList[appStore.menuObj.c_key - 1].data)
     }, [appStore.menuObj]);
 
     useEffect(() => {
