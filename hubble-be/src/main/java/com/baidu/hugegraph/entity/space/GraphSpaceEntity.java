@@ -21,6 +21,7 @@
 
 package com.baidu.hugegraph.entity.space;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.baidu.hugegraph.structure.space.GraphSpace;
@@ -31,7 +32,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class GraphSpaceEntity extends GraphSpace {
     @JsonProperty("graphspace_admin")
-    public List<String> graphspaceAdmin;
+    public List<String> graphspaceAdmin = new ArrayList<>();
 
     public GraphSpaceEntity() {
     }
