@@ -21,9 +21,12 @@ package com.baidu.hugegraph.controller.space;
 
 import com.baidu.hugegraph.driver.HugeClient;
 import com.baidu.hugegraph.entity.space.GraphSpaceEntity;
-import com.baidu.hugegraph.service.auth.BelongService;
+import com.baidu.hugegraph.service.auth.UserService;
+import com.baidu.hugegraph.util.E;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import org.apache.commons.collections4.SetUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -46,6 +49,9 @@ public class GraphSpaceController extends BaseController {
 
     @Autowired
     private GraphSpaceService graphSpaceService;
+
+    @Autowired
+    private UserService userService;
 
     @GetMapping("list")
     public Object list() {
@@ -76,7 +82,8 @@ public class GraphSpaceController extends BaseController {
         GraphSpaceEntity graphSpaceEntity
                 = GraphSpaceEntity.fromGraphSpace(graphSpace);
 
-        // TODO: Get GraphSpace Admin List
+        graphSpaceEntity.graphspaceAdmin =
+                userService.listGraphSpaceAdmin(client, graphspace);
 
         return graphSpaceEntity;
     }
@@ -84,10 +91,13 @@ public class GraphSpaceController extends BaseController {
     @PostMapping
     public Object add(@RequestBody GraphSpaceEntity graphSpaceEntity) {
         // Create GraphSpace
-        graphSpaceService.create(this.authClient(null, null),
-                                 graphSpaceEntity.convertGraphSpace());
+        HugeClient client = this.authClient(null, null);
+        graphSpaceService.create(client, graphSpaceEntity.convertGraphSpace());
 
-        // TODO: Add GraphSpace Admin
+        // Add GraphSpace Admin
+        graphSpaceEntity.graphspaceAdmin.forEach(u -> {
+            client.auth().addSpaceAdmin(u, graphSpaceEntity.getName());
+        });
 
         return get(graphSpaceEntity.getName());
     }
@@ -98,20 +108,43 @@ public class GraphSpaceController extends BaseController {
 
         graphSpaceEntity.setName(graphspace);
 
-        // Update graphspace
-        graphSpaceService.update(this.authClient(null, null),
-                                 graphSpaceEntity.convertGraphSpace());
+        HugeClient client = this.authClient(null, null);
 
-        // TODO: Update graphspace admin
+        // Update graphspace
+        graphSpaceService.update(client, graphSpaceEntity.convertGraphSpace());
+
+        // Update graphspace admin
+        ImmutableSet<String> oldSpaceAdmins
+                = ImmutableSet.copyOf(userService.listGraphSpaceAdmin(client,
+                                                                      graphspace));
+        ImmutableSet<String> curSpaceAdmins
+                = ImmutableSet.copyOf(graphSpaceEntity.graphspaceAdmin);
+
+        // a. Del
+        SetUtils.difference(oldSpaceAdmins, curSpaceAdmins).forEach(u -> {
+            client.auth().delSpaceAdmin(u, graphspace);
+        });
+        // b. Add
+        SetUtils.difference(curSpaceAdmins, oldSpaceAdmins).forEach(u -> {
+            client.auth().addSpaceAdmin(u, graphspace);
+        });
 
         return get(graphSpaceEntity.getName());
     }
 
     @DeleteMapping("{graphspace}")
     public void delete(@PathVariable("graphspace") String graphspace) {
-        // TODO: Delete graphspace admin
+        E.checkArgument(StringUtils.isNotEmpty(graphspace), "graphspace " +
+                "must not null");
+
+        HugeClient client = this.authClient(null, null);
+
+        // Delete graphspace admin
+        userService.listGraphSpaceAdmin(client, graphspace).forEach(u -> {
+            client.auth().delSpaceAdmin(u, graphspace);
+        });
 
         // delete graphspace
-        graphSpaceService.delete(this.authClient(null, null), graphspace);
+        graphSpaceService.delete(client, graphspace);
     }
 }

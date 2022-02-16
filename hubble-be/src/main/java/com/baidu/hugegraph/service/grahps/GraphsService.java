@@ -26,13 +26,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.baidu.hugegraph.structure.auth.HugePermission;
-import com.baidu.hugegraph.structure.auth.HugeResource;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.baidu.hugegraph.service.auth.UserService;
+import com.baidu.hugegraph.structure.auth.HugePermission;
+import com.baidu.hugegraph.structure.auth.HugeResource;
 import com.baidu.hugegraph.driver.HugeClient;
 import com.baidu.hugegraph.loader.util.JsonUtil;
 import com.baidu.hugegraph.structure.auth.User;
@@ -41,6 +43,9 @@ import com.baidu.hugegraph.util.PageUtil;
 @Log4j2
 @Service
 public class GraphsService {
+
+    @Autowired
+    UserService userService;
 
     public Map<String, String> get(HugeClient client, String graph) {
         return client.graphs().getGraph(graph);
@@ -69,7 +74,7 @@ public class GraphsService {
 
     public Set<String> listGraphNames(HugeClient client, String graphSpace,
                                       String uid) {
-        if (uid == null) {
+        if (uid == null || userService.isSuperAdmin(client, uid)) {
             // Get All GraphNames
             return new HashSet<>(client.graphs().listGraph());
         }
