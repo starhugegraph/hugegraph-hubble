@@ -38,6 +38,7 @@ const Index = ({ visible, setVisible, detailData, getUserData }) => {
             form.resetFields()
         }
     }, [detailData])
+    
     // 获取下拉数据
     useEffect(() => {
         getUserListData()

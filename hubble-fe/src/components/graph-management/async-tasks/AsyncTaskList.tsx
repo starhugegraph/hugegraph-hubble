@@ -55,6 +55,7 @@ const AsyncTaskList: React.FC = observer(() => {
     })
     appStore.setCurrentKey("1")
   }, [])
+
   const currentSelectedRowKeys = intersection(
     selectedRowKeys,
     asyncTasksStore.asyncTaskList.map(({ id }) => id)
@@ -318,7 +319,7 @@ const AsyncTaskList: React.FC = observer(() => {
   });
 
   useEffect(() => {
-    if (appStore.graphs != "null") {
+    if (appStore.graphs !== "null") {
       graphManagementStore.fetchIdList();
       asyncTasksStore.setCurrentId(Number(params!.id));
       let startTime = new Date().getTime();

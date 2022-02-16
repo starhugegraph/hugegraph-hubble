@@ -29,7 +29,6 @@ function Index() {
     const getGraphspacesData = () => {
         api.getGraphspaces({ ...page, query }).then(res => {
             if (res && res.status === 200) {
-                console.log(res.data);
                 setListData(res.data)
             }
             setLoading(false)
@@ -60,7 +59,9 @@ function Index() {
         api.deleteGraphspaces(value.name).then(res => {
             if(res&&res.status===200){
                 message.success('删除成功');
-                window.location.reload()
+                setTimeout(() => {
+                    window.location.reload()
+                }, 500);
             }
         })
     }
@@ -78,17 +79,6 @@ function Index() {
             dataIndex: 'name',
             align: "center",
             fixed:"left"
-        },
-        {
-            title: 'id',
-            dataIndex: 'graphspace_id',
-            align: "center"
-        },
-        {
-            title: '创建时间',
-            dataIndex: 'update_time',
-            align: "center",
-            width: 125
         },
         {
             title: '描述',
@@ -133,22 +123,6 @@ function Index() {
             dataIndex: 'storage_namespace',
             align: "center",
             width: 150
-        },
-        {
-            title: '管理员',
-            dataIndex: 'graphspace_admin',
-            align: "center",
-            render: (tag) => (
-                tag ? tag.map(item => (<p key={item}>{item}</p>)) : null
-            )
-        },
-        {
-            title: '运维人员',
-            dataIndex: 'graphspace_operator',
-            align: "center",
-            render: (tag) => (
-                tag ? tag.map(item => (<p key={item}>{item}</p>)) : null
-            )
         },
         {
             title: '操作',

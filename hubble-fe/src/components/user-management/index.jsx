@@ -17,7 +17,7 @@ export default function Index() {
     const [detailData, setDetailData] = useState({})//具体项的查询条件
     const [visible, setVisible] = useState(false)//编辑与创建的模态框
     const [query, setQuery] = useState("")//搜索值
-    const [loading, setLoading] = useState(false)//table加载
+    const [loading, setLoading] = useState(true)//table加载
     const appStore = useContext(AppStoreContext)
     useEffect(() => {
         appStore.setMenuObj({
@@ -26,9 +26,9 @@ export default function Index() {
         })
         appStore.setCurrentKey("2")
     }, [])
+    
     // 获取数据
     useEffect(() => {
-        setLoading(true)
         getUserData()
         return () => {
             setListData({})
@@ -38,12 +38,13 @@ export default function Index() {
     const getUserData = () => {
         console.log(appStore.tenant);
         api.getAuthUser(appStore.tenant, { ...page, query }).then(res => {
+            setLoading(false)
             if (res && res.status === 200) {
                 setListData(res.data)
             }
-            setLoading(false)
         })
     }
+
     // 默认排序
     /*     const reverseDataWithUpdateTime = useMemo(() => {
             // if (listData.records) return listData.records.sort((a, b) => (+b.create_time.split("/").join("")) - (+a.create_time.split("/").join("")))
@@ -155,7 +156,7 @@ export default function Index() {
                 }
                 onChange={pageChange}
             />
-            <CreatModal getUserData={getUserData} visible={visible} setVisible={setVisible} detailData={detailData}></CreatModal>
+            <CreatModal  visible={visible} getUserData={getUserData} setVisible={setVisible} detailData={detailData}></CreatModal>
         </div>
     )
 }

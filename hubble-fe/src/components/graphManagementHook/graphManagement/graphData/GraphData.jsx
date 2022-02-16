@@ -64,10 +64,11 @@ export default function GraphData() {
         })
         appStore.setCurrentKey("2");
     }, []);
+
     useEffect(() => {
-        onSearch();
-        getSchemaNameList();
+        appStore.tenant && getSchemaNameList();
     }, [appStore.tenant]);
+
     // 表格数据
     let [tableData, setTableData] = useState([]);
     // 创建图弹窗
@@ -92,9 +93,10 @@ export default function GraphData() {
     let [pageObj, setPageObj] = useState(defaultPageObj);
     // 搜索框数据
     let [inpValue, setInpValue] = useState('');
-    useEffect(()=>{
-        onSearch(inpValue, '', true);
-    }, [pageObj.current]);
+
+    useEffect(() => {
+        appStore.tenant && onSearch(inpValue, '', true);
+    }, [pageObj.current, appStore.tenant]);
 
     let [schemaNameList, setSchemaNameList] = useState([]);
 
@@ -157,7 +159,7 @@ export default function GraphData() {
     };
     // 执行清空图操作
     const confirmDelete = () => {
-        api.deleteSchema(appStore.tenant, deleteData, {clear_schema: radioKey}).then((res) => {
+        api.deleteSchema(appStore.tenant, deleteData, { clear_schema: radioKey }).then((res) => {
             if (res.status === 200) {
                 message.success(res.message);
                 onSearch('');
@@ -211,7 +213,7 @@ export default function GraphData() {
             if (res.status === 200) {
                 message.success(res.message);
                 setCreateConfirmKey(false);
-                form.setFieldsValue({graph: '', schema: null, auth: true});
+                form.setFieldsValue({ graph: '', schema: null, auth: true });
                 setCreateKey(false);
                 onSearch('');
                 setInpValue('');
@@ -227,10 +229,10 @@ export default function GraphData() {
             <Modal
                 title="查看schema"
                 visible={seeVisible}
-                onCancel={()=> {setSeeVisible(false)}}
+                onCancel={() => { setSeeVisible(false) }}
                 footer={null}
             >
-                <div style={{minHeight: '200px'}}>
+                <div style={{ minHeight: '200px' }}>
                     <Row>
                         <Col span={4}>schema: </Col>
                         <Col span={20}>{schemaData}</Col>
@@ -240,21 +242,21 @@ export default function GraphData() {
             <Modal
                 title="清空图"
                 visible={deleteVisible}
-                onCancel={() => {setDeleteVisible(false)}}
+                onCancel={() => { setDeleteVisible(false) }}
                 onOk={openDeleteConfirm}
                 okText="确认"
                 cancelText="取消"
                 style={
                     {
-                        height:"200px",
-                        width:"200px"
+                        height: "200px",
+                        width: "200px"
                     }
                 }
             >
                 <div>
-                    <p style={{marginBottom: '20px'}}>
+                    <p style={{ marginBottom: '20px' }}>
                         图名:
-                        <span style={{marginLeft: '20px'}}>
+                        <span style={{ marginLeft: '20px' }}>
                             {deleteData}
                         </span>
                     </p>
@@ -270,43 +272,43 @@ export default function GraphData() {
             <Modal
                 title="确认删除"
                 visible={deleteConfirmKey}
-                onCancel={()=> {setDeleteConfirmKey(false)}}
+                onCancel={() => { setDeleteConfirmKey(false) }}
                 onOk={confirmDelete}
                 okText="确认"
                 cancelText="取消"
                 style={
                     {
-                        height:"200px",
-                        width:"200px"
+                        height: "200px",
+                        width: "200px"
                     }
                 }
             >
-                    确定要删除图{deleteData}吗？
+                确定要删除图{deleteData}吗？
             </Modal>
             <Modal
                 title="确认创建"
                 visible={createConfirmKey}
-                onCancel={()=> {setCreateConfirmKey(false)}}
+                onCancel={() => { setCreateConfirmKey(false) }}
                 onOk={confirmCreate}
                 okText="确认"
                 cancelText="取消"
                 style={
                     {
-                        height:"200px",
-                        width:"200px"
+                        height: "200px",
+                        width: "200px"
                     }
                 }
             >
-                    确定要创建吗？
+                确定要创建吗？
             </Modal>
             {/* 创建图弹窗 */}
             <Modal
                 title="创建"
                 width={600}
                 visible={createKey}
-                onCancel={()=> {
+                onCancel={() => {
                     setCreateKey(false);
-                    form.setFieldsValue({graph: '', schema: null, auth: true});
+                    form.setFieldsValue({ graph: '', schema: null, auth: true });
                 }}
                 footer={null}
             >
@@ -323,9 +325,9 @@ export default function GraphData() {
                         label="图名"
                         name="graph"
                         rules={[
-                            {required: true, message: '请输入图名!' },
-                            {pattern: /^[a-zA-Z0-9_\u4e00-\u9fa5]+$/, message: '请输入正确的格式!'},
-                            {max: 48, message: '最大长度为48个字符!'}
+                            { required: true, message: '请输入图名!' },
+                            { pattern: /^[a-zA-Z0-9_\u4e00-\u9fa5]+$/, message: '请输入正确的格式!' },
+                            { max: 48, message: '最大长度为48个字符!' }
                         ]}
                     >
                         <Input placeholder="请输入图名" />
@@ -341,7 +343,7 @@ export default function GraphData() {
                         label="schema"
                         name="schema"
                     >
-                        <Select placeholder="请选择schema">
+                        <Select placeholder="请选择schema" allowClear>
                             {
                                 schemaNameList.map((item) => {
                                     return (
@@ -384,7 +386,7 @@ export default function GraphData() {
                             }}
                             onChange={pageChange}
                         >
-                            { renderTabel(tableKeyList) }
+                            {renderTabel(tableKeyList)}
                             <Column
                                 title='操作'
                                 dataIndex='operation'
@@ -393,17 +395,17 @@ export default function GraphData() {
                                     return (
                                         <div className='table_btndiv'>
                                             <Button
-                                                onClick={()=> {openSeeModal(record)}}
+                                                onClick={() => { openSeeModal(record) }}
                                             >
                                                 查看schema
                                             </Button>
                                             <Button
-                                                onClick={()=> {exportSchema(record)}}
+                                                onClick={() => { exportSchema(record) }}
                                             >
                                                 导出schema
                                             </Button>
                                             <Button
-                                                onClick={()=> {openDeleteModal(record)}}
+                                                onClick={() => { openDeleteModal(record) }}
                                             >清空图</Button>
                                         </div>
                                     )

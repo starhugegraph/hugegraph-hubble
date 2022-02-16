@@ -228,14 +228,13 @@ const ImportTaskList: React.FC = observer(() => {
   ];
 
   useEffect(() => {
-    if (appStore.graphs != "null") {
-      setTimeout(() => {
-        switchPreLoading(false);
-      }, 800);
-
+    setTimeout(() => {
+      switchPreLoading(false);
+    }, 800);
+    if (appStore.graphs !== "null") {
       importManagerStore.fetchImportJobList();
     }
-  }, [appStore.tenant,appStore.graphs]);
+  }, [appStore.tenant, appStore.graphs]);
 
   return (
     <div className="import-manager-content-wrapper">
@@ -545,9 +544,8 @@ export const ImportManagerManipulation: React.FC<ImportManagerManipulationProps>
           <a
             target="_blank"
             className="import-manager-table-manipulations-outlink"
-            href={`/graph-management/${
-              params!.id
-            }/data-import/job-error-log/${jobId}`}
+            href={`/graph-management/${params!.id
+              }/data-import/job-error-log/${jobId}`}
           >
             {t('import-manager.list-column-manipulations.check-error-log')}
           </a>

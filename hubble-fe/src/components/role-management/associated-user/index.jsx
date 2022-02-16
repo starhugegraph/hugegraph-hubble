@@ -147,7 +147,7 @@ function Index(props) {
                     </Popconfirm>
                 </Space>
             </div>
-            <SecondModal getAssUserData={getAssUserData} visible={visibleCreate} setVisible={setVisibleCreate} detailData={detailData}></SecondModal>
+            <SecondModal  visible={visibleCreate} getAssUserData={getAssUserData} setVisible={setVisibleCreate} detailData={detailData}></SecondModal>
         </Modal>
     )
 }

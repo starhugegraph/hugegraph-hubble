@@ -56,6 +56,7 @@ const MetadataConfig: React.FC = observer(() => {
     })
     appStore.setCurrentKey("0")
   }, [])
+  
   const wrapperClassName = classnames({
     'metadata-configs': true,
     'metadata-configs-with-expand-sidebar': graphManagementStore.isExpanded

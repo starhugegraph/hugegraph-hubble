@@ -56,9 +56,6 @@ export default function GraphSchema() {
         })
         appStore.setCurrentKey("3")
     },[])
-    useEffect(()=>{
-        onSearch();
-    }, [appStore.tenant]);
     // 表格数据
     let [tableData, setTableData] = useState([]);
     // 创建图弹窗
@@ -83,7 +80,7 @@ export default function GraphSchema() {
     let [inpValue, setInpValue] = useState('');
     useEffect(()=>{
         onSearch(inpValue, '', true);
-    }, [pageObj.current]);
+    }, [pageObj.current,appStore.tenant]);
 
     // 搜索
     const onSearch = (value, e, key) => {
