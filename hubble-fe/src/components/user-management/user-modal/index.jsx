@@ -38,11 +38,13 @@ const Index = ({ visible, setVisible, detailData, getUserData }) => {
             form.resetFields()
         }
     }, [detailData])
+    
     // 获取下拉数据
     useEffect(() => {
         getUserListData()
         getRoleList()
     }, [appStore.tenant])
+
     // 获取用户List
     const getUserListData = () => {
         api.getUserList().then(res => {

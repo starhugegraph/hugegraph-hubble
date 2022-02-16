@@ -1222,7 +1222,7 @@ export class EdgeTypeStore {
       const result: AxiosResponse<responseData<
         EdgeTypeListResponse
       >> = yield axios
-        .get(`${baseUrl}/${conn_id}/schema/edgelabels`, {
+        .get(`${baseUrl}/${this.appStore._currentValue.tenant}/graphs/${this.appStore._currentValue.graphs}/schema/edgelabels`, {
           params: {
             page_no: this.edgeTypeListPageConfig.pageNumber,
             page_size: !options ? 10 : -1,

@@ -18,11 +18,13 @@ import {
 
 
 import './ImportTasks.less';
+import { AppStoreContext } from '../../../../stores';
 
 const ImportTasks: React.FC = observer(() => {
   const graphManagementStore = useContext(GraphManagementStoreContext);
   const importManagerStore = useContext(ImportManagerStoreContext);
   const dataImportRootStore = useContext(DataImportRootStoreContext);
+  const appStore = useContext(AppStoreContext)
   const { dataMapStore, serverDataImportStore } = dataImportRootStore;
   const [, params] = useRoute(
     '/graph-management/:id/data-import/import-manager/:jobId/import-tasks/:status*'
@@ -65,15 +67,16 @@ const ImportTasks: React.FC = observer(() => {
   }, [params?.status]);
 
   useEffect(() => {
+    console.log("importTasks");
     window.scrollTo(0, 0);
     dataImportRootStore.setCurrentJobId(Number(params!.jobId));
-
-    graphManagementStore.fetchIdList();
-    dataImportRootStore.setCurrentId(Number(params!.id));
-    dataImportRootStore.fetchVertexTypeList();
-    dataImportRootStore.fetchEdgeTypeList();
-    dataMapStore.fetchDataMaps();
-
+    if (appStore.graphs !== "null") {
+      graphManagementStore.fetchIdList();
+      dataImportRootStore.setCurrentId(Number(params!.id));
+      dataImportRootStore.fetchVertexTypeList();
+      dataImportRootStore.fetchEdgeTypeList();
+      dataMapStore.fetchDataMaps();
+    }
     return () => {
       // no specific job here, solve the problem that click back button in browser
       // since <ImportManager /> relies on @selectedJob in useEffect()
@@ -82,7 +85,7 @@ const ImportTasks: React.FC = observer(() => {
       dataMapStore.dispose();
       serverDataImportStore.dispose();
     };
-  }, []);
+  }, [appStore.graphs, appStore.tenant]);
 
   return (
     <section className={wrapperClassName}>
@@ -96,8 +99,8 @@ const ImportTasks: React.FC = observer(() => {
                   dataImportRootStore.currentStep === index + 1
                     ? 'process'
                     : dataImportRootStore.currentStep > index + 1
-                    ? 'finish'
-                    : 'wait'
+                      ? 'finish'
+                      : 'wait'
                 }
                 key={title}
               />

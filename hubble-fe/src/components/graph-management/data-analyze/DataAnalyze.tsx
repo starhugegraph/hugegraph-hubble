@@ -23,22 +23,22 @@ import {
 import './DataAnalyze.less';
 
 const DataAnalyze: React.FC = observer(() => {
-  
+
   const graphManagementStore = useContext(GraphManagementStoreContext);
   const appStore = useContext(AppStoreContext);
   const dataAnalyzeStore = useContext(DataAnalyzeStoreContext);
   const [match, params] = useRoute('/graph-management/:id/data-analyze');
   const [_, setLocation] = useLocation();
 
-/* 
-  const [tenant] = useState(appStore.tenant)
-  const [graphs] = useState(appStore.graphs)
-  const [refresh, setRefresh] = useState(false);
-  useEffect(() => {
-    if (tenant !== appStore.tenant || graphs !== appStore.graphs) {
-      setRefresh(true)
-    }
-  }, [appStore.tenant, appStore.graphs]) */
+  /* 
+    const [tenant] = useState(appStore.tenant)
+    const [graphs] = useState(appStore.graphs)
+    const [refresh, setRefresh] = useState(false);
+    useEffect(() => {
+      if (tenant !== appStore.tenant || graphs !== appStore.graphs) {
+        setRefresh(true)
+      }
+    }, [appStore.tenant, appStore.graphs]) */
 
 
   useEffect(() => {
@@ -63,7 +63,8 @@ const DataAnalyze: React.FC = observer(() => {
   // which is not equal each time
   /* eslint-disable */
   useEffect(() => {
-    if (match && appStore.graphs!= "null") {
+    console.log(appStore.graphs);
+    if (appStore.graphs !== "null") {
       appStore.setCurrentId(0);
       dataAnalyzeStore.setCurrentId(0);
       dataAnalyzeStore.fetchValueTypes();
@@ -73,7 +74,7 @@ const DataAnalyze: React.FC = observer(() => {
       dataAnalyzeStore.fetchAllNodeStyle();
       dataAnalyzeStore.fetchAllEdgeStyle();
     }
-  }, [dataAnalyzeStore, match, appStore.tenant,appStore.graphs]);
+  }, [dataAnalyzeStore,appStore.tenant,appStore.graphs]);
 
   return (
     <section className="data-analyze">

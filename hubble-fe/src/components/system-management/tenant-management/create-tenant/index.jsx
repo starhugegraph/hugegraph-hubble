@@ -17,9 +17,8 @@ const tailLayout = {
         span: 16,
     },
 };
-const Index = (props) => {
+const Index = ({ visible, setVisible, detailData, getGraphspaces }) => {
     const [form] = Form.useForm();
-    const { visible, setVisible, detailData, getGraphspaces } = props
     const [userList, setUserList] = useState([])//用户list
     const [loading, setLoading] = useState(false)//加载
     const appStore = useContext(AppStoreContext)
@@ -28,6 +27,7 @@ const Index = (props) => {
         if (Object.keys(detailData).length !== 0) return true
         return false
     }, [detailData])
+
     // 是否回显
     useLayoutEffect(() => {
         getUser()
@@ -41,6 +41,7 @@ const Index = (props) => {
             form.resetFields()
         }
     }, [detailData])
+
     // 获取user下拉框
     const getUser = () => {
         api.getUserList().then(res => {
@@ -54,26 +55,28 @@ const Index = (props) => {
     const onFinish = (values) => {
         setLoading(true)
         if (isDisabled) {
-            api.putGraphspaces(appStore.tenant, values).then(res => {
+            api.putGraphspaces(values.name, values).then(res => {
+                setLoading(false)
                 if (res && res.status === 200) {
                     message.success("编辑成功")
-                    getGraphspaces()
                     setVisible(false)
+                    setTimeout(() => {
+                        window.location.reload()
+                    }, 500);
                 }
-                setLoading(false)
             })
         } else {
             api.addGraphspacesList(values).then(res => {
+                setLoading(false)
                 if (res && res.status === 200) {
                     message.success("新增成功")
                     setVisible(false)
-                    getGraphspaces()
-                    setVisible(false)
+                    setTimeout(() => {
+                        window.location.reload()
+                    }, 500);
                 }
-                setLoading(false)
             })
         }
-        window.location.reload()
     };
     // 取消
     const onReset = () => {
@@ -92,7 +95,7 @@ const Index = (props) => {
     const userSelect = useMemo(() => userList.map(item => (<Option key={item.id}>{item.user_name}</Option>)), [userList])
     return (
         <Modal
-            title={Object.keys(detailData).length === 0 ? "创建" : "查询"}
+            title={Object.keys(detailData).length === 0 ? "创建" : "编辑"}
             closable={false}
             visible={visible}
             footer={null}
@@ -148,11 +151,10 @@ const Index = (props) => {
                         rules={
                             [
                                 { required: true, message: "此项为必填项" },
-                                { min: 1, message: "最小值为1" },
                             ]
                         }
                     >
-                        <InputNumber placeholder='G' precision={0} stringMode min={1} value={1}></InputNumber>
+                        <InputNumber placeholder='G' precision={0} stringMode min={1}></InputNumber>
                     </Form.Item>
 
                     <Form.Item
@@ -162,7 +164,6 @@ const Index = (props) => {
                         rules={
                             [
                                 { required: true, message: "此项为必填项" },
-                                { min: 1, message: "最小值为1" },
                             ]
                         }
                     >
@@ -176,7 +177,6 @@ const Index = (props) => {
                         rules={
                             [
                                 { required: true, message: "此项为必填项" },
-                                { min: 1, message: "最小值为1" },
                             ]
                         }
                     >
@@ -223,36 +223,12 @@ const Index = (props) => {
                 <Form.Item
                     name="graphspace_admin"
                     label="租户管理员"
-                    rules={
-                        [
-                            { required: true, message: "此项为必填项" },
-                        ]
-                    }
                 >
                     <Select
                         mode="multiple"
                         allowClear
                         style={{ width: '100%' }}
                         placeholder="选择租户管理员"
-                    >
-                        {userList.length ? userSelect : null}
-                    </Select>
-                </Form.Item>
-
-                <Form.Item
-                    name="graphspace_operator"
-                    label="租户运维管理员"
-                    rules={
-                        [
-                            { required: true, message: "此项为必填项" },
-                        ]
-                    }
-                >
-                    <Select
-                        mode="multiple"
-                        allowClear
-                        style={{ width: '100%' }}
-                        placeholder="选择租户运维人员"
                     >
                         {userList.length ? userSelect : null}
                     </Select>

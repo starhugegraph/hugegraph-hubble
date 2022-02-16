@@ -178,9 +178,8 @@ const Home = () => {
     let [current, setCurrent] = useState('0');
     // 头部导航菜单数据
     let [menuList, setMenuList] = useState([]);
-
+    // 路由地址
     const [_, setLocation] = useLocation();
-
     // 当前租户列表
     let [userListSelect, setUserListSelect] = useState([]);
     // 当前图列表
@@ -218,8 +217,8 @@ const Home = () => {
     useEffect(() => {
         if (JSON.stringify(keyObj) !== JSON.stringify(appStore.menuObj)) {
             setObj(appStore.menuObj);
-            setMenuList(defaultMenuList[appStore.menuObj.c_key - 1].data)
         }
+        setMenuList(defaultMenuList[appStore.menuObj.c_key - 1].data)
     }, [appStore.menuObj]);
 
     useEffect(() => {
@@ -227,19 +226,18 @@ const Home = () => {
     }, [appStore.currentKey]);
 
     useEffect(() => {
-        appStore.graphs !== "null" && setGraphsActive(appStore.graphs);
+        setGraphsActive(appStore.graphs === "null" ? "暂无" : appStore.graphs);
     }, [appStore.graphs]);
 
     useEffect(() => {
         if (appStore.tenant !== "null") {
             localStorage.setItem("tenant", appStore.tenant)
-            getGraphsList();
         };
     }, [appStore.tenant]);
 
     // 获取租户列表
     const getTenantList = () => {
-        api.getGraphspacesList().then((res) => {
+        api.getGraphspacesList().then(res => {
             if (res.status === 200
                 && res.data.graphspaces
                 && res.data.graphspaces.length
@@ -255,26 +253,25 @@ const Home = () => {
                 }
                 setUserListSelect(res.data.graphspaces);
             }
+            getGraphsList()
         });
     };
 
     // 获取图列表
-    const getGraphsList = () => {
+    const getGraphsList = async () => {
         setGraphsLoading(true)
         if (appStore.tenant !== 'null') {
-            api.getGraphsName(appStore.tenant).then(res => {
-                setGraphsLoading(false)
-                if (res.status === 200
-                    && res.data.graphs
-                    && res.data.graphs.length) {
-                    appStore.setGraphs(res.data.graphs[0]);
-                    setGraphsSelect(res.data.graphs);
-                    return;
-                }
-                appStore.setGraphs("null");
-                setGraphsSelect([]);
-                setGraphsActive("暂无");
-            });
+            const res = await api.getGraphsName(appStore.tenant)
+            setGraphsLoading(false)
+            if (res.status === 200
+                && res.data.graphs
+                && res.data.graphs.length) {
+                appStore.setGraphs(res.data.graphs[0]);
+                setGraphsSelect(res.data.graphs);
+                return;
+            }
+            appStore.setGraphs("null");
+            setGraphsSelect([]);
         }
     };
 
@@ -390,7 +387,6 @@ const Home = () => {
      * @param {头部导航} header_key
      * @return {是否展示} bool
      */
-
     const show_right_header = useMemo(() => {
         if (_ === "/") {
             setCurrent("0")
@@ -408,9 +404,10 @@ const Home = () => {
     }, [_])
 
     // 切换租户时触发
-    const selectChange = (value) => {
+    const selectChange = async (value) => {
         appStore.setTenant(value);
         setUserActive(value);
+        getGraphsList();
     };
     // 头部导航菜单栏渲染函数
     const menuRender = (arr) => {
@@ -594,4 +591,4 @@ const Home = () => {
         </div>
     )
 }
-export default React.memo(Home)
+export default Home

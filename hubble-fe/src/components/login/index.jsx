@@ -23,8 +23,8 @@ export default function Index({ setLogin }) {
                 }
                 localStorage.setItem('lg', "true")
                 localStorage.setItem("userInfo", JSON.stringify({ user_name: res.data.user_name, avatar: res.data.avatar }))
-                setLogin("true")
                 setLocation('/')
+                setLogin("true")
             }
         })
     };

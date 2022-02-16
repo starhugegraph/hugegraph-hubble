@@ -24,24 +24,30 @@ import {
 import { AppStoreContext } from '../../../../stores';
 import api from '../../../../api/api';
 
-const container_style={ padding: '8px 0px', display: "flex" }
-const span_style={ margin: '0 20px', display: "inline-block", width: "70px" }
-const div_style={ width: "100px", display: "flex", justifyContent: "flex-start" }
+const container_style = { padding: '8px 0px', display: "flex" }
+const span_style = { margin: '0 20px', display: "inline-block", width: "70px" }
+const div_style = { width: "100px", display: "flex", justifyContent: "flex-start" }
 export default function Resources() {
+
+    let appStore = useContext(AppStoreContext);
+
     const { Search } = Input;
     const { Column } = Table;
     const { Option } = Select;
     const { Panel } = Collapse;
+
     useEffect(() => {
         appStore.setMenuObj({
             c_key: "3",
             f_key: "sub1"
         })
         appStore.setCurrentKey("1")
-        getGraphsList();
-        onSearch('');
     }, []);
-    let appStore = useContext(AppStoreContext);
+
+    useEffect(() => {
+        appStore.tenant && getGraphsList();
+    }, [appStore.tenant]);
+
     const tableKeyList = [
         {
             key: 'target_graph',
@@ -77,9 +83,11 @@ export default function Resources() {
     let [pageObj, setPageObj] = useState(defaultPageObj);
     // 搜索框数据
     let [inpValue, setInpValue] = useState('');
+
     useEffect(() => {
         onSearch(inpValue, '', true);
-    }, [pageObj.current]);
+    }, [pageObj.current,appStore.tenant]);
+
     // 表格数据
     let [tableData, setTableData] = useState([]);
     // 搜索数据
@@ -594,7 +602,7 @@ export default function Resources() {
                 return (
                     <Panel header={
                         <div style={container_style}>
-                            <span style={{ marginRight: '20px'}}>{item.title}:</span>
+                            <span style={{ marginRight: '20px' }}>{item.title}:</span>
                             <div style={div_style}>
                                 <Switch
                                     checked={item.checked}
@@ -618,31 +626,31 @@ export default function Resources() {
                 <Panel header={
                     <div>
                         <span style={{ marginRight: '20px' }}>{item.title}:</span>
-                            <Switch
-                                checked={item.checked}
-                                disabled={see}
-                                onClick={(checked, e) => {
-                                    e.stopPropagation();
-                                    setChecked(item.key, checked);
-                                }}
-                            />
-                            <Button
-                                style={{ marginLeft: '20px' }}
-                                type="primary"
-                                size="small"
-                                shape="circle"
-                                disabled={see}
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    if (item.type === 'type') {
-                                        openAddPDom(item.key);
-                                        return;
-                                    }
-                                    openAddDom(item.key);
-                                }}
-                            >
-                                +
-                            </Button>
+                        <Switch
+                            checked={item.checked}
+                            disabled={see}
+                            onClick={(checked, e) => {
+                                e.stopPropagation();
+                                setChecked(item.key, checked);
+                            }}
+                        />
+                        <Button
+                            style={{ marginLeft: '20px' }}
+                            type="primary"
+                            size="small"
+                            shape="circle"
+                            disabled={see}
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                if (item.type === 'type') {
+                                    openAddPDom(item.key);
+                                    return;
+                                }
+                                openAddDom(item.key);
+                            }}
+                        >
+                            +
+                        </Button>
                     </div>
                 } key={item.key}>
                     <Collapse>
@@ -670,12 +678,13 @@ export default function Resources() {
     };
     // 获取图列表
     const getGraphsList = () => {
-        api.getGraphsName().then((res) => {
+        api.getGraphsName(appStore.tenant).then(res => {
             if (res.status === 200) {
                 setGraphsSelect(res.data.graphs);
             }
         });
     };
+
     const pageChange = (pagination) => {
         let obj = {
             current: pagination.current,
@@ -907,9 +916,9 @@ export default function Resources() {
                 onOk={confirmDelete}
                 okText="确认"
                 cancelText="取消"
-                style={{"height":200}}
+                style={{ "height": 200 }}
             >
-                    确定要删除{deleteData}吗？
+                确定要删除{deleteData}吗？
             </Modal>
             <Modal
                 title={eidtKey ? '确认编辑' : '确认创建'}
@@ -918,9 +927,9 @@ export default function Resources() {
                 onOk={confirmCreate}
                 okText="确认"
                 cancelText="取消"
-                style={{"height":200}}
+                style={{ "height": 200 }}
             >
-                    确定要{eidtKey ? '修改' : '创建'}吗？
+                确定要{eidtKey ? '修改' : '创建'}吗？
             </Modal>
             {/* 创建资源弹窗 */}
             <Modal

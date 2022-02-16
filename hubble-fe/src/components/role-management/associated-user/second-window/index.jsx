@@ -4,36 +4,7 @@ import api from '../../../../api/api'
 import { AppStoreContext } from '../../../../stores'
 
 const { Option } = Select
-/* const demoData =
-{
-    status: 200,
-    data: {
-        users: [
-            {
-                id: "1", //id
-                user_name: "张三", //
-            },
-            {
-                id: "2", //id
-                user_name: "李四", //
-            },
-            {
-                id: "3", //id
-                user_name: "王武", //
-            },
-            {
-                id: "4", //id
-                user_name: "无泪", //
-            },
-            {
-                id: "5", //id
-                user_name: "泥煤", //
-            },
-        ]
-    },
-    "message": "msg",
-    "cause": ""
-} */
+
 export default function Index(props) {
     const { visible, setVisible, detailData, getAssUserData } = props
     const [userList, setUserList] = useState([])//用户下拉菜单数据
