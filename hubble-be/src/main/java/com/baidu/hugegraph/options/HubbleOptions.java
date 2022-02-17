@@ -292,13 +292,4 @@ public class HubbleOptions extends OptionHolder {
                     null,
                     ""
             );
-
-    public static final ConfigOption<String> SUPER_AMDIN =
-            new ConfigOption<>(
-                    "account.admins",
-                    "The super admin accoun of hugegraph",
-                    null,
-                    "admin"
-            );
-
 }

@@ -138,7 +138,7 @@ public class UserService extends AuthService{
             return "ADMIN";
         }
 
-        if (isSuperAdmin(client, uid)) {
+        if (isSpaceAdmin(client, uid)) {
             return "SPACEADMIN";
         }
 
@@ -147,59 +147,21 @@ public class UserService extends AuthService{
     }
 
     public boolean isSuperAdmin(HugeClient client, String uid) {
-        // Check account.admins in hugegraph-hubble.properties
-        String admins = config.get(HubbleOptions.SUPER_AMDIN);
-        String[] arrAdmins = admins.split(",");
-        if (ImmutableSet.copyOf(arrAdmins).contains(uid)) {
-            return true;
-        }
-        // Check: if user is admin
-        // {"*":{"*":{HugePermission.ADMIN: xxx}}
-        User.UserRole role = client.auth().getUserRole(uid);
-        Map<String, Map<HugePermission, List<HugeResource>>>
-                spaceMap = role.roles().getOrDefault("*", null);
-        if (spaceMap != null) {
-            Map<HugePermission, List<HugeResource>>
-                    graphMap = spaceMap.getOrDefault("*", null);
-            if (graphMap != null
-                    && graphMap.getOrDefault(HugePermission.ADMIN, null) != null) {
-                return true;
-            }
-        }
-
-        return false;
+        // Check: if user is spaceadmin for any graphspace
+        return client.auth().listSuperAdmin().contains(uid);
     }
 
     public boolean isAssignSpaceAdmin(HugeClient client, String uid,
                                 String graphSpace) {
-        // Check: if user is spaceadmin
-        // Demo: {GRAPHSPACE:{"*":{}}
-        User.UserRole role = client.auth().getUserRole(uid);
-        Map<String, Map<HugePermission, List<HugeResource>>>
-                sv = role.roles().getOrDefault(graphSpace, null);
-        if (sv != null) {
-            Map<HugePermission, List<HugeResource>>
-                    gv = sv.getOrDefault("*", null);
-            if (gv != null &&
-                    gv.getOrDefault(HugePermission.SPACE, null) != null) {
-                return true;
-            }
-        }
-
-        return false;
+        // Check: if user is spaceadmin for one graphSpace
+        return client.auth().listSpaceAdmin(graphSpace).contains(uid);
     }
 
-    public boolean isSpaceAdmin(HugeClient client, String uid,
-                                String graphSpace) {
+    public boolean isSpaceAdmin(HugeClient client, String uid) {
         // Check: if user is spaceadmin
-        // Demo: {GRAPHSPACE:{"*":{}}
-        User.UserRole role = client.auth().getUserRole(uid);
-        for (Map<String, Map<HugePermission, List<HugeResource>>>
-                sv: role.roles().values()) {
-            Map<HugePermission, List<HugeResource>>
-                    gv = sv.getOrDefault("*", null);
-            if (gv != null &&
-                    gv.getOrDefault(HugePermission.SPACE, null)!=null) {
+        List<String> graphSpaces = client.graphSpace().listGraphSpace();
+        for (String gs : graphSpaces) {
+            if (isAssignSpaceAdmin(client, uid, gs)) {
                 return true;
             }
         }
@@ -212,14 +174,6 @@ public class UserService extends AuthService{
                                           String graphSpace) {
         AuthManager auth = client.auth();
 
-        List<User> users = auth.listUsers();
-        List<String> ues= new ArrayList<>(users.size());
-        users.forEach(u -> {
-            if (this.isAssignSpaceAdmin(client, u.id().toString(), graphSpace)) {
-                ues.add(u.name());
-            }
-        });
-
-        return ues;
+        return auth.listSpaceAdmin(graphSpace);
     }
 }

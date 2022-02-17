@@ -75,9 +75,10 @@ public class ClientService {
 
         Set<String> graphSpaces = new HashSet<>();
 
-        this.hugeClientFactory.listGraphSpaces(this.cluster).forEach((p) -> {
-            graphSpaces.add(p);
-        });
+        this.hugeClientFactory.listGraphSpaces(this.cluster)
+                              .stream().sorted().forEach((p) -> {
+                graphSpaces.add(p);
+            });
 
         return ImmutableSet.copyOf(graphSpaces);
     }
