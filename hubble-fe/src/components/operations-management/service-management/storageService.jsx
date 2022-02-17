@@ -1,12 +1,9 @@
-import { Table, Space, Button, Input } from 'antd';
-import React, { useContext, useEffect, useState } from 'react'
+import { Table, Button} from 'antd';
+import React, { useEffect, useState } from 'react'
 import DetailModal from './storage-detail'
-import { AppStoreContext } from '../../../stores';
 import api from '../../../api/api'
 
 function StorageService() {
-    const appStore = useContext(AppStoreContext)
-
     const [dataList, setDataList] = useState({})//数据列表
     const [page, setPage] = useState({})//分页条件
     const [isModalVisible, setIsModalVisible] = useState(false);//详情的显隐 
@@ -14,20 +11,10 @@ function StorageService() {
     const [loading, setLoading] = useState(true)
     // const [query, setSearch] = useState("");//搜索值
 
-    // 设置当前展开
-    useEffect(() => {
-        appStore.setMenuObj({
-            c_key: "4",
-            f_key: "sub2"
-        })
-        appStore.setCurrentKey("1")
-    }, [])
-
     // 获取数据
     useEffect(() => {
         getStorageData()
     }, [page])
-
 
     // 获取数据
     const getStorageData = () => {

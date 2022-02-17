@@ -1,7 +1,6 @@
 import React, { useMemo, useState, useLayoutEffect, useContext } from 'react'
 import { Form, Input, Button, Modal, Space, InputNumber, Select, message } from 'antd';
 import api from '../../../../api/api'
-import { AppStoreContext } from '../../../../stores';
 const { Option } = Select
 const layout = {
     labelCol: {
@@ -21,7 +20,6 @@ const Index = ({ visible, setVisible, detailData, getGraphspaces }) => {
     const [form] = Form.useForm();
     const [userList, setUserList] = useState([])//用户list
     const [loading, setLoading] = useState(false)//加载
-    const appStore = useContext(AppStoreContext)
     // 是否禁用
     const isDisabled = useMemo(() => {
         if (Object.keys(detailData).length !== 0) return true

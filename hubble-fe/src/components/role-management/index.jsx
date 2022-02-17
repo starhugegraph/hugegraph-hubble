@@ -19,18 +19,13 @@ function Index() {
     const [query, setQuery] = useState("")//搜索值
     const [loading, setLoading] = useState(false)//搜索值
     const appStore = useContext(AppStoreContext)
-    useEffect(() => {
-        appStore.setMenuObj({
-            c_key: "3",
-            f_key: "sub1"
-        })
-        appStore.setCurrentKey("0")
-    }, [])
+
     // 获取数据
     useEffect(() => {
         setLoading(true)
         getRoleData()
     }, [page, query,appStore.tenant])
+ 
     // 获取角色数据
     const getRoleData = () => {
         api.getRole(appStore.tenant, { ...page, query }).then(res => {

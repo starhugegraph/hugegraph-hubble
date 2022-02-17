@@ -27,7 +27,6 @@ const DataAnalyze: React.FC = observer(() => {
   const graphManagementStore = useContext(GraphManagementStoreContext);
   const appStore = useContext(AppStoreContext);
   const dataAnalyzeStore = useContext(DataAnalyzeStoreContext);
-  const [match, params] = useRoute('/graph-management/:id/data-analyze');
   const [_, setLocation] = useLocation();
 
   /* 
@@ -39,15 +38,6 @@ const DataAnalyze: React.FC = observer(() => {
         setRefresh(true)
       }
     }, [appStore.tenant, appStore.graphs]) */
-
-
-  useEffect(() => {
-    appStore.setMenuObj({
-      c_key: "1",
-      f_key: "sub1"
-    })
-    appStore.setCurrentKey("0")
-  }, [])
 
   useEffect(() => {
     window.scrollTo(0, 0);

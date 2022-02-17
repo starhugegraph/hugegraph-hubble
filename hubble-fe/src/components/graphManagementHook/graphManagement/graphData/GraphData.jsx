@@ -57,13 +57,6 @@ export default function GraphData() {
         total: 0,
         pageSize: 10
     };
-    useEffect(() => {
-        appStore.setMenuObj({
-            c_key: '2',
-            f_key: 'sub1'
-        })
-        appStore.setCurrentKey("2");
-    }, []);
 
     useEffect(() => {
         appStore.tenant && getSchemaNameList();

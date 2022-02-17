@@ -22,13 +22,6 @@ export default function QueryServiceList() {
         return []
     }, [listData]) */
 
-    useEffect(() => {
-        appStore.setMenuObj({
-            c_key: "4",
-            f_key: "sub2"
-        })
-        appStore.setCurrentKey("0")
-    }, [])
     // 获取数据
     useEffect(() => {
         getQuery()
@@ -39,9 +32,9 @@ export default function QueryServiceList() {
         api.getQueryList(appStore.tenant, { query: search, ...page }).then(res => {
             if (res && res.status === 200) {
                 setListData(res.data)
-                console.log(res.data);
             }
             setLoading(false)
+
         })
     }
 
@@ -68,26 +61,17 @@ export default function QueryServiceList() {
             }
         })
     }
-    // 取消删除
-    function cancel() {
-        message.error('取消删除')
-    }
     // 分页数据
     const pageChange = (params) => {
         setPage({ page_no: params.current, page_size: params.pageSize })
     }
-    
+
     const columns = [
         {
             title: '实例名称',
             dataIndex: 'name',
             align: "center",
             fixed: "left"
-        },
-        {
-            title: '租户',
-            dataIndex: 'graphspace',
-            align: "center",
         },
         {
             title: '运行方式',
@@ -135,7 +119,7 @@ export default function QueryServiceList() {
                     <Popconfirm
                         title={`你确定要删除实例${tag.name}吗?`}
                         onConfirm={() => confirm(tag)}
-                        onCancel={cancel}
+                        onCancel={() => message.warning('取消删除')}
                         okText="确定"
                         cancelText="取消"
                     >
@@ -149,7 +133,12 @@ export default function QueryServiceList() {
         <div className='query_list_container graphData_wrapper'>
             <div className='topDiv'>
                 <Input.Group compact className='inputBox'>
-                    <Input.Search allowClear style={{ width: '100%' }} placeholder='请输入实例名称' onSearch={(params) => setSearch(params)} />
+                    <Input.Search
+                        allowClear
+                        style={{ width: '100%' }}
+                        placeholder='请输入实例名称'
+                        onSearch={(params) => setSearch(params)}
+                    />
                 </Input.Group>
                 <Button onClick={createHandle} type="primary" className='query_list_addButton'>创建服务</Button>
             </div>

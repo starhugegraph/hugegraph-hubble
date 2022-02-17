@@ -13,14 +13,7 @@ export default function Index() {
     const [query, setQuery] = useState("")//搜索值
     const [loading, setLoading] = useState("")//table加载
     const appStore = useContext(AppStoreContext)
-    
-    useEffect(() => {
-        appStore.setMenuObj({
-            c_key: "6",
-            f_key: "sub3"
-        })
-        appStore.setCurrentKey("0")
-    }, [])
+ 
     // 获取数据
     useEffect(() => {
         setLoading(true)

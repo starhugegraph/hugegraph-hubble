@@ -273,3 +273,153 @@ export function defaultDateTimeParams(params: _params) {
   }
   return apiParams
 }
+
+export function compKeyObj(path: string) {
+  switch (path) {
+    case "/graph-management/0/data-analyze":
+      return {
+        menuObj: {
+          c_key: "1",
+          f_key: "sub1"
+        },
+        headerCurrentKey: "0"
+      }
+    case "/graph-management/0/async-tasks":
+      return {
+        menuObj: {
+          c_key: "1",
+          f_key: "sub1"
+        },
+        headerCurrentKey: "1"
+      }
+    case "/graph-management/0/metadata-configs":
+      return {
+        menuObj: {
+          c_key: "2",
+          f_key: "sub1"
+        },
+        headerCurrentKey: "0"
+      }
+    case "/graph-management/0/data-import/import-manager":
+      return {
+        menuObj: {
+          c_key: "2",
+          f_key: "sub1"
+        },
+        headerCurrentKey: "1"
+      }
+    case "/graph-management/management":
+      return {
+        menuObj: {
+          c_key: "2",
+          f_key: "sub1"
+        },
+        headerCurrentKey: "2"
+      }
+    case "/graph-management/schema":
+      return {
+        menuObj: {
+          c_key: "2",
+          f_key: "sub1"
+        },
+        headerCurrentKey: "3"
+      }
+    case "/graph-management/0/role":
+      return {
+        menuObj: {
+          c_key: "3",
+          f_key: "sub1"
+        },
+        headerCurrentKey: "0"
+      }
+    case "/graph-management/resources":
+      return {
+        menuObj: {
+          c_key: "3",
+          f_key: "sub1"
+        },
+        headerCurrentKey: "1"
+      }
+    case "/graph-management/user":
+      return {
+        menuObj: {
+          c_key: "3",
+          f_key: "sub1"
+        },
+        headerCurrentKey: "2"
+      }
+    case "/operations-management/1/service":
+      return {
+        menuObj: {
+          c_key: "4",
+          f_key: "sub2"
+        },
+        headerCurrentKey: "0"
+      }
+    case "/operations-management/1/storage":
+      return {
+        menuObj: {
+          c_key: "4",
+          f_key: "sub2"
+        },
+        headerCurrentKey: "1"
+      }
+    case "/operations-management/1/computing":
+      return {
+        menuObj: {
+          c_key: "4",
+          f_key: "sub2"
+        },
+        headerCurrentKey: "2"
+      }
+    case "/operations-management/1/pd":
+      return {
+        menuObj: {
+          c_key: "4",
+          f_key: "sub2"
+        },
+        headerCurrentKey: "3"
+      }
+    case "/operations-management/1/log":
+      return {
+        menuObj: {
+          c_key: "7",
+          f_key: "sub2"
+        },
+        headerCurrentKey: "0"
+      }
+    case "/operations-management/1/Audit":
+      return {
+        menuObj: {
+          c_key: "8",
+          f_key: "sub2"
+        },
+        headerCurrentKey: "0"
+      }
+    case "/system-management/2/tenant":
+      return {
+        menuObj: {
+          c_key: "5",
+          f_key: "sub3"
+        },
+        headerCurrentKey: "0"
+      }
+    case "/system-management/2/User":
+      return {
+        menuObj: {
+          c_key: "6",
+          f_key: "sub3"
+        },
+        headerCurrentKey: "0"
+      }
+
+    default:
+      return {
+        menuObj: {
+          c_key: "1",
+          f_key: "sub1"
+        },
+        headerCurrentKey: "0"
+      }
+  }
+}

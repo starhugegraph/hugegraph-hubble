@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useContext } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import { Input, Button, Table, Space, Popconfirm, message, Tooltip } from 'antd'
 import CreatModal from './user-modal'
 import api from '../../api/api'
@@ -19,13 +19,6 @@ export default function Index() {
     const [query, setQuery] = useState("")//搜索值
     const [loading, setLoading] = useState(true)//table加载
     const appStore = useContext(AppStoreContext)
-    useEffect(() => {
-        appStore.setMenuObj({
-            c_key: '3',
-            f_key: 'sub1'
-        })
-        appStore.setCurrentKey("2")
-    }, [])
     
     // 获取数据
     useEffect(() => {

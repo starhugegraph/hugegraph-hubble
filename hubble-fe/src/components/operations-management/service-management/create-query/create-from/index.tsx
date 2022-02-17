@@ -51,12 +51,9 @@ const CreateFrom = (props: { getQuery: Function, setVisible: Function, detailDat
     }
     // 完成按钮
     const onFinish = (values: any) => {
-        values.urls = [values.urls]
         values.create_time = new Date().toLocaleDateString()
         if (isDisable) {
             api.changeQueryDetail(appStore.tenant, detailData.name, values).then((res: any) => {
-                console.log(res);
-                
                 if (res && res.status === 200) {
                     message.success("编辑成功")
                     setVisible(false)
@@ -91,7 +88,7 @@ const CreateFrom = (props: { getQuery: Function, setVisible: Function, detailDat
         let res = /^(?=^.{3,255}$)(http(s)?:\/\/)?(www\.)?[a-zA-Z0-9][-a-zA-Z0-9]{0,62}(\.[a-zA-Z0-9][-a-zA-Z0-9]{0,62})+(:\d+)*(\/\w+\.\w+)*([\?&]\w+=\w*)*$/i.test(value)
         if (res || value === "" || isDisable) {
             return Promise.resolve();
-        } else if (form.getFieldValue('deployment_type') === 'MANUAL' && value == "") {
+        } else if (form.getFieldValue('deployment_type') === 'MANUAL' && value === "") {
             return Promise.reject("手动模式下url不能为空")
         } else if (value.length > 48) {
             return Promise.reject("最长48位")

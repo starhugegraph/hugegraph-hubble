@@ -65,11 +65,6 @@ export class AppStore {
     this.graphs = graphs;
   }
 
-  @action.bound
-  setMenuObj(menuObj: object) {
-    this.menuObj = menuObj;
-  }
-
   @action
   dispose() {
     this.user = 'Hi, User name';

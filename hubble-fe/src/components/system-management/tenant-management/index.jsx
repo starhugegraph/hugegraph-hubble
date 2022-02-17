@@ -3,7 +3,6 @@ import { Input, Button, Table, Space, Popconfirm, message, Tooltip } from 'antd'
 import api from '../../../api/api'
 import CreatModal from './create-tenant'
 import './Index.less'
-import { AppStoreContext } from '../../../stores'
 
 function Index() {
     const [page, setPage] = useState({})//分页条件
@@ -12,14 +11,7 @@ function Index() {
     const [visible, setVisible] = useState(false)//编辑与创建的模态框
     const [query, setQuery] = useState("")//搜索
     const [loading, setLoading] = useState(false)//搜索
-    const appStore = useContext(AppStoreContext)
-    useEffect(() => {
-        appStore.setMenuObj({
-            c_key:"5",
-            f_key:"sub3"
-        })
-        appStore.setCurrentKey("0")
-    }, [])
+
     // 获取数据
     useEffect(() => {
         setLoading(true)
