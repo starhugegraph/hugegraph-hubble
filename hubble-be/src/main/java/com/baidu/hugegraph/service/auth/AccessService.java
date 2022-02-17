@@ -30,6 +30,7 @@ import com.baidu.hugegraph.structure.auth.HugePermission;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Multimap;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import lombok.extern.log4j.Log4j2;
@@ -87,11 +88,15 @@ public class AccessService extends AuthService {
                     access);
         });
 
-        tmp.keySet().forEach(key -> {
-            Group group = this.groupService.get(client, key.get(0));
-            Target target = this.targetService.get(client, key.get(1));
-            result.add(convert(tmp.get(key), group, target));
-        });
+        for(ImmutableList<String> key: tmp.keySet()) {
+            try {
+                Group group = this.groupService.get(client, key.get(0));
+                Target target = this.targetService.get(client, key.get(1));
+                result.add(convert(tmp.get(key), group, target));
+            } catch (Exception e) {
+                log.warn("list access error", e);
+            }
+        }
 
         return result;
     }
