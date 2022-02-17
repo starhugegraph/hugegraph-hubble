@@ -9,7 +9,6 @@
 import React, { useState, useContext, useEffect, useMemo } from 'react';
 import './Home.less';
 import { Select, Menu, Layout } from 'antd';
-import { SnippetsOutlined,/* QrcodeOutlined, ToolOutlined */ } from '@ant-design/icons';
 import {
     AppStoreContext,
 } from '../../stores';
@@ -34,6 +33,8 @@ import {
 import { TenantManagement, UserManagement } from '../system-management'
 import RoleManagement from '../role-management';
 import PerUserManagement from '../user-management'
+import HeaderC from './header/header';
+import SiderC from './sider'
 import Not404Find from '../404'
 import api from '../../api/api';
 
@@ -44,10 +45,9 @@ import {
 import { AsyncTaskList } from '../graph-management';
 import AsyncTaskResult from '../graph-management/async-tasks/AsyncTaskResult';
 import { useLocationWithConfirmation } from '../../hooks';
-import { userAuthArray } from '../../configs/userAuth';
+import { compKeyObj } from '../../stores/utils'
 
 const { Option } = Select;
-const { SubMenu } = Menu;
 const { Header, Sider, Content } = Layout;
 const defaultMenuList = [
     {
@@ -169,93 +169,24 @@ const defaultMenuList = [
     },
 ];
 const Home = () => {
-    // console.log(1);
+    console.log(1);
     let appStore = useContext(AppStoreContext);
-    let [keyObj, setObj] = useState(appStore.menuObj);
-    // 左侧菜单栏
-    let [userMenu, setUserMenu] = useState([]);
     // 头部导航当前选中值
     let [current, setCurrent] = useState('0');
     // 头部导航菜单数据
     let [menuList, setMenuList] = useState([]);
     // 路由地址
     const [_, setLocation] = useLocation();
-    // 当前租户列表
-    let [userListSelect, setUserListSelect] = useState([]);
-    // 当前图列表
-    let [graphsSelect, setGraphsSelect] = useState([]);
-    // 当前选中的图
-    let [graphsActive, setGraphsActive] = useState('');
-    // 当前选中的租户
-    let [userActive, setUserActive] = useState('');
     // 图名选择框loading
     let [graphsLoading, setGraphsLoading] = useState(false);
-
-    // 左侧菜单根据用户权限渲染
-    const leftMenuAuth = (arr) => {
-        return arr.map(item => {
-            if (!item.children) {
-                return (<Menu.Item key={item.key}>{item.name}</Menu.Item>)
-            } else {
-                return (<SubMenu key={item.key} icon={<SnippetsOutlined />} title={item.name}>
-                    {leftMenuAuth(item.children)}
-                </SubMenu>)
-            }
-        })
-    }
-
-    useEffect(() => {
-        getTenantList();
-        api.getSiderAuthUser().then(res => {
-            if (res.status === 200) {
-                let target = userAuthArray.find(item => item.name === res.data.level)
-                setUserMenu(target.authArray)
-            }
-        })
-    }, []);
-
-    useEffect(() => {
-        if (JSON.stringify(keyObj) !== JSON.stringify(appStore.menuObj)) {
-            setObj(appStore.menuObj);
-            setMenuList(defaultMenuList[appStore.menuObj.c_key - 1].data)
-        }
-    }, [appStore.menuObj]);
-
-    useEffect(() => {
-        appStore.currentKey && setCurrent(appStore.currentKey);
-    }, [appStore.currentKey]);
+    // 当前选中的图
+    let [graphsActive, setGraphsActive] = useState('');
+    // 当前图列表
+    let [graphsSelect, setGraphsSelect] = useState([]);
 
     useEffect(() => {
         setGraphsActive(appStore.graphs === "null" ? "暂无" : appStore.graphs);
     }, [appStore.graphs]);
-
-    useEffect(() => {
-        if (appStore.tenant !== "null") {
-            localStorage.setItem("tenant", appStore.tenant)
-        };
-    }, [appStore.tenant]);
-
-    // 获取租户列表
-    const getTenantList = () => {
-        api.getGraphspacesList().then(res => {
-            if (res.status === 200
-                && res.data.graphspaces
-                && res.data.graphspaces.length
-            ) {
-                const tenant = localStorage.getItem("tenant")
-                if (tenant) {
-                    appStore.setTenant(tenant);
-                    setUserActive(tenant)
-                } else {
-                    const defaultTenant = res.data.graphspaces[res.data.graphspaces.length - 1]
-                    appStore.setTenant(defaultTenant);
-                    setUserActive(defaultTenant)
-                }
-                setUserListSelect(res.data.graphspaces);
-            }
-            getGraphsList()
-        });
-    };
 
     // 获取图列表
     const getGraphsList = async () => {
@@ -275,90 +206,6 @@ const Home = () => {
         }
     };
 
-    // 头部导航点击事件
-    const handleClick = (e) => {
-        setCurrent(e.key);
-        if (appStore.menuObj.c_key === '1') {
-            if (e.key === '0') {
-                setLocation(`/graph-management/0/data-analyze`);
-            } else if (e.key === '1') {
-                setLocation(`/graph-management/0/async-tasks`);
-            }
-        } else if (appStore.menuObj.c_key === '2') {
-            if (e.key === '0') {
-                setLocation(`/graph-management/0/metadata-configs`);
-            } else if (e.key === '1') {
-                setLocation(`/graph-management/0/data-import/import-manager`);
-            } else if (e.key === '2') {
-                setLocation(`/graph-management/management`);
-            } else if (e.key === '3') {
-                setLocation(`/graph-management/schema`);
-            }
-        } else if (appStore.menuObj.c_key === '3') {
-            if (e.key === '1') {
-                setLocation(`/graph-management/resources`);
-            } else if (e.key === "0") {
-                setLocation(`/graph-management/0/role`)
-            } else if (e.key === "2") {
-                setLocation(`/graph-management/user`)
-            }
-        } else if (appStore.menuObj.c_key === "4") {
-            if (e.key === "0") {
-                setLocation(`/operations-management/1/service`)
-            } else if (e.key === "1") {
-                setLocation(`/operations-management/1/storage`)
-            } else if (e.key === "2") {
-                setLocation(`/operations-management/1/computing`)
-            } else if (e.key === "3") {
-                setLocation(`/operations-management/1/pd`)
-            }
-        } else if (appStore.menuObj.c_key === '5') {
-            if (e.key === "0") {
-                setLocation(`/system-management/2/tenant`)
-            }
-        }
-    };
-    // 左侧菜单栏点击事件
-    const menuLeftClick = (e) => {
-        if (e.key === appStore.menuObj.c_key) {
-            return;
-        }
-        setCurrent('0');
-        appStore.setMenuObj({
-            c_key: e.key,
-            f_key: e.keyPath[1]
-        });
-        (_ !== '/monitor') && setMenuList(defaultMenuList[e.key - 1].data);
-        if (e.key === '1') {
-            setLocation(`/graph-management/0/data-analyze`);
-        } else if (e.key === '2') {
-            setLocation(`/graph-management/0/metadata-configs`);
-        } else if (e.key === '3') {
-            setLocation(`/graph-management/0/role`)
-        } else if (e.key === '4') {
-            setLocation(`/operations-management/1/service`)
-        } else if (e.key === '5') {
-            setLocation(`/system-management/2/tenant`)
-        } else if (e.key === '6') {
-            setLocation(`/system-management/2/User`)
-        } else if (e.key === '7') {
-            setLocation(`/operations-management/1/log`)
-        } else if (e.key === '8') {
-            setLocation(`/operations-management/1/Audit`)
-        } else if (e.key === '9') {
-            api.gotoMonitoring().then(res => {
-                console.log(res);
-            })
-        }
-    };
-    // 点击切换下拉key
-    const menuLeftSelect = (e) => {
-        setObj((obj) => ({ ...obj, f_key: e[1] || [] }))
-        appStore.setMenuObj({
-            ...appStore.menuObj,
-            f_key: e[1] || []
-        })
-    }
     // 租户选择器渲染函数
     const selectRender = (arr) => {
         if (!arr.length) {
@@ -375,6 +222,7 @@ const Home = () => {
             );
         });
     };
+    
     // 切换图名
     const selectGraphsChange = (value) => {
         appStore.setGraphs(value);
@@ -390,7 +238,6 @@ const Home = () => {
     const show_right_header = useMemo(() => {
         if (_ === "/") {
             setCurrent("0")
-            setObj({ f_key: 'sub1', c_key: "1" })
             setMenuList(defaultMenuList[0].data)
         }
         if (_ === "/graph-management/0/data-analyze"
@@ -403,67 +250,37 @@ const Home = () => {
         return false
     }, [_])
 
-    // 切换租户时触发
-    const selectChange = async (value) => {
-        appStore.setTenant(value);
-        setUserActive(value);
-        getGraphsList();
-    };
-    // 头部导航菜单栏渲染函数
-    const menuRender = (arr) => {
-        if (!arr.length) {
-            return [];
-        }
-        return arr.map((item) => {
-            return (
-                <Menu.Item key={item.key}>
-                    {item.name}
-                </Menu.Item>
-            );
-        });
-    };
+    // keyObj
+    const testKeyObj = useMemo(() => {
+        let res = compKeyObj(_)
+        setMenuList(defaultMenuList[+res.menuObj.c_key - 1].data)
+        setCurrent(res.headerCurrentKey)
+        return res.menuObj
+    }, [_])
 
     return (
         <div className='wrapper'>
             <Layout>
                 <Header>
-                    <div className="header">
-                        <div className="header_user">
-                            <Select
-                                value={userActive ? userActive : "加载中......"}
-                                loading={userActive ? false : true}
-                                style={{ width: 120 }}
-                                bordered={false}
-                                onChange={selectChange}
-                            >
-                                {selectRender(userListSelect)}
-                            </Select>
-                        </div>
-                        <div className="header_menu">
-                            <Menu
-                                onClick={handleClick}
-                                selectedKeys={[current]}
-                                mode="horizontal"
-                                style={{ backgroundColor: "transparent" }}
-                            >
-                                {menuRender(menuList)}
-                            </Menu>
-                        </div>
-                    </div>
+                    <HeaderC
+                        current={current}
+                        menuList={menuList}
+                        setCurrent={setCurrent}
+                        appStore={appStore}
+                        getGraphsList={getGraphsList}
+                        testKeyObj={testKeyObj}
+                    ></HeaderC>
                 </Header>
                 <Layout>
                     <Sider>
                         <div className="leftTab">
-                            <Menu
-                                onClick={menuLeftClick}
-                                onOpenChange={menuLeftSelect}
-                                style={{ width: 256 }}
-                                selectedKeys={[keyObj.c_key]}
-                                openKeys={[keyObj.f_key]}
-                                mode="inline"
-                            >
-                                {leftMenuAuth(userMenu)}
-                            </Menu>
+                            <SiderC
+                                appStore={appStore}
+                                setCurrent={setCurrent}
+                                setMenuList={setMenuList}
+                                defaultMenuList={defaultMenuList}
+                                testKeyObj={testKeyObj}
+                            ></SiderC>
                         </div>
                     </Sider>
                     <Content>

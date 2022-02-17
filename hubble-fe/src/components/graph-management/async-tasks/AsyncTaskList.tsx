@@ -48,14 +48,6 @@ const AsyncTaskList: React.FC = observer(() => {
 
   const { t } = useTranslation();
 
-  useEffect(() => {
-    appStore.setMenuObj({
-      c_key: "1",
-      f_key: "sub1"
-    })
-    appStore.setCurrentKey("1")
-  }, [])
-
   const currentSelectedRowKeys = intersection(
     selectedRowKeys,
     asyncTasksStore.asyncTaskList.map(({ id }) => id)

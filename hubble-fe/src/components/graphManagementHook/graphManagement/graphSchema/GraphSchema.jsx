@@ -49,13 +49,6 @@ export default function GraphSchema() {
         total: 0,
         pageSize: 10
     };
-    useEffect(()=>{
-        appStore.setMenuObj({
-            c_key: '2',
-            f_key: 'sub1'
-        })
-        appStore.setCurrentKey("3")
-    },[])
     // 表格数据
     let [tableData, setTableData] = useState([]);
     // 创建图弹窗

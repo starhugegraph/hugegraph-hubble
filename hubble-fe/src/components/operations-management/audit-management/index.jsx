@@ -1,8 +1,7 @@
-import React, { useRef, useContext, useEffect,useState } from 'react';
+import React, { useRef,useState } from 'react';
 import { DownOutlined } from '@ant-design/icons';
 import { Button } from 'antd';
 import ProTable, { TableDropdown } from '@ant-design/pro-table';
-import { AppStoreContext } from '../../../stores';
 import api from '../../../api/api'
 import { defaultDateTimeParams } from '../../../stores/utils';
 
@@ -113,15 +112,7 @@ const columns = [
 ];
 
 export default () => {
-    const appStore = useContext(AppStoreContext)
     const [outParams,setParams] = useState(null)
-    useEffect(() => {
-        appStore.setMenuObj({
-            c_key: "8",
-            f_key: "sub2"
-        })
-        appStore.setCurrentKey("0")
-    }, [])
     const actionRef = useRef();
     return (
         <div className='graphData_wrapper query_list_container'>

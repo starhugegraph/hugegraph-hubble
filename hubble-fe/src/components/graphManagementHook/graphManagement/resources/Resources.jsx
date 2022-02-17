@@ -37,14 +37,6 @@ export default function Resources() {
     const { Panel } = Collapse;
 
     useEffect(() => {
-        appStore.setMenuObj({
-            c_key: "3",
-            f_key: "sub1"
-        })
-        appStore.setCurrentKey("1")
-    }, []);
-
-    useEffect(() => {
         appStore.tenant && getGraphsList();
     }, [appStore.tenant]);
 

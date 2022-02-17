@@ -48,14 +48,6 @@ const MetadataConfig: React.FC = observer(() => {
 
     setSelectedMenuItem(key);
   };
-
-  useEffect(() => {
-    appStore.setMenuObj({
-      c_key: "2",
-      f_key: "sub1"
-    })
-    appStore.setCurrentKey("0")
-  }, [])
   
   const wrapperClassName = classnames({
     'metadata-configs': true,

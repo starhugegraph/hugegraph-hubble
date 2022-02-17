@@ -36,14 +36,6 @@ export default function ComputingServices() {
     // const [search, setSearch] = useState(false);//详情的显隐
     const appStore = useContext(AppStoreContext)
 
-    useEffect(() => {
-        appStore.setMenuObj({
-            c_key: "4",
-            f_key: "sub2"
-        })
-        appStore.setCurrentKey("2")
-    }, [])
-
     // 获取数据
     useEffect(() => {
         setDataList(demoData.data)

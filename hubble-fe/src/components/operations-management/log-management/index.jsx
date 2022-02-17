@@ -1,5 +1,4 @@
 import React, { useEffect, useContext, useState } from 'react'
-import { AppStoreContext } from '../../../stores'
 import { Button, Tooltip } from 'antd';
 import ProTable from '@ant-design/pro-table';
 import api from '../../../api/api'
@@ -103,15 +102,7 @@ const columns = [
 ];
 
 export default () => {
-    const appStore = useContext(AppStoreContext)
     const [outParams, setParams] = useState(null)
-    useEffect(() => {
-        appStore.setMenuObj({
-            c_key: "7",
-            f_key: "sub2"
-        })
-        appStore.setCurrentKey("0")
-    }, [])
 
     return (
         <div className='query_list_container graphData_wrapper'>

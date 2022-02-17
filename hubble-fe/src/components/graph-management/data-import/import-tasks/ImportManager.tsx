@@ -35,14 +35,6 @@ const ImportManager: React.FC = observer(() => {
     'import-manager-with-expand-sidebar': graphManagementStore.isExpanded
   });
 
-  useEffect(()=>{
-    appStore.setMenuObj({
-      c_key:"2",
-      f_key:"sub1"
-    })
-    appStore.setCurrentKey("1")
-  },[])
-
   useEffect(() => {
     window.scrollTo(0, 0);
     graphManagementStore.fetchIdList();

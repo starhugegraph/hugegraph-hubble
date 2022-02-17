@@ -1,21 +1,11 @@
-import React, { useEffect, useContext, useState } from 'react';
-import { AppStoreContext } from '../../../stores';
-import { Table, Button, Space, message, Popconfirm, Tooltip } from 'antd'
+import React, { useEffect, useState } from 'react';
+import { Table} from 'antd'
 import api from '../../../api/api'
 
 function PdService() {
-    const appStore = useContext(AppStoreContext)
     const [listData, setListData] = useState([])//table数据
     const [loading, setLoading] = useState(true)//table加载
     const [page, setPage] = useState({})//分页条件
-
-    useEffect(() => {
-        appStore.setMenuObj({
-            c_key: "4",
-            f_key: "sub2"
-        })
-        appStore.setCurrentKey("3")
-    }, [])
 
     useEffect(() => {
         getPdData()

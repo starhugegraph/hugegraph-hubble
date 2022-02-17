@@ -8,7 +8,6 @@ export default function Index({ setLogin }) {
     const [form] = Form.useForm()
     const [loading, setLoading] = useState(false)
     const [_, setLocation] = useLocation()
-    // const appStore = useContext(AppStoreContext)
     // 登陆
     const onFinish = (values) => {
         setLoading(true)
