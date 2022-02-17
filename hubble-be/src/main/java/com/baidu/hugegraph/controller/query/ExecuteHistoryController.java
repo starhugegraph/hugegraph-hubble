@@ -19,6 +19,7 @@
 
 package com.baidu.hugegraph.controller.query;
 
+import com.baidu.hugegraph.driver.HugeClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,14 +35,16 @@ import com.baidu.hugegraph.service.query.ExecuteHistoryService;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 
 @RestController
-@RequestMapping(Constant.API_VERSION + "graph-connections/{connId}/execute-histories")
+@RequestMapping(Constant.API_VERSION + "graphspaces/{graphspace}/graphs" +
+        "/{graph}/execute-histories")
 public class ExecuteHistoryController extends GremlinController {
 
     @Autowired
     private ExecuteHistoryService service;
 
     @GetMapping
-    public IPage<ExecuteHistory> list(@PathVariable("connId") int connId,
+    public IPage<ExecuteHistory> list(@PathVariable("graphspace") String graphSpace,
+                                      @PathVariable("graph") String graph,
                                       @RequestParam(name = "page_no",
                                                     required = false,
                                                     defaultValue = "1")
@@ -50,23 +53,28 @@ public class ExecuteHistoryController extends GremlinController {
                                                     required = false,
                                                     defaultValue = "10")
                                       int pageSize) {
-        return this.service.list(connId, pageNo, pageSize);
+        HugeClient client = this.authClient(graphSpace, graph);
+        return this.service.list(client, pageNo, pageSize);
     }
 
     @GetMapping("{id}")
-    public ExecuteHistory get(@PathVariable("connId") int connId,
+    public ExecuteHistory get(@PathVariable("graphspace") String graphSpace,
+                              @PathVariable("graph") String graph,
                               @PathVariable("id") int id) {
-        return this.service.get(connId, id);
+        HugeClient client = this.authClient(graphSpace, graph);
+        return this.service.get(client, id);
     }
 
     @DeleteMapping("{id}")
-    public ExecuteHistory delete(@PathVariable("connId") int connId,
+    public ExecuteHistory delete(@PathVariable("graphspace") String graphSpace,
+                                 @PathVariable("graph") String graph,
                                  @PathVariable("id") int id) {
-        ExecuteHistory oldEntity = this.service.get(connId, id);
+        HugeClient client = this.authClient(graphSpace, graph);
+        ExecuteHistory oldEntity = this.service.get(client, id);
         if (oldEntity == null) {
             throw new ExternalException("execute-history.not-exist.id", id);
         }
-        this.service.remove(connId, id);
+        this.service.remove(client, id);
         return oldEntity;
     }
 }

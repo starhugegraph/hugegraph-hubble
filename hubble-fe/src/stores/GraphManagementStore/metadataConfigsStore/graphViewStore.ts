@@ -1,6 +1,6 @@
 import { observable, action, flow, computed } from 'mobx';
 import axios from 'axios';
-import { isUndefined, cloneDeep, clone } from 'lodash-es';
+import { isUndefined} from 'lodash-es';
 
 import vis from 'vis-network';
 import { MetadataConfigsRootStore } from './metadataConfigsStore';
@@ -15,12 +15,14 @@ import type {
   GraphViewData,
   DrawerTypes
 } from '../../types/GraphManagementStore/metadataConfigsStore';
+import { AppStoreContext } from '../..';
 
 export class GraphViewStore {
   metadataConfigsRootStore: MetadataConfigsRootStore;
-
+appStore:any
   constructor(MetadataConfigsRootStore: MetadataConfigsRootStore) {
     this.metadataConfigsRootStore = MetadataConfigsRootStore;
+    this.appStore = AppStoreContext
   }
 
   @observable.ref colorMappings: Record<string, string> = {};
@@ -106,6 +108,13 @@ export class GraphViewStore {
             highlight: { background: '#fb6a02', border: '#fb6a02' },
             hover: { background: '#ec3112', border: '#ec3112' }
           },
+          // reveal label when zoom to max
+          scaling: {
+            label: {
+              max: Infinity,
+              maxVisible: Infinity
+            }
+          },
           chosen: {
             node(
               values: any,
@@ -140,7 +149,7 @@ export class GraphViewStore {
       ({ id, label, source, target, properties, sort_keys }) => {
         return {
           id,
-          label,
+          label: label.length < 15 ? label : label.slice(0, 15) + '...',
           properties,
           source,
           target,
@@ -273,7 +282,7 @@ export class GraphViewStore {
     try {
       const result = yield axios
         .get(
-          `${baseUrl}/${this.metadataConfigsRootStore.currentId}/schema/graphview`
+          `${baseUrl}/${this.appStore._currentValue.tenant}/graphs/${this.appStore._currentValue.graphs}/schema/graphview`
         )
         .catch(checkIfLocalNetworkOffline);
 

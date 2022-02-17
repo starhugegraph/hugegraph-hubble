@@ -22,6 +22,7 @@ package com.baidu.hugegraph.controller.load;
 import java.util.List;
 import java.util.Set;
 
+import com.baidu.hugegraph.driver.HugeClient;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
@@ -61,7 +62,8 @@ import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 @RestController
-@RequestMapping(Constant.API_VERSION + "graph-connections/{connId}/job-manager/{jobId}/file-mappings")
+@RequestMapping(Constant.API_VERSION + "graphspaces/{graphspace}/graphs" +
+        "/{graph}/job-manager/{jobId}/file-mappings")
 public class FileMappingController extends BaseController {
 
     @Autowired
@@ -74,7 +76,8 @@ public class FileMappingController extends BaseController {
     private JobManagerService jobService;
 
     @GetMapping
-    public IPage<FileMapping> list(@PathVariable("connId") int connId,
+    public IPage<FileMapping> list(@PathVariable("graphspace") String graphSpace,
+                                   @PathVariable("graph") String graph,
                                    @PathVariable("jobId") int jobId,
                                    @RequestParam(name = "page_no",
                                                  required = false,
@@ -84,7 +87,7 @@ public class FileMappingController extends BaseController {
                                                  required = false,
                                                  defaultValue = "10")
                                    int pageSize) {
-        return this.service.list(connId, jobId, pageNo, pageSize);
+        return this.service.list(graphSpace, graph, jobId, pageNo, pageSize);
     }
 
     @GetMapping("{id}")
@@ -145,14 +148,16 @@ public class FileMappingController extends BaseController {
     }
 
     @PostMapping("{id}/vertex-mappings")
-    public FileMapping addVertexMapping(@PathVariable("connId") int connId,
+    public FileMapping addVertexMapping(@PathVariable("graphspace") String graphSpace,
+                                        @PathVariable("graph") String graph,
                                         @PathVariable("id") int id,
                                         @RequestBody VertexMapping newEntity) {
         FileMapping mapping = this.service.get(id);
         if (mapping == null) {
             throw new ExternalException("load.file-mapping.not-exist.id", id);
         }
-        this.checkVertexMappingValid(connId, newEntity, mapping);
+        HugeClient client = this.authClient(graphSpace, graph);
+        this.checkVertexMappingValid(client, newEntity, mapping);
 
         newEntity.setId(HubbleUtil.generateSimpleId());
         mapping.getVertexMappings().add(newEntity);
@@ -161,7 +166,8 @@ public class FileMappingController extends BaseController {
     }
 
     @PutMapping("{id}/vertex-mappings/{vmid}")
-    public FileMapping updateVertexMapping(@PathVariable("connId") int connId,
+    public FileMapping updateVertexMapping(@PathVariable("graphspace") String graphSpace,
+                                           @PathVariable("graph") String graph,
                                            @PathVariable("id") int id,
                                            @PathVariable("vmid") String vmId,
                                            @RequestBody VertexMapping newEntity) {
@@ -169,7 +175,8 @@ public class FileMappingController extends BaseController {
         if (mapping == null) {
             throw new ExternalException("load.file-mapping.not-exist.id", id);
         }
-        this.checkVertexMappingValid(connId, newEntity, mapping);
+        HugeClient client = this.authClient(graphSpace, graph);
+        this.checkVertexMappingValid(client, newEntity, mapping);
 
         VertexMapping vertexMapping = mapping.getVertexMapping(vmId);
         Ex.check(vertexMapping != null,
@@ -202,14 +209,16 @@ public class FileMappingController extends BaseController {
     }
 
     @PostMapping("{id}/edge-mappings")
-    public FileMapping addEdgeMapping(@PathVariable("connId") int connId,
+    public FileMapping addEdgeMapping(@PathVariable("graphspace") String graphSpace,
+                                      @PathVariable("graph") String graph,
                                       @PathVariable("id") int id,
                                       @RequestBody EdgeMapping newEntity) {
         FileMapping mapping = this.service.get(id);
         if (mapping == null) {
             throw new ExternalException("load.file-mapping.not-exist.id", id);
         }
-        this.checkEdgeMappingValid(connId, newEntity, mapping);
+        HugeClient client = this.authClient(graphSpace, graph);
+        this.checkEdgeMappingValid(client, newEntity, mapping);
 
         newEntity.setId(HubbleUtil.generateSimpleId());
         mapping.getEdgeMappings().add(newEntity);
@@ -218,7 +227,8 @@ public class FileMappingController extends BaseController {
     }
 
     @PutMapping("{id}/edge-mappings/{emid}")
-    public FileMapping updateEdgeMapping(@PathVariable("connId") int connId,
+    public FileMapping updateEdgeMapping(@PathVariable("graphspace") String graphSpace,
+                                         @PathVariable("graph") String graph,
                                          @PathVariable("id") int id,
                                          @PathVariable("emid") String emId,
                                          @RequestBody EdgeMapping newEntity) {
@@ -226,7 +236,8 @@ public class FileMappingController extends BaseController {
         if (mapping == null) {
             throw new ExternalException("load.file-mapping.not-exist.id", id);
         }
-        this.checkEdgeMappingValid(connId, newEntity, mapping);
+        HugeClient client = this.authClient(graphSpace, graph);
+        this.checkEdgeMappingValid(client, newEntity, mapping);
 
         EdgeMapping edgeMapping = mapping.getEdgeMapping(emId);
         Ex.check(edgeMapping != null,
@@ -286,10 +297,11 @@ public class FileMappingController extends BaseController {
         return jobEntity;
     }
 
-    private void checkVertexMappingValid(int connId, VertexMapping vertexMapping,
+    private void checkVertexMappingValid(HugeClient client,
+                                         VertexMapping vertexMapping,
                                          FileMapping fileMapping) {
         VertexLabelEntity vl = this.vlService.get(vertexMapping.getLabel(),
-                                                  connId);
+                                                  client);
         Ex.check(!vl.getIdStrategy().isAutomatic(),
                  "load.file-mapping.vertex.automatic-id-unsupported");
 
@@ -318,11 +330,11 @@ public class FileMappingController extends BaseController {
         this.checkMappingValid(vertexMapping, fileMapping);
     }
 
-    private void checkEdgeMappingValid(int connId, EdgeMapping edgeMapping,
+    private void checkEdgeMappingValid(HugeClient client, EdgeMapping edgeMapping,
                                        FileMapping fileMapping) {
-        EdgeLabelEntity el = this.elService.get(edgeMapping.getLabel(), connId);
-        VertexLabelEntity source = this.vlService.get(el.getSourceLabel(), connId);
-        VertexLabelEntity target = this.vlService.get(el.getTargetLabel(), connId);
+        EdgeLabelEntity el = this.elService.get(edgeMapping.getLabel(), client);
+        VertexLabelEntity source = this.vlService.get(el.getSourceLabel(), client);
+        VertexLabelEntity target = this.vlService.get(el.getTargetLabel(), client);
         Ex.check(!source.getIdStrategy().isAutomatic(),
                  "load.file-mapping.vertex.automatic-id-unsupported");
         Ex.check(!target.getIdStrategy().isAutomatic(),

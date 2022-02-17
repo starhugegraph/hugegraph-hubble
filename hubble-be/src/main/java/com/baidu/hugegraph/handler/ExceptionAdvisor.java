@@ -31,6 +31,7 @@ import com.baidu.hugegraph.exception.ExternalException;
 import com.baidu.hugegraph.exception.IllegalGremlinException;
 import com.baidu.hugegraph.exception.InternalException;
 import com.baidu.hugegraph.exception.ParameterizedException;
+import com.baidu.hugegraph.exception.UnauthorizedException;
 
 import lombok.extern.log4j.Log4j2;
 
@@ -93,6 +94,17 @@ public class ExceptionAdvisor {
                        .status(Constant.STATUS_ILLEGAL_GREMLIN)
                        .message(message)
                        .cause(e.getCause())
+                       .build();
+    }
+
+    @ExceptionHandler(UnauthorizedException.class)
+    @ResponseStatus(HttpStatus.OK)
+    public Response exceptionHandler(UnauthorizedException e) {
+        String message = e.getMessage();
+        return Response.builder()
+                       .status(Constant.STATUS_UNAUTHORIZED)
+                       .message(message)
+                       .cause(null)
                        .build();
     }
 

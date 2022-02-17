@@ -116,9 +116,9 @@ export function addGraphNodes(
   collection.forEach(({ id, label, properties }) => {
     const joinedLabel = !isUndefined(displayFieldMappings[label])
       ? displayFieldMappings[label]
-          .map((field) => (field === '~id' ? id : properties[field]))
-          .filter((label) => label !== undefined && label !== null)
-          .join('-')
+        .map((field) => (field === '~id' ? id : properties[field]))
+        .filter((label) => label !== undefined && label !== null)
+        .join('-')
       : id;
 
     visGraphNodes.add({
@@ -141,19 +141,26 @@ export function addGraphNodes(
               <div>${id}</div>
             </div>
             ${Object.entries(properties)
-              .map(([key, value]) => {
-                return `<div class="tooltip-fields">
+          .map(([key, value]) => {
+            return `<div class="tooltip-fields">
                           <div>${key}: </div>
                           <div>${convertArrayToString(value)}</div>
                         </div>`;
-              })
-              .join('')}
+          })
+          .join('')}
           `,
       color: {
         background: colorMappings[label] || '#5c73e6',
         border: colorMappings[label] || '#5c73e6',
         highlight: { background: '#fb6a02', border: '#fb6a02' },
         hover: { background: '#ec3112', border: '#ec3112' }
+      },
+      // reveal label when zoom to max
+      scaling: {
+        label: {
+          max: Infinity,
+          maxVisible: Infinity
+        }
       },
       chosen: {
         node(values: any, id: string, selected: boolean, hovering: boolean) {
@@ -212,13 +219,13 @@ export function addGraphEdges(
               <div>${id}</div>
             </div>
             ${Object.entries(properties)
-              .map(([key, value]) => {
-                return `<div class="tooltip-fields">
+          .map(([key, value]) => {
+            return `<div class="tooltip-fields">
                             <div>${key}: </div>
                             <div>${convertArrayToString(value)}</div>
                           </div>`;
-              })
-              .join('')}
+          })
+          .join('')}
           `
     });
   });
@@ -234,4 +241,35 @@ export function formatVertexIdText(
   } else {
     return text === replacedText ? '~id' : text;
   }
+}
+
+export function isGtNegativeOneButZero(value: string | number) {
+  if (typeof value === 'number') {
+    value = String(value);
+  }
+
+  return !(
+    !isEmpty(value) &&
+    (!isInt(value as string, { min: -1 }) || String(Number(value)) === '0')
+  );
+}
+
+interface _params {
+  start_datetime: string,
+  end_datetime: string,
+  current: number,
+  pageSize: number
+}
+
+export function defaultDateTimeParams(params: _params) {
+  if (!params.start_datetime)
+    params.start_datetime = (new Date() as any).Format("yyyy-MM-dd") + " 00:00:00"
+  if (!params.end_datetime)
+    params.end_datetime = (new Date() as any).Format("yyyy-MM-dd") + " 23:59:59"
+  let apiParams = {
+    ...params,
+    page_no: params.current,
+    page_size: params.pageSize,
+  }
+  return apiParams
 }

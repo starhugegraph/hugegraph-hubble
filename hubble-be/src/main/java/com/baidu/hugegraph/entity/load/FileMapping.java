@@ -62,6 +62,14 @@ public class FileMapping {
     @JsonIgnore
     private Integer connId;
 
+    @TableField("graphspace")
+    @JsonIgnore
+    private String graphSpace;
+
+    @TableField("graph")
+    @JsonIgnore
+    private String graph;
+
     @TableField(value = "job_id")
     @MergeProperty
     @JsonProperty("job_id")
@@ -116,14 +124,17 @@ public class FileMapping {
     @JsonProperty("update_time")
     private Date updateTime;
 
-    public FileMapping(int connId, String name, String path) {
-        this(connId, name, path, HubbleUtil.nowDate());
+    public FileMapping(String graphSpace, String graph, String name,
+                       String path) {
+        this(graphSpace, graph, name, path, HubbleUtil.nowDate());
     }
 
-    public FileMapping(int connId, String name, String path,
+    public FileMapping(String graphSpace, String graph, String name, String path,
                        Date lastAccessTime) {
         this.id = null;
-        this.connId = connId;
+        this.connId = null;
+        this.graphSpace = graphSpace;
+        this.graph = graph;
         this.name = name;
         this.path = path;
         this.fileSetting = new FileSetting();

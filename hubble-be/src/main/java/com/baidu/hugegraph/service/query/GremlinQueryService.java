@@ -54,7 +54,6 @@ import com.baidu.hugegraph.exception.InternalException;
 import com.baidu.hugegraph.exception.ServerException;
 import com.baidu.hugegraph.options.HubbleOptions;
 import com.baidu.hugegraph.rest.ClientException;
-import com.baidu.hugegraph.service.HugeClientPoolService;
 import com.baidu.hugegraph.service.schema.VertexLabelService;
 import com.baidu.hugegraph.structure.constant.Direction;
 import com.baidu.hugegraph.structure.constant.IdStrategy;
@@ -94,16 +93,9 @@ public class GremlinQueryService {
     @Autowired
     private HugeConfig config;
     @Autowired
-    private HugeClientPoolService poolService;
-    @Autowired
     private VertexLabelService vlService;
 
-    private HugeClient getClient(int connId) {
-        return this.poolService.getOrCreate(connId);
-    }
-
-    public GremlinResult executeQuery(int connId, GremlinQuery query) {
-        HugeClient client = this.getClient(connId);
+    public GremlinResult executeQuery(HugeClient client, GremlinQuery query) {
 
         log.debug("The original gremlin ==> {}", query.getContent());
         String gremlin = this.optimize(query.getContent());
@@ -126,8 +118,7 @@ public class GremlinQueryService {
                             .build();
     }
 
-    public Long executeAsyncTask(int connId, GremlinQuery query) {
-        HugeClient client = this.getClient(connId);
+    public Long executeAsyncTask(HugeClient client, GremlinQuery query) {
 
         log.debug("The async gremlin ==> {}", query.getContent());
         // Execute optimized gremlin query
@@ -135,11 +126,10 @@ public class GremlinQueryService {
         return client.gremlin().executeAsTask(request);
     }
 
-    public GremlinResult expandVertex(int connId, AdjacentQuery query) {
-        HugeClient client = this.getClient(connId);
+    public GremlinResult expandVertex(HugeClient client, AdjacentQuery query) {
 
         // Build gremlin query
-        String gremlin = this.buildGremlinQuery(connId, query);
+        String gremlin = this.buildGremlinQuery(client, query);
         log.debug("expand vertex gremlin ==> {}", gremlin);
         // Execute gremlin query
         ResultSet resultSet = this.executeGremlin(gremlin, client);
@@ -367,11 +357,11 @@ public class GremlinQueryService {
         return new GraphView(vertices.values(), edges.values());
     }
 
-    private String buildGremlinQuery(int connId, AdjacentQuery query) {
+    private String buildGremlinQuery(HugeClient client, AdjacentQuery query) {
         int degreeLimit = this.config.get(
                           HubbleOptions.GREMLIN_VERTEX_DEGREE_LIMIT);
 
-        Object id = this.getRealVertexId(connId, query);
+        Object id = this.getRealVertexId(client, query);
         StringBuilder sb = new StringBuilder("g.V(");
         // vertex id
         sb.append(GremlinUtil.escapeId(id)).append(")");
@@ -404,9 +394,9 @@ public class GremlinQueryService {
         return sb.toString();
     }
 
-    private Object getRealVertexId(int connId, AdjacentQuery query) {
+    private Object getRealVertexId(HugeClient client, AdjacentQuery query) {
         VertexLabelEntity entity = this.vlService.get(query.getVertexLabel(),
-                                                      connId);
+                                                      client);
         IdStrategy idStrategy = entity.getIdStrategy();
         String rawVertexId = query.getVertexId();
         try {

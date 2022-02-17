@@ -10,8 +10,13 @@ import type {
   AsyncTask,
   AsyncTaskListResponse
 } from '../types/GraphManagementStore/asyncTasksStore';
+import AppStoreContext from '../appStore';
 
 export class AsyncTasksStore {
+  appStore: any
+  constructor() {
+    this.appStore = AppStoreContext
+  }
   @observable requestStatus = initRequestStatus();
   @observable errorInfo = initErrorInfo();
 
@@ -100,6 +105,7 @@ export class AsyncTasksStore {
   fetchAsyncTaskList = flow(function* fetchAsyncTaskList(
     this: AsyncTasksStore
   ) {
+
     this.requestStatus.fetchAsyncTaskList = 'pending';
 
     try {
@@ -107,14 +113,12 @@ export class AsyncTasksStore {
         AsyncTaskListResponse
       >> = yield axios
         .get<responseData<AsyncTaskListResponse>>(
-          `${baseUrl}/${this.currentId}/async-tasks?page_no=${
-            this.asyncTasksPageConfig.pageNumber
-          }&page_size=10&type=${
-            this.filterOptions.type
+          `${baseUrl}/${this.appStore._currentValue.tenant}/graphs/${this.appStore._currentValue.graphs}/async-tasks?page_no=${this.asyncTasksPageConfig.pageNumber
+          }&page_size=10&type=${this.filterOptions.type
           }&status=${this.filterOptions.status.toUpperCase()}` +
-            (this.isSearched.status && this.searchWords !== ''
-              ? `&content=${this.searchWords}`
-              : '')
+          (this.isSearched.status && this.searchWords !== ''
+            ? `&content=${encodeURIComponent(this.searchWords)}`
+            : '')
         )
         .catch(checkIfLocalNetworkOffline);
 
@@ -137,11 +141,10 @@ export class AsyncTasksStore {
     id: number
   ) {
     this.requestStatus.fetchAsyncTask = 'pending';
-
     try {
       const result: AxiosResponse<responseData<AsyncTask>> = yield axios
         .get<responseData<AsyncTaskListResponse>>(
-          `${baseUrl}/${this.currentId}/async-tasks/${id}`
+          `${baseUrl}/${this.appStore._currentValue.tenant}/graphs/${this.appStore._currentValue.graphs}/async-tasks/${id}`
         )
         .catch(checkIfLocalNetworkOffline);
 
@@ -167,8 +170,8 @@ export class AsyncTasksStore {
     try {
       const result: AxiosResponse<responseData<null>> = yield axios
         .delete<responseData<null>>(
-          `${baseUrl}/${this.currentId}/async-tasks?` +
-            selectedTaskIds.map((id) => 'ids=' + id).join('&')
+          `${baseUrl}/${this.appStore._currentValue.tenant}/graphs/${this.appStore._currentValue.graphs}/async-tasks?` +
+          selectedTaskIds.map((id) => 'ids=' + id).join('&')
         )
         .catch(checkIfLocalNetworkOffline);
 
@@ -193,7 +196,7 @@ export class AsyncTasksStore {
     try {
       const result: AxiosResponse<responseData<AsyncTask>> = yield axios
         .post<responseData<AsyncTask>>(
-          `${baseUrl}/${this.currentId}/async-tasks/cancel/${id}`
+          `${baseUrl}/${this.appStore._currentValue.tenant}/graphs/${this.appStore._currentValue.graphs}/async-tasks/cancel/${id}`
         )
         .catch(checkIfLocalNetworkOffline);
 

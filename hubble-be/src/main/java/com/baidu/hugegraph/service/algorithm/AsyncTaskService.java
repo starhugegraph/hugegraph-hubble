@@ -38,26 +38,17 @@ import lombok.extern.log4j.Log4j2;
 @Service
 public class AsyncTaskService {
 
-    @Autowired
-    private HugeClientPoolService poolService;
-
-    private HugeClient getClient(int connId) {
-        return this.poolService.getOrCreate(connId);
-    }
-
-    public Task get(int connId, int id) {
-        HugeClient client = this.getClient(connId);
+    public Task get(HugeClient client, int id) {
         return client.task().get(id);
     }
 
-    public List<Task> list(int connId, List<Long> taskIds) {
-        HugeClient client = this.getClient(connId);
+    public List<Task> list(HugeClient client, List<Long> taskIds) {
         return client.task().list(taskIds);
     }
 
-    public IPage<Task> list(int connId, int pageNo, int pageSize, String content,
+    public IPage<Task> list(HugeClient client, int pageNo, int pageSize,
+                            String content,
                             String type, String status) {
-        HugeClient client = this.getClient(connId);
         if (status.isEmpty()) {
             status = null;
         }
@@ -79,13 +70,11 @@ public class AsyncTaskService {
         return PageUtil.page(result, pageNo, pageSize);
     }
 
-    public void remove(int connId, int id) {
-        HugeClient client = this.getClient(connId);
+    public void remove(HugeClient client, int id) {
         client.task().delete(id);
     }
 
-    public Task cancel(int connId, int id) {
-        HugeClient client = this.getClient(connId);
+    public Task cancel(HugeClient client, int id) {
         return client.task().cancel(id);
     }
 }

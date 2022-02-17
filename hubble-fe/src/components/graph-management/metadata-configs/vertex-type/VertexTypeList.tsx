@@ -35,7 +35,7 @@ import { Tooltip, LoadingDataView } from '../../../common';
 import NewVertexType from './NewVertexType';
 import ReuseVertexTypes from './ReuseVertexTypes';
 import MetadataConfigsRootStore from '../../../../stores/GraphManagementStore/metadataConfigsStore/metadataConfigsStore';
-import DataAnalyzeStore from '../../../../stores/GraphManagementStore/dataAnalyzeStore/dataAnalyzeStore';
+// import DataAnalyzeStore from '../../../../stores/GraphManagementStore/dataAnalyzeStore/dataAnalyzeStore';
 import { formatVertexIdText } from '../../../../stores/utils';
 
 import type {
@@ -49,6 +49,7 @@ import WhiteCloseIcon from '../../../../assets/imgs/ic_close_white.svg';
 import CloseIcon from '../../../../assets/imgs/ic_close_16.svg';
 
 import './VertexTypeList.less';
+import { AppStoreContext } from '../../../../stores';
 
 const styles = {
   button: {
@@ -105,6 +106,7 @@ const propertyIndexTypeMappings: Record<string, string> = {
 
 const VertexTypeList: React.FC = observer(() => {
   const metadataConfigsRootStore = useContext(MetadataConfigsRootStore);
+  const appStore = useContext(AppStoreContext)
   const { metadataPropertyStore, vertexTypeStore } = metadataConfigsRootStore;
   const [preLoading, switchPreLoading] = useState(true);
   const [sortOrder, setSortOrder] = useState('');
@@ -132,6 +134,31 @@ const VertexTypeList: React.FC = observer(() => {
   const currentSelectedRowKeys = intersection(
     selectedRowKeys,
     vertexTypeStore.vertexTypes.map(({ name }) => name)
+  );
+
+  // need useCallback to stop infinite callings of useEffect
+  const handleOutSideClick = useCallback(
+    (e: MouseEvent) => {
+      // if clicked element is not on dropdown, collpase it
+      if (
+        isEditVertex &&
+        isAddProperty &&
+        dropdownWrapperRef.current &&
+        !dropdownWrapperRef.current.contains(e.target as Element)
+      ) {
+        switchIsAddProperty(false);
+      }
+
+      if (
+        (deleteExistPopIndexInDrawer || deleteAddedPopIndexInDrawer) &&
+        deleteWrapperInDrawerRef.current &&
+        !deleteWrapperInDrawerRef.current.contains(e.target as Element)
+      ) {
+        setDeleteExistPopIndexInDrawer(null);
+        setDeleteAddedPopIndexInDrawer(null);
+      }
+    },
+    [deleteExistPopIndexInDrawer, deleteAddedPopIndexInDrawer, isAddProperty]
   );
 
   const handleSelectedTableRow = (newSelectedRowKeys: string[]) => {
@@ -369,7 +396,7 @@ const VertexTypeList: React.FC = observer(() => {
   });
 
   useEffect(() => {
-    if (metadataConfigsRootStore.currentId !== null) {
+    if (appStore.graphs !== "null") {
       metadataPropertyStore.fetchMetadataPropertyList({ fetchAll: true });
       vertexTypeStore.fetchVertexTypeList();
     }
@@ -379,9 +406,18 @@ const VertexTypeList: React.FC = observer(() => {
     };
   }, [
     metadataPropertyStore,
-    metadataConfigsRootStore.currentId,
+    appStore.graphs,
+    appStore.tenant,
     vertexTypeStore
   ]);
+
+  useEffect(() => {
+    document.addEventListener('click', handleOutSideClick, false);
+
+    return () => {
+      document.removeEventListener('click', handleOutSideClick, false);
+    };
+  }, [handleOutSideClick]);
 
   if (vertexTypeStore.currentTabStatus === 'new') {
     return <NewVertexType />;
@@ -681,7 +717,9 @@ const VertexTypeList: React.FC = observer(() => {
                 <div className="metadata-drawer-options-name">
                   <span>顶点类型名称：</span>
                 </div>
-                {vertexTypeStore.selectedVertexType!.name}
+                <div style={{ maxWidth: 420 }}>
+                  {vertexTypeStore.selectedVertexType!.name}
+                </div>
               </div>
               <div className="metadata-drawer-options">
                 <div className="metadata-drawer-options-name">
@@ -844,7 +882,7 @@ const VertexTypeList: React.FC = observer(() => {
                         className="metadata-drawer-options-list-row"
                         key={name}
                       >
-                        <div>{name}</div>
+                        <div style={{ maxWidth: 260 }}>{name}</div>
                         <div style={{ width: 70, textAlign: 'center' }}>
                           <Switch
                             checkedChildren="开"
@@ -864,7 +902,7 @@ const VertexTypeList: React.FC = observer(() => {
                           className="metadata-drawer-options-list-row"
                           key={name}
                         >
-                          <div>{name}</div>
+                          <div style={{ maxWidth: 260 }}>{name}</div>
                           <div style={{ width: 70, textAlign: 'center' }}>
                             <Switch
                               checkedChildren="开"
@@ -1053,7 +1091,7 @@ const VertexTypeList: React.FC = observer(() => {
                       })}
                   </Select>
                 ) : (
-                  <div>
+                  <div style={{ maxWidth: 420 }}>
                     {vertexTypeStore.selectedVertexType?.style.display_fields
                       .map((field) => formatVertexIdText(field, '顶点ID'))
                       .join('-')}
@@ -1238,11 +1276,11 @@ const VertexTypeList: React.FC = observer(() => {
                           className="metadata-drawer-options-list-row metadata-drawer-options-list-row-normal"
                           style={{
                             display: 'flex',
-                            alignItems: 'start',
+                            alignItems: 'flex-start',
                             position: 'relative'
                           }}
                         >
-                          <div>
+                          <div className="disable-input-absolute">
                             <Input
                               size="medium"
                               width={100}
@@ -1669,8 +1707,8 @@ const VertexTypeListManipulation: React.FC<VertexTypeListManipulation> = observe
                     <p className="metadata-properties-tooltips-title">
                       确认删除此顶点类型？
                     </p>
-                    <p>确认删除此顶点类型？删除后无法恢复，请谨慎操作</p>
-                    <p>删除元数据耗时较久，详情可在任务管理中查看</p>
+                    <p>删除后无法恢复，请谨慎操作。</p>
+                    <p>删除元数据耗时较久，详情可在任务管理中查看。</p>
                     <div className="metadata-properties-tooltips-footer">
                       <Button
                         size="medium"

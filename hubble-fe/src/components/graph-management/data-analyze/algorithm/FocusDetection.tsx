@@ -2,16 +2,26 @@ import React, { useContext, createContext } from 'react';
 import { observer } from 'mobx-react';
 import { Button, Radio, Input, Select, Switch } from '@baidu/one-ui';
 import { useTranslation } from 'react-i18next';
+
 import { styles } from '../QueryAndAlgorithmLibrary';
 import { Tooltip as CustomTooltip } from '../../../common';
 import DataAnalyzeStore from '../../../../stores/GraphManagementStore/dataAnalyzeStore/dataAnalyzeStore';
+import { GraphManagementStoreContext } from '../../../../stores';
 
 import QuestionMarkIcon from '../../../../assets/imgs/ic_question_mark.svg';
+import { calcAlgorithmFormWidth } from '../../../../utils';
 
 const FocusDetection = observer(() => {
-  const { t } = useTranslation();
+  const graphManagementStore = useContext(GraphManagementStoreContext);
   const dataAnalyzeStore = useContext(DataAnalyzeStore);
   const algorithmAnalyzerStore = dataAnalyzeStore.algorithmAnalyzerStore;
+  const { t } = useTranslation();
+
+  const formWidth = calcAlgorithmFormWidth(
+    graphManagementStore.isExpanded,
+    340,
+    400
+  );
 
   const isValidExec =
     Object.values(
@@ -32,7 +42,7 @@ const FocusDetection = observer(() => {
             </span>
           </div>
           <Input
-            width={400}
+            width={formWidth}
             size="medium"
             disabled={dataAnalyzeStore.requestStatus.fetchGraphs === 'pending'}
             placeholder={t(
@@ -73,7 +83,7 @@ const FocusDetection = observer(() => {
               'data-analyze.algorithm-forms.focus-detection.placeholder.no-edge-types'
             )}
             disabled={dataAnalyzeStore.requestStatus.fetchGraphs === 'pending'}
-            width={400}
+            width={formWidth}
             onChange={(value: string) => {
               algorithmAnalyzerStore.mutateFocusDetectionParams('label', value);
             }}
@@ -98,7 +108,7 @@ const FocusDetection = observer(() => {
             </span>
           </div>
           <Input
-            width={400}
+            width={formWidth}
             size="medium"
             disabled={dataAnalyzeStore.requestStatus.fetchGraphs === 'pending'}
             placeholder={t(
@@ -132,13 +142,39 @@ const FocusDetection = observer(() => {
                 'data-analyze.algorithm-forms.focus-detection.options.max_degree'
               )}
             </span>
+            <CustomTooltip
+              trigger="hover"
+              placement="bottom-start"
+              modifiers={{
+                offset: {
+                  offset: '0, 8'
+                }
+              }}
+              tooltipWrapperProps={{
+                className: 'tooltips-dark',
+                style: {
+                  zIndex: 7
+                }
+              }}
+              tooltipWrapper={t(
+                'data-analyze.algorithm-forms.focus-detection.hint.max-degree'
+              )}
+              childrenProps={{
+                src: QuestionMarkIcon,
+                alt: 'hint',
+                style: {
+                  marginLeft: 5
+                }
+              }}
+              childrenWrapperElement="img"
+            />
           </div>
           <Input
-            width={400}
+            width={formWidth}
             size="medium"
             disabled={dataAnalyzeStore.requestStatus.fetchGraphs === 'pending'}
             placeholder={t(
-              'data-analyze.algorithm-forms.focus-detection.placeholder.input-integer'
+              'data-analyze.algorithm-forms.focus-detection.placeholder.input-positive-integer-or-negative-one-max-degree'
             )}
             errorLocation="layer"
             errorMessage={
@@ -192,33 +228,35 @@ const FocusDetection = observer(() => {
         <div className="query-tab-content-form-item">
           <div className="query-tab-content-form-item-title">
             <span>
-              {t('data-analyze.algorithm-forms.focus-detection.options.limit')}
+              {t(
+                'data-analyze.algorithm-forms.focus-detection.options.capacity'
+              )}
             </span>
           </div>
           <Input
-            width={400}
+            width={formWidth}
             size="medium"
             disabled={dataAnalyzeStore.requestStatus.fetchGraphs === 'pending'}
             placeholder={t(
-              'data-analyze.algorithm-forms.focus-detection.placeholder.input-positive-integer'
+              'data-analyze.algorithm-forms.focus-detection.placeholder.input-positive-integer-or-negative-one-capacity'
             )}
             errorLocation="layer"
             errorMessage={
               algorithmAnalyzerStore.validateFocusDetectionParamsErrorMessage
-                .limit
+                .capacity
             }
-            value={algorithmAnalyzerStore.focusDetectionParams.limit}
+            value={algorithmAnalyzerStore.focusDetectionParams.capacity}
             onChange={(e: any) => {
               algorithmAnalyzerStore.mutateFocusDetectionParams(
-                'limit',
+                'capacity',
                 e.value as string
               );
 
-              algorithmAnalyzerStore.validateFocusDetectionParams('limit');
+              algorithmAnalyzerStore.validateFocusDetectionParams('capacity');
             }}
             originInputProps={{
               onBlur() {
-                algorithmAnalyzerStore.validateFocusDetectionParams('limit');
+                algorithmAnalyzerStore.validateFocusDetectionParams('capacity');
               }
             }}
           />
@@ -261,7 +299,7 @@ const FocusDetection = observer(() => {
             />
           </div>
           <Input
-            width={400}
+            width={formWidth}
             size="medium"
             disabled={dataAnalyzeStore.requestStatus.fetchGraphs === 'pending'}
             placeholder={t(
@@ -293,35 +331,33 @@ const FocusDetection = observer(() => {
         <div className="query-tab-content-form-item">
           <div className="query-tab-content-form-item-title">
             <span>
-              {t(
-                'data-analyze.algorithm-forms.focus-detection.options.capacity'
-              )}
+              {t('data-analyze.algorithm-forms.focus-detection.options.limit')}
             </span>
           </div>
           <Input
-            width={400}
+            width={formWidth}
             size="medium"
             disabled={dataAnalyzeStore.requestStatus.fetchGraphs === 'pending'}
             placeholder={t(
-              'data-analyze.algorithm-forms.focus-detection.placeholder.input-positive-integer'
+              'data-analyze.algorithm-forms.focus-detection.placeholder.input-positive-integer-or-negative-one-limit'
             )}
             errorLocation="layer"
             errorMessage={
               algorithmAnalyzerStore.validateFocusDetectionParamsErrorMessage
-                .capacity
+                .limit
             }
-            value={algorithmAnalyzerStore.focusDetectionParams.capacity}
+            value={algorithmAnalyzerStore.focusDetectionParams.limit}
             onChange={(e: any) => {
               algorithmAnalyzerStore.mutateFocusDetectionParams(
-                'capacity',
+                'limit',
                 e.value as string
               );
 
-              algorithmAnalyzerStore.validateFocusDetectionParams('capacity');
+              algorithmAnalyzerStore.validateFocusDetectionParams('limit');
             }}
             originInputProps={{
               onBlur() {
-                algorithmAnalyzerStore.validateFocusDetectionParams('capacity');
+                algorithmAnalyzerStore.validateFocusDetectionParams('limit');
               }
             }}
           />

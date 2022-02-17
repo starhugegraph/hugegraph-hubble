@@ -55,7 +55,8 @@ import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 @RestController
-@RequestMapping(Constant.API_VERSION + "graph-connections/{connId}/job-manager")
+@RequestMapping(Constant.API_VERSION + "graphspaces/{graphspace}/graphs" +
+        "/{graph}/job-manager")
 public class JobManagerController {
 
     private static final int LIMIT = 500;
@@ -72,7 +73,8 @@ public class JobManagerController {
     }
 
     @PostMapping
-    public JobManager create(@PathVariable("connId") int connId,
+    public JobManager create(@PathVariable("graphspace") String graphSpace,
+                             @PathVariable("graph") String graph,
                              @RequestBody JobManager entity) {
         synchronized (this.service) {
             Ex.check(entity.getJobName().length() <= 48,
@@ -89,10 +91,11 @@ public class JobManagerController {
                      "job.manager.job-remarks.unmatch-regex");
             Ex.check(this.service.count() < LIMIT,
                      "job.manager.reached-limit", LIMIT);
-            if (this.service.getTask(entity.getJobName(), connId) != null) {
+            if (this.service.getTask(entity.getJobName(), graphSpace, graph) != null) {
                 throw new InternalException("job.manager.job-name.repeated");
             }
-            entity.setConnId(connId);
+            entity.setGraphSpace(graphSpace);
+            entity.setGraph(graph);
             entity.setJobStatus(JobStatus.DEFAULT);
             entity.setJobDuration(0L);
             entity.setJobSize(0L);
@@ -122,13 +125,15 @@ public class JobManagerController {
     }
 
     @GetMapping("ids")
-    public List<JobManager> list(@PathVariable("connId") int connId,
+    public List<JobManager> list(@PathVariable("graphspace") String graphSpace,
+                                 @PathVariable("graph") String graph,
                                  @RequestParam("job_ids") List<Integer> jobIds) {
-        return this.service.list(connId, jobIds);
+        return this.service.list(graphSpace, graph, jobIds);
     }
 
     @GetMapping
-    public IPage<JobManager> list(@PathVariable("connId") int connId,
+    public IPage<JobManager> list(@PathVariable("graphspace") String graphSpace,
+                                  @PathVariable("graph") String graph,
                                   @RequestParam(name = "page_no",
                                                 required = false,
                                                 defaultValue = "1")
@@ -141,11 +146,12 @@ public class JobManagerController {
                                                 required = false,
                                                 defaultValue = "")
                                                 String content) {
-        return this.service.list(connId, pageNo, pageSize, content);
+        return this.service.list(graphSpace, graph, pageNo, pageSize, content);
     }
 
     @PutMapping("{id}")
-    public JobManager update(@PathVariable("connId") int connId,
+    public JobManager update(@PathVariable("graphspace") String graphSpace,
+                             @PathVariable("graph") String graph,
                              @PathVariable("id") int id,
                              @RequestBody JobManager newEntity) {
         Ex.check(newEntity.getJobName().length() <= 48,
@@ -164,7 +170,7 @@ public class JobManagerController {
             throw new ExternalException("job-manager.not-exist.id", id);
         }
         if (!newEntity.getJobName().equals(entity.getJobName()) &&
-            this.service.getTask(newEntity.getJobName(), connId) != null) {
+            this.service.getTask(newEntity.getJobName(), graphSpace, graph) != null) {
             throw new InternalException("job.manager.job-name.repeated");
         }
         entity.setJobName(newEntity.getJobName());
@@ -174,7 +180,8 @@ public class JobManagerController {
     }
 
     @GetMapping("{id}/reason")
-    public Response reason(@PathVariable("connId") int connId,
+    public Response reason(@PathVariable("graphspace") String graphSpace,
+                           @PathVariable("graph") String graph,
                            @PathVariable("id") int id) {
         JobManager job = this.service.get(id);
         if (job == null) {

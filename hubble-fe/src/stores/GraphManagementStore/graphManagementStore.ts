@@ -344,7 +344,6 @@ export class GraphManagementStore {
   fetchIdList = flow(function* fetchIdList(this: GraphManagementStore) {
     this.resetErrorInfo();
     this.requestStatus.fetchIdList = 'pending';
-
     try {
       const result: AxiosResponse<GraphDataResponse> = yield axios.get<
         GraphData
@@ -363,6 +362,9 @@ export class GraphManagementStore {
           id,
           name
         }));
+
+        this.graphData = result.data.data.records;
+        this.graphDataPageConfig.pageTotal = result.data.data.total;
       }
 
       if (result.data.status !== 200) {
@@ -379,6 +381,7 @@ export class GraphManagementStore {
   fetchGraphDataList = flow(function* fetchGraphDataList(
     this: GraphManagementStore
   ) {
+    
     this.resetErrorInfo();
     const url =
       `${baseUrl}?page_no=${this.graphDataPageConfig.pageNumber}&page_size=${this.graphDataPageConfig.pageSize}` +
@@ -518,9 +521,15 @@ function filterParams(originParams: GraphDataConfig): GraphDataConfig {
     if (typeof value !== 'undefined') {
       newParams[key] = originParams[key];
     }
+    // if (value !== null && value !== '' && typeof value !== 'undefined') {
+    //   newParams[key] = originParams[key];
+    // }
   });
 
   return newParams;
 }
 
-export default createContext(new GraphManagementStore());
+// For DI in subclass
+export const GraphManagementStoreInstance = new GraphManagementStore();
+
+export default createContext(GraphManagementStoreInstance);

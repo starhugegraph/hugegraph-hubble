@@ -35,7 +35,7 @@ import MetadataConfigsRootStore from '../../../../stores/GraphManagementStore/me
 
 import NewEdgeType from './NewEdgeType';
 import ReuseEdgeTypes from './ReuseEdgeTypes';
-import DataAnalyzeStore from '../../../../stores/GraphManagementStore/dataAnalyzeStore/dataAnalyzeStore';
+// import DataAnalyzeStore from '../../../../stores/GraphManagementStore/dataAnalyzeStore/dataAnalyzeStore';
 import { formatVertexIdText } from '../../../../stores/utils';
 
 import type {
@@ -47,14 +47,15 @@ import AddIcon from '../../../../assets/imgs/ic_add.svg';
 import BlueArrowIcon from '../../../../assets/imgs/ic_arrow_blue.svg';
 import WhiteCloseIcon from '../../../../assets/imgs/ic_close_white.svg';
 import CloseIcon from '../../../../assets/imgs/ic_close_16.svg';
-import LoadingBackIcon from '../../../../assets/imgs/ic_loading_back.svg';
-import LoadingFrontIcon from '../../../../assets/imgs/ic_loading_front.svg';
-import SelectedSoilidArrowIcon from '../../../../assets/imgs/ic_arrow_selected.svg';
+// import LoadingBackIcon from '../../../../assets/imgs/ic_loading_back.svg';
+// import LoadingFrontIcon from '../../../../assets/imgs/ic_loading_front.svg';
+// import SelectedSoilidArrowIcon from '../../../../assets/imgs/ic_arrow_selected.svg';
 import NoSelectedSoilidArrowIcon from '../../../../assets/imgs/ic_arrow.svg';
-import SelectedSoilidStraightIcon from '../../../../assets/imgs/ic_straight_selected.svg';
+// import SelectedSoilidStraightIcon from '../../../../assets/imgs/ic_straight_selected.svg';
 import NoSelectedSoilidStraightIcon from '../../../../assets/imgs/ic_straight.svg';
 
 import './EdgeTypeList.less';
+import { AppStoreContext } from '../../../../stores';
 
 const styles = {
   button: {
@@ -103,6 +104,7 @@ const propertyIndexTypeMappings: Record<string, string> = {
 
 const EdgeTypeList: React.FC = observer(() => {
   const metadataConfigsRootStore = useContext(MetadataConfigsRootStore);
+  const appStore = useContext(AppStoreContext);
   const { metadataPropertyStore, edgeTypeStore } = metadataConfigsRootStore;
   const [preLoading, switchPreLoading] = useState(true);
   const [sortOrder, setSortOrder] = useState('');
@@ -129,6 +131,28 @@ const EdgeTypeList: React.FC = observer(() => {
   const currentSelectedRowKeys = intersection(
     selectedRowKeys,
     edgeTypeStore.edgeTypes.map(({ name }) => name)
+  );
+
+  const handleOutSideClick = useCallback(
+    (e: MouseEvent) => {
+      if (
+        isAddProperty &&
+        dropdownWrapperRef.current &&
+        !dropdownWrapperRef.current.contains(e.target as Element)
+      ) {
+        switchIsAddProperty(false);
+      }
+
+      if (
+        (deleteExistPopIndexInDrawer || deleteAddedPopIndexInDrawer) &&
+        deleteWrapperInDrawerRef.current &&
+        !deleteWrapperInDrawerRef.current.contains(e.target as Element)
+      ) {
+        setDeleteExistPopIndexInDrawer(null);
+        setDeleteAddedPopIndexInDrawer(null);
+      }
+    },
+    [deleteExistPopIndexInDrawer, deleteWrapperInDrawerRef, isAddProperty]
   );
 
   const handleSelectedTableRow = (newSelectedRowKeys: string[]) => {
@@ -364,7 +388,7 @@ const EdgeTypeList: React.FC = observer(() => {
   });
 
   useEffect(() => {
-    if (metadataConfigsRootStore.currentId !== null) {
+    if (appStore.graphs != "null") {
       metadataPropertyStore.fetchMetadataPropertyList({ fetchAll: true });
       edgeTypeStore.fetchEdgeTypeList();
     }
@@ -374,9 +398,18 @@ const EdgeTypeList: React.FC = observer(() => {
     };
   }, [
     metadataPropertyStore,
-    metadataConfigsRootStore.currentId,
+    appStore.graphs,
+    appStore.tenant,
     edgeTypeStore
   ]);
+
+  useEffect(() => {
+    document.addEventListener('click', handleOutSideClick, false);
+
+    return () => {
+      document.removeEventListener('click', handleOutSideClick, false);
+    };
+  }, [handleOutSideClick]);
 
   if (edgeTypeStore.currentTabStatus === 'new') {
     return <NewEdgeType />;
@@ -497,7 +530,7 @@ const EdgeTypeList: React.FC = observer(() => {
               className="metadata-properties-modal-description"
               style={{ marginBottom: 0 }}
             >
-              确认删除以下边？
+              确认删除以下边类型？
             </div>
             <div className="metadata-properties-modal-description">
               删除元数据耗时较久，详情可在任务管理中查看。
@@ -650,7 +683,9 @@ const EdgeTypeList: React.FC = observer(() => {
                   <div className="metadata-drawer-options-name">
                     <span>边类型名称：</span>
                   </div>
-                  {edgeTypeStore.selectedEdgeType!.name}
+                  <div style={{ maxWidth: 420 }}>
+                    {edgeTypeStore.selectedEdgeType!.name}
+                  </div>
                 </div>
                 <div className="metadata-drawer-options">
                   <div className="metadata-drawer-options-name">
@@ -891,13 +926,17 @@ const EdgeTypeList: React.FC = observer(() => {
                   <div className="metadata-drawer-options-name">
                     <span>起点类型：</span>
                   </div>
-                  {edgeTypeStore.selectedEdgeType!.source_label}
+                  <div style={{ maxWidth: 420 }}>
+                    {edgeTypeStore.selectedEdgeType!.source_label}
+                  </div>
                 </div>
                 <div className={metadataDrawerOptionClass}>
                   <div className="metadata-drawer-options-name">
                     <span>终点类型：</span>
                   </div>
-                  {edgeTypeStore.selectedEdgeType!.target_label}
+                  <div style={{ maxWidth: 420 }}>
+                    {edgeTypeStore.selectedEdgeType!.target_label}
+                  </div>
                 </div>
                 <div className={metadataDrawerOptionClass}>
                   <div className="metadata-drawer-options-name">
@@ -926,7 +965,7 @@ const EdgeTypeList: React.FC = observer(() => {
                           className="metadata-drawer-options-list-row"
                           key={name}
                         >
-                          <div>{name}</div>
+                          <div style={{ maxWidth: 260 }}>{name}</div>
                           <div style={{ width: 70, textAlign: 'center' }}>
                             <Switch
                               checkedChildren="开"
@@ -946,7 +985,7 @@ const EdgeTypeList: React.FC = observer(() => {
                             className="metadata-drawer-options-list-row"
                             key={name}
                           >
-                            <div>{name}</div>
+                            <div style={{ maxWidth: 260 }}>{name}</div>
                             <div style={{ width: 70, textAlign: 'center' }}>
                               <Switch
                                 checkedChildren="开"
@@ -1048,7 +1087,9 @@ const EdgeTypeList: React.FC = observer(() => {
                   <div className="metadata-drawer-options-name">
                     <span>区分键属性：</span>
                   </div>
-                  {edgeTypeStore.selectedEdgeType!.sort_keys.join(';')}
+                  <div style={{ maxWidth: 420 }}>
+                    {edgeTypeStore.selectedEdgeType!.sort_keys.join(';')}
+                  </div>
                 </div>
                 <div className="metadata-drawer-options">
                   <div className="metadata-drawer-options-name">
@@ -1130,7 +1171,7 @@ const EdgeTypeList: React.FC = observer(() => {
                         })}
                     </Select>
                   ) : (
-                    <div>
+                    <div style={{ maxWidth: 420 }}>
                       {edgeTypeStore.selectedEdgeType?.style.display_fields
                         .map((field) => formatVertexIdText(field, '边类型'))
                         .join('-')}
@@ -1323,12 +1364,12 @@ const EdgeTypeList: React.FC = observer(() => {
                             className="metadata-drawer-options-list-row metadata-drawer-options-list-row-normal"
                             style={{
                               display: 'flex',
-                              alignItems: 'start',
+                              alignItems: 'flex-start',
                               position: 'relative'
                             }}
                             // cannot set key prop with name here, weired
                           >
-                            <div>
+                            <div className="disable-input-absolute">
                               <Input
                                 size="medium"
                                 width={100}
@@ -1752,7 +1793,7 @@ const EdgeTypeListManipulation: React.FC<EdgeTypeListManipulation> = observer(
                 <p className="metadata-properties-tooltips-title">
                   确认删除此边类型？
                 </p>
-                <p>确认删除边类型？删除后无法恢复，请谨慎操作</p>
+                <p>删除后无法恢复，请谨慎操作</p>
                 <p>删除元数据耗时较久，详情可在任务管理中查看</p>
                 <div className="metadata-properties-tooltips-footer">
                   <Button

@@ -9,6 +9,7 @@ import { Button, Input, Table, Modal, Message } from '@baidu/one-ui';
 import LoadingDataView from '../../../common/LoadingDataView';
 import { Tooltip as CustomTooltip } from '../../../common';
 import {
+  AppStoreContext,
   DataImportRootStoreContext,
   ImportManagerStoreContext
 } from '../../../../stores';
@@ -34,6 +35,7 @@ const ImportTaskList: React.FC = observer(() => {
   );
   const [, setLocation] = useLocation();
   const { t } = useTranslation();
+  const appStore = useContext(AppStoreContext)
 
   const isLoading =
     preLoading ||
@@ -65,7 +67,7 @@ const ImportTaskList: React.FC = observer(() => {
     {
       title: t('import-manager.list-column-title.job-name'),
       dataIndex: 'job_name',
-      width: '20%',
+      width: '30%',
       render(name: string, rowData: any) {
         const readyToJump =
           rowData.job_status === 'SUCCESS' || rowData.job_status === 'FAILED';
@@ -93,8 +95,7 @@ const ImportTaskList: React.FC = observer(() => {
                   dataImportRootStore.fetchEdgeTypeList();
 
                   setLocation(
-                    `/graph-management/${
-                      params!.id
+                    `/graph-management/${params!.id
                     }/data-import/import-manager/${rowData.id}/details`
                   );
 
@@ -202,13 +203,14 @@ const ImportTaskList: React.FC = observer(() => {
         );
       }
     },
-    {
-      title: t('import-manager.list-column-title.time-consuming'),
-      dataIndex: 'job_duration',
-      render(text: string) {
-        return <div className="no-line-break">{text}</div>;
-      }
-    },
+    // forbid duartions
+    // {
+    //   title: t('import-manager.list-column-title.time-consuming'),
+    //   dataIndex: 'job_duration',
+    //   render(text: string) {
+    //     return <div className="no-line-break">{text}</div>;
+    //   }
+    // },
     {
       title: t('import-manager.list-column-title.manipulation'),
       render(_: any, rowData: any) {
@@ -226,14 +228,13 @@ const ImportTaskList: React.FC = observer(() => {
   ];
 
   useEffect(() => {
-    if (importManagerStore.currentId !== null) {
-      setTimeout(() => {
-        switchPreLoading(false);
-      }, 800);
-
+    setTimeout(() => {
+      switchPreLoading(false);
+    }, 800);
+    if (appStore.graphs !== "null") {
       importManagerStore.fetchImportJobList();
     }
-  }, [importManagerStore.currentId]);
+  }, [appStore.tenant, appStore.graphs]);
 
   return (
     <div className="import-manager-content-wrapper">
@@ -283,14 +284,14 @@ const ImportTaskList: React.FC = observer(() => {
             isLoading
               ? null
               : {
-                  hideOnSinglePage: false,
-                  pageNo: importManagerStore.importJobListPageConfig.pageNumber,
-                  pageSize: 10,
-                  showSizeChange: false,
-                  showPageJumper: false,
-                  total: importManagerStore.importJobListPageConfig.pageTotal,
-                  onPageNoChange: handlePageChange
-                }
+                hideOnSinglePage: false,
+                pageNo: importManagerStore.importJobListPageConfig.pageNumber,
+                pageSize: 10,
+                showSizeChange: false,
+                showPageJumper: false,
+                total: importManagerStore.importJobListPageConfig.pageTotal,
+                onPageNoChange: handlePageChange
+              }
           }
         />
       </div>
@@ -437,7 +438,6 @@ export const ImportManagerManipulation: React.FC<ImportManagerManipulationProps>
 
     const jumpToLoaction = (step: number, jobName: string) => async () => {
       importManagerStore.setSelectedJob(jobId);
-
       dataImportRootStore.setCurrentId(Number(params!.id));
       dataImportRootStore.setCurrentJobId(jobId);
       dataImportRootStore.setCurrentStatus(status);
@@ -507,8 +507,7 @@ export const ImportManagerManipulation: React.FC<ImportManagerManipulationProps>
       dataImportRootStore.setCurrentStep(step);
 
       setLocation(
-        `/graph-management/${
-          params!.id
+        `/graph-management/${params!.id
         }/data-import/import-manager/${jobId}/import-tasks/${route}`
       );
     };
@@ -545,9 +544,8 @@ export const ImportManagerManipulation: React.FC<ImportManagerManipulationProps>
           <a
             target="_blank"
             className="import-manager-table-manipulations-outlink"
-            href={`/graph-management/${
-              params!.id
-            }/data-import/job-error-log/${jobId}`}
+            href={`/graph-management/${params!.id
+              }/data-import/job-error-log/${jobId}`}
           >
             {t('import-manager.list-column-manipulations.check-error-log')}
           </a>

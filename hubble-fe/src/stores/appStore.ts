@@ -1,19 +1,44 @@
+/*
+ * @Author: your name
+ * @Date: 2021-12-28 10:53:00
+ * @LastEditTime: 2022-01-14 18:33:57
+ * @LastEditors: Please set LastEditors
+ * @Description: 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+ * @FilePath: /hubble-fe/src/stores/appStore.ts
+ */
 import { createContext } from 'react';
 import { observable, action, flow } from 'mobx';
 import axios, { AxiosResponse } from 'axios';
 import { responseData, baseUrl } from './types/common';
-
 export class AppStore {
   @observable user: string = 'Hi, User name';
   @observable currentId: number | null = null;
   @observable currentTab: string = 'graph-management';
   @observable errorMessage = '';
+  @observable tenant: string = 'null';
+  @observable graphs: string = 'null';
+  @observable menuObj: object = {
+    c_key: '1',
+    f_key: 'sub1'
+  };
+  @observable userInfo: any ={}
+  @observable currentKey: any = 0
 
   @observable colorList: string[] = [];
 
   @observable.shallow requestStatus = {
     fetchColorList: 'pending'
   };
+
+  @action.bound
+  setUserInfo(obj: object) {
+    this.userInfo = obj;
+  }
+  
+  @action.bound
+  setCurrentKey(key: string) {
+    this.currentKey = key;
+  }
 
   @action.bound
   setCurrentId(id: number) {
@@ -30,6 +55,21 @@ export class AppStore {
     this.user = user;
   }
 
+  @action.bound
+  setTenant(tenant: string) {
+    this.tenant = tenant;
+  }
+
+  @action.bound
+  setGraphs(graphs: string) {
+    this.graphs = graphs;
+  }
+
+  @action.bound
+  setMenuObj(menuObj: object) {
+    this.menuObj = menuObj;
+  }
+
   @action
   dispose() {
     this.user = 'Hi, User name';
@@ -44,7 +84,7 @@ export class AppStore {
 
     try {
       const result: AxiosResponse<responseData<string[]>> = yield axios.get(
-        `${baseUrl}/${this.currentId}/schema/vertexlabels/optional-colors`
+        `${baseUrl}/${this.tenant}/graphs/${this.graphs}/schema/vertexlabels/optional-colors`
       );
 
       if (result.data.status !== 200) {
@@ -55,8 +95,8 @@ export class AppStore {
       this.requestStatus.fetchColorList = 'success';
     } catch (error) {
       this.requestStatus.fetchColorList = 'failed';
-      this.errorMessage = error.message;
-      console.error(error.message);
+      this.errorMessage = (error as any).message;
+      console.error((error as any).message);
     }
   });
 }

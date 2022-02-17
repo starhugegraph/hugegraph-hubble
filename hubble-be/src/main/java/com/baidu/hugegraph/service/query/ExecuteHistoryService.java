@@ -55,17 +55,13 @@ public class ExecuteHistoryService {
     private HugeConfig config;
     @Autowired
     private ExecuteHistoryMapper mapper;
-    @Autowired
-    private HugeClientPoolService poolService;
 
-    private HugeClient getClient(int connId) {
-        return this.poolService.getOrCreate(connId);
-    }
-
-    public IPage<ExecuteHistory> list(int connId, long current, long pageSize) {
-        HugeClient client = this.getClient(connId);
+    public IPage<ExecuteHistory> list(HugeClient client, long current,
+                                      long pageSize) {
         QueryWrapper<ExecuteHistory> query = Wrappers.query();
-        query.eq("conn_id", connId).orderByDesc("create_time");
+        query.eq("graphspace", client.getGraphSpaceName())
+             .eq("graph", client.getGraphName())
+             .orderByDesc("create_time");
         Page<ExecuteHistory> page = new Page<>(current, pageSize);
         IPage<ExecuteHistory> results = this.mapper.selectPage(page, query);
 
@@ -94,8 +90,7 @@ public class ExecuteHistoryService {
     }
 
 
-    public ExecuteHistory get(int connId, int id) {
-        HugeClient client = this.getClient(connId);
+    public ExecuteHistory get(HugeClient client, int id) {
         ExecuteHistory history = this.mapper.selectById(id);
         if (history.getType().equals(ExecuteType.GREMLIN_ASYNC)) {
             try {
@@ -125,9 +120,8 @@ public class ExecuteHistoryService {
     }
 
     @Transactional(isolation = Isolation.READ_COMMITTED)
-    public void remove(int connId, int id) {
+    public void remove(HugeClient client, int id) {
         ExecuteHistory history = this.mapper.selectById(id);
-        HugeClient client = this.getClient(connId);
         if (history.getType().equals(ExecuteType.GREMLIN_ASYNC)) {
             client.task().delete(history.getAsyncId());
         }

@@ -58,20 +58,24 @@ public class JobManagerService {
         return this.mapper.selectById(id);
     }
 
-    public JobManager getTask(String jobName, int connId) {
+    public JobManager getTask(String jobName, String graphSpace, String graph) {
         QueryWrapper<JobManager> query = Wrappers.query();
         query.eq("job_name", jobName);
-        query.eq("conn_id", connId);
+        query.eq("graphspace", graphSpace);
+        query.eq("graph", graph);
         return this.mapper.selectOne(query);
     }
 
-    public List<JobManager> list(int connId, List<Integer> jobIds) {
+    public List<JobManager> list(String graphSpace, String graph,
+                                 List<Integer> jobIds) {
         return this.mapper.selectBatchIds(jobIds);
     }
 
-    public IPage<JobManager> list(int connId, int pageNo, int pageSize, String content) {
+    public IPage<JobManager> list(String graphSpace, String graph,
+                                  int pageNo, int pageSize, String content) {
         QueryWrapper<JobManager> query = Wrappers.query();
-        query.eq("conn_id", connId);
+        query.eq("graphspace", graphSpace);
+        query.eq("graph", graph);
         if (!content.isEmpty()) {
             query.like("job_name", content);
         }

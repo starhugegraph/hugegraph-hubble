@@ -1,4 +1,4 @@
-import { createContext } from 'react';
+import { createContext, useContext } from 'react';
 import { observable, action, flow, computed } from 'mobx';
 import axios, { AxiosResponse } from 'axios';
 import { remove, isUndefined } from 'lodash-es';
@@ -22,16 +22,18 @@ import {
   EdgeTypeListResponse
 } from '../../types/GraphManagementStore/metadataConfigsStore';
 import { checkIfLocalNetworkOffline } from '../../utils';
+import AppStoreContext from '../../appStore';
 
 const MAX_CONCURRENT_UPLOAD = 5;
 
 export class DataImportRootStore {
   dataMapStore: DataMapStore;
   serverDataImportStore: ServerDataImportStore;
-
+  appStore: any;
   constructor() {
     this.dataMapStore = new DataMapStore(this);
     this.serverDataImportStore = new ServerDataImportStore(this);
+    this.appStore = AppStoreContext
   }
 
   @observable currentId: number | null = null;
@@ -173,8 +175,7 @@ export class DataImportRootStore {
     try {
       const result = yield axios
         .get<responseData<Record<string, string>>>(
-          `${baseUrl}/${this.currentId}/job-manager/${
-            this.currentJobId
+          `${baseUrl}/${this.appStore._currentValue.tenant}/graphs/${this.appStore._currentValue.graphs}/job-manager/${this.currentJobId
           }/upload-file/token?${fileNames
             .map((name) => `names=${name}`)
             .join('&')}`
@@ -221,7 +222,7 @@ export class DataImportRootStore {
     try {
       const result: AxiosResponse<responseData<FileUploadResult>> = yield axios
         .post<responseData<FileUploadResult>>(
-          `${baseUrl}/${this.currentId}/job-manager/${this.currentJobId}/upload-file?total=${fileChunkTotal}&index=${fileChunkList.chunkIndex}&name=${fileName}&token=${this.fileHashes[fileName]}`,
+          `${baseUrl}/${this.appStore._currentValue.tenant}/graphs/${this.appStore._currentValue.graphs}/job-manager/${this.currentJobId}/upload-file?total=${fileChunkTotal}&index=${fileChunkList.chunkIndex}&name=${fileName}&token=${this.fileHashes[fileName]}`,
           formData,
           {
             headers: {
@@ -255,7 +256,7 @@ export class DataImportRootStore {
     try {
       const result = yield axios
         .delete(
-          `${baseUrl}/${this.currentId}/job-manager/${this.currentJobId}/upload-file?name=${fileName}&token=${this.fileHashes[fileName]}`
+          `${baseUrl}/${this.appStore._currentValue.tenant}/graphs/${this.appStore._currentValue.graphs}/job-manager/${this.currentJobId}/upload-file?name=${fileName}&token=${this.fileHashes[fileName]}`
         )
         .catch(checkIfLocalNetworkOffline);
 
@@ -280,7 +281,7 @@ export class DataImportRootStore {
     try {
       const result = yield axios
         .put(
-          `${baseUrl}/${this.currentId}/job-manager/${this.currentJobId}/upload-file/next-step`
+          `${baseUrl}/${this.appStore._currentValue.tenant}/graphs/${this.appStore._currentValue.graphs}/job-manager/${this.currentJobId}/upload-file/next-step`
         )
         .catch(checkIfLocalNetworkOffline);
 
@@ -305,7 +306,7 @@ export class DataImportRootStore {
     try {
       const result = yield axios
         .put(
-          `${baseUrl}/${this.currentId}/job-manager/${this.currentJobId}/file-mappings/next-step`
+          `${baseUrl}/${this.appStore._currentValue.tenant}/graphs/${this.appStore._currentValue.graphs}/job-manager/${this.currentJobId}/file-mappings/next-step`
         )
         .catch(checkIfLocalNetworkOffline);
 
@@ -332,7 +333,7 @@ export class DataImportRootStore {
         VertexTypeListResponse
       >> = yield axios
         .get<responseData<VertexTypeListResponse>>(
-          `${baseUrl}/${this.currentId}/schema/vertexlabels`,
+          `${baseUrl}/${this.appStore._currentValue.tenant}/graphs/${this.appStore._currentValue.graphs}/schema/vertexlabels`,
           {
             params: {
               page_size: -1
@@ -364,7 +365,7 @@ export class DataImportRootStore {
         EdgeTypeListResponse
       >> = yield axios
         .get<responseData<EdgeTypeListResponse>>(
-          `${baseUrl}/${this.currentId}/schema/edgelabels`,
+          `${baseUrl}/${this.appStore._currentValue.tenant}/graphs/${this.appStore._currentValue.graphs}/schema/edgelabels`,
           {
             params: {
               page_size: -1

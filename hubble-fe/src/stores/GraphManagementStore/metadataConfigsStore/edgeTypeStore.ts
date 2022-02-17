@@ -20,12 +20,15 @@ import SelectedSolidArrowIcon from '../../../assets/imgs/ic_arrow_selected.svg';
 import NoSelectedSolidArrowIcon from '../../../assets/imgs/ic_arrow.svg';
 import SelectedSolidStraightIcon from '../../../assets/imgs/ic_straight_selected.svg';
 import NoSelectedSolidStraightIcon from '../../../assets/imgs/ic_straight.svg';
+import  AppStoreContext  from '../../appStore';
 
 export class EdgeTypeStore {
   metadataConfigsRootStore: MetadataConfigsRootStore;
-
+  appStore:any
+  
   constructor(MetadataConfigsRootStore: MetadataConfigsRootStore) {
     this.metadataConfigsRootStore = MetadataConfigsRootStore;
+    this.appStore = AppStoreContext
   }
 
   @observable validateLicenseOrMemories = true;
@@ -1219,7 +1222,7 @@ export class EdgeTypeStore {
       const result: AxiosResponse<responseData<
         EdgeTypeListResponse
       >> = yield axios
-        .get(`${baseUrl}/${conn_id}/schema/edgelabels`, {
+        .get(`${baseUrl}/${this.appStore._currentValue.tenant}/graphs/${this.appStore._currentValue.graphs}/schema/edgelabels`, {
           params: {
             page_no: this.edgeTypeListPageConfig.pageNumber,
             page_size: !options ? 10 : -1,
@@ -1261,11 +1264,10 @@ export class EdgeTypeStore {
 
   addEdgeType = flow(function* addEdgeType(this: EdgeTypeStore) {
     this.requestStatus.addEdgeType = 'pending';
-
     try {
       const result: AxiosResponse<responseData<null>> = yield axios
         .post(
-          `${baseUrl}/${this.metadataConfigsRootStore.currentId}/schema/edgelabels`,
+          `${baseUrl}/${this.appStore._currentValue.tenant}/graphs/${this.appStore._currentValue.graphs}/schema/edgelabels`,
           {
             name: this.newEdgeType.name,
             source_label: this.newEdgeType.source_label,
@@ -1297,9 +1299,7 @@ export class EdgeTypeStore {
     try {
       const result: AxiosResponse<responseData<null>> = yield axios
         .put(
-          `${baseUrl}/${
-            this.metadataConfigsRootStore.currentId
-          }/schema/edgelabels/${this.selectedEdgeType!.name}`,
+          `${baseUrl}/${this.appStore._currentValue.tenant}/graphs/${this.appStore._currentValue.graphs}/schema/edgelabels/${this.selectedEdgeType!.name}`,
           {
             append_properties: this.editedSelectedEdgeType.append_properties,
             append_property_indexes: this.editedSelectedEdgeType
@@ -1329,13 +1329,13 @@ export class EdgeTypeStore {
     this.requestStatus.deleteEdgeType = 'pending';
 
     const combinedParams = selectedEdgeTypeNames
-      .map((name) => 'names=' + name)
+      .map((name) => 'names=' + encodeURIComponent(name))
       .join('&');
 
     try {
       const result: AxiosResponse<responseData<null>> = yield axios
         .delete(
-          `${baseUrl}/${this.metadataConfigsRootStore.currentId}/schema/edgelabels?` +
+          `${baseUrl}/${this.appStore._currentValue.tenant}/graphs/${this.appStore._currentValue.graphs}/schema/edgelabels?` +
             combinedParams +
             `&skip_using=${String(
               Array.isArray(selectedEdgeTypeNames) &&
@@ -1377,7 +1377,7 @@ export class EdgeTypeStore {
         CheckedReusableData
       >> = yield axios
         .post(
-          `${baseUrl}/${this.metadataConfigsRootStore.currentId}/schema/edgelabels/check_conflict`,
+          `${baseUrl}/${this.appStore._currentValue.tenant}/graphs/${this.appStore._currentValue.graphs}/schema/edgelabels/check_conflict`,
           {
             edgelabels: selectedEdgeTypes.map((selectedEdgeType) =>
               this.reusableEdgeTypes.find(
@@ -1387,7 +1387,7 @@ export class EdgeTypeStore {
           },
           {
             params: {
-              reused_conn_id: this.metadataConfigsRootStore.idList.find(
+              reused_conn_id: this.metadataConfigsRootStore.graphManagementStore.idList.find(
                 ({ name }) => name === reuseId
               )!.id
             }
@@ -1416,7 +1416,7 @@ export class EdgeTypeStore {
         CheckedReusableData
       >> = yield axios
         .post(
-          `${baseUrl}/${this.metadataConfigsRootStore.currentId}/schema/edgelabels/recheck_conflict`,
+          `${baseUrl}/${this.appStore._currentValue.tenant}/graphs/${this.appStore._currentValue.graphs}/schema/edgelabels/recheck_conflict`,
           {
             propertykeys: this.editedCheckedReusableData!.propertykey_conflicts.map(
               ({ entity }) => ({
@@ -1461,7 +1461,7 @@ export class EdgeTypeStore {
     try {
       const result: AxiosResponse<responseData<null>> = yield axios
         .post(
-          `${baseUrl}/${this.metadataConfigsRootStore.currentId}/schema/edgelabels/reuse`,
+          `${baseUrl}/${this.appStore._currentValue.tenant}/graphs/${this.appStore._currentValue.graphs}/schema/edgelabels/reuse`,
           this.editedCheckedReusableData
         )
         .catch(checkIfLocalNetworkOffline);

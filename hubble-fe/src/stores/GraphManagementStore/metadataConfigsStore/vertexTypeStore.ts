@@ -15,12 +15,15 @@ import {
   VertexTypeValidateFields,
   VertexTypeValidatePropertyIndexes
 } from '../../types/GraphManagementStore/metadataConfigsStore';
+import { AppStoreContext } from '../..';
 
 export class VertexTypeStore {
   metadataConfigsRootStore: MetadataConfigsRootStore;
-
+  appStore: any
+  
   constructor(MetadataConfigsRootStore: MetadataConfigsRootStore) {
     this.metadataConfigsRootStore = MetadataConfigsRootStore;
+    this.appStore = AppStoreContext
   }
 
   @observable validateLicenseOrMemories = true;
@@ -139,43 +142,43 @@ export class VertexTypeStore {
     VertexTypeValidateFields,
     string | VertexTypeValidatePropertyIndexes[]
   > = {
-    name: '',
-    properties: '',
-    primaryKeys: '',
-    displayFeilds: '',
-    propertyIndexes: []
-  };
+      name: '',
+      properties: '',
+      primaryKeys: '',
+      displayFeilds: '',
+      propertyIndexes: []
+    };
 
   @observable.shallow validateEditVertexTypeErrorMessage: Record<
     'propertyIndexes',
     VertexTypeValidatePropertyIndexes[]
   > = {
-    propertyIndexes: []
-  };
+      propertyIndexes: []
+    };
 
   @observable validateReuseErrorMessage: Record<
     'vertexType' | 'property' | 'property_index',
     string
   > = {
-    vertexType: '',
-    property: '',
-    property_index: ''
-  };
+      vertexType: '',
+      property: '',
+      property_index: ''
+    };
 
   @observable validateRenameReuseVertexErrorMessage: Record<
     'vertex' | 'property' | 'property_index',
     { name: string }
   > = {
-    vertex: {
-      name: ''
-    },
-    property: {
-      name: ''
-    },
-    property_index: {
-      name: ''
-    }
-  };
+      vertex: {
+        name: ''
+      },
+      property: {
+        name: ''
+      },
+      property_index: {
+        name: ''
+      }
+    };
 
   @computed get reusableVertexTypeDataMap() {
     const dataMap: Record<string, Record<'key' | 'title', string>> = {};
@@ -815,7 +818,7 @@ export class VertexTypeStore {
       if (category === 'propertyindex_conflicts') {
         const {
           name: deletedPropertyIndexName,
-          fields
+          // fields
         } = editedCheckedReusableData.propertyindex_conflicts[index].entity;
 
         editedCheckedReusableData.propertyindex_conflicts.splice(index, 1);
@@ -990,7 +993,7 @@ export class VertexTypeStore {
         Record<string, boolean>
       >> = yield axios
         .post(
-          `${baseUrl}/${this.metadataConfigsRootStore.currentId}/schema/vertexlabels/check_using`,
+          `${baseUrl}/${this.appStore._currentValue.tenant}/graphs/${this.appStore._currentValue.graphs}/schema/vertexlabels/check_using`,
           {
             names: selectedPropertyNames
           }
@@ -1015,7 +1018,7 @@ export class VertexTypeStore {
     try {
       const result: AxiosResponse<responseData<null>> = yield axios
         .post(
-          `${baseUrl}/${this.metadataConfigsRootStore.currentId}/schema/vertexlabels`,
+          `${baseUrl}/${this.appStore._currentValue.tenant}/graphs/${this.appStore._currentValue.graphs}/schema/vertexlabels`,
           {
             name: this.newVertexType.name,
             id_strategy: this.newVertexType.id_strategy,
@@ -1045,8 +1048,7 @@ export class VertexTypeStore {
     try {
       const result: AxiosResponse<responseData<null>> = yield axios
         .put(
-          `${baseUrl}/${
-            this.metadataConfigsRootStore.currentId
+          `${baseUrl}/${this.metadataConfigsRootStore.currentId
           }/schema/vertexlabels/${this.selectedVertexType!.name}`,
           {
             append_properties: this.editedSelectedVertexType.append_properties,
@@ -1077,15 +1079,15 @@ export class VertexTypeStore {
     this.requestStatus.deleteVertexType = 'pending';
 
     const combinedParams = selectedVertexTypeNames
-      .map((name) => 'names=' + name)
+      .map((name) => 'names=' + encodeURIComponent(name))
       .join('&');
 
     try {
       const result: AxiosResponse<responseData<null>> = yield axios
         .delete(
-          `${baseUrl}/${this.metadataConfigsRootStore.currentId}/schema/vertexlabels?` +
-            combinedParams +
-            `&skip_using=${String(size(selectedVertexTypeNames) !== 1)}`
+          `${baseUrl}/${this.appStore._currentValue.tenant}/graphs/${this.appStore._currentValue.graphs}/schema/vertexlabels?` +
+          combinedParams +
+          `&skip_using=${String(size(selectedVertexTypeNames) !== 1)}`
         )
         .catch(checkIfLocalNetworkOffline);
 
@@ -1096,7 +1098,7 @@ export class VertexTypeStore {
       if (
         selectedVertexTypeNames.length === this.vertexTypes.length &&
         this.vertexListPageConfig.pageNumber ===
-          Math.ceil(this.vertexListPageConfig.pageTotal / 10) &&
+        Math.ceil(this.vertexListPageConfig.pageTotal / 10) &&
         this.vertexListPageConfig.pageNumber > 1
       ) {
         this.vertexListPageConfig.pageNumber =
@@ -1120,7 +1122,7 @@ export class VertexTypeStore {
     try {
       const result: AxiosResponse<responseData<null>> = yield axios
         .post(
-          `${baseUrl}/${this.metadataConfigsRootStore.currentId}/schema/vertexlabels/check_conflict`,
+          `${baseUrl}/${this.appStore._currentValue.tenant}/graphs/${this.appStore._currentValue.graphs}/schema/vertexlabels/check_conflict`,
           {
             vertexlabels: selectedVertexTypes.map((selectedVertexType) =>
               this.reusableVertexTypes.find(
@@ -1130,7 +1132,7 @@ export class VertexTypeStore {
           },
           {
             params: {
-              reused_conn_id: this.metadataConfigsRootStore.idList.find(
+              reused_conn_id: this.metadataConfigsRootStore.graphManagementStore.idList.find(
                 ({ name }) => name === reuseId
               )!.id
             }
@@ -1159,7 +1161,7 @@ export class VertexTypeStore {
         CheckedReusableData
       >> = yield axios
         .post(
-          `${baseUrl}/${this.metadataConfigsRootStore.currentId}/schema/vertexlabels/recheck_conflict`,
+          `${baseUrl}/${this.appStore._currentValue.tenant}/graphs/${this.appStore._currentValue.graphs}/schema/vertexlabels/recheck_conflict`,
           {
             propertykeys: this.editedCheckedReusableData!.propertykey_conflicts.map(
               ({ entity }) => ({
@@ -1199,7 +1201,7 @@ export class VertexTypeStore {
     try {
       const result: AxiosResponse<responseData<null>> = yield axios
         .post(
-          `${baseUrl}/${this.metadataConfigsRootStore.currentId}/schema/vertexlabels/reuse`,
+          `${baseUrl}/${this.appStore._currentValue.tenant}/graphs/${this.appStore._currentValue.graphs}/schema/vertexlabels/reuse`,
           this.editedCheckedReusableData
         )
         .catch(checkIfLocalNetworkOffline);

@@ -13,7 +13,7 @@
     <groupId>com.baidu.hugegraph</groupId>
     <artifactId>hugegraph-hubble</artifactId>
     <packaging>pom</packaging>
-    <version>1.5.0</version>
+    <version>3.0.0</version>
     <modules>
         <module>hubble-be</module>
         <module>hubble-dist</module>
@@ -21,6 +21,10 @@
 
     <properties>
         <top.level.dir>${project.basedir}/..</top.level.dir>
+        <!--
+        修改springboot 绑定的ES版本
+        -->
+        <elasticsearch.version>7.16.1</elasticsearch.version>
     </properties>
 
 </project>

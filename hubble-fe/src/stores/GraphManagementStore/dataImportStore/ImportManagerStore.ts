@@ -1,4 +1,4 @@
-import { createContext } from 'react';
+import { createContext, useContext } from 'react';
 import { observable, action, flow, computed } from 'mobx';
 import axios, { AxiosResponse } from 'axios';
 import { isEmpty, size } from 'lodash-es';
@@ -19,11 +19,15 @@ import type {
   JobGlance,
   JobFailedReason
 } from '../../types/GraphManagementStore/dataImportStore';
+import AppStoreContext from '../../appStore';
 
 export class ImportManagerStore {
+  appStore: any
+  constructor() {
+    this.appStore = AppStoreContext
+  }
   @observable requestStatus = initRequestStatus();
   @observable errorInfo = initErrorInfo();
-
   @observable currentId: number | null = null;
   @observable jobDetailsStep = 'basic';
   @observable selectedJobIndex = NaN;
@@ -240,10 +244,10 @@ export class ImportManagerStore {
     try {
       const result: AxiosResponse<responseData<JobResponse>> = yield axios
         .get<responseData<JobResponse>>(
-          `${baseUrl}/${this.currentId}/job-manager?page_no=${this.importJobListPageConfig.pageNumber}&page_size=10` +
-            (this.isSearched.status && this.searchWords !== ''
-              ? `&content=${this.searchWords}`
-              : '')
+          `${baseUrl}/${this.appStore._currentValue.tenant}/graphs/${this.appStore._currentValue.graphs}/job-manager?page_no=${this.importJobListPageConfig.pageNumber}&page_size=10` +
+          (this.isSearched.status && this.searchWords !== ''
+            ? `&content=${encodeURIComponent(this.searchWords)}`
+            : '')
         )
         .catch(checkIfLocalNetworkOffline);
 
@@ -266,7 +270,7 @@ export class ImportManagerStore {
 
     try {
       const result: AxiosResponse<responseData<Job>> = yield axios
-        .post<responseData<Job>>(`${baseUrl}/${this.currentId}/job-manager`, {
+        .post<responseData<Job>>(`${baseUrl}/${this.appStore._currentValue.tenant}/graphs/${this.appStore._currentValue.graphs}/job-manager`, {
           job_name: this.newJob.name,
           job_remarks: this.newJob.description
         })
@@ -290,7 +294,7 @@ export class ImportManagerStore {
     try {
       const result: AxiosResponse<responseData<Job>> = yield axios
         .put<responseData<Job>>(
-          `${baseUrl}/${this.currentId}/job-manager/${this.selectedJob!.id}`,
+          `${baseUrl}/${this.appStore._currentValue.tenant}/graphs/${this.appStore._currentValue.graphs}/job-manager/${this.selectedJob!.id}`,
           {
             job_name: this.editJob!.name,
             job_remarks: this.editJob!.description
@@ -317,7 +321,7 @@ export class ImportManagerStore {
     try {
       const result: AxiosResponse<responseData<Job>> = yield axios
         .delete<responseData<Job>>(
-          `${baseUrl}/${this.currentId}/job-manager/${id}`
+          `${baseUrl}/${this.appStore._currentValue.tenant}/graphs/${this.appStore._currentValue.graphs}/job-manager/${id}`
         )
         .catch(checkIfLocalNetworkOffline);
 
@@ -345,7 +349,7 @@ export class ImportManagerStore {
         JobFailedReason[]
       >> = yield axios
         .get<responseData<JobFailedReason[]>>(
-          `${baseUrl}/${connectId}/job-manager/${jobId}/reason`
+          `${baseUrl}/${this.appStore._currentValue.tenant}/graphs/${this.appStore._currentValue.graphs}/job-manager/${jobId}/reason`
         )
         .catch(checkIfLocalNetworkOffline);
 

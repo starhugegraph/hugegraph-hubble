@@ -31,9 +31,9 @@ import type { EdgeTypeValidatePropertyIndexes } from '../../../../stores/types/G
 
 import BlueArrowIcon from '../../../../assets/imgs/ic_arrow_blue.svg';
 import CloseIcon from '../../../../assets/imgs/ic_close_16.svg';
-import SelectedSoilidArrowIcon from '../../../../assets/imgs/ic_arrow_selected.svg';
+// import SelectedSoilidArrowIcon from '../../../../assets/imgs/ic_arrow_selected.svg';
 import NoSelectedSoilidArrowIcon from '../../../../assets/imgs/ic_arrow.svg';
-import SelectedSoilidStraightIcon from '../../../../assets/imgs/ic_straight_selected.svg';
+// import SelectedSoilidStraightIcon from '../../../../assets/imgs/ic_straight_selected.svg';
 import NoSelectedSoilidStraightIcon from '../../../../assets/imgs/ic_straight.svg';
 
 const propertyIndexTypeMappings: Record<string, string> = {
@@ -72,7 +72,7 @@ const CheckAndEditEdge: React.FC = observer(() => {
   const handleOutSideClick = useCallback(
     (e: MouseEvent) => {
       const drawerWrapper = document.querySelector(
-        '.new-fc-one-drawer-content-wrapper'
+        '.metadata-graph-drawer-edge .new-fc-one-drawer-content-wrapper'
       );
 
       if (
@@ -177,6 +177,7 @@ const CheckAndEditEdge: React.FC = observer(() => {
       title={!isEditEdge ? '边类型详情' : '编辑边类型'}
       width={580}
       destroyOnClose
+      className="metadata-graph-drawer-edge"
       visible={['check-edge', 'edit-edge'].includes(
         graphViewStore.currentDrawer
       )}
@@ -317,16 +318,18 @@ const CheckAndEditEdge: React.FC = observer(() => {
             }
           }}
           tooltipWrapperProps={{
-            className: 'metadata-properties-tooltips',
+            className: 'metadata-graph-tooltips',
             style: {
               zIndex: 1042
             }
           }}
           tooltipWrapper={
             <div ref={deleteWrapperRef}>
-              <p style={{ marginBottom: 8 }}>确认删除此边类型？</p>
-              <p>删除后无法恢复，请谨慎操作</p>
-              <p>删除元数据耗时较久，详情可在任务管理中查看</p>
+              <p className="metadata-graph-tooltips-title">
+                确认删除此边类型？
+              </p>
+              <p>删除后无法恢复，请谨慎操作。</p>
+              <p>删除元数据耗时较久，详情可在任务管理中查看。</p>
               <div
                 style={{
                   display: 'flex',
@@ -383,7 +386,9 @@ const CheckAndEditEdge: React.FC = observer(() => {
             <div className="metadata-drawer-options-name">
               <span>边类型名称：</span>
             </div>
-            {edgeTypeStore.selectedEdgeType!.name}
+            <div style={{ maxWidth: 420 }}>
+              {edgeTypeStore.selectedEdgeType!.name}
+            </div>
           </div>
 
           <div className="metadata-drawer-options">
@@ -619,13 +624,17 @@ const CheckAndEditEdge: React.FC = observer(() => {
             <div className="metadata-drawer-options-name">
               <span>起点类型：</span>
             </div>
-            {edgeTypeStore.selectedEdgeType!.source_label}
+            <div style={{ maxWidth: 420 }}>
+              {edgeTypeStore.selectedEdgeType!.source_label}
+            </div>
           </div>
           <div className={metadataDrawerOptionClass}>
             <div className="metadata-drawer-options-name">
               <span>终点类型：</span>
             </div>
-            {edgeTypeStore.selectedEdgeType!.target_label}
+            <div style={{ maxWidth: 420 }}>
+              {edgeTypeStore.selectedEdgeType!.target_label}
+            </div>
           </div>
           <div className={metadataDrawerOptionClass}>
             <div className="metadata-drawer-options-name">
@@ -651,7 +660,7 @@ const CheckAndEditEdge: React.FC = observer(() => {
               {edgeTypeStore.selectedEdgeType!.properties.map(
                 ({ name, nullable }) => (
                   <div className="metadata-drawer-options-list-row" key={name}>
-                    <div>{name}</div>
+                    <div style={{ maxWidth: 260 }}>{name}</div>
                     <div style={{ width: 70, textAlign: 'center' }}>
                       <Switch
                         checkedChildren="开"
@@ -772,7 +781,9 @@ const CheckAndEditEdge: React.FC = observer(() => {
             <div className="metadata-drawer-options-name">
               <span>区分键属性：</span>
             </div>
-            {edgeTypeStore.selectedEdgeType!.sort_keys.join(';')}
+            <div style={{ maxWidth: 420 }}>
+              {edgeTypeStore.selectedEdgeType!.sort_keys.join(';')}
+            </div>
           </div>
 
           <div className="metadata-drawer-options">
@@ -856,7 +867,7 @@ const CheckAndEditEdge: React.FC = observer(() => {
                   })}
               </Select>
             ) : (
-              <div>
+              <div style={{ maxWidth: 420 }}>
                 {edgeTypeStore.selectedEdgeType?.style.display_fields
                   .map((field) => formatVertexIdText(field, '边类型'))
                   .join('-')}
@@ -1037,12 +1048,12 @@ const CheckAndEditEdge: React.FC = observer(() => {
                       className="metadata-drawer-options-list-row metadata-drawer-options-list-row-normal"
                       style={{
                         display: 'flex',
-                        alignItems: 'start',
+                        alignItems: 'flex-start',
                         position: 'relative'
                       }}
                       // cannot set key prop with name here, weired
                     >
-                      <div>
+                      <div className="disable-input-absolute">
                         <Input
                           size="medium"
                           width={100}
