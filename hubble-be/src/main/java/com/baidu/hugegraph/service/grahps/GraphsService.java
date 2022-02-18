@@ -91,6 +91,7 @@ public class GraphsService {
         return result;
     }
 
+    @Deprecated
     public Map<String, String> create(HugeClient client, String graph,
                                       boolean isAuth, String schemaTemplate) {
         Map<String, String> conf = new HashMap<>();
@@ -105,12 +106,22 @@ public class GraphsService {
             conf.put("schema.init_template", schemaTemplate);
         }
 
+        conf.put("store", graph);
+        // Only for v3.0.0
+        conf.put("backend", "hstore");
+        conf.put("serializer", "binary");
+
+        return client.graphs().createGraph(graph, JsonUtil.toJson(conf));
+    }
+
+    public Map<String, String> create(HugeClient client, String graph,
+                                      String schemaTemplate) {
+        Map<String, String> conf = new HashMap<>();
 
         conf.put("store", graph);
-        conf.put("backend", "rocksdb");
+        // Only for v3.0.0
+        conf.put("backend", "hstore");
         conf.put("serializer", "binary");
-        conf.put("rocksdb.data_path", "./" + graph);
-        conf.put("rocksdb.waf_path", "./" + graph);
 
         return client.graphs().createGraph(graph, JsonUtil.toJson(conf));
     }

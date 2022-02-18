@@ -27,6 +27,7 @@ import java.util.Set;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -40,6 +41,7 @@ import com.baidu.hugegraph.structure.auth.Belong;
 import com.baidu.hugegraph.structure.auth.Group;
 import com.baidu.hugegraph.util.PageUtil;
 
+@Log4j2
 @Service
 public class BelongService extends AuthService {
     @Autowired
@@ -84,11 +86,11 @@ public class BelongService extends AuthService {
         AuthManager auth = client.auth();
         List<BelongEntity> result = new ArrayList<>();
 
-        UserEntity user = userService.get(client, uid);
-
         auth.listBelongsByUser(uid, -1).forEach(b -> {
-            Group group = roleService.get(client, b.group().toString());
-            result.add(convert(b, user, group));
+            BelongEntity entity = convert(client, b);
+            if (entity != null) {
+                result.add(entity);
+            }
         });
 
         return result;
@@ -100,8 +102,10 @@ public class BelongService extends AuthService {
         List<BelongEntity> result = new ArrayList<>();
 
         client.auth().listBelongsByGroup(gid, -1).forEach(b -> {
-            UserEntity user = userService.get(client, b.user().toString());
-            result.add(convert(b, user, group));
+            BelongEntity entity = convert(client, b);
+            if (entity != null) {
+                result.add(entity);
+            }
         });
 
         return result;
@@ -111,9 +115,10 @@ public class BelongService extends AuthService {
         List<BelongEntity> result = new ArrayList<>();
 
         client.auth().listBelongs().forEach(b -> {
-            Group group = roleService.get(client, b.group().toString());
-            UserEntity user = userService.get(client, b.user().toString());
-            result.add(convert(b, user, group));
+            BelongEntity entity = convert(client, b);
+            if (entity != null) {
+                result.add(entity);
+            }
         });
 
         return result;
@@ -132,10 +137,9 @@ public class BelongService extends AuthService {
             return this.listByUser(client, uid);
         } else {
             auth.listBelongsByGroup(gid, -1).forEach(b -> {
-                Group group = roleService.get(client, gid);
-                UserEntity user = userService.get(client, b.user().toString());
-                if (b.user().toString().equals(uid)) {
-                    result.add(convert(b, user, group));
+                BelongEntity entity = convert(client, b);
+                if (entity != null) {
+                    result.add(entity);
                 }
             });
         }
@@ -156,18 +160,23 @@ public class BelongService extends AuthService {
                                         bid);
         }
 
-        Group group = roleService.get(client, belong.group().toString());
-        UserEntity user = userService.get(client, belong.user().toString());
-
-        return convert(belong, user, group);
+        return convert(client, belong);
     }
 
-    protected BelongEntity convert(Belong belong, UserEntity user,
-                                   Group group) {
+    protected BelongEntity convert(HugeClient client, Belong belong) {
 
-        return new BelongEntity(belong.id().toString(),
-                                user.getId(), user.getName(),
-                                group.id().toString(), group.name());
+        try {
+            Group group = roleService.get(client, belong.group().toString());
+            UserEntity user = userService.get(client, belong.user().toString());
+
+            return new BelongEntity(belong.id().toString(),
+                                    user.getId(), user.getName(),
+                                    group.id().toString(), group.name());
+        } catch (Exception e) {
+            log.warn("convert belong error", e);
+        }
+
+        return null;
     }
 
     public void deleteMany(HugeClient client, String[] ids) {

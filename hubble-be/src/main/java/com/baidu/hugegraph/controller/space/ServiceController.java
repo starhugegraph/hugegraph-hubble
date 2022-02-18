@@ -19,6 +19,7 @@
 
 package com.baidu.hugegraph.controller.space;
 
+import com.baidu.hugegraph.exception.ParameterizedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -66,10 +67,19 @@ public class ServiceController extends BaseController {
     public Object create(@PathVariable("graphspace") String graphspace,
                          @RequestBody OLTPService serviceEntity) {
 
-        return serviceEntity;
-        // TODO
-        // return oltpService.create(this.authClient(graphspace, null),
-        //                           serviceEntity);
+        // return serviceEntity;
+        // TODO url or routetype
+        if (serviceEntity.getDepleymentType()
+                == OLTPService.DepleymentType.MANUAL) {
+            serviceEntity.setRouteType(null);
+            // serviceEntity.setUrls();
+        } else {
+            serviceEntity.setPort(10);
+            serviceEntity.setRouteType("LoadBalancer");
+        }
+
+        return oltpService.create(this.authClient(graphspace, null),
+                                  serviceEntity);
     }
 
     @PutMapping("{service}")
@@ -77,18 +87,20 @@ public class ServiceController extends BaseController {
                          @PathVariable("service") String service,
                          @RequestBody OLTPService serviceEntity) {
 
-        serviceEntity.setName(graphspace);
+        serviceEntity.setName(service);
 
-        return serviceEntity;
-
-        // TODO
-        // return oltpService.update(this.authClient(graphspace, null),
-        //                           serviceEntity);
+        return oltpService.update(this.authClient(graphspace, null),
+                                  serviceEntity);
     }
 
     @DeleteMapping("{service}")
     public void delete(@PathVariable("graphspace") String graphspace,
                        @PathVariable("service") String service) {
+        if (("DEFAULT".equals(graphspace)) && ("DEFAULT".equals(service))) {
+            throw new ParameterizedException("Do not delete the service " +
+                                             "'DEFAULT' under the graphspace " +
+                                             "named 'DEFAULT'!");
+        }
         HugeClient client = this.authClient(graphspace, null);
         oltpService.delete(client, service);
     }
