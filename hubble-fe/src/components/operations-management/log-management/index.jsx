@@ -1,4 +1,4 @@
-import React, { useEffect, useContext, useState } from 'react'
+import React, { useState } from 'react'
 import { Button, Tooltip } from 'antd';
 import ProTable from '@ant-design/pro-table';
 import api from '../../../api/api'
@@ -29,9 +29,10 @@ const columns = [
         },
         fieldProps: () => ({ mode: "multiple" }),
         request: async () => {
-            let res = await api.getServicesList()
-            if(res.status===200)
-            return res.data.services.map(item => ({ label: item, value: item }))
+            let res = await api.getLogsServicesList()
+            console.log(res);
+            if (res.status === 200)
+                return res.data.services.map(item => ({ label: item, value: item }))
         }
 
     },
@@ -47,8 +48,8 @@ const columns = [
         },
         request: async () => {
             let res = await api.getHostList()
-            if(res.status===200)
-            return res.data.hosts.map(item => ({ label: item, value: item }))
+            if (res.status === 200)
+                return res.data.hosts.map(item => ({ label: item, value: item }))
         }
     },
     {
@@ -92,6 +93,17 @@ const columns = [
             name: "level",
             initialValue: "DEBUG"
         },
+        request: async () => {
+            const res = await api.getLogsLevelList()
+            if (res && res.status === 200) {
+                return res.data.levels.map(item => (
+                    {
+                        label: item,
+                        value: item
+                    }
+                ))
+            }
+        }
     },
     {
         title: '日志信息',
@@ -116,7 +128,6 @@ export default () => {
                     const apiParams = defaultDateTimeParams(params)
                     setParams(apiParams)
                     let res = await api.getLogTableData(apiParams)
-                    console.log(res);
                     if (res.status === 200) {
                         return {
                             data: res.data.records,
@@ -138,7 +149,7 @@ export default () => {
                 headerTitle="日志列表"
                 toolBarRender={(res) => [
                     <Tooltip title="只能导出当前显示数据">
-                        <Button key="out" onClick={() => api.outTheData('/logs/export',outParams)}>
+                        <Button key="out" onClick={() => api.outTheData('/logs/export', outParams)}>
                             导出数据
                         </Button>
                     </Tooltip>

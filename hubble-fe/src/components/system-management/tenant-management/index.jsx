@@ -73,6 +73,12 @@ function Index() {
             fixed:"left"
         },
         {
+            title: '是否开启鉴权',
+            dataIndex: 'auth',
+            align: "center",
+            render:(value)=>(<span>{value?"是":"否"}</span>)
+        },
+        {
             title: '描述',
             dataIndex: 'description',
             align: "center",

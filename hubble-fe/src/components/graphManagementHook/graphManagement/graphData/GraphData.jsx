@@ -325,13 +325,7 @@ export default function GraphData() {
                     >
                         <Input placeholder="请输入图名" />
                     </Form.Item>
-                    <Form.Item
-                        label="是否开启鉴权"
-                        name="auth"
-                        valuePropName="checked"
-                    >
-                        <Switch />
-                    </Form.Item>
+
                     <Form.Item
                         label="schema"
                         name="schema"

@@ -1,14 +1,13 @@
 import React, { useRef,useState } from 'react';
-import { DownOutlined } from '@ant-design/icons';
 import { Button } from 'antd';
-import ProTable, { TableDropdown } from '@ant-design/pro-table';
+import ProTable from '@ant-design/pro-table';
 import api from '../../../api/api'
 import { defaultDateTimeParams } from '../../../stores/utils';
 
 const columns = [
     {
         title: "操作",
-        dataIndex: 'audit_operation',
+        dataIndex: 'audit_action',
         valueType: 'select',
         width: 50,
         initialValue: [],
@@ -44,9 +43,9 @@ const columns = [
             name: "services"
         },
         request: async () => {
-            let res = await api.getServicesList()
+            let res = await api.getAuditServicesList()
             if (res.status === 200) {
-                return res.data.services.map(item => ({ label: item, value: item }))
+                return res.data.map(item => ({ label: item, value: item }))
             }
         }
     },
