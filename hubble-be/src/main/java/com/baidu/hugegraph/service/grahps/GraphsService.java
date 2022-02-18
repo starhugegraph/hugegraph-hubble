@@ -105,12 +105,9 @@ public class GraphsService {
             conf.put("schema.init_template", schemaTemplate);
         }
 
-
         conf.put("store", graph);
         conf.put("backend", "rocksdb");
         conf.put("serializer", "binary");
-        conf.put("rocksdb.data_path", "./" + graph);
-        conf.put("rocksdb.waf_path", "./" + graph);
 
         return client.graphs().createGraph(graph, JsonUtil.toJson(conf));
     }
