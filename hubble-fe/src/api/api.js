@@ -619,6 +619,16 @@ const getComputeTableData = (graphspace, graph, data) => {
         });
     });
 };
+// 计算服务详情
+const getComputeDetail = (graphspace, graph, task_id) => {
+    return new Promise((resolve, reject) => {
+        myaxios.get(`/graphspaces/${graphspace}/graphs/${graph}/jobs/computerdis/${task_id}`).then(res => {
+            resolve(res);
+        }, error => {
+            reject(error);
+        });
+    });
+};
 // 审计
 const getAuditTableData = (data) => {
     return new Promise((resolve, reject) => {
@@ -691,6 +701,7 @@ const outTheData = (url, data) => {
 };
 
 export default {
+    getComputeDetail,
     outTheData,
     getStorageDetailData,
     getPdTableData,

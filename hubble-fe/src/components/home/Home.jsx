@@ -169,7 +169,6 @@ const defaultMenuList = [
     },
 ];
 const Home = () => {
-    console.log(1);
     let appStore = useContext(AppStoreContext);
     // 头部导航当前选中值
     let [current, setCurrent] = useState('0');

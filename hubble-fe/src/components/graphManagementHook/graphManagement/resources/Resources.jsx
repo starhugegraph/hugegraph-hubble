@@ -78,7 +78,7 @@ export default function Resources() {
 
     useEffect(() => {
         onSearch(inpValue, '', true);
-    }, [pageObj.current,appStore.tenant]);
+    }, [pageObj.current, appStore.tenant]);
 
     // 表格数据
     let [tableData, setTableData] = useState([]);
@@ -455,7 +455,7 @@ export default function Resources() {
         let arr = JSON.parse(JSON.stringify(collapseList));
         // 针对于元数组的选中处理
         if (key === 'SCHEMA') {
-            arr[0].children.map((item) => {
+            arr[0].children.foreach((item) => {
                 item.checked = value;
             });
             arr[0].checked = value;
@@ -710,7 +710,7 @@ export default function Resources() {
         } else {
             // 判断是否4个都选中了
             let childrenList = [];
-            arr[0].children.map((item) => {
+            arr[0].children.foreach((item) => {
                 if (item.checked) {
                     childrenList.push(item.key);
                 }
@@ -720,7 +720,7 @@ export default function Resources() {
                     type: 'SCHEMA'
                 });
             } else if (childrenList.length) {
-                childrenList.map((item) => {
+                childrenList.foreach((item) => {
                     list.push({
                         type: item
                     });
@@ -733,7 +733,7 @@ export default function Resources() {
                 type: 'VERTEX'
             });
         } else if (arr[1].children && arr[1].children.length) {
-            arr[1].children.map((item) => {
+            arr[1].children.foreach((item) => {
                 if (item.checked) {
                     if (item.children && item.children.length) {
                         let obj = {
@@ -741,7 +741,7 @@ export default function Resources() {
                             label: item.key,
                             properties: {}
                         };
-                        item.children.map((myItem) => {
+                        item.children.foreach((myItem) => {
                             obj.properties[myItem.key] = myItem.title.split('=')[1];
                         });
                         list.push(obj);
@@ -760,7 +760,7 @@ export default function Resources() {
                 type: 'EDGE'
             });
         } else if (arr[2].children && arr[2].children.length) {
-            arr[2].children.map((item) => {
+            arr[2].children.foreach((item) => {
                 if (item.checked) {
                     if (item.children && item.children.length) {
                         let obj = {
@@ -768,7 +768,7 @@ export default function Resources() {
                             label: item.key,
                             properties: {}
                         };
-                        item.children.map((myItem) => {
+                        item.children.foreach((myItem) => {
                             obj.properties[myItem.key] = myItem.title.split('=')[1];
                         });
                         list.push(obj);
@@ -782,7 +782,7 @@ export default function Resources() {
             });
         }
         // 其他处理
-        arr.map((item, index) => {
+        arr.foreach((item, index) => {
             if (index < 3) {
                 return;
             }
@@ -820,7 +820,7 @@ export default function Resources() {
             }
             if (arr[i].type === 'SCHEMA') {
                 list[0].checked = true;
-                list[0].children.map((item) => {
+                list[0].children.foreach((item) => {
                     item.checked = true;
                 });
                 continue;

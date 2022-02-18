@@ -102,7 +102,7 @@ export default function QueryServiceList() {
             dataIndex: 'urls',
             align: "center",
             width: 250,
-            render: (value) => (<p>{value.map(e => e)}</p>)
+            render: (value) => (<p>{value.map(e => e+" ")}</p>)
         },
         {
             title: '操作',
