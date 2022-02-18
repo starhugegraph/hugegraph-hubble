@@ -19,6 +19,9 @@
 
 package com.baidu.hugegraph.entity.op;
 
+import com.baidu.hugegraph.util.ESUtil;
+import com.baidu.hugegraph.util.JsonUtil;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -31,6 +34,7 @@ import java.util.Map;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class AuditEntity {
     @JsonProperty("audit_datetime")
     private String datetime;
@@ -38,12 +42,14 @@ public class AuditEntity {
     @JsonProperty("audit_operation")
     private String operation;
 
+    @JsonProperty("audit_action")
+    private String action;
+
     @JsonProperty("audit_service")
     private String service;
 
     @JsonProperty("audit_graphspace")
     private String graphSpace;
-
 
     @JsonProperty("audit_graph")
     private String graph;
@@ -61,8 +67,7 @@ public class AuditEntity {
     private String result;
 
     public static AuditEntity fromMap(Map<String, Object> source) {
-        AuditEntity auditEntity = new AuditEntity();
-
-        return auditEntity;
+        Map<String, String> jsonData = (Map<String, String>) source.get("json");
+        return JsonUtil.fromJson(JsonUtil.toJson(jsonData), AuditEntity.class);
     }
 }

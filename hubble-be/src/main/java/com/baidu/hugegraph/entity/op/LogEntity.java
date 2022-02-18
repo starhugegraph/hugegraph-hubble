@@ -60,7 +60,8 @@ public class LogEntity {
         logEntity.setService(
                 (String) ESUtil.getValueByPath(map, "fields.source"
                         .split("\\.")));
-        logEntity.setLevel("");
+        logEntity.setLevel(
+                (String) ESUtil.getValueByPath(map, "level".split("\\.")));
         logEntity.setMessage(
                 (String) ESUtil.getValueByPath(map, "message".split("\\.")));
         return logEntity;
