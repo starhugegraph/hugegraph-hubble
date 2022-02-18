@@ -89,7 +89,7 @@ public class GraphsController extends BaseController {
                          @RequestParam(value = "schema", required = false)
                                  String schema) {
         return this.graphsService.create(this.authClient(graphspace, null),
-                                         graph, isAuth, schema);
+                                         graph, schema);
     }
 
     @DeleteMapping("{graph}")
