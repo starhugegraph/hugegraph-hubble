@@ -13,10 +13,10 @@ let demoData = {
                 "task_type": "2",//  
                 "task_algorithm": "3", // 算法
                 "task_name": "4",// 
-                "task_progress": "5", 
-                "task_status": "6", 
-                "task_create" : "7",// 创建时间
-                "task_description" : "888" // 任务描述
+                "task_progress": "5",
+                "task_status": "6",
+                "task_create": "7",// 创建时间
+                "task_description": "888" // 任务描述
             },
         ],
         "total": 2,  //
@@ -33,7 +33,7 @@ export default function ComputingServices() {
     const [dataList, setDataList] = useState({})//数据列表
     const [page, setPage] = useState({})//分页条件
     const [isModalVisible, setIsModalVisible] = useState(false);//详情的显隐 
-    // const [search, setSearch] = useState(false);//详情的显隐
+    const [detail, setDetail] = useState("");
     const appStore = useContext(AppStoreContext)
 
     // 获取数据
@@ -57,13 +57,9 @@ export default function ComputingServices() {
         setPage({ page_no: params.current, page_size: params.pageSize })
     }
 
-/*     // 创建
-    const createHandle = () => {
-
-    } */
-
     // 详情
     const detailHandle = (params) => {
+        setDetail(params.id)
         setIsModalVisible(true)
     }
 
@@ -163,6 +159,7 @@ export default function ComputingServices() {
             <DetailComputing
                 isModalVisible={isModalVisible}
                 setIsModalVisible={setIsModalVisible}
+                detail={detail}
             >
             </DetailComputing>
         </div>

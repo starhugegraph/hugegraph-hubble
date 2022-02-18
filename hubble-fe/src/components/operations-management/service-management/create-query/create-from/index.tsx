@@ -51,8 +51,8 @@ const CreateFrom = (props: { getQuery: Function, setVisible: Function, detailDat
     }
     // 完成按钮
     const onFinish = (values: any) => {
-        values.create_time = new Date().toLocaleDateString()
-        if (isDisable) {
+        values.urls = Array.isArray(values.urls) ? values.urls : values.urls.split(",")
+       if (isDisable) {
             api.changeQueryDetail(appStore.tenant, detailData.name, values).then((res: any) => {
                 if (res && res.status === 200) {
                     message.success("编辑成功")
@@ -85,10 +85,10 @@ const CreateFrom = (props: { getQuery: Function, setVisible: Function, detailDat
         }
     }
     const urlValidator = (rule: any, value: string) => {
-        let res = /^(?=^.{3,255}$)(http(s)?:\/\/)?(www\.)?[a-zA-Z0-9][-a-zA-Z0-9]{0,62}(\.[a-zA-Z0-9][-a-zA-Z0-9]{0,62})+(:\d+)*(\/\w+\.\w+)*([\?&]\w+=\w*)*$/i.test(value)
-        if (res || value === "" || isDisable) {
+        let res = /^(((https?|ftp|news):\/\/|\w+(\.\w+)+)(:\w+)?).*/.test(value)
+        if (res) {
             return Promise.resolve();
-        } else if (form.getFieldValue('deployment_type') === 'MANUAL' && value === "") {
+        } else if (form.getFieldValue('deployment_type') === 'MANUAL' && !value.length) {
             return Promise.reject("手动模式下url不能为空")
         } else if (value.length > 48) {
             return Promise.reject("最长48位")
@@ -100,18 +100,12 @@ const CreateFrom = (props: { getQuery: Function, setVisible: Function, detailDat
     return (
         <Form {...layout} form={form} name="control-hooks" onFinish={onFinish}>
 
-            <Form.Item name="name" label="实例名称" rules={[{ required: true, message: "此项为必填项" }, { max: 48, message: "字符长度最多48位" }, { validator: serviceValidator }]} >
+            <Form.Item name="name" label="实例名称" rules={[
+                { required: true, message: "此项为必填项" },
+                { max: 48, message: "字符长度最多48位" },
+                { validator: serviceValidator }
+            ]} >
                 <Input disabled={isDisable} placeholder='请填写实例名称' />
-            </Form.Item>
-
-            <Form.Item name="graphspace" initialValue={""} label="租户" rules={[{ required: !isDisable, message: "此项为必填项" }]}>
-                <Select
-                    disabled={isDisable}
-                    placeholder="请选择租户"
-                    allowClear
-                >
-                    {selectData.map(item => (<Option value={item} key={item}>{item}</Option>))}
-                </Select>
             </Form.Item>
 
             <Form.Item name="deployment_type" label="运行方式" rules={[{ required: true, message: "此项为必填项" }]}>
@@ -132,7 +126,12 @@ const CreateFrom = (props: { getQuery: Function, setVisible: Function, detailDat
                 {({ getFieldValue }) =>
                     getFieldValue('deployment_type') === 'K8S' ? (
                         <>
-                            <Form.Item name="count" label="实例MAX" rules={[{ required: true }]}>
+                            <Form.Item
+                                name="count"
+                                label="实例MAX"
+                                rules={[{ required: true }]}
+                                initialValue={1}
+                            >
                                 <Select
                                     placeholder="请选择实例个数"
                                     allowClear
@@ -142,12 +141,24 @@ const CreateFrom = (props: { getQuery: Function, setVisible: Function, detailDat
                             </Form.Item>
                             <div style={{ display: 'flex', justifyContent: "center", alignContent: "center" }}>
                                 <Space>
-                                    <Form.Item labelCol={{ span: 12 }} name="cpu_limit" label="cpu最大值：" rules={[{ required: true, message: "必填" }]}>
-                                        <InputNumber min={1} value={1}></InputNumber>
+                                    <Form.Item
+                                        labelCol={{ span: 12 }}
+                                        name="cpu_limit"
+                                        label="cpu最大值："
+                                        rules={[{ required: true, message: "必填" }]}
+                                        initialValue={1}
+                                    >
+                                        <InputNumber min={1}></InputNumber>
                                     </Form.Item>
 
-                                    <Form.Item labelCol={{ span: 12 }} name="memory_limit" label="内存最大值：" rules={[{ required: true, message: "必填" }]}>
-                                        <InputNumber min={1} value={1}></InputNumber>
+                                    <Form.Item
+                                        labelCol={{ span: 12 }}
+                                        name="memory_limit"
+                                        label="内存最大值："
+                                        rules={[{ required: true, message: "必填" }]}
+                                        initialValue={4}
+                                    >
+                                        <InputNumber min={1} ></InputNumber>
                                     </Form.Item>
                                 </Space>
                             </div>
@@ -156,8 +167,16 @@ const CreateFrom = (props: { getQuery: Function, setVisible: Function, detailDat
                 }
             </Form.Item>
 
-            <Form.Item name="urls" label="访问地址" initialValue={[]} rules={[{ validator: urlValidator }]}>
-                <Input />
+            <Form.Item
+                name="urls"
+                label="访问地址"
+                initialValue={[]}
+                rules={
+                    [
+                        { validator: urlValidator }
+                    ]
+                }>
+                <Input placeholder='可填写多个,请使用英文逗号做分隔' />
             </Form.Item>
 
             {nodes.length !== 0 ? <Form.Item label="实例IP">
