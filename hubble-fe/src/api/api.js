@@ -569,10 +569,30 @@ const getLogTableData = (data) => {
         });
     });
 };
-// 服务list
-const getServicesList = () => {
+// 审计服务list
+const getAuditServicesList = () => {
     return new Promise((resolve, reject) => {
-        myaxios.get(`/logs/services/list`).then(res => {
+        myaxios.get(`/audits/services/list`).then(res => {
+            resolve(res);
+        }, error => {
+            reject(error);
+        });
+    });
+};
+// 服务list
+const getLogsServicesList = () => {
+    return new Promise((resolve, reject) => {
+        myaxios.get(`logs/services/list`).then(res => {
+            resolve(res);
+        }, error => {
+            reject(error);
+        });
+    });
+};
+// 日志级别list
+const getLogsLevelList = () => {
+    return new Promise((resolve, reject) => {
+        myaxios.get(`/logs/levels/list`).then(res => {
             resolve(res);
         }, error => {
             reject(error);
@@ -701,6 +721,8 @@ const outTheData = (url, data) => {
 };
 
 export default {
+    getLogsServicesList,
+    getLogsLevelList,
     getComputeDetail,
     outTheData,
     getStorageDetailData,
@@ -711,7 +733,7 @@ export default {
     getComputeTableData,
     getStorageTableData,
     getHostList,
-    getServicesList,
+    getAuditServicesList,
     getLogTableData,
     getSiderAuthUser,
     getDetailTenant,

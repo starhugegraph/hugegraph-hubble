@@ -4,7 +4,6 @@ import api from '../../../../../api/api'
 import { AppStoreContext } from '../../../../../stores'
 const { Option } = Select;
 
-
 const layout = {
     labelCol: { span: 4 },
     wrapperCol: { span: 20 },
@@ -21,7 +20,6 @@ const CreateFrom = (props: { getQuery: Function, setVisible: Function, detailDat
     const { setVisible, detailData, getQuery } = props
     const [form] = Form.useForm();
     const [nodes, setNodes] = useState([])//实例ip
-    const [selectData, setSelectData] = useState([])//租户下拉框数据
     let appStore = useContext(AppStoreContext)//store仓库
     // 是否为编辑按钮跳转,是则禁用部分修改
     const isDisable = useMemo(() => {
@@ -37,22 +35,15 @@ const CreateFrom = (props: { getQuery: Function, setVisible: Function, detailDat
             })
             // setNodes((demoData.data.nodes as any))
         } else {
-            getGraphspacesSelectData()
             setNodes([])
             form.resetFields()
         }
     }, [detailData])
 
-    // 获取租户list下拉框数据
-    const getGraphspacesSelectData = () => {
-        api.getGraphspacesList().then(res => {
-            setSelectData(res.data.graphspaces)
-        })
-    }
     // 完成按钮
     const onFinish = (values: any) => {
-        values.urls = Array.isArray(values.urls) ? values.urls : values.urls.split(",")
-       if (isDisable) {
+        values.urls = Array.isArray(values.urls) ? values.urls : values.urls.split(",").filter((i: string) => i)
+        if (isDisable) {
             api.changeQueryDetail(appStore.tenant, detailData.name, values).then((res: any) => {
                 if (res && res.status === 200) {
                     message.success("编辑成功")

@@ -1,16 +1,36 @@
-.topDiv{
-    display: flex;
+.topDiv {
+    display        : flex;
     justify-content: flex-end;
-    align-items: center;
-    padding: 20px;
-    width: 100%;
-    .inputBox{
-        width: 300px;
+    align-items    : center;
+    padding        : 20px;
+    width          : 100%;
+
+    .inputBox {
+        width       : 300px;
         margin-right: 20px;
     }
-    .addBtn{
+
+    .addBtn {
         margin-right: 40px;
-        width: 100px;
-        height: 50px;
+        width       : 100px;
+        height      : 50px;
+    }
+}
+
+.fromDiv {
+    width          : 100%;
+    display        : flex;
+    justify-content: space-between;
+    flex-wrap      : wrap;
+
+    .ant-form-item {
+        margin-bottom: 10px;
+        .spanFontSize{
+            font-size: 12px;
+        }
+    }
+
+    .ant-form-item:nth-child(-n+2) {
+        margin-bottom: 15px;
     }
 }
