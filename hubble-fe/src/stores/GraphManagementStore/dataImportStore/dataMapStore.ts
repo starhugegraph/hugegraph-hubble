@@ -2,7 +2,6 @@ import { observable, action, flow, computed, toJS } from 'mobx';
 import axios, { AxiosResponse } from 'axios';
 import { isUndefined, isEmpty, cloneDeep, remove, flatMap } from 'lodash-es';
 import i18next from '../../../i18n';
-import { useContext } from 'react';
 
 import { DataImportRootStore } from './dataImportRootStore';
 import { baseUrl, responseData } from '../../types/common';

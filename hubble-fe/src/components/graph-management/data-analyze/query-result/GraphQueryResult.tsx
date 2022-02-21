@@ -42,7 +42,7 @@ const GraphQueryResult: React.FC<GraphQueryResult> = observer(({ hidden }) => {
   const [isAfterDragging, switchAfterDragging] = useState(false);
   const [nodeTooltipX, setNodeToolTipX] = useState(0);
   const [nodeTooltipY, setNodeToolTipY] = useState(0);
-  const [legendStep, setLegendStep] = useState(0);
+  const [legendStep] = useState(0);
   const [legendWidth, setlegendWitdh] = useState(0);
 
   const [graph, setGraph] = useState<vis.Network | null>(null);

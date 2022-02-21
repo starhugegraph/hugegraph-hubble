@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useLocation } from 'wouter';
 import api from '../../../api/api'
 import { Menu } from 'antd'
@@ -52,7 +52,9 @@ function SiderC({
       setLocation(`/operations-management/1/Audit`)
     } else if (e.key === '9') {
       api.gotoMonitoring().then(res => {
-        console.log(res);
+        if (res.status === 200) {
+          window.open(res.data.url)
+        }
       })
     }
   };

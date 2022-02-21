@@ -1,15 +1,15 @@
 import React, { useEffect, useState, useContext } from 'react'
-import { Modal, Table, Button, Space, message, Popconfirm, Tooltip } from 'antd'
+import { Modal, Table, Button, Space, message, Popconfirm } from 'antd'
 import api from '../../../api/api'
 import SecondModal from './second-window'
 import { AppStoreContext } from '../../../stores'
 
-let textStyle = {
+/* let textStyle = {
     overflow: "hidden",
     whiteSpace: "nowrap",
     textOverflow: "ellipsis",
     width: "150px"
-}
+} */
 function Index(props) {
     const { visible, setVisible, detailData } = props
     const [listData, setListData] = useState({})//列表数据
@@ -147,7 +147,7 @@ function Index(props) {
                     </Popconfirm>
                 </Space>
             </div>
-            <SecondModal  visible={visibleCreate} getAssUserData={getAssUserData} setVisible={setVisibleCreate} detailData={detailData}></SecondModal>
+            <SecondModal visible={visibleCreate} getAssUserData={getAssUserData} setVisible={setVisibleCreate} detailData={detailData}></SecondModal>
         </Modal>
     )
 }

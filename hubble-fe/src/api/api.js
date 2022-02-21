@@ -696,10 +696,10 @@ const outTheData = (url, data) => {
         responseType: 'arraybuffer',
         "Content-Type": "application/json"
     }).then(response => {
-        const fileType = [
+       /*  const fileType = [
             'application/vnd.ms-excel;charset=utf-8', // xls
             'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8' // xlsx
-        ]
+        ] */
         const blob = new Blob([response.data])
         const downloadElement = document.createElement('a')
         const href = window.URL.createObjectURL(blob);
