@@ -254,24 +254,26 @@ export function isGtNegativeOneButZero(value: string | number) {
   );
 }
 
-interface _params {
-  start_datetime: string,
-  end_datetime: string,
-  current: number,
-  pageSize: number
-}
-
-export function defaultDateTimeParams(params: _params) {
-  if (!params.start_datetime)
-    params.start_datetime = (new Date() as any).Format("yyyy-MM-dd") + " 00:00:00"
-  if (!params.end_datetime)
-    params.end_datetime = (new Date() as any).Format("yyyy-MM-dd") + " 23:59:59"
-  let apiParams = {
-    ...params,
-    page_no: params.current,
-    page_size: params.pageSize,
+export function defaultDateTimeParams() {
+  (Date.prototype as any).Format = function (fmt: string) {
+    var o = {
+      "M+": this.getMonth() + 1, //月份 
+      "d+": this.getDate(), //日 
+      "H+": this.getHours(), //小时 
+      "m+": this.getMinutes(), //分 
+      "s+": this.getSeconds(), //秒 
+      "q+": Math.floor((this.getMonth() + 3) / 3), //季度 
+      "S": this.getMilliseconds() //毫秒 
+    };
+    if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+    for (var k in o)
+      if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? ((o as any)[k]) : (("00" + (o as any)[k]).substr(("" + (o as any)[k]).length)));
+    return fmt;
   }
-  return apiParams
+  return {
+    start: (new Date() as any).Format("yyyy-MM-dd") + " 00:00:00",
+    end: (new Date() as any).Format("yyyy-MM-dd") + " 23:59:59"
+  }
 }
 
 export function compKeyObj(path: string) {

@@ -10,7 +10,6 @@ const columns = [
         width: 80,
         align: "center",
         dataIndex: 'log_datetime',
-        // sorter: (a, b) => a.log_datetime - b.log_datetime,
         formItemProps: {
             label: "检索内容",
             name: "query",
@@ -23,14 +22,12 @@ const columns = [
         dataIndex: 'log_service',
         valueType: 'select',
         align: 'center',
-        // sorter: (a, b) => a.log_service - b.log_service,
         formItemProps: {
             name: "services",
         },
         fieldProps: () => ({ mode: "multiple" }),
         request: async () => {
             let res = await api.getLogsServicesList()
-            console.log(res);
             if (res.status === 200)
                 return res.data.services.map(item => ({ label: item, value: item }))
         }
@@ -54,25 +51,24 @@ const columns = [
     },
     {
         title: '开始时间',
-        dataIndex: 'time',
+        dataIndex: 'start_datetime',
         valueType: "dateTime",
         align: 'center',
         hideInTable: true,
         order: 10,
         formItemProps: {
-            name: "start_datetime",
+            initialValue: defaultDateTimeParams().start,
         },
-        // fieldProps:()=>({format: 'YYYY-MM-DD hh:mm:ss'}),
     },
     {
         title: '结束时间',
-        dataIndex: 'over_time',
+        dataIndex: 'end_datetime',
         valueType: "dateTime",
         align: 'center',
         hideInTable: true,
         order: 9,
         formItemProps: {
-            name: "end_datetime",
+            initialValue: defaultDateTimeParams().end,
         },
         fieldProps: () => ({ showNow: true }),
     },
@@ -82,16 +78,11 @@ const columns = [
         align: 'center',
         valueType: "select",
         width: 80,
+        fieldProps:()=>({allowClear:false}),
         formItemProps: {
-            rules: [
-                {
-                    required: true,
-                    message: "必填项"
-                }
-            ],
-            label: "日志级别",
+            label:"最低日志级别",
             name: "level",
-            initialValue: "DEBUG"
+            initialValue: "DEBUG",
         },
         request: async () => {
             const res = await api.getLogsLevelList()
@@ -115,17 +106,24 @@ const columns = [
 
 export default () => {
     const [outParams, setParams] = useState(null)
-
     return (
         <div className='query_list_container graphData_wrapper'>
             <p style={{ color: "#fa8c16" }}>本搜索结果包括所有图空间相关数据</p>
             <ProTable
                 columns={columns}
-                search={{ defaultCollapsed: false }}
+                search={{ 
+                    defaultCollapsed: false,
+                    labelWidth:100,
+                    span: 12
+                }}
                 x-scroll={1500}
                 request={async (params) => {
                     // 表单搜索项会从 params 传入，传递给后端接口。
-                    const apiParams = defaultDateTimeParams(params)
+                    let apiParams = {
+                        ...params,
+                        page_no: params.current,
+                        page_size: params.pageSize,
+                    }
                     setParams(apiParams)
                     let res = await api.getLogTableData(apiParams)
                     if (res.status === 200) {
@@ -136,18 +134,21 @@ export default () => {
                         }
                     }
                 }}
+                editable={{
+                    type: 'multiple',
+                }}
+                columnsState={{
+                    persistenceKey: 'pro-table-singe-demos',
+                    persistenceType: 'localStorage',
+                }}
                 rowKey="index"
                 pagination={{
-                    showQuickJumper: true,
                     pageSizeOptions: [5, 10, 15, 20],
                     defaultPageSize: 20
                 }}
-                form={{
-                    ignoreRules: false
-                }}
                 dateFormatter="string"
                 headerTitle="日志列表"
-                toolBarRender={(res) => [
+                toolBarRender={() => [
                     <Tooltip title="只能导出当前显示数据">
                         <Button key="out" onClick={() => api.outTheData('/logs/export', outParams)}>
                             导出数据

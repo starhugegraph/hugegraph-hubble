@@ -8,8 +8,8 @@ interface _Props {
     menuList: _Menu[],
     setCurrent: Function,
     appStore: any,
-    getGraphsList:()=>void,
-    testKeyObj:{c_key:string,f_key:string}
+    getGraphsList: () => void,
+    testKeyObj: { c_key: string, f_key: string }
 }
 interface _Menu {
     key: string,
@@ -37,14 +37,9 @@ function Header(
         getTenantList()
     }, []);
 
-    useEffect(() => {
-        if (appStore.tenant !== "null") {
-            localStorage.setItem("tenant", appStore.tenant)
-        };
-    }, [appStore.tenant]);
-
     // 切换租户时触发
-    const selectChange = async (value:string) => {
+    const selectChange = (value: string) => {
+        localStorage.setItem("tenant", value)
         appStore.setTenant(value);
         setUserActive(value);
         getGraphsList();
@@ -61,12 +56,15 @@ function Header(
                 if (tenant) {
                     appStore.setTenant(tenant);
                     setUserActive(tenant)
+
                 } else {
-                    const defaultTenant = res.data.graphspaces[res.data.graphspaces.length - 1]
-                    appStore.setTenant(defaultTenant);
-                    setUserActive(defaultTenant)
+                    let defaultGraphspaces = res.data.graphspaces[res.data.graphspaces.length - 1]
+                    appStore.setTenant(defaultGraphspaces);
+                    setUserActive(defaultGraphspaces)
                 }
                 setUserListSelect(res.data.graphspaces);
+            } else {
+                setUserActive("获取失败")
             }
             getGraphsList()
         });

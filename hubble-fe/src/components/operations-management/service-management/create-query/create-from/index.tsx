@@ -53,11 +53,10 @@ const CreateFrom = (props: { getQuery: Function, setVisible: Function, detailDat
             })
         } else {
             api.addQueryData(appStore.tenant, values).then((res: any) => {
-                console.log(res);
                 if (res && res.status === 200) {
                     message.success("添加成功")
-                    setVisible(false)
                     getQuery()
+                    setVisible(false)
                 }
             })
         }

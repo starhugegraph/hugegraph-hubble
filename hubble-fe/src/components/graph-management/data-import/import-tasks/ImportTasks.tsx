@@ -67,7 +67,6 @@ const ImportTasks: React.FC = observer(() => {
   }, [params?.status]);
 
   useEffect(() => {
-    console.log("importTasks");
     window.scrollTo(0, 0);
     dataImportRootStore.setCurrentJobId(Number(params!.jobId));
     if (appStore.graphs !== "null") {

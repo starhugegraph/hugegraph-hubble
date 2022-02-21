@@ -39,6 +39,7 @@ const AppBar = ({ setLogin }) => {
       if (res && res.status === 200) {
         message.warning("已退出")
         localStorage.setItem("lg", "false")
+        localStorage.removeItem("tenant")
         localStorage.removeItem("userInfo")
         setLogin("false")
       }
