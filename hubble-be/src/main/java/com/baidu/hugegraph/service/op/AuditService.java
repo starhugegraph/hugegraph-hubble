@@ -136,7 +136,7 @@ public class AuditService extends ESService {
             Query.Builder builder = new Query.Builder();
 
             MatchQuery.Builder mBuilder = new MatchQuery.Builder();
-            mBuilder.field("json.audit_graphspace.keyword").query(FieldValue.of(auditReq.graphSpace));
+            mBuilder.field("json.audit_graphspace").query(FieldValue.of(auditReq.graphSpace));
 
             querys.add(builder.match(mBuilder.build()).build());
         }
@@ -146,7 +146,7 @@ public class AuditService extends ESService {
             Query.Builder builder = new Query.Builder();
 
             MatchQuery.Builder mBuilder = new MatchQuery.Builder();
-            mBuilder.field("json.audit_graph.keyword").query(FieldValue.of(auditReq.graph));
+            mBuilder.field("json.audit_graph").query(FieldValue.of(auditReq.graph));
 
             querys.add(builder.match(mBuilder.build()).build());
         }
@@ -156,7 +156,7 @@ public class AuditService extends ESService {
             Query.Builder builder = new Query.Builder();
 
             MatchQuery.Builder mBuilder = new MatchQuery.Builder();
-            mBuilder.field("json.userId.keyword").query(FieldValue.of(auditReq.user));
+            mBuilder.field("json.userId").query(FieldValue.of(auditReq.user));
 
             querys.add(builder.match(mBuilder.build()).build());
         }
@@ -166,7 +166,7 @@ public class AuditService extends ESService {
             Query.Builder builder = new Query.Builder();
 
             MatchQuery.Builder mBuilder = new MatchQuery.Builder();
-            mBuilder.field("json.audit_ip.keyword").query(FieldValue.of(auditReq.ip));
+            mBuilder.field("json.audit_ip").query(FieldValue.of(auditReq.ip));
 
             querys.add(builder.match(mBuilder.build()).build());
         }
