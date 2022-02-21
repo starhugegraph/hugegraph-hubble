@@ -75,7 +75,6 @@ public class LogController extends BaseController {
     @SneakyThrows
     @PostMapping("query")
     public IPage<LogEntity> query(@RequestBody LogService.LogReq logReq) {
-        logReq.level = "";
         return logService.queryPage(logReq);
     }
 
