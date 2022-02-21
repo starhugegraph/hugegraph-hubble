@@ -134,7 +134,6 @@ export default function Index(props) {
     const getTargetDetail = (id) => {
         api.getTargetDetailData(appStore.tenant, id ? id : selectId).then(res => {
             if (res.status === 200) {
-                console.log(res,"xxx");
                 setCollapseKeyList(collapseKeyListDefault);
                 let arr = mapNewData(res.data.target_resources);
                 setCollapseList(arr);

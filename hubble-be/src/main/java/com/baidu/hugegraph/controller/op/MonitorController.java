@@ -21,6 +21,10 @@ package com.baidu.hugegraph.controller.op;
 
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -41,13 +45,19 @@ public class MonitorController extends BaseController {
     private HugeConfig config;
 
     @GetMapping
-    public void monitor(HttpServletResponse httpServletResponse) {
-        String monitorURL = config.get(HubbleOptions.MONITOR_URL);
+    public Object monitor() {
+        String monitorURL = null;
+        // Get monitor.url from system.env
+        monitorURL = System.getProperty(HubbleOptions.MONITOR_URL.name());
+        if (StringUtils.isEmpty(monitorURL)) {
+            // get monitor.url from file: hugegraph-hubble.properties
+            monitorURL = config.get(HubbleOptions.MONITOR_URL);
+        }
 
-        E.checkArgument(!Strings.isEmpty(monitorURL), "No config " +
-                "\"monitor.url\" in config file: hugegraph-hubble.properties");
+        E.checkArgument(StringUtils.isNotEmpty(monitorURL),
+                        "Please set \"monitor.url\" in system property or " +
+                                "config file(hugegraph-hubble.properties).");
 
-        httpServletResponse.setStatus(302);
-        httpServletResponse.setHeader("Location", monitorURL);
+       return ImmutableMap.of("url", monitorURL);
     }
 }

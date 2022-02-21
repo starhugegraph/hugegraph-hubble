@@ -52,7 +52,6 @@ import lombok.NoArgsConstructor;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
@@ -60,10 +59,9 @@ import com.baidu.hugegraph.entity.op.LogEntity;
 
 @Service
 public class LogService extends ESService {
+
     protected final String allIndexName = "*";
 
-    protected final String[] logLevels = new String[]{"TRACE", "OFF", "FATAL"
-            , "ERROR", "WARN", "INFO", "DEBUG","ALL"};
 
     public IPage<LogEntity> queryPage(LogReq logReq) throws IOException {
 
@@ -82,7 +80,8 @@ public class LogService extends ESService {
         List<Query> querys = buildQuery(logReq);
 
         SearchResponse<Map> search = esClient().search((s) ->
-            s.index(indexes).from(logReq.pageNo).size(logReq.pageSize)
+            s.index(indexes).from(Math.max(logReq.pageNo - 1, 0) * logReq.pageNo)
+             .size(logReq.pageSize)
              .query(q -> q.bool( boolQuery ->
                         boolQuery.must(querys)
                     )
@@ -167,11 +166,11 @@ public class LogService extends ESService {
 
         // Level
         if (StringUtils.isNotEmpty(logReq.level)) {
-            int levelIndex = ArrayUtils.indexOf(logLevels,
+            int levelIndex = ArrayUtils.indexOf(LEVELS,
                                                 logReq.level.toUpperCase());
 
-            String[] retianLevels = Arrays.copyOfRange(logLevels, 0,
-                                                       levelIndex);
+            String[] retianLevels = Arrays.copyOfRange(LEVELS, 0,
+                                                       levelIndex + 1);
 
             Query.Builder builder = new Query.Builder();
 
@@ -179,7 +178,7 @@ public class LogService extends ESService {
             TermsQueryField.Builder fieldBuilder = new TermsQueryField.Builder();
             fieldBuilder.value(Arrays.stream(retianLevels).map(FieldValue::of)
                                      .collect(Collectors.toList()));
-            tBuilder.field("level").terms(fieldBuilder.build());
+            tBuilder.field("level.keyword").terms(fieldBuilder.build());
 
             querys.add(builder.terms(tBuilder.build()).build());
         }
@@ -187,20 +186,22 @@ public class LogService extends ESService {
         return querys;
     }
 
-    @Cacheable("ES_QUERY")
+    @Cacheable(value = "ES_QUERY", key="#root.targetClass.name+':'+#root" +
+            ".methodName")
     public List<String> listServices() throws IOException {
         Set<String> services = new HashSet<>();
 
-        final String serviceField = "fields.source.keyword";
-
         GetAliasResponse res = esClient().indices().getAlias();
-        res.result().keySet().stream().filter(x -> !x.startsWith("."))
+        res.result().keySet().stream()
+           // filter hidden index and audit index
+           .filter(x -> !(x.startsWith(".") || x.contains("hugegraphaudit")))
            .forEach(indexName -> services.add(indexName.split("-")[0]));
 
         return services.stream().sorted().collect(Collectors.toList());
     }
 
-    @Cacheable("ES_QUERY")
+    @Cacheable(value = "ES_QUERY", key="#root.targetClass.name+':'+#root" +
+            ".methodName")
     public List<String> listHosts() throws IOException {
 
         List<String> hosts = new ArrayList<>();

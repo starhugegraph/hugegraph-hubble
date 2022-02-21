@@ -22,6 +22,7 @@ package com.baidu.hugegraph.controller.op;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.List;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -39,7 +40,6 @@ import com.baidu.hugegraph.controller.BaseController;
 import com.baidu.hugegraph.service.op.LogService;
 import com.baidu.hugegraph.entity.op.LogEntity;
 import com.baidu.hugegraph.exception.InternalException;
-import com.baidu.hugegraph.util.JsonUtil;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -65,10 +65,16 @@ public class LogController extends BaseController {
         return ImmutableMap.of("hosts", hosts);
     }
 
+    @GetMapping("levels/list")
+    public Object listLevels() {
+        List<String> levels = Arrays.asList(LogService.LEVELS);
+
+        return ImmutableMap.of("levels", levels);
+    }
+
     @SneakyThrows
     @PostMapping("query")
     public IPage<LogEntity> query(@RequestBody LogService.LogReq logReq) {
-        logReq.level = "";
         return logService.queryPage(logReq);
     }
 

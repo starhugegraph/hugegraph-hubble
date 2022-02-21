@@ -29,7 +29,6 @@ export default function Index() {
     }, [page, query, appStore.tenant])
     // 获取用户数据
     const getUserData = () => {
-        console.log(appStore.tenant);
         api.getAuthUser(appStore.tenant, { ...page, query }).then(res => {
             setLoading(false)
             if (res && res.status === 200) {

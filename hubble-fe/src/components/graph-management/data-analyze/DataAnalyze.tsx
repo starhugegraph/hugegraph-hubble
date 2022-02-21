@@ -53,7 +53,6 @@ const DataAnalyze: React.FC = observer(() => {
   // which is not equal each time
   /* eslint-disable */
   useEffect(() => {
-    console.log(appStore.graphs);
     if (appStore.graphs !== "null") {
       appStore.setCurrentId(0);
       dataAnalyzeStore.setCurrentId(0);

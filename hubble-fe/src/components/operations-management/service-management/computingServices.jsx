@@ -51,7 +51,6 @@ export default function ComputingServices() {
         })
     };
 
-
     // 分页条件
     const pageChange = (params) => {
         setPage({ page_no: params.current, page_size: params.pageSize })
@@ -67,10 +66,6 @@ export default function ComputingServices() {
     function confirm(value) {
         // {service_name: value.service }异步请求
         message.success('删除成功');
-    }
-    // 取消删除
-    function cancel() {
-        message.error('取消删除')
     }
     const columns = [
         {
@@ -113,7 +108,7 @@ export default function ComputingServices() {
                     <Popconfirm
                         title={`你确定要停止计算实例${tag.task_name}吗?`}
                         onConfirm={() => confirm(tag)}
-                        onCancel={cancel}
+                        onCancel={() => message.error('取消删除')}
                         okText="确定"
                         cancelText="取消"
                     >

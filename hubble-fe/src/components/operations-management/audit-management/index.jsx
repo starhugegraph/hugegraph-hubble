@@ -1,4 +1,4 @@
-import React, { useRef,useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { Button } from 'antd';
 import ProTable from '@ant-design/pro-table';
 import api from '../../../api/api'
@@ -18,7 +18,7 @@ const columns = [
         fieldProps: () => ({ mode: "multiple" }),
         request: async () => {
             let res = await api.getOperationList()
-            if(res.status===200)return res.data.map(item => ({ label: item, value: item }))
+            if (res.status === 200) return res.data.map(item => ({ label: item, value: item }))
         }
     },
     {
@@ -28,6 +28,7 @@ const columns = [
         width: 50,
         formItemProps: {
             name: "start_datetime",
+            initialValue: defaultDateTimeParams().start,
         },
         order: 13,
         sorter: true,
@@ -56,6 +57,7 @@ const columns = [
         hideInTable: true,
         formItemProps: {
             name: "end_datetime",
+            initialValue: defaultDateTimeParams().end,
         },
     },
     {
@@ -111,17 +113,19 @@ const columns = [
 ];
 
 export default () => {
-    const [outParams,setParams] = useState(null)
-    const actionRef = useRef();
+    const [outParams, setParams] = useState(null)
     return (
         <div className='graphData_wrapper query_list_container'>
             <p style={{ color: "#fa8c16" }}>本搜索结果包括所有图空间相关数据</p>
             <ProTable
                 columns={columns}
-                actionRef={actionRef}
                 request={async (params = {}) => {
                     // 表单搜索项会从 params 传入，传递给后端接口。
-                    let apiParams = defaultDateTimeParams(params)
+                    let apiParams = {
+                        ...params,
+                        page_no: params.current,
+                        page_size: params.pageSize,
+                    }
                     setParams(apiParams)
                     let res = await api.getAuditTableData(apiParams)
                     if (res.status === 200) {
@@ -141,18 +145,18 @@ export default () => {
                 }}
                 rowKey="id"
                 search={{
-                    labelWidth: '100',
+                    labelWidth: 100,
                     span: 12,
                     defaultCollapsed: false
                 }}
                 pagination={{
-                    pageSizeOptions: ['5', '10', '15', '20'],
-                    defaultPageSize:20
+                    pageSizeOptions: [5, 10, 15, 20],
+                    defaultPageSize: 20
                 }}
                 dateFormatter="string"
                 headerTitle="审计"
                 toolBarRender={() => [
-                    <Button key="out" onClick={()=>api.outTheData('/audits/export',outParams)}>
+                    <Button key="out" onClick={() => api.outTheData('/audits/export', outParams)}>
                         导出数据
                     </Button>,
                 ]}

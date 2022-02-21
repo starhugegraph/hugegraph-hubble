@@ -1,22 +1,20 @@
 /*
+ * Copyright 2017 HugeGraph Authors
  *
- *  * Copyright 2017 HugeGraph Authors
- *  *
- *  * Licensed to the Apache Software Foundation (ASF) under one or more
- *  * contributor license agreements. See the NOTICE file distributed with this
- *  * work for additional information regarding copyright ownership. The ASF
- *  * licenses this file to You under the Apache License, Version 2.0 (the
- *  * "License"); you may not use this file except in compliance with the License.
- *  * You may obtain a copy of the License at
- *  *
- *  *     http://www.apache.org/licenses/LICENSE-2.0
- *  *
- *  * Unless required by applicable law or agreed to in writing, software
- *  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- *  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
- *  * License for the specific language governing permissions and limitations
- *  * under the License.
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements. See the NOTICE file distributed with this
+ * work for additional information regarding copyright ownership. The ASF
+ * licenses this file to You under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations
+ * under the License.
  */
 
 package com.baidu.hugegraph.service.op;
@@ -24,11 +22,12 @@ package com.baidu.hugegraph.service.op;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
-import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import co.elastic.clients.elasticsearch._types.FieldValue;
 import co.elastic.clients.elasticsearch._types.query_dsl.MatchQuery;
 import co.elastic.clients.elasticsearch._types.query_dsl.Query;
@@ -37,8 +36,9 @@ import co.elastic.clients.elasticsearch._types.query_dsl.TermsQuery;
 import co.elastic.clients.elasticsearch._types.query_dsl.TermsQueryField;
 import co.elastic.clients.elasticsearch.core.SearchResponse;
 import co.elastic.clients.elasticsearch.core.search.Hit;
+import co.elastic.clients.elasticsearch.indices.GetAliasRequest;
+import co.elastic.clients.elasticsearch.indices.GetAliasResponse;
 import co.elastic.clients.json.JsonData;
-import com.baidu.hugegraph.util.E;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -47,7 +47,6 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.baidu.hugegraph.util.PageUtil;
@@ -56,26 +55,27 @@ import com.baidu.hugegraph.entity.op.AuditEntity;
 @Service
 public class AuditService extends ESService {
 
-    @Autowired
-    LogService logService;
-
-    protected final List<String> indexes = new ArrayList<>();
+    public static String auditIndexPattern = "*_hugegraphaudit-*";
 
     public IPage<AuditEntity> queryPage(AuditReq auditReq) throws IOException {
+        List<String> indexes = new ArrayList<>();
+
         List<AuditEntity> logs = new ArrayList<>();
 
         List<String> services = new ArrayList<>();
         if (CollectionUtils.isNotEmpty(auditReq.services)) {
             services.addAll(auditReq.services);
         } else {
-            services.addAll(logService.listServices());
+            services.addAll(listServices());
         }
-        services.forEach(s -> indexes.add(s + "-audit-*"));
+        services.forEach(s -> indexes.add(s + "_hugegraphaudit-*"));
 
 
+        int begine = Math.max(auditReq.pageNo - 1, 0);
         List<Query> querys = buildESQuery(auditReq);
         SearchResponse<Map> search = esClient().search((s) ->
-            s.index(indexes).from(auditReq.pageNo).size(auditReq.pageSize)
+            s.index(indexes).from(begine * auditReq.pageSize)
+             .size(auditReq.pageSize)
              .query(q -> q.bool( boolQuery -> boolQuery.must(querys))
              ), Map.class);
 
@@ -88,17 +88,17 @@ public class AuditService extends ESService {
     }
 
     public List<AuditEntity> export(AuditReq auditReq) throws IOException {
+        List<String> indexes = new ArrayList<>();
+
         List<AuditEntity> audits = new ArrayList<>();
 
-        List<String> indexes = new ArrayList<>();
-        // services
         List<String> services = new ArrayList<>();
         if (CollectionUtils.isNotEmpty(auditReq.services)) {
             services.addAll(auditReq.services);
         } else {
-            services.addAll(logService.listServices());
+            services.addAll(listServices());
         }
-        services.forEach(s -> indexes.add(s + "-*"));
+        services.forEach(s -> indexes.add(s + "_hugegraphaudit-*"));
 
         List<Query> querys = buildESQuery(auditReq);
 
@@ -136,7 +136,7 @@ public class AuditService extends ESService {
             Query.Builder builder = new Query.Builder();
 
             MatchQuery.Builder mBuilder = new MatchQuery.Builder();
-            mBuilder.field("audit_graphspace").query(FieldValue.of(auditReq.graphSpace));
+            mBuilder.field("json.audit_graphspace").query(FieldValue.of(auditReq.graphSpace));
 
             querys.add(builder.match(mBuilder.build()).build());
         }
@@ -146,7 +146,7 @@ public class AuditService extends ESService {
             Query.Builder builder = new Query.Builder();
 
             MatchQuery.Builder mBuilder = new MatchQuery.Builder();
-            mBuilder.field("audit_graph").query(FieldValue.of(auditReq.graph));
+            mBuilder.field("json.audit_graph").query(FieldValue.of(auditReq.graph));
 
             querys.add(builder.match(mBuilder.build()).build());
         }
@@ -156,7 +156,7 @@ public class AuditService extends ESService {
             Query.Builder builder = new Query.Builder();
 
             MatchQuery.Builder mBuilder = new MatchQuery.Builder();
-            mBuilder.field("userId").query(FieldValue.of(auditReq.user));
+            mBuilder.field("json.userId").query(FieldValue.of(auditReq.user));
 
             querys.add(builder.match(mBuilder.build()).build());
         }
@@ -166,7 +166,7 @@ public class AuditService extends ESService {
             Query.Builder builder = new Query.Builder();
 
             MatchQuery.Builder mBuilder = new MatchQuery.Builder();
-            mBuilder.field("audit_ip").query(FieldValue.of(auditReq.ip));
+            mBuilder.field("json.audit_ip").query(FieldValue.of(auditReq.ip));
 
             querys.add(builder.match(mBuilder.build()).build());
         }
@@ -179,12 +179,28 @@ public class AuditService extends ESService {
             TermsQueryField.Builder fieldBuilder = new TermsQueryField.Builder();
             fieldBuilder.value(auditReq.operations.stream().map(FieldValue::of)
                                                   .collect(Collectors.toList()));
-            tBuilder.field("audit_operation").terms(fieldBuilder.build());
+            tBuilder.field("json.audit_operation.keyword").terms(fieldBuilder.build());
 
             querys.add(builder.terms(tBuilder.build()).build());
         }
 
         return querys;
+    }
+
+    public List<String> listServices() throws IOException {
+        Set<String> services = new HashSet<>();
+
+        GetAliasResponse res = esClient().indices().getAlias();
+        GetAliasRequest req = new GetAliasRequest.Builder().index(
+                auditIndexPattern).build();
+        esClient().indices().getAlias(req).result().keySet()
+                  .stream().filter(x -> !x.startsWith("."))
+                  .forEach(indexName -> {
+                      String arr1 = indexName.split("_")[0];
+                      services.add(arr1);
+                  });
+
+        return services.stream().sorted().collect(Collectors.toList());
     }
 
     @NoArgsConstructor
