@@ -1,22 +1,20 @@
 /*
+ * Copyright 2017 HugeGraph Authors
  *
- *  * Copyright 2017 HugeGraph Authors
- *  *
- *  * Licensed to the Apache Software Foundation (ASF) under one or more
- *  * contributor license agreements. See the NOTICE file distributed with this
- *  * work for additional information regarding copyright ownership. The ASF
- *  * licenses this file to You under the Apache License, Version 2.0 (the
- *  * "License"); you may not use this file except in compliance with the License.
- *  * You may obtain a copy of the License at
- *  *
- *  *     http://www.apache.org/licenses/LICENSE-2.0
- *  *
- *  * Unless required by applicable law or agreed to in writing, software
- *  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- *  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
- *  * License for the specific language governing permissions and limitations
- *  * under the License.
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements. See the NOTICE file distributed with this
+ * work for additional information regarding copyright ownership. The ASF
+ * licenses this file to You under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations
+ * under the License.
  */
 
 package com.baidu.hugegraph.service.op;
@@ -30,7 +28,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import co.elastic.clients.elasticsearch._types.FieldValue;
 import co.elastic.clients.elasticsearch._types.query_dsl.MatchQuery;
 import co.elastic.clients.elasticsearch._types.query_dsl.Query;
@@ -50,7 +47,6 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.baidu.hugegraph.util.PageUtil;
@@ -59,11 +55,7 @@ import com.baidu.hugegraph.entity.op.AuditEntity;
 @Service
 public class AuditService extends ESService {
 
-    @Autowired
-    LogService logService;
-
-    public static String AUDIT_INDEX_PATTERN = "*_hugegraphaudit-*";
-
+    public static String auditIndexPattern = "*_hugegraphaudit-*";
 
     public IPage<AuditEntity> queryPage(AuditReq auditReq) throws IOException {
         List<String> indexes = new ArrayList<>();
@@ -144,7 +136,7 @@ public class AuditService extends ESService {
             Query.Builder builder = new Query.Builder();
 
             MatchQuery.Builder mBuilder = new MatchQuery.Builder();
-            mBuilder.field("audit_graphspace").query(FieldValue.of(auditReq.graphSpace));
+            mBuilder.field("json.audit_graphspace.keyword").query(FieldValue.of(auditReq.graphSpace));
 
             querys.add(builder.match(mBuilder.build()).build());
         }
@@ -154,7 +146,7 @@ public class AuditService extends ESService {
             Query.Builder builder = new Query.Builder();
 
             MatchQuery.Builder mBuilder = new MatchQuery.Builder();
-            mBuilder.field("audit_graph").query(FieldValue.of(auditReq.graph));
+            mBuilder.field("json.audit_graph.keyword").query(FieldValue.of(auditReq.graph));
 
             querys.add(builder.match(mBuilder.build()).build());
         }
@@ -164,7 +156,7 @@ public class AuditService extends ESService {
             Query.Builder builder = new Query.Builder();
 
             MatchQuery.Builder mBuilder = new MatchQuery.Builder();
-            mBuilder.field("userId").query(FieldValue.of(auditReq.user));
+            mBuilder.field("json.userId.keyword").query(FieldValue.of(auditReq.user));
 
             querys.add(builder.match(mBuilder.build()).build());
         }
@@ -174,7 +166,7 @@ public class AuditService extends ESService {
             Query.Builder builder = new Query.Builder();
 
             MatchQuery.Builder mBuilder = new MatchQuery.Builder();
-            mBuilder.field("audit_ip").query(FieldValue.of(auditReq.ip));
+            mBuilder.field("json.audit_ip.keyword").query(FieldValue.of(auditReq.ip));
 
             querys.add(builder.match(mBuilder.build()).build());
         }
@@ -187,7 +179,7 @@ public class AuditService extends ESService {
             TermsQueryField.Builder fieldBuilder = new TermsQueryField.Builder();
             fieldBuilder.value(auditReq.operations.stream().map(FieldValue::of)
                                                   .collect(Collectors.toList()));
-            tBuilder.field("audit_operation").terms(fieldBuilder.build());
+            tBuilder.field("json.audit_operation.keyword").terms(fieldBuilder.build());
 
             querys.add(builder.terms(tBuilder.build()).build());
         }
@@ -200,7 +192,7 @@ public class AuditService extends ESService {
 
         GetAliasResponse res = esClient().indices().getAlias();
         GetAliasRequest req = new GetAliasRequest.Builder().index(
-                AUDIT_INDEX_PATTERN).build();
+                auditIndexPattern).build();
         esClient().indices().getAlias(req).result().keySet()
                   .stream().filter(x -> !x.startsWith("."))
                   .forEach(indexName -> {
