@@ -170,7 +170,7 @@ public class LogService extends ESService {
                                                 logReq.level.toUpperCase());
 
             String[] retianLevels = Arrays.copyOfRange(LEVELS, 0,
-                                                       levelIndex);
+                                                       levelIndex + 1);
 
             Query.Builder builder = new Query.Builder();
 
@@ -178,7 +178,7 @@ public class LogService extends ESService {
             TermsQueryField.Builder fieldBuilder = new TermsQueryField.Builder();
             fieldBuilder.value(Arrays.stream(retianLevels).map(FieldValue::of)
                                      .collect(Collectors.toList()));
-            tBuilder.field("level").terms(fieldBuilder.build());
+            tBuilder.field("level.keyword").terms(fieldBuilder.build());
 
             querys.add(builder.terms(tBuilder.build()).build());
         }
@@ -186,7 +186,8 @@ public class LogService extends ESService {
         return querys;
     }
 
-    @Cacheable("ES_QUERY")
+    @Cacheable(value = "ES_QUERY", key="#root.targetClass.name+':'+#root" +
+            ".methodName")
     public List<String> listServices() throws IOException {
         Set<String> services = new HashSet<>();
 
@@ -199,7 +200,8 @@ public class LogService extends ESService {
         return services.stream().sorted().collect(Collectors.toList());
     }
 
-    @Cacheable("ES_QUERY")
+    @Cacheable(value = "ES_QUERY", key="#root.targetClass.name+':'+#root" +
+            ".methodName")
     public List<String> listHosts() throws IOException {
 
         List<String> hosts = new ArrayList<>();
