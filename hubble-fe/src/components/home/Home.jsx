@@ -8,7 +8,7 @@
  */
 import React, { useState, useContext, useEffect, useMemo } from 'react';
 import './Home.less';
-import { Select, Menu, Layout } from 'antd';
+import { Select, Layout } from 'antd';
 import {
     AppStoreContext,
 } from '../../stores';
@@ -274,7 +274,6 @@ const Home = () => {
                     <Sider>
                         <div className="leftTab">
                             <SiderC
-                                appStore={appStore}
                                 setCurrent={setCurrent}
                                 setMenuList={setMenuList}
                                 defaultMenuList={defaultMenuList}

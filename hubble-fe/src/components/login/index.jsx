@@ -36,7 +36,7 @@ export default function Index({ setLogin }) {
         }
     }, [])
 
-    // 验证
+/*     // 验证
     const passwordValidator = (rule, value) => {
         // let res = /^(?![a-zA-Z]+$)(?![A-Z0-9]+$)(?![A-Z\W_]+$)(?![a-z0-9]+$)(?![a-z\W_]+$)(?![0-9\W_]+$)[a-zA-Z0-9\W_]{8,}$/
         // let res = /^(?=.*\d)(?=.*[A-Za-z])[\x20-\x7e]{8,16}$/
@@ -46,18 +46,10 @@ export default function Index({ setLogin }) {
         } else {
             return Promise.reject("格式错误,并且长度要求为8-16位")
         }
-    }
+    } */
 
     return (
-        <div style={
-            {
-                width: "100vw",
-                height: "98vh",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center"
-            }
-        }>
+        <div className='loginContainer'>
             <Card
                 title="登陆"
                 headStyle={{ textAlign: "center" }}
@@ -106,15 +98,7 @@ export default function Index({ setLogin }) {
                         <Input.Password placeholder='密码' />
                     </Form.Item>
 
-                    <div
-                        style={
-                            {
-                                width: "100%",
-                                display: "flex",
-                                justifyContent: "space-between"
-                            }
-                        }
-                    >
+                    <div className='footBox'>
                         <Form.Item
                             name="remember"
                             valuePropName="checked"

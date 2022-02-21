@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react'
-import { Modal, Table, Button, Space, message, Popconfirm, Tooltip } from 'antd'
+import { Modal, Table, Button, Space, message, Popconfirm } from 'antd'
 import SecondModal from './second-window'
 import api from '../../../api/api'
 import { AppStoreContext } from '../../../stores'

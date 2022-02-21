@@ -3,7 +3,7 @@ import { Result, Button } from 'antd';
 import { useLocation } from 'wouter'
 
 export default function Index() {
-    const [path, setLocation] = useLocation()
+    const [_, setLocation] = useLocation()
     return (
         <div className='query_list_container graphData_wrapper'>
             <Result

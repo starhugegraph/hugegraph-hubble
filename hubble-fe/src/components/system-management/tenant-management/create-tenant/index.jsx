@@ -16,7 +16,7 @@ const tailLayout = {
         span: 16,
     },
 };
-const Index = ({ visible, setVisible, detailData, getGraphspaces }) => {
+const Index = ({ visible, setVisible, detailData }) => {
     const [form] = Form.useForm();
     const [userList, setUserList] = useState([])//用户list
     const [SkeLoading, setSkeLoading] = useState(false)//加载

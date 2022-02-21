@@ -1,10 +1,10 @@
-import React, { useContext, useMemo, useEffect, useLayoutEffect } from 'react';
+import React, { useContext, useMemo, useEffect } from 'react';
 import { observer } from 'mobx-react';
 import { useRoute, useLocation } from 'wouter';
 import { isNull } from 'lodash-es';
 import { useTranslation } from 'react-i18next';
 import classnames from 'classnames';
-import { Steps, Button } from '@baidu/one-ui';
+import { Steps } from '@baidu/one-ui';
 
 import UploadEntry from './UploadEntry';
 import { DataMapConfigs } from './datamap-configs';
