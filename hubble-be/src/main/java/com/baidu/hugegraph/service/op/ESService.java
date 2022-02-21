@@ -10,6 +10,7 @@ import com.baidu.hugegraph.util.E;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpHost;
+import org.apache.logging.log4j.util.Strings;
 import org.elasticsearch.client.RestClient;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -38,11 +39,18 @@ public abstract class ESService {
     }
 
     public RestClient esRestClient() {
-        String esURLS = config.get(HubbleOptions.ES_URL);
+        String esURLS = null;
 
-        E.checkArgument(StringUtils.isNotEmpty(esURLS), "Create elasticsearch" +
-                " client error. Please config es.urls in hugegraph-hubble" +
-                ".properties ");
+        // Get monitor.url from system.env
+        esURLS = System.getProperty(HubbleOptions.ES_URL.name());
+        if (StringUtils.isEmpty(esURLS)) {
+            // get monitor.url from file: hugegraph-hubble.properties
+            esURLS = config.get(HubbleOptions.ES_URL);
+        }
+
+        E.checkArgument(StringUtils.isNotEmpty(esURLS),
+                        "Please set \"es.urls\" in system property or " +
+                                "config file(hugegraph-hubble.properties).");
 
         String[] esAddresses = esURLS.split(",");
         HttpHost[] hosts = Arrays.stream(esAddresses)
