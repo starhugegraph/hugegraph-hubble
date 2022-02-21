@@ -12,7 +12,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpHost;
 import org.elasticsearch.client.RestClient;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
 import java.util.Objects;
@@ -21,6 +20,9 @@ import java.util.Objects;
 public abstract class ESService {
     @Autowired
     private HugeConfig config;
+
+    public static final String[] LEVELS = new String[]{"TRACE", "OFF",
+            "FATAL", "ERROR", "WARN", "INFO", "DEBUG"};
 
     public ElasticsearchClient esClient() {
 

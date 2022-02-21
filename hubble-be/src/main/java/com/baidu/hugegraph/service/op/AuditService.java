@@ -24,8 +24,10 @@ package com.baidu.hugegraph.service.op;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
@@ -37,8 +39,9 @@ import co.elastic.clients.elasticsearch._types.query_dsl.TermsQuery;
 import co.elastic.clients.elasticsearch._types.query_dsl.TermsQueryField;
 import co.elastic.clients.elasticsearch.core.SearchResponse;
 import co.elastic.clients.elasticsearch.core.search.Hit;
+import co.elastic.clients.elasticsearch.indices.GetAliasRequest;
+import co.elastic.clients.elasticsearch.indices.GetAliasResponse;
 import co.elastic.clients.json.JsonData;
-import com.baidu.hugegraph.util.E;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -59,23 +62,28 @@ public class AuditService extends ESService {
     @Autowired
     LogService logService;
 
-    protected final List<String> indexes = new ArrayList<>();
+    public static String AUDIT_INDEX_PATTERN = "*_hugegraphaudit-*";
+
 
     public IPage<AuditEntity> queryPage(AuditReq auditReq) throws IOException {
+        List<String> indexes = new ArrayList<>();
+
         List<AuditEntity> logs = new ArrayList<>();
 
         List<String> services = new ArrayList<>();
         if (CollectionUtils.isNotEmpty(auditReq.services)) {
             services.addAll(auditReq.services);
         } else {
-            services.addAll(logService.listServices());
+            services.addAll(listServices());
         }
-        services.forEach(s -> indexes.add(s + "-audit-*"));
+        services.forEach(s -> indexes.add(s + "_hugegraphaudit-*"));
 
 
+        int begine = Math.max(auditReq.pageNo - 1, 0);
         List<Query> querys = buildESQuery(auditReq);
         SearchResponse<Map> search = esClient().search((s) ->
-            s.index(indexes).from(auditReq.pageNo).size(auditReq.pageSize)
+            s.index(indexes).from(begine * auditReq.pageSize)
+             .size(auditReq.pageSize)
              .query(q -> q.bool( boolQuery -> boolQuery.must(querys))
              ), Map.class);
 
@@ -88,17 +96,17 @@ public class AuditService extends ESService {
     }
 
     public List<AuditEntity> export(AuditReq auditReq) throws IOException {
+        List<String> indexes = new ArrayList<>();
+
         List<AuditEntity> audits = new ArrayList<>();
 
-        List<String> indexes = new ArrayList<>();
-        // services
         List<String> services = new ArrayList<>();
         if (CollectionUtils.isNotEmpty(auditReq.services)) {
             services.addAll(auditReq.services);
         } else {
-            services.addAll(logService.listServices());
+            services.addAll(listServices());
         }
-        services.forEach(s -> indexes.add(s + "-*"));
+        services.forEach(s -> indexes.add(s + "_hugegraphaudit-*"));
 
         List<Query> querys = buildESQuery(auditReq);
 
@@ -185,6 +193,22 @@ public class AuditService extends ESService {
         }
 
         return querys;
+    }
+
+    public List<String> listServices() throws IOException {
+        Set<String> services = new HashSet<>();
+
+        GetAliasResponse res = esClient().indices().getAlias();
+        GetAliasRequest req = new GetAliasRequest.Builder().index(
+                AUDIT_INDEX_PATTERN).build();
+        esClient().indices().getAlias(req).result().keySet()
+                  .stream().filter(x -> !x.startsWith("."))
+                  .forEach(indexName -> {
+                      String arr1 = indexName.split("_")[0];
+                      services.add(arr1);
+                  });
+
+        return services.stream().sorted().collect(Collectors.toList());
     }
 
     @NoArgsConstructor

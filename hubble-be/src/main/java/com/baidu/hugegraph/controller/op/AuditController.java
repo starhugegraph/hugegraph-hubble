@@ -27,7 +27,9 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+import javax.servlet.http.HttpServletResponse;
 
+import com.google.common.collect.ImmutableMap;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -44,8 +46,6 @@ import com.baidu.hugegraph.common.Constant;
 import com.baidu.hugegraph.controller.BaseController;
 import com.baidu.hugegraph.service.op.AuditService;
 
-import javax.servlet.http.HttpServletResponse;
-
 @RestController
 @RequestMapping(Constant.API_VERSION + "audits")
 public class AuditController extends BaseController {
@@ -57,6 +57,13 @@ public class AuditController extends BaseController {
         List<String> operations = Arrays.stream(AuditOperationEnum.values())
                                         .map(AuditOperationEnum::getName)
                                         .collect(Collectors.toList());
+
+        return operations;
+    }
+
+    @GetMapping("services/list")
+    public Object listServices() throws IOException {
+        List<String> operations = auditService.listServices();
 
         return operations;
     }
