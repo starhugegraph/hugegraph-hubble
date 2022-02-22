@@ -3,51 +3,33 @@ import { Table, Space, Button, message, Popconfirm, Input } from 'antd';
 import DetailComputing from './computing-detail'
 import { AppStoreContext } from '../../../stores';
 import api from '../../../api/api'
+import { timestampToTime } from '../../../stores/utils';
 
-let demoData = {
-    "status": 200,
-    data: {
-        records: [
-            {
-                "id": "1", // id
-                "task_type": "2",//  
-                "task_algorithm": "3", // 算法
-                "task_name": "4",// 
-                "task_progress": "5",
-                "task_status": "6",
-                "task_create": "7",// 创建时间
-                "task_description": "888" // 任务描述
-            },
-        ],
-        "total": 2,  //
-        "size": 10,  //
-        "current": 1, //
-        "orders": [],
-        "searchCount": true,
-        "pages": 1 //
-    },
-    "message": "msg",
-    "cause": ""
-}
 export default function ComputingServices() {
+    const appStore = useContext(AppStoreContext)
     const [dataList, setDataList] = useState({})//数据列表
     const [page, setPage] = useState({})//分页条件
     const [isModalVisible, setIsModalVisible] = useState(false);//详情的显隐 
+    const [loading, setLoading] = useState(false);//loading
     const [detail, setDetail] = useState("");
-    const appStore = useContext(AppStoreContext)
 
     // 获取数据
     useEffect(() => {
-        setDataList(demoData.data)
         if (appStore.graphs !== "null") {
             getComputedTable()
+        } else {
+            setDataList({})
         }
     }, [appStore.tenant, appStore.graphs, page])
 
     // 获取计算table数据
     const getComputedTable = () => {
+        setLoading(true)
         api.getComputeTableData(appStore.tenant, appStore.graphs, page).then(res => {
-            console.log(res, "res");
+            setLoading(false)
+            if (res.status === 200) {
+                setDataList(res.data)
+            }
         })
     };
 
@@ -62,11 +44,27 @@ export default function ComputingServices() {
         setIsModalVisible(true)
     }
 
-    // 确认删除
-    function confirm(value) {
-        // {service_name: value.service }异步请求
-        message.success('删除成功');
+    // 确认停止
+    function confirm(id) {
+        api.stopComputeDetail(appStore.tenant, appStore.graphs, id).then(
+            res => {
+                if (res.status === 200) message.success("停止成功")
+            }
+        )
     }
+
+    // 确认删除
+    function confirmDelete(id) {
+        api.deleteCompute(appStore.tenant, appStore.graphs, id).then(
+            res => {
+                if (res.status === 200){
+                    message.success("删除成功")
+                    getComputedTable()
+                }
+            }
+        )
+    }
+
     const columns = [
         {
             title: '实例名称',
@@ -89,6 +87,11 @@ export default function ComputingServices() {
             align: 'center',
         },
         {
+            title: '任务类型',
+            dataIndex: 'task_type',
+            align: 'center',
+        },
+        {
             title: '算法名称',
             dataIndex: 'task_algorithm',
             align: 'center',
@@ -97,22 +100,31 @@ export default function ComputingServices() {
             title: '创建时间',
             dataIndex: 'task_create',
             align: 'center',
+            render: (value) => (<span>{timestampToTime(value)}</span>)
         },
         {
             title: '操作',
             align: 'center',
+            width:250,
             fixed: "right",
             render: (tag) => (
                 <Space>
                     <Button onClick={() => detailHandle(tag)}>详情</Button>
                     <Popconfirm
                         title={`你确定要停止计算实例${tag.task_name}吗?`}
-                        onConfirm={() => confirm(tag)}
-                        onCancel={() => message.error('取消删除')}
+                        onConfirm={() => confirm(tag.id)}
                         okText="确定"
                         cancelText="取消"
                     >
                         <Button type='ghost' danger>停止</Button>
+                    </Popconfirm>
+                    <Popconfirm
+                        title={`你确定要删除计算实例${tag.task_name}吗?`}
+                        onConfirm={() => confirmDelete(tag.id)}
+                        okText="确定"
+                        cancelText="取消"
+                    >
+                        <Button type='ghost' danger>删除</Button>
                     </Popconfirm>
                 </Space>
             )
@@ -139,6 +151,7 @@ export default function ComputingServices() {
             <Table
                 scroll={{ x: 1200 }}
                 columns={columns}
+                loading={loading}
                 dataSource={dataList.records}
                 rowKey={'id'}
                 pagination={
@@ -155,6 +168,8 @@ export default function ComputingServices() {
                 isModalVisible={isModalVisible}
                 setIsModalVisible={setIsModalVisible}
                 detail={detail}
+                tenant={appStore.tenant}
+                graphs={appStore.graphs}
             >
             </DetailComputing>
         </div>

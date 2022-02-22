@@ -1,36 +1,42 @@
-import { Modal, Descriptions, Badge } from 'antd';
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+import { Modal, Descriptions, Badge, Skeleton } from 'antd';
+import api from '../../../../api/api'
+import { timestampToTime } from '../../../../stores/utils';
 
-const Index = (props) => {
-    const { isModalVisible, setIsModalVisible } = props
-
-    const handleOk = () => {
-        setIsModalVisible(false);
-    };
-
-    const handleCancel = () => {
-        setIsModalVisible(false);
-    };
-
+const Index = ({ isModalVisible, setIsModalVisible, detail, tenant, graphs }) => {
+    const [computedDetail, setDetail] = useState({})
+    const [loading, setLoading] = useState(true)
+    useEffect(() => {
+        detail && api.getComputeDetail(tenant, graphs, detail).then(res => {
+            console.log(res, "111");
+            if (res.status === 200) setDetail(res.data)
+            setLoading(false)
+        })
+    }, [detail])
 
     return (
         <>
             <Modal
                 title="计算服务详情"
                 visible={isModalVisible}
-                onOk={handleOk}
-                onCancel={handleCancel}
+                onCancel={() => setIsModalVisible(false)}
                 footer={null}>
-                <Descriptions bordered>
-                    <Descriptions.Item label="算法名称"></Descriptions.Item>
-                    <Descriptions.Item label="图空间"></Descriptions.Item>
-                    <Descriptions.Item label="实例名称"></Descriptions.Item>
-                    <Descriptions.Item label="状态" span={3}>
-                        <Badge status="processing" text="Running" />
-                    </Descriptions.Item>
-                    <Descriptions.Item label="创建时间"></Descriptions.Item>
-                    <Descriptions.Item label="运行参数"></Descriptions.Item>
-                </Descriptions>
+                <Skeleton loading={loading} active>
+                    <Descriptions
+                     bordered 
+                     column={2}
+                     contentStyle={{padding:'10px'}}
+                    >
+                        <Descriptions.Item label="算法名称"></Descriptions.Item>
+                        <Descriptions.Item label="图空间">{computedDetail.graph}</Descriptions.Item>
+                        <Descriptions.Item label="实例名称">{computedDetail.task_name}</Descriptions.Item>
+                        <Descriptions.Item label="状态" span={0}>
+                            <Badge status="processing" text="" />
+                        </Descriptions.Item>
+                        <Descriptions.Item label="创建时间">{timestampToTime(computedDetail.task_create)}</Descriptions.Item>
+                        <Descriptions.Item label="运行参数"></Descriptions.Item>
+                    </Descriptions>
+                </Skeleton>
             </Modal>
         </>
     );
