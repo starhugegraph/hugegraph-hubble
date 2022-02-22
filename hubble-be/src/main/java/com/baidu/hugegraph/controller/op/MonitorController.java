@@ -48,15 +48,15 @@ public class MonitorController extends BaseController {
     public Object monitor() {
         String monitorURL = null;
         // Get monitor.url from system.env
-        monitorURL = System.getProperty(HubbleOptions.MONITOR_URL.name());
+        monitorURL = System.getenv(HubbleOptions.MONITOR_URL.name());
         if (StringUtils.isEmpty(monitorURL)) {
             // get monitor.url from file: hugegraph-hubble.properties
             monitorURL = config.get(HubbleOptions.MONITOR_URL);
         }
 
         E.checkArgument(StringUtils.isNotEmpty(monitorURL),
-                        "Please set \"monitor.url\" in system property or " +
-                                "config file(hugegraph-hubble.properties).");
+                        "Please set \"monitor.url\" in system environments " +
+                                "or config file(hugegraph-hubble.properties).");
 
        return ImmutableMap.of("url", monitorURL);
     }

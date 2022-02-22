@@ -42,15 +42,15 @@ public abstract class ESService {
         String esURLS = null;
 
         // Get monitor.url from system.env
-        esURLS = System.getProperty(HubbleOptions.ES_URL.name());
+        esURLS = System.getenv(HubbleOptions.ES_URL.name());
         if (StringUtils.isEmpty(esURLS)) {
             // get monitor.url from file: hugegraph-hubble.properties
             esURLS = config.get(HubbleOptions.ES_URL);
         }
 
         E.checkArgument(StringUtils.isNotEmpty(esURLS),
-                        "Please set \"es.urls\" in system property or " +
-                                "config file(hugegraph-hubble.properties).");
+                        "Please set \"es.urls\" in system environments " +
+                                "or config file(hugegraph-hubble.properties).");
 
         String[] esAddresses = esURLS.split(",");
         HttpHost[] hosts = Arrays.stream(esAddresses)
