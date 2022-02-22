@@ -62,6 +62,14 @@ public class ComputerDisController extends BaseController {
         computerService.cancel(client, id);
     }
 
+    @GetMapping("{id}")
+    public Object get(@PathVariable("graphspace") String graphspace,
+                      @PathVariable("graph") String graph,
+                      @PathVariable("id") long id) {
+        HugeClient client = this.authClient(graphspace, graph);
+        return computerService.get(client, id);
+    }
+
     @DeleteMapping("{id}")
     public void delete(@PathVariable("graphspace") String graphspace,
                        @PathVariable("graph") String graph,

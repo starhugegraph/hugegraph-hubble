@@ -49,6 +49,10 @@ public class ComputerService {
         return PageUtil.newPage(results, pageNo, pageSize, count);
     }
 
+    public ComputerServiceEntity get(HugeClient client, long id) {
+        return convert(client.computer().get(id));
+    }
+
     public void cancel(HugeClient client, long id) {
         client.computer().cancel(id);
     }
