@@ -29,7 +29,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import co.elastic.clients.elasticsearch._types.FieldSort;
 import co.elastic.clients.elasticsearch._types.FieldValue;
+import co.elastic.clients.elasticsearch._types.SortOptions;
+import co.elastic.clients.elasticsearch._types.SortOptionsBuilders;
+import co.elastic.clients.elasticsearch._types.SortOrder;
 import co.elastic.clients.elasticsearch._types.aggregations.Aggregation;
 import co.elastic.clients.elasticsearch._types.aggregations.Buckets;
 import co.elastic.clients.elasticsearch._types.aggregations.StringTermsBucket;
@@ -62,6 +66,8 @@ public class LogService extends ESService {
 
     protected final String allIndexName = "*";
 
+    private final String logSortKey = "@timestamp";
+    private final String sortOrder = "Asc";
 
     public IPage<LogEntity> queryPage(LogReq logReq) throws IOException {
 
@@ -79,13 +85,19 @@ public class LogService extends ESService {
 
         List<Query> querys = buildQuery(logReq);
 
+        FieldSort sort =
+                SortOptionsBuilders.field().field(logSortKey)
+                                   .order(SortOrder.valueOf(sortOrder)).build();
+        SortOptions sortKeyOption =
+                new SortOptions.Builder().field(sort).build();
+
         SearchResponse<Map> search = esClient().search((s) ->
-            s.index(indexes).from(Math.max(logReq.pageNo - 1, 0) * logReq.pageNo)
+            s.index(indexes).from(Math.max(logReq.pageNo - 1, 0) * logReq.pageSize)
              .size(logReq.pageSize)
              .query(q -> q.bool( boolQuery ->
                         boolQuery.must(querys)
                     )
-             ), Map.class);
+             ).sort(sortKeyOption), Map.class);
 
         for (Hit<Map> hit: search.hits().hits()) {
             logs.add(LogEntity.fromMap((Map<String, Object>) hit.source()));
@@ -110,10 +122,16 @@ public class LogService extends ESService {
 
         List<Query> querys = buildQuery(logReq);
 
+        FieldSort sort =
+                SortOptionsBuilders.field().field(logSortKey)
+                                   .order(SortOrder.valueOf(sortOrder)).build();
+        SortOptions sortKeyOption =
+                new SortOptions.Builder().field(sort).build();
+
         SearchResponse<Map> search = esClient().search((s) ->
              s.index(indexes).from(0).size(5000)
               .query(q -> q.bool( boolQuery -> boolQuery.must(querys))
-              ), Map.class);
+              ).sort(sortKeyOption), Map.class);
 
         for (Hit<Map> hit: search.hits().hits()) {
             logs.add(LogEntity.fromMap((Map<String, Object>) hit.source()));
