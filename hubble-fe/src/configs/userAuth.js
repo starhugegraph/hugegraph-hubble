@@ -112,3 +112,122 @@ export const userAuthArray = [{
         }, ]
     },
 ]
+export const defaultMenuList = [
+    {
+        tab: 'dataAnalysis',
+        data: [
+            {
+                key: '0',
+                name: 'Gremlin分析'
+            },
+            {
+                key: '1',
+                name: '任务管理'
+            },
+        ]
+    },
+    {
+        tab: 'dataMaintenance',
+        data: [
+            {
+                key: '0',
+                name: '原数据配置'
+            },
+            {
+                key: '1',
+                name: '数据导入'
+            },
+            {
+                key: '2',
+                name: '图管理'
+            },
+            {
+                key: '3',
+                name: 'schema模版管理'
+            },
+        ]
+    },
+    {
+        tab: 'jurisdiction',
+        data: [
+            {
+                key: '0',
+                name: '角色管理'
+            },
+            {
+                key: '1',
+                name: '资源管理'
+            },
+            {
+                key: '2',
+                name: '用户管理'
+            },
+        ]
+    },
+    {
+        tab: 'service',
+        data: [
+            {
+                key: '0',
+                name: '查询服务'
+            },
+            {
+                key: '1',
+                name: '储存服务'
+            },
+            {
+                key: '2',
+                name: '计算任务'
+            },
+            {
+                key: '3',
+                name: 'PD状态'
+            },
+        ]
+    },
+    {
+        tab: 'graphspace',
+        data: [
+            {
+                key: '0',
+                name: '租户管理'
+            }
+        ]
+    },
+    {
+        tab: 'userManagement',
+        data: [
+            {
+                key: '0',
+                name: '用户管理'
+            }
+        ]
+    },
+    {
+        tab: 'logManagement',
+        data: [
+            {
+                key: '0',
+                name: '日志检索'
+            }
+        ]
+    },
+    {
+        tab: 'auditManagement',
+        data: [
+            {
+                key: '0',
+                name: '审计'
+            }
+        ]
+    },
+    {
+        tab: 'monitoringManagement',
+        data: [
+            {
+                key: '0',
+                name: '监控'
+            }
+        ]
+    },
+];

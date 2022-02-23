@@ -25,7 +25,8 @@ const AppBar = ({ setLogin }) => {
   );
 
   useEffect(() => {
-    if (!(userInfo.user_name)) {
+    if (!(userInfo)) {
+      message.warning("请先登录")
       setLogin(false)
       localStorage.setItem("lg", "false")
     }

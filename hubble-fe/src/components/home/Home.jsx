@@ -8,7 +8,7 @@
  */
 import React, { useState, useContext, useEffect, useMemo } from 'react';
 import './Home.less';
-import { Select, Layout } from 'antd';
+import { Select, Layout, message } from 'antd';
 import {
     AppStoreContext,
 } from '../../stores';
@@ -45,129 +45,12 @@ import {
 import { AsyncTaskList } from '../graph-management';
 import AsyncTaskResult from '../graph-management/async-tasks/AsyncTaskResult';
 import { useLocationWithConfirmation } from '../../hooks';
-import { compKeyObj } from '../../stores/utils'
+import { compKeyObj } from '../../stores/utils';
+import { defaultMenuList } from '../../configs/userAuth.js'
 
 const { Option } = Select;
 const { Header, Sider, Content } = Layout;
-const defaultMenuList = [
-    {
-        tab: 'dataAnalysis',
-        data: [
-            {
-                key: '0',
-                name: 'Gremlin分析'
-            },
-            {
-                key: '1',
-                name: '任务管理'
-            },
-        ]
-    },
-    {
-        tab: 'dataMaintenance',
-        data: [
-            {
-                key: '0',
-                name: '原数据配置'
-            },
-            {
-                key: '1',
-                name: '数据导入'
-            },
-            {
-                key: '2',
-                name: '图管理'
-            },
-            {
-                key: '3',
-                name: 'schema模版管理'
-            },
-        ]
-    },
-    {
-        tab: 'jurisdiction',
-        data: [
-            {
-                key: '0',
-                name: '角色管理'
-            },
-            {
-                key: '1',
-                name: '资源管理'
-            },
-            {
-                key: '2',
-                name: '用户管理'
-            },
-        ]
-    },
-    {
-        tab: 'service',
-        data: [
-            {
-                key: '0',
-                name: '查询服务'
-            },
-            {
-                key: '1',
-                name: '储存服务'
-            },
-            {
-                key: '2',
-                name: '计算服务'
-            },
-            {
-                key: '3',
-                name: 'PD状态'
-            },
-        ]
-    },
-    {
-        tab: 'graphspace',
-        data: [
-            {
-                key: '0',
-                name: '租户管理'
-            }
-        ]
-    },
-    {
-        tab: 'userManagement',
-        data: [
-            {
-                key: '0',
-                name: '用户管理'
-            }
-        ]
-    },
-    {
-        tab: 'logManagement',
-        data: [
-            {
-                key: '0',
-                name: '日志检索'
-            }
-        ]
-    },
-    {
-        tab: 'auditManagement',
-        data: [
-            {
-                key: '0',
-                name: '审计'
-            }
-        ]
-    },
-    {
-        tab: 'monitoringManagement',
-        data: [
-            {
-                key: '0',
-                name: '监控'
-            }
-        ]
-    },
-];
+
 const Home = () => {
     let appStore = useContext(AppStoreContext);
     // 头部导航当前选中值
@@ -175,7 +58,7 @@ const Home = () => {
     // 头部导航菜单数据
     let [menuList, setMenuList] = useState([]);
     // 路由地址
-    const [_, setLocation] = useLocation();
+    const [_] = useLocation();
     // 图名选择框loading
     let [graphsLoading, setGraphsLoading] = useState(false);
     // 当前选中的图
@@ -202,6 +85,7 @@ const Home = () => {
             }
             appStore.setGraphs("null");
             setGraphsSelect([]);
+            message.warning("注意:当前图空间为空!")
         }
     };
 
@@ -221,7 +105,7 @@ const Home = () => {
             );
         });
     };
-    
+
     // 切换图名
     const selectGraphsChange = (value) => {
         appStore.setGraphs(value);

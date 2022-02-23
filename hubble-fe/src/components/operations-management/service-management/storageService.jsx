@@ -19,10 +19,10 @@ function StorageService() {
     // 获取数据
     const getStorageData = () => {
         api.getStorageTableData(page).then(res => {
+            setLoading(false)
             if (res.status === 200) {
                 setDataList(res.data)
             }
-            setLoading(false)
         })
     }
 

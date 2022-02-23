@@ -649,6 +649,26 @@ const getComputeDetail = (graphspace, graph, task_id) => {
         });
     });
 };
+// 停止计算服务
+const stopComputeDetail = (graphspace, graph, task_id) => {
+    return new Promise((resolve, reject) => {
+        myaxios.get(`/graphspaces/${graphspace}/graphs/${graph}/jobs/computerdis/${task_id}/cancel`).then(res => {
+            resolve(res);
+        }, error => {
+            reject(error);
+        });
+    });
+};
+// 删除计算服务
+const deleteCompute = (graphspace, graph, task_id) => {
+    return new Promise((resolve, reject) => {
+        myaxios.delete(`/graphspaces/${graphspace}/graphs/${graph}/jobs/computerdis/${task_id}`).then(res => {
+            resolve(res);
+        }, error => {
+            reject(error);
+        });
+    });
+};
 // 审计
 const getAuditTableData = (data) => {
     return new Promise((resolve, reject) => {
@@ -721,6 +741,8 @@ const outTheData = (url, data) => {
 };
 
 export default {
+    deleteCompute,
+    stopComputeDetail,
     getLogsServicesList,
     getLogsLevelList,
     getComputeDetail,

@@ -76,7 +76,7 @@ const CreateFrom = (props: { getQuery: Function, setVisible: Function, detailDat
     }
     const urlValidator = (rule: any, value: string) => {
         let res = /^(((https?|ftp|news):\/\/|\w+(\.\w+)+)(:\w+)?).*/.test(value)
-        if (res) {
+        if (res || (form.getFieldValue('deployment_type') === 'K8S' && !value.length)) {
             return Promise.resolve();
         } else if (form.getFieldValue('deployment_type') === 'MANUAL' && !value.length) {
             return Promise.reject("手动模式下url不能为空")
