@@ -19,6 +19,8 @@
 
 package com.baidu.hugegraph.controller.space;
 
+import java.util.List;
+
 import com.baidu.hugegraph.driver.HugeClient;
 import com.baidu.hugegraph.entity.space.GraphSpaceEntity;
 import com.baidu.hugegraph.service.auth.UserService;
@@ -56,8 +58,8 @@ public class GraphSpaceController extends BaseController {
     @GetMapping("list")
     public Object list() {
 
-        ImmutableSet<String> graphSpaces =
-                this.clientService.listAllGraphSpaces();
+        List<String> graphSpaces =
+                this.graphSpaceService.listAll(this.authClient(null, null));
         return ImmutableMap.of("graphspaces", graphSpaces);
     }
 
