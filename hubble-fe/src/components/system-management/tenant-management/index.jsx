@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useMemo, useContext } from 'react'
-import { Input, Button, Table, Space, Popconfirm, message, Tooltip } from 'antd'
+import { Button, Table, Space, Popconfirm, message, Tooltip } from 'antd'
 import api from '../../../api/api'
 import CreatModal from './create-tenant'
+import { InputAdd } from '../../common'
 import './Index.less'
 
 function Index() {
@@ -26,11 +27,11 @@ function Index() {
             setLoading(false)
         })
     }
-/*     // 默认排序
-    const reverseDataWithUpdateTime = useMemo(() => {
-        if (listData.records) return listData.records.sort((a, b) => (+b.update_time.split("/").join("")) - (+a.update_time.split("/").join("")))
-        return []
-    }, [listData]) */
+    /*     // 默认排序
+        const reverseDataWithUpdateTime = useMemo(() => {
+            if (listData.records) return listData.records.sort((a, b) => (+b.update_time.split("/").join("")) - (+a.update_time.split("/").join("")))
+            return []
+        }, [listData]) */
 
     // 创建租户
     const createHandle = () => {
@@ -49,7 +50,7 @@ function Index() {
     // 删除
     function confirm(value) {
         api.deleteGraphspaces(value.name).then(res => {
-            if(res&&res.status===200){
+            if (res && res.status === 200) {
                 message.success('删除成功');
                 setTimeout(() => {
                     window.location.reload()
@@ -70,13 +71,13 @@ function Index() {
             title: '名称',
             dataIndex: 'name',
             align: "center",
-            fixed:"left"
+            fixed: "left"
         },
         {
             title: '是否开启鉴权',
             dataIndex: 'auth',
             align: "center",
-            render:(value)=>(<span>{value?"是":"否"}</span>)
+            render: (value) => (<span>{value ? "是" : "否"}</span>)
         },
         {
             title: '描述',
@@ -144,12 +145,15 @@ function Index() {
         },
     ];
     return (
-        <div className='graphData_wrapper' style={{ width: "100%",height:"calc(100vh - 130px)"}}>
+        <div className='graphData_wrapper' style={{ width: "100%", height: "calc(100vh - 130px)" }}>
             <div className='topDiv'>
-                <Input.Group compact className='inputBox'>
-                    <Input.Search allowClear style={{ width: '100%' }} placeholder='租户名称' onSearch={searchHandle} />
-                </Input.Group>
-                <Button type='primary' className='addBtn' onClick={createHandle}>添加租户</Button>
+                <InputAdd
+                    searchHandle={searchHandle}
+                    createHandle={createHandle}
+                    placeholder='请输入租户关键字'
+                    >
+                    创建租户
+                </InputAdd>
             </div>
             <Table
                 columns={columns}
@@ -163,7 +167,7 @@ function Index() {
                         defaultPageSize: 10,
                         defaultCurrent: 1,
                         showSizeChanger: true,
-                        total:listData.total
+                        total: listData.total
                     }
                 }
                 onChange={pageChange}

@@ -1,4 +1,4 @@
-import { Table, Button} from 'antd';
+import { Table, Button } from 'antd';
 import React, { useEffect, useState } from 'react'
 import DetailModal from './storage-detail'
 import api from '../../../api/api'
@@ -92,20 +92,6 @@ function StorageService() {
     return (
         <div className='query_list_container graphData_wrapper'>
             <div className='topDiv'>
-                {/* <Input.Group compact className='inputBox'>
-                    <Input.Search
-                        allowClear
-                        style={{ width: '100%' }}
-                        placeholder='请输入实例名称'
-                        onSearch={(params) => setSearch(params)} />
-                </Input.Group>
-                <Button
-                    onClick={createHandle}
-                    type="primary"
-                    className='query_list_addButton'
-                >
-                    创建储存服务
-                </Button> */}
             </div>
             <Table
                 scroll={{ x: 1200 }}

@@ -1,25 +1,24 @@
 import React, { useState, useEffect, useContext } from 'react'
-import { Input, Button, Table, Space, Popconfirm, message } from 'antd'
+import {Button, Table, Space, Popconfirm, message } from 'antd'
 import CreatModal from './create-tenant'
 import api from '../../../api/api'
+import { InputAdd } from '../../common'
 import './Index.less'
-import { AppStoreContext } from '../../../stores'
 
-export default function Index() {
+function Index() {
     const [page, setPage] = useState({})//分页条件
     const [listData, setListData] = useState({})//列表数据
     const [detailData, setDetailData] = useState({})//具体项的查询条件
     const [visible, setVisible] = useState(false)//编辑与创建的模态框
     const [query, setQuery] = useState("")//搜索值
     const [loading, setLoading] = useState("")//table加载
-    const appStore = useContext(AppStoreContext)
  
     // 获取数据
     useEffect(() => {
         setLoading(true)
         getUserData()
         // setListData(demoData.data)
-    }, [page, query, appStore.tenant])
+    }, [page, query])
 
     // 获取用户数据
     const getUserData = () => {
@@ -120,10 +119,13 @@ export default function Index() {
     return (
         <div className='graphData_wrapper' style={{ width: "100%", height: "calc(100vh - 130px)" }}>
             <div className='topDiv'>
-                <Input.Group compact className='inputBox'>
-                    <Input.Search allowClear style={{ width: '100%' }} placeholder='用户账号' onSearch={searchHandle} />
-                </Input.Group>
-                <Button type='primary' className='addBtn' onClick={createHandle}>添加用户</Button>
+                <InputAdd
+                    searchHandle={searchHandle}
+                    createHandle={createHandle}
+                    placeholder='请输入用户关键字'
+                    >
+                    创建用户
+                </InputAdd>
             </div>
             <Table
                 columns={columns}
@@ -152,4 +154,4 @@ export default function Index() {
         </div>
     )
 }
-React.memo(Index)
+export default React.memo(Index)

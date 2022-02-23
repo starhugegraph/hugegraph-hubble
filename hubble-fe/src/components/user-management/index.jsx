@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react'
-import { Input, Button, Table, Space, Popconfirm, message, Tooltip } from 'antd'
+import { Button, Table, Space, Popconfirm, message, Tooltip } from 'antd'
 import CreatModal from './user-modal'
+import { InputAdd } from '../common'
 import api from '../../api/api'
 import './Index.less'
 import { AppStoreContext } from '../../stores'
@@ -19,7 +20,7 @@ export default function Index() {
     const [query, setQuery] = useState("")//搜索值
     const [loading, setLoading] = useState(true)//table加载
     const appStore = useContext(AppStoreContext)
-    
+
     // 获取数据
     useEffect(() => {
         getUserData()
@@ -126,10 +127,13 @@ export default function Index() {
     return (
         <div className='graphData_wrapper' style={{ width: "100%", height: "calc(100vh - 130px)" }}>
             <div className='topDiv'>
-                <Input.Group compact className='inputBox'>
-                    <Input.Search allowClear style={{ width: '100%' }} placeholder='请输入用户名' onSearch={searchHandle} />
-                </Input.Group>
-                <Button type='primary' className='addBtn' onClick={createHandle}>添加用户</Button>
+                <InputAdd
+                    searchHandle={searchHandle}
+                    createHandle={createHandle}
+                    placeholder='请输入用户关键字'
+                    >
+                    创建用户
+                </InputAdd>
             </div>
             <Table
                 columns={columns}
@@ -148,7 +152,7 @@ export default function Index() {
                 }
                 onChange={pageChange}
             />
-            <CreatModal  visible={visible} getUserData={getUserData} setVisible={setVisible} detailData={detailData}></CreatModal>
+            <CreatModal visible={visible} getUserData={getUserData} setVisible={setVisible} detailData={detailData}></CreatModal>
         </div>
     )
 }
