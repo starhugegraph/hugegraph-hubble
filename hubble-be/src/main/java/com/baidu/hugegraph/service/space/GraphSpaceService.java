@@ -45,6 +45,11 @@ public class GraphSpaceService {
         return PageUtil.page(results, pageNo, pageSize);
     }
 
+    public List<String> listAll(HugeClient client) {
+        return client.graphSpace().listGraphSpace().stream().sorted()
+                     .collect(Collectors.toList());
+    }
+
     public GraphSpace get(HugeClient authClient, String graphspace) {
         GraphSpace space = authClient.graphSpace().getGraphSpace(graphspace);
         if (space == null) {
