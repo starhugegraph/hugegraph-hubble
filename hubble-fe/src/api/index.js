@@ -15,10 +15,9 @@ import qs from 'qs';
 // cookie.split(';').forEach(item => {
 //     document.cookie = item.trim();
 // });
-// axios.defaults.baseURL = 'http://yq01-esm-bu-esm35.yq01.baidu.com:8666/baseline/web';
 const instance = axios.create({
-    baseURL: `http://172.24.194.98:8089/api/v1.3`,
-    // baseURL: '/api/v1.3',
+    // baseURL: `http://172.24.194.98:8089/api/v1.3`,
+    baseURL: '/api/v1.3',
     withCredentials: true,
     timeout: 10000
 });
