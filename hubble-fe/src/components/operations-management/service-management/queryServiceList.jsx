@@ -4,6 +4,7 @@ import DetailModal from './detail-query'
 import { Button, Table, Space, Popconfirm, message, Input } from 'antd'
 import api from '../../../api/api'
 import { AppStoreContext } from '../../../stores'
+import { InputAdd } from '../../common'
 
 export default function QueryServiceList() {
     const [listData, setListData] = useState({})//列表数据
@@ -102,7 +103,7 @@ export default function QueryServiceList() {
             dataIndex: 'urls',
             align: "center",
             width: 250,
-            render: (value) => (<p>{value.map(e => e+" ")}</p>)
+            render: (value) => (<p>{value.map(e => e + " ")}</p>)
         },
         {
             title: '操作',
@@ -132,15 +133,13 @@ export default function QueryServiceList() {
     return (
         <div className='query_list_container graphData_wrapper'>
             <div className='topDiv'>
-                <Input.Group compact className='inputBox'>
-                    <Input.Search
-                        allowClear
-                        style={{ width: '100%' }}
-                        placeholder='请输入实例名称'
-                        onSearch={(params) => setSearch(params)}
-                    />
-                </Input.Group>
-                <Button onClick={createHandle} type="primary" className='query_list_addButton'>创建服务</Button>
+                <InputAdd
+                    setSearch={setSearch}
+                    createHandle={createHandle}
+                    placeholder='请输入服务实例关键字'
+                >
+                    创建服务
+                </InputAdd>
             </div>
             <Table
                 columns={columns}

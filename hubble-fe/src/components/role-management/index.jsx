@@ -3,6 +3,7 @@ import { Input, Button, Table, Space, Popconfirm, message } from 'antd'
 import CreatModal from './create-tenant'
 import AssociatedModal from './associated-resources'
 import AssociatedUser from './associated-user'
+import { InputAdd } from '../common'
 import api from '../../api/api'
 import './Index.less'
 import { AppStoreContext } from '../../stores'
@@ -24,8 +25,8 @@ function Index() {
     useEffect(() => {
         setLoading(true)
         getRoleData()
-    }, [page, query,appStore.tenant])
- 
+    }, [page, query, appStore.tenant])
+
     // 获取角色数据
     const getRoleData = () => {
         api.getRole(appStore.tenant, { ...page, query }).then(res => {
@@ -139,10 +140,13 @@ function Index() {
     return (
         <div className='graphData_wrapper' style={{ width: "100%", height: "calc(100vh - 130px)" }}>
             <div className='topDiv'>
-                <Input.Group compact className='inputBox'>
-                    <Input.Search allowClear style={{ width: '100%' }} placeholder='角色名称' onSearch={searchHandle} />
-                </Input.Group>
-                <Button type='primary' className='addBtn' onClick={createHandle}>添加角色</Button>
+                <InputAdd
+                    searchHandle={searchHandle}
+                    createHandle={createHandle}
+                    placeholder='请输入角色关键字'
+                    >
+                    创建角色
+                </InputAdd>
             </div>
             <Table
                 columns={columns}
