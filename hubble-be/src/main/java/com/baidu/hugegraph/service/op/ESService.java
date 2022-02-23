@@ -25,7 +25,13 @@ public abstract class ESService {
     public static final String[] LEVELS = new String[]{"TRACE", "OFF",
             "FATAL", "ERROR", "WARN", "INFO", "DEBUG"};
 
-    public ElasticsearchClient esClient() {
+    public static volatile ElasticsearchClient elasticsearchClient;
+
+    public synchronized ElasticsearchClient esClient() {
+
+        if (elasticsearchClient != null) {
+            return elasticsearchClient;
+        }
 
         RestClient restClient = esRestClient();
 
@@ -33,12 +39,12 @@ public abstract class ESService {
         ElasticsearchTransport transport = new RestClientTransport(
                 restClient, new JacksonJsonpMapper());
         // And create the API client
-        ElasticsearchClient client = new ElasticsearchClient(transport);
+        elasticsearchClient = new ElasticsearchClient(transport);
 
-        return client;
+        return elasticsearchClient;
     }
 
-    public RestClient esRestClient() {
+    protected RestClient esRestClient() {
         String esURLS = null;
 
         // Get monitor.url from system.env
