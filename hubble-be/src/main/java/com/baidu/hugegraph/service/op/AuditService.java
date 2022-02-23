@@ -28,7 +28,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import co.elastic.clients.elasticsearch._types.FieldSort;
 import co.elastic.clients.elasticsearch._types.FieldValue;
+import co.elastic.clients.elasticsearch._types.SortOptions;
+import co.elastic.clients.elasticsearch._types.SortOptionsBuilders;
+import co.elastic.clients.elasticsearch._types.SortOrder;
 import co.elastic.clients.elasticsearch._types.query_dsl.MatchQuery;
 import co.elastic.clients.elasticsearch._types.query_dsl.Query;
 import co.elastic.clients.elasticsearch._types.query_dsl.RangeQuery;
@@ -57,6 +61,9 @@ public class AuditService extends ESService {
 
     public static String auditIndexPattern = "*_hugegraphaudit-*";
 
+    private final String auditSortKey = "@timestamp";
+    private final String sortOrder = "Asc";
+
     public IPage<AuditEntity> queryPage(AuditReq auditReq) throws IOException {
         List<String> indexes = new ArrayList<>();
 
@@ -70,6 +77,11 @@ public class AuditService extends ESService {
         }
         services.forEach(s -> indexes.add(s + "_hugegraphaudit-*"));
 
+        FieldSort sort =
+                SortOptionsBuilders.field().field(auditSortKey)
+                                   .order(SortOrder.valueOf(sortOrder)).build();
+        SortOptions sortKeyOption =
+                new SortOptions.Builder().field(sort).build();
 
         int begine = Math.max(auditReq.pageNo - 1, 0);
         List<Query> querys = buildESQuery(auditReq);
@@ -77,7 +89,7 @@ public class AuditService extends ESService {
             s.index(indexes).from(begine * auditReq.pageSize)
              .size(auditReq.pageSize)
              .query(q -> q.bool( boolQuery -> boolQuery.must(querys))
-             ), Map.class);
+             ).sort(sortKeyOption), Map.class);
 
         for (Hit<Map> hit: search.hits().hits()) {
             logs.add(AuditEntity.fromMap((Map<String, Object>) hit.source()));
@@ -100,12 +112,18 @@ public class AuditService extends ESService {
         }
         services.forEach(s -> indexes.add(s + "_hugegraphaudit-*"));
 
+        FieldSort sort =
+                SortOptionsBuilders.field().field(auditSortKey)
+                                   .order(SortOrder.valueOf(sortOrder)).build();
+        SortOptions sortKeyOption =
+                new SortOptions.Builder().field(sort).build();
+
         List<Query> querys = buildESQuery(auditReq);
 
         SearchResponse<Map> search = esClient().search((s) ->
                  s.index(indexes).from(0).size(5000)
                   .query(q -> q.bool( boolQuery -> boolQuery.must(querys))
-                  ), Map.class);
+                  ).sort(sortKeyOption), Map.class);
 
         for (Hit<Map> hit: search.hits().hits()) {
             audits.add(AuditEntity.fromMap((Map<String, Object>) hit.source()));
