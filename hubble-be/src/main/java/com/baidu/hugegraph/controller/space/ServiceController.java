@@ -72,10 +72,9 @@ public class ServiceController extends BaseController {
         if (serviceEntity.getDepleymentType()
                 == OLTPService.DepleymentType.MANUAL) {
             serviceEntity.setRouteType(null);
-            // serviceEntity.setUrls();
         } else {
-            serviceEntity.setPort(10);
-            serviceEntity.setRouteType("LoadBalancer");
+            serviceEntity.setRouteType("NodePort");
+            serviceEntity.setUrls(null);
         }
 
         return oltpService.create(this.authClient(graphspace, null),
