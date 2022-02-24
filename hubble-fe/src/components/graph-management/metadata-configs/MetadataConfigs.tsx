@@ -87,7 +87,7 @@ const MetadataConfig: React.FC = observer(() => {
     return () => {
       metadataConfigRootStore.dispose();
     };
-  }, [metadataConfigRootStore, match, params?.id, appStore.tenant, appStore.graphs]);
+  }, [metadataConfigRootStore, match, params?.id, appStore.date]);
 
   return (
     <section className={wrapperClassName}>

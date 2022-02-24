@@ -64,7 +64,7 @@ const Index = (props) => {
     // 验证
     const serviceValidator = (rule, value) => {
         let res = /^[a-zA-Z][a-zA-Z0-9_]*$/.test(value)
-        if (!res && value != "") {
+        if (!res && value !== "") {
             return Promise.reject("格式错误,不能包含特殊字符和中文")
         } else {
             return Promise.resolve()
@@ -73,11 +73,11 @@ const Index = (props) => {
     const passwordValidator = (rule, value) => {
         // let res = /^(?![a-zA-Z]+$)(?![A-Z0-9]+$)(?![A-Z\W_]+$)(?![a-z0-9]+$)(?![a-z\W_]+$)(?![0-9\W_]+$)[a-zA-Z0-9\W_]{8,}$/
         // let res = /^(?=.*\d)(?=.*[A-Za-z])[\x20-\x7e]{8,16}$/
-        const res = /^[-\w+!@#$%~^&*]{8,16}$/
+        const res = /^[-\w+@]{5,16}$/
         if (res.test(value)) {
             return Promise.resolve()
         } else {
-            return Promise.reject("格式错误,并且长度为8-16位")
+            return Promise.reject("格式错误,并且长度为5-16位")
         }
     }
     const phoneValidator = (_, value) => {
@@ -128,6 +128,7 @@ const Index = (props) => {
                             { validator: passwordValidator }
                         ]
                     }
+                    extra={<span style={{fontSize:"12px"}}>长度5-16，可以为字母、数字和特殊符号(_ @)</span>}
                 >
                     <Input type={'password'} />
                 </Form.Item>

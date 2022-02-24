@@ -27,6 +27,12 @@ const CreateFrom = (props: { getQuery: Function, setVisible: Function, detailDat
         return false
     }, [detailData])
 
+    const isShowUrl = useMemo(() => {
+        console.log();
+        if (form.getFieldValue('deployment_type') === "MANUAL") return true
+        return false
+    }, [form])
+
     // 获取需要编辑的数据并渲染
     useEffect(() => {
         if (isDisable) {
@@ -158,15 +164,26 @@ const CreateFrom = (props: { getQuery: Function, setVisible: Function, detailDat
             </Form.Item>
 
             <Form.Item
-                name="urls"
-                label="访问地址"
-                initialValue={[]}
-                rules={
-                    [
-                        { validator: urlValidator }
-                    ]
-                }>
-                <Input placeholder='可填写多个,请使用英文逗号做分隔' />
+                noStyle
+                shouldUpdate={(prevValues, currentValues) => prevValues.deployment_type !== currentValues.deployment_type}
+            >
+                {({ getFieldValue }) =>
+                    getFieldValue('deployment_type') === 'MANUAL' ? (
+                        <>
+                            <Form.Item
+                                name="urls"
+                                label="访问地址"
+                                initialValue={[]}
+                                rules={
+                                    [
+                                        { validator: urlValidator }
+                                    ]
+                                }>
+                                <Input.TextArea placeholder='可填写多个,请使用英文逗号做分隔' />
+                            </Form.Item>
+                        </>
+                    ) : null
+                }
             </Form.Item>
 
             {nodes.length !== 0 ? <Form.Item label="实例IP">

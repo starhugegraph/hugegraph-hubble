@@ -39,6 +39,7 @@ export interface GraphDataPageConfig {
 export interface GraphDataList {
   records: GraphData[];
   total: number;
+  graphs:string[]
 }
 
 export type GraphDataResponse = responseData<GraphDataList>;

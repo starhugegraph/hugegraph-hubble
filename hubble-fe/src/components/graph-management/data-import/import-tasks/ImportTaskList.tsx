@@ -234,7 +234,7 @@ const ImportTaskList: React.FC = observer(() => {
     if (appStore.graphs !== "null") {
       importManagerStore.fetchImportJobList();
     }
-  }, [appStore.tenant, appStore.graphs]);
+  }, [appStore.date]);
 
   return (
     <div className="import-manager-content-wrapper">

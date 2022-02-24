@@ -1,7 +1,7 @@
 import { createContext } from 'react';
 import { observable, action, flow } from 'mobx';
 import axios, { AxiosResponse } from 'axios';
-
+import api from '../../api/api'
 import { baseUrl, responseData } from '../types/common';
 import {
   LincenseInfo,
@@ -10,10 +10,14 @@ import {
   GraphDataPageConfig,
   GraphDataResponse
 } from '../types/GraphManagementStore/graphManagementStore';
+import AppStoreContext from '../appStore';
 
 export class GraphManagementStore {
   [key: string]: any;
 
+  constructor() {
+    this.appStore = AppStoreContext
+  }
   // display create new graph layout
   @observable showCreateNewGraph = false;
 
@@ -100,7 +104,7 @@ export class GraphManagementStore {
     password: ''
   };
 
-  @observable.ref idList: { id: number; name: string }[] = [];
+  @observable.ref idList: { id: any; name: string }[] = [];
   @observable.ref graphData: GraphData[] = [];
   @observable.ref licenseInfo: LincenseInfo | null = null;
 
@@ -344,22 +348,24 @@ export class GraphManagementStore {
   fetchIdList = flow(function* fetchIdList(this: GraphManagementStore) {
     this.resetErrorInfo();
     this.requestStatus.fetchIdList = 'pending';
+    // api.getGraphsName
     try {
       const result: AxiosResponse<GraphDataResponse> = yield axios.get<
         GraphData
-      >(baseUrl, {
+      >(baseUrl + `/${this.appStore._currentValue.tenant}/graphs`, {
         params: {
           page_size: -1
         }
       });
-
+      // +`/${this.appStore._currentValue.tenant}/graphs/list`
       if (result.data.status === 200 || result.data.status === 401) {
         if (result.data.status === 200) {
           this.requestStatus.fetchIdList = 'success';
         }
+        console.log(result);
 
-        this.idList = result.data.data.records.map(({ id, name }) => ({
-          id,
+        this.idList = result.data.data.records.map(({ name }) => ({
+          id: name,
           name
         }));
 
@@ -381,7 +387,7 @@ export class GraphManagementStore {
   fetchGraphDataList = flow(function* fetchGraphDataList(
     this: GraphManagementStore
   ) {
-    
+
     this.resetErrorInfo();
     const url =
       `${baseUrl}?page_no=${this.graphDataPageConfig.pageNumber}&page_size=${this.graphDataPageConfig.pageSize}` +

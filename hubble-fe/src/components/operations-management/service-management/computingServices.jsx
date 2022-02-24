@@ -20,7 +20,7 @@ export default function ComputingServices() {
         } else {
             setDataList({})
         }
-    }, [appStore.tenant, appStore.graphs, page])
+    }, [appStore.date, page])
 
     // 获取计算table数据
     const getComputedTable = () => {
@@ -57,7 +57,7 @@ export default function ComputingServices() {
     function confirmDelete(id) {
         api.deleteCompute(appStore.tenant, appStore.graphs, id).then(
             res => {
-                if (res.status === 200){
+                if (res.status === 200) {
                     message.success("删除成功")
                     getComputedTable()
                 }
@@ -105,7 +105,7 @@ export default function ComputingServices() {
         {
             title: '操作',
             align: 'center',
-            width:250,
+            width: 250,
             fixed: "right",
             render: (tag) => (
                 <Space>

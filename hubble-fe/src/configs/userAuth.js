@@ -131,7 +131,7 @@ export const defaultMenuList = [
         data: [
             {
                 key: '0',
-                name: '原数据配置'
+                name: '元数据配置'
             },
             {
                 key: '1',

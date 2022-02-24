@@ -138,15 +138,17 @@ export class AsyncTasksStore {
 
   fetchAsyncTask = flow(function* fetchAsyncTask(
     this: AsyncTasksStore,
-    id: number
+    id: number,
+    graphs: string
   ) {
     this.requestStatus.fetchAsyncTask = 'pending';
     try {
       const result: AxiosResponse<responseData<AsyncTask>> = yield axios
         .get<responseData<AsyncTaskListResponse>>(
-          `${baseUrl}/${this.appStore._currentValue.tenant}/graphs/${this.appStore._currentValue.graphs}/async-tasks/${id}`
+          `${baseUrl}/${this.appStore._currentValue.tenant}/graphs/${graphs}/async-tasks/${id}`
         )
         .catch(checkIfLocalNetworkOffline);
+      console.log(result, "xxxxx");
 
       if (result.data.status !== 200) {
         this.errorInfo.fetchAsyncTask.code = result.data.status;

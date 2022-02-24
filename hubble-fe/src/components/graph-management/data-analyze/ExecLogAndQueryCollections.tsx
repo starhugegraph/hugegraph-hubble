@@ -12,7 +12,8 @@ import { Tooltip } from '../../common';
 import Favorite from './common/Favorite';
 import {
   DataAnalyzeStoreContext,
-  AsyncTasksStoreContext
+  AsyncTasksStoreContext,
+  AppStoreContext
 } from '../../../stores';
 import { formatAlgorithmStatement } from '../../../utils';
 
@@ -77,6 +78,7 @@ const styles = {
 const ExecLogAndQueryCollections: React.FC = observer(() => {
   const asyncTasksStore = useContext(AsyncTasksStoreContext);
   const dataAnalyzeStore = useContext(DataAnalyzeStoreContext);
+  const appStore = useContext(AppStoreContext)
   const { algorithmAnalyzerStore } = dataAnalyzeStore;
   const [tabIndex, setTabIndex] = useState(0);
   const [, params] = useRoute('/graph-management/:id/data-analyze');
@@ -251,8 +253,8 @@ const ExecLogAndQueryCollections: React.FC = observer(() => {
                 rowData.type === 'GREMLIN_ASYNC'
                   ? 'task'
                   : rowData.type === 'GREMLIN'
-                  ? 'query'
-                  : 'algorithm',
+                    ? 'query'
+                    : 'algorithm',
                 rowData.algorithm_name
               )}
             >
@@ -837,12 +839,12 @@ const ExecLogAndQueryCollections: React.FC = observer(() => {
   );
 
   useEffect(() => {
-    if (dataAnalyzeStore.currentId !== null) {
+    if (appStore.graphs !== "null") {
       dataAnalyzeStore.fetchExecutionLogs();
       dataAnalyzeStore.fetchFavoriteQueries();
     }
     // fetch execlogs & favorites after id changes
-  }, [dataAnalyzeStore, dataAnalyzeStore.currentId]);
+  }, [dataAnalyzeStore, appStore.date]);
 
   return (
     <div className="data-analyze-logs-favorite">
@@ -886,6 +888,7 @@ const ExecLogAndQueryCollections: React.FC = observer(() => {
                   onPageNoChange: handleExecLogPageNoChange,
                   onPageSizeChange: handleExecLogPageSizeChange
                 }}
+                scroll={{ x: 1055 }}
               />
             ) : (
               <div>
@@ -905,7 +908,7 @@ const ExecLogAndQueryCollections: React.FC = observer(() => {
                   locale={{
                     emptyText:
                       dataAnalyzeStore.requestStatus.fetchFavoriteQueries ===
-                      'success' ? (
+                        'success' ? (
                         <>
                           <img src={EmptyIcon} alt="无匹配结果" />
                           <div style={{ fontSize: 14, color: '#333' }}>

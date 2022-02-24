@@ -81,6 +81,7 @@ const Home = () => {
                 && res.data.graphs.length) {
                 appStore.setGraphs(res.data.graphs[0]);
                 setGraphsSelect(res.data.graphs);
+                appStore.setDate(new Date())
                 return;
             }
             appStore.setGraphs("null");
@@ -110,6 +111,7 @@ const Home = () => {
     const selectGraphsChange = (value) => {
         appStore.setGraphs(value);
         setGraphsActive(value);
+        appStore.setDate(new Date())
     };
     /**
      * @description: 判断是否展示右侧选择图名的头部导航
