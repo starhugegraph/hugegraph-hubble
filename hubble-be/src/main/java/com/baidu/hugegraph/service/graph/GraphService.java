@@ -38,7 +38,6 @@ import com.baidu.hugegraph.exception.ExternalException;
 import com.baidu.hugegraph.loader.source.file.FileSource;
 import com.baidu.hugegraph.loader.source.file.ListFormat;
 import com.baidu.hugegraph.loader.util.DataTypeUtil;
-import com.baidu.hugegraph.service.HugeClientPoolService;
 import com.baidu.hugegraph.service.schema.EdgeLabelService;
 import com.baidu.hugegraph.service.schema.PropertyKeyService;
 import com.baidu.hugegraph.service.schema.VertexLabelService;

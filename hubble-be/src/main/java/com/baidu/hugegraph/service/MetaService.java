@@ -28,28 +28,17 @@ import org.springframework.stereotype.Service;
 
 import com.baidu.hugegraph.entity.graphs.GraphEntity;
 import com.baidu.hugegraph.driver.factory.MetaHugeClientFactory;
-import com.baidu.hugegraph.driver.HugeClient;
 
 @Service
-public class ClientService {
+public class MetaService {
     @Autowired
     protected String cluster;
 
     @Autowired
     protected MetaHugeClientFactory hugeClientFactory;
 
-    public HugeClient createUnauthClient() {
-        // Get all graphspace under cluster
-        return hugeClientFactory.createUnauthClient(this.cluster, null, null);
-    }
-
-    public HugeClient createAuthClient(String graphSpace,
-                                       String graph, String token) {
-        return hugeClientFactory.createAuthClient(this.cluster, graphSpace,
-                                                  graph, token, null, null);
-    }
-
     public ImmutableSet<GraphEntity> listAllGraphs() {
+        // List graph infos from meta server
 
         Set<GraphEntity> graphs = new HashSet<>();
 
@@ -66,10 +55,6 @@ public class ClientService {
         }
         return ImmutableSet.copyOf(graphs);
     }
-
-
-
-
 
     public ImmutableSet<String> listAllGraphSpaces() {
 

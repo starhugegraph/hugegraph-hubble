@@ -24,6 +24,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import com.baidu.hugegraph.common.Constant;
 import com.baidu.hugegraph.driver.HugeClient;
+import com.baidu.hugegraph.service.HugeClientPoolService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -34,7 +35,6 @@ import com.baidu.hugegraph.common.Identifiable;
 import com.baidu.hugegraph.common.Mergeable;
 import com.baidu.hugegraph.util.EntityUtil;
 import com.baidu.hugegraph.util.Ex;
-import com.baidu.hugegraph.service.ClientService;
 
 @Component
 public abstract class BaseController {
@@ -43,7 +43,7 @@ public abstract class BaseController {
     protected String cluster;
 
     @Autowired
-    protected ClientService clientService;
+    protected HugeClientPoolService hugeClientPoolService;
 
     public static final String ORDER_ASC = "asc";
     public static final String ORDER_DESC = "desc";
@@ -115,12 +115,12 @@ public abstract class BaseController {
     }
 
     protected HugeClient authClient(String graphspace, String graph) {
-        return this.clientService.createAuthClient(graphspace, graph,
-                                                   this.getToken());
+        return this.hugeClientPoolService.createAuthClient(graphspace, graph,
+                                                           this.getToken());
     }
 
     protected HugeClient unauthClient() {
-        return this.clientService.createUnauthClient();
+        return this.hugeClientPoolService.createUnauthClient();
     }
 
 }

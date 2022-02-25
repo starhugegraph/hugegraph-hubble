@@ -37,7 +37,6 @@ import com.baidu.hugegraph.entity.query.ExecuteHistory;
 import com.baidu.hugegraph.exception.InternalException;
 import com.baidu.hugegraph.mapper.query.ExecuteHistoryMapper;
 import com.baidu.hugegraph.options.HubbleOptions;
-import com.baidu.hugegraph.service.HugeClientPoolService;
 import com.baidu.hugegraph.structure.Task;
 import com.baidu.hugegraph.util.HubbleUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
