@@ -50,7 +50,7 @@ public class UserController extends BaseController {
     @GetMapping("list")
     public Object list() {
 
-        HugeClient client = this.clientService.createAuthClient(
+        HugeClient client = this.hugeClientPoolService.createAuthClient(
                 null, null, this.getToken());
 
         List<UserEntity> users = this.userService.listUsers(

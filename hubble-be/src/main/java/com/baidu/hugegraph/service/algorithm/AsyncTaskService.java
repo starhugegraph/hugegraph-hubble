@@ -23,11 +23,9 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.baidu.hugegraph.driver.HugeClient;
-import com.baidu.hugegraph.service.HugeClientPoolService;
 import com.baidu.hugegraph.structure.Task;
 import com.baidu.hugegraph.util.PageUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;

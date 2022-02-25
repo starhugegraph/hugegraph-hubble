@@ -21,6 +21,7 @@ package com.baidu.hugegraph.util;
 
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.baidu.hugegraph.common.Constant;
@@ -29,8 +30,6 @@ import com.baidu.hugegraph.entity.GraphConnection;
 import com.baidu.hugegraph.exception.ExternalException;
 import com.baidu.hugegraph.exception.ServerException;
 import com.baidu.hugegraph.rest.ClientException;
-import com.baidu.hugegraph.structure.gremlin.Result;
-import com.baidu.hugegraph.structure.gremlin.ResultSet;
 import com.google.common.collect.ImmutableSet;
 
 public final class HugeClientUtil {
@@ -42,9 +41,12 @@ public final class HugeClientUtil {
     );
 
     public static HugeClient tryConnect(GraphConnection connection) {
+        String graphSpace = connection.getGraphSpace();
         String graph = connection.getGraph();
+        String url = connection.getUrl();
         String host = connection.getHost();
         Integer port = connection.getPort();
+        String token = connection.getToken();
         String username = connection.getUsername();
         String password = connection.getPassword();
         int timeout = connection.getTimeout();
@@ -54,17 +56,20 @@ public final class HugeClientUtil {
         String trustStoreFile = connection.getTrustStoreFile();
         String trustStorePassword = connection.getTrustStorePassword();
 
-        String url = UriComponentsBuilder.newInstance()
-                                         .scheme(protocol)
-                                         .host(host).port(port)
-                                         .toUriString();
+        if (StringUtils.isEmpty(url)) {
+            url = UriComponentsBuilder.newInstance()
+                                             .scheme(protocol)
+                                             .host(host).port(port)
+                                             .toUriString();
+        }
         if (username == null) {
             username = "";
             password = "";
         }
         HugeClient client;
         try {
-            client = HugeClient.builder(url, "DEFAULT", graph)
+            client = HugeClient.builder(url, graphSpace, graph)
+                               .configToken(token)
                                .configUser(username, password)
                                .configTimeout(timeout)
                                .configSSL(trustStoreFile, trustStorePassword)
@@ -110,26 +115,6 @@ public final class HugeClientUtil {
             throw e;
         }
 
-        try {
-            ResultSet rs = client.gremlin().gremlin("g.V().limit(1)").execute();
-            rs.iterator().forEachRemaining(Result::getObject);
-        } catch (ServerException e) {
-            if (Constant.STATUS_UNAUTHORIZED == e.status()) {
-                throw new ExternalException(
-                          "graph-connection.username-or-password.incorrect", e);
-            }
-            String message = e.message();
-            if (message != null && message.contains("Could not rebind [g]")) {
-                throw new ExternalException("graph-connection.graph.unexist", e,
-                                            graph, host, port);
-            }
-            if (!isAcceptable(message)) {
-                throw e;
-            }
-        } catch (Exception e) {
-            client.close();
-            throw e;
-        }
         return client;
     }
 

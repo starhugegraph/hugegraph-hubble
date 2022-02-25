@@ -40,7 +40,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@JsonIgnoreProperties({"protocol", "truststore_file", "truststore_password"})
+@JsonIgnoreProperties({"protocol", "truststore_file", "truststore_password",
+        "password", "token"})
 @TableName(value = "graph_connection", autoResultMap = true)
 public class GraphConnection implements Identifiable, Mergeable {
 
@@ -81,6 +82,10 @@ public class GraphConnection implements Identifiable, Mergeable {
     private String graph;
 
     @MergeProperty
+    @JsonProperty
+    private String url;
+
+    @MergeProperty
     @JsonProperty("host")
     private String host;
 
@@ -99,6 +104,10 @@ public class GraphConnection implements Identifiable, Mergeable {
     @MergeProperty
     @JsonProperty("password")
     private String password;
+
+    @MergeProperty
+    @JsonProperty("token")
+    private String token;
 
     @MergeProperty(useNew = false)
     @JsonProperty("enabled")
