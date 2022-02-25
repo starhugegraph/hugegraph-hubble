@@ -370,7 +370,8 @@ public class LoadTaskService {
         // No need to specify a schema file
         options.graph = connection.getGraph();
         options.username = connection.getUsername();
-        options.token = connection.getPassword();
+        options.password = connection.getPassword();
+        options.token = connection.getToken();
         // options.trustStorePassword = connection.getTrustStorePassword();
         // Fill with load parameters
         LoadParameter parameter = fileMapping.getLoadParameter();

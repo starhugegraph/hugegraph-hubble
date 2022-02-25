@@ -150,8 +150,7 @@ public class LoadTaskController extends BaseController {
         connection.setCluster(config.get(HubbleOptions.META_CLUSTER));
         connection.setGraphSpace(graphSpace);
         connection.setGraph(graph);
-        connection.setUsername((String) this.getSession("username"));
-        connection.setPassword((String) this.getSession("password"));
+        connection.setToken(this.getToken());
 
         JobManager jobEntity = this.jobService.get(jobId);
         Ex.check(jobEntity != null, "job-manager.not-exist.id", jobId);
