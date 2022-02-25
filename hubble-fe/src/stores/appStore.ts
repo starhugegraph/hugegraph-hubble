@@ -21,8 +21,9 @@ export class AppStore {
     c_key: '1',
     f_key: 'sub1'
   };
-  @observable userInfo: any ={}
+  @observable userInfo: any = {}
   @observable currentKey: any = 0
+  @observable date: any = 0
 
   @observable colorList: string[] = [];
 
@@ -31,10 +32,15 @@ export class AppStore {
   };
 
   @action.bound
+  setDate(params: Date) {
+    this.date = params;
+  }
+
+  @action.bound
   setUserInfo(obj: object) {
     this.userInfo = obj;
   }
-  
+
   @action.bound
   setCurrentKey(key: string) {
     this.currentKey = key;

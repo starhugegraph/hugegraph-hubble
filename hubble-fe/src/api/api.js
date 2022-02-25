@@ -87,6 +87,16 @@ const deleteSchema = (graphspace, graph, data) => {
         });
     });
 };
+// 清空图
+const deleteGraphs= (graphspace, graph) => {
+    return new Promise((resolve, reject) => {
+        myaxios.delete(`graphspaces/${graphspace}/graphs/${graph}`).then(res => {
+            resolve(res);
+        }, error => {
+            reject(error);
+        });
+    });
+};
 
 // schema列表
 const getSchemaList = (graphspace, data) => {
@@ -741,6 +751,7 @@ const outTheData = (url, data) => {
 };
 
 export default {
+    deleteGraphs,
     deleteCompute,
     stopComputeDetail,
     getLogsServicesList,

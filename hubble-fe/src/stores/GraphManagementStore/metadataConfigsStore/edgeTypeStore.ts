@@ -1209,20 +1209,20 @@ export class EdgeTypeStore {
 
   fetchEdgeTypeList = flow(function* fetchEdgeTypeList(
     this: EdgeTypeStore,
-    options?: { fetchAll?: boolean; reuseId?: number }
+    options?: { fetchAll?: boolean; reuseId?: string }
   ) {
     this.requestStatus.fetchEdgeTypeList = 'pending';
 
     const conn_id =
-      options && typeof options.reuseId === 'number'
+      options && typeof options.reuseId === 'string'
         ? options.reuseId
-        : this.metadataConfigsRootStore.currentId;
+        : this.appStore._currentValue.graphs;
 
     try {
       const result: AxiosResponse<responseData<
         EdgeTypeListResponse
       >> = yield axios
-        .get(`${baseUrl}/${this.appStore._currentValue.tenant}/graphs/${this.appStore._currentValue.graphs}/schema/edgelabels`, {
+        .get(`${baseUrl}/${this.appStore._currentValue.tenant}/graphs/${conn_id}/schema/edgelabels`, {
           params: {
             page_no: this.edgeTypeListPageConfig.pageNumber,
             page_size: !options ? 10 : -1,
@@ -1242,7 +1242,7 @@ export class EdgeTypeStore {
         throw new Error(result.data.message);
       }
 
-      if (options && typeof options.reuseId === 'number') {
+      if (options && typeof options.reuseId === 'string') {
         this.reusableEdgeTypes = result.data.data.records;
       } else {
         this.edgeTypes = result.data.data.records;
@@ -1377,7 +1377,7 @@ export class EdgeTypeStore {
         CheckedReusableData
       >> = yield axios
         .post(
-          `${baseUrl}/${this.appStore._currentValue.tenant}/graphs/${this.appStore._currentValue.graphs}/schema/edgelabels/check_conflict`,
+          `${baseUrl}/${this.appStore._currentValue.tenant}/graphs/${reuseId}/schema/edgelabels/check_conflict`,
           {
             edgelabels: selectedEdgeTypes.map((selectedEdgeType) =>
               this.reusableEdgeTypes.find(
@@ -1387,9 +1387,10 @@ export class EdgeTypeStore {
           },
           {
             params: {
-              reused_conn_id: this.metadataConfigsRootStore.graphManagementStore.idList.find(
+              reused_graph: this.metadataConfigsRootStore.graphManagementStore.idList.find(
                 ({ name }) => name === reuseId
-              )!.id
+              )!.id,
+              reused_graphspace:this.appStore._currentValue.tenant
             }
           }
         )

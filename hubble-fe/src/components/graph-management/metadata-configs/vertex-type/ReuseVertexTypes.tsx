@@ -739,12 +739,12 @@ const ReuseVertexTypes: React.FC = observer(() => {
                   mutateSelectedList([]);
 
                   vertexTypeStore.fetchVertexTypeList({
-                    reuseId: Number(id)
+                    reuseId: id
                   });
 
                   const enable = graphManagementStore.graphData.find(
                     ({ name }) => name === selectedName
-                  )?.enabled;
+                  );
 
                   if (!enable) {
                     Message.error({

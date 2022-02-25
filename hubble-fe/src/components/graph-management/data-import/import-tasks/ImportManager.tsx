@@ -43,7 +43,7 @@ const ImportManager: React.FC = observer(() => {
     return () => {
       importManagerStore.dispose();
     };
-  }, [appStore.tenant,appStore.graphs]);
+  }, [appStore.date]);
 
   return (
     <section className={wrapperClassName}>

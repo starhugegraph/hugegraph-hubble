@@ -5,12 +5,13 @@ import { isNull } from 'lodash-es';
 import ReactJsonView from 'react-json-view';
 
 import { convertStringToJSON } from '../../../utils';
-import { AsyncTasksStoreContext } from '../../../stores';
+import { AppStoreContext, AsyncTasksStoreContext } from '../../../stores';
 
 import './AsyncTaskResult.less';
 
 const TaskErrorLogs: React.FC = observer(() => {
   const asyncTasksStore = useContext(AsyncTasksStoreContext);
+  const appStore = useContext(AppStoreContext)
   const [, params] = useRoute(
     '/graph-management/:id/async-tasks/:taskId/result'
   );
@@ -19,13 +20,15 @@ const TaskErrorLogs: React.FC = observer(() => {
     : convertStringToJSON(asyncTasksStore.singleAsyncTask!.task_result);
 
   useEffect(() => {
-    asyncTasksStore.setCurrentId(Number(params!.id));
-    asyncTasksStore.fetchAsyncTask(Number(params!.taskId));
-
+    if (appStore.graphs !== "null") {
+      console.log(params,"jjj");
+      asyncTasksStore.setCurrentId(Number(params!.id));
+      asyncTasksStore.fetchAsyncTask(Number(params!.taskId),params!.id);
+    }
     return () => {
       asyncTasksStore.dispose();
     };
-  }, [params!.id, params!.taskId]);
+  }, [appStore.date]);
 
   return (
     <section className="async-task-result">

@@ -875,8 +875,8 @@ const ReuseEdgeTypes: React.FC = observer(() => {
                   currentStatus === index + 1
                     ? 'process'
                     : currentStatus > index + 1
-                    ? 'finish'
-                    : 'wait'
+                      ? 'finish'
+                      : 'wait'
                 }
                 key={title}
               />
@@ -897,6 +897,7 @@ const ReuseEdgeTypes: React.FC = observer(() => {
                 size="medium"
                 showSearch={false}
                 onChange={(selectedName: string) => {
+                  
                   mutateSelectedId(selectedName);
 
                   const id = graphManagementStore.idList.find(
@@ -906,12 +907,12 @@ const ReuseEdgeTypes: React.FC = observer(() => {
                   mutateSelectedList([]);
 
                   edgeTypeStore.fetchEdgeTypeList({
-                    reuseId: Number(id)
+                    reuseId: id
                   });
 
                   const enable = graphManagementStore.graphData.find(
                     ({ name }) => name === selectedName
-                  )?.enabled;
+                  );
 
                   if (!enable) {
                     Message.error({
@@ -1029,11 +1030,11 @@ const ReuseEdgeTypes: React.FC = observer(() => {
               dataSource={
                 edgeTypeStore.editedCheckedReusableData
                   ? edgeTypeStore.editedCheckedReusableData!.edgelabel_conflicts.map(
-                      ({ entity, status }) => ({
-                        name: entity.name,
-                        status
-                      })
-                    )
+                    ({ entity, status }) => ({
+                      name: entity.name,
+                      status
+                    })
+                  )
                   : []
               }
               pagination={false}
@@ -1050,11 +1051,11 @@ const ReuseEdgeTypes: React.FC = observer(() => {
               dataSource={
                 edgeTypeStore.editedCheckedReusableData
                   ? edgeTypeStore.editedCheckedReusableData!.vertexlabel_conflicts.map(
-                      ({ entity, status }) => ({
-                        name: entity.name,
-                        status
-                      })
-                    )
+                    ({ entity, status }) => ({
+                      name: entity.name,
+                      status
+                    })
+                  )
                   : []
               }
               pagination={false}
@@ -1071,12 +1072,12 @@ const ReuseEdgeTypes: React.FC = observer(() => {
               dataSource={
                 edgeTypeStore.editedCheckedReusableData
                   ? edgeTypeStore.editedCheckedReusableData!.propertykey_conflicts.map(
-                      ({ entity, status }) => ({
-                        name: entity.name,
-                        data_type: entity.data_type,
-                        status
-                      })
-                    )
+                    ({ entity, status }) => ({
+                      name: entity.name,
+                      data_type: entity.data_type,
+                      status
+                    })
+                  )
                   : []
               }
               pagination={false}
@@ -1093,12 +1094,12 @@ const ReuseEdgeTypes: React.FC = observer(() => {
               dataSource={
                 edgeTypeStore.editedCheckedReusableData
                   ? edgeTypeStore.editedCheckedReusableData!.propertyindex_conflicts.map(
-                      ({ entity, status }) => ({
-                        name: entity.name,
-                        owner: entity.owner,
-                        status
-                      })
-                    )
+                    ({ entity, status }) => ({
+                      name: entity.name,
+                      owner: entity.owner,
+                      status
+                    })
+                  )
                   : []
               }
               pagination={false}

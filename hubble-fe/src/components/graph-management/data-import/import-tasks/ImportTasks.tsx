@@ -84,7 +84,7 @@ const ImportTasks: React.FC = observer(() => {
       dataMapStore.dispose();
       serverDataImportStore.dispose();
     };
-  }, [appStore.graphs, appStore.tenant]);
+  }, [appStore.date]);
 
   return (
     <section className={wrapperClassName}>

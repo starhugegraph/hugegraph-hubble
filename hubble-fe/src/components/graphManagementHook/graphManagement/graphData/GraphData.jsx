@@ -18,9 +18,9 @@ import {
     Col,
     Checkbox,
     Form,
-    Switch,
     Select,
-    message
+    message,
+    Popconfirm
 } from 'antd';
 import { AppStoreContext } from '../../../../stores';
 
@@ -62,6 +62,8 @@ export default function GraphData() {
         appStore.tenant && getSchemaNameList();
     }, [appStore.tenant]);
 
+    // loading
+    const [loading, setLoading] = useState(false);
     // 表格数据
     let [tableData, setTableData] = useState([]);
     // 创建图弹窗
@@ -95,6 +97,7 @@ export default function GraphData() {
 
     // 搜索
     const onSearch = (value, e, key) => {
+        setLoading(true)
         const obj = {
             page_no: key ? pageObj.current : 1,
             page_size: pageObj.pageSize,
@@ -105,6 +108,7 @@ export default function GraphData() {
             return;
         }
         api.getGraphs(appStore.tenant, obj).then((res) => {
+            setLoading(false)
             if (res.status === 200) {
                 setPageObj({
                     current: res.data.current,
@@ -204,13 +208,16 @@ export default function GraphData() {
     const confirmCreate = () => {
         api.createGraph(appStore.tenant, formData).then((res) => {
             if (res.status === 200) {
-                message.success(res.message);
+                message.success("创建成功,即将刷新页面");
                 setCreateConfirmKey(false);
                 form.setFieldsValue({ graph: '', schema: null, auth: true });
                 setCreateKey(false);
                 onSearch('');
                 setInpValue('');
                 setPageObj(defaultPageObj);
+                setTimeout(() => {
+                    window.location.reload()
+                }, 1000);
             }
         });
     };
@@ -276,7 +283,7 @@ export default function GraphData() {
                     }
                 }
             >
-                确定要删除图{deleteData}吗？
+                确定要清空图{deleteData}吗？
             </Modal>
             <Modal
                 title="确认创建"
@@ -372,6 +379,7 @@ export default function GraphData() {
                                 total: pageObj.total
                             }}
                             onChange={pageChange}
+                            loading={loading}
                         >
                             {renderTabel(tableKeyList)}
                             <Column
@@ -394,6 +402,24 @@ export default function GraphData() {
                                             <Button
                                                 onClick={() => { openDeleteModal(record) }}
                                             >清空图</Button>
+                                            <Popconfirm
+                                                title="你确定要删除此图吗？"
+                                                onConfirm={() => {
+                                                    api.deleteGraphs(appStore.tenant, record.name).then(res => {
+                                                        if (res.status === 200) {
+                                                            message.success("删除成功")
+                                                            onSearch('')
+                                                        }
+                                                    })
+                                                }}
+                                                okText="确定"
+                                                cancelText="取消"
+                                            >
+                                                <Button
+                                                    danger
+                                                >删除图</Button>
+                                            </Popconfirm>
+
                                         </div>
                                     )
                                 }}

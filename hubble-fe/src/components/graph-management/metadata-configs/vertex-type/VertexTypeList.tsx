@@ -406,8 +406,7 @@ const VertexTypeList: React.FC = observer(() => {
     };
   }, [
     metadataPropertyStore,
-    appStore.graphs,
-    appStore.tenant,
+    appStore.date,
     vertexTypeStore
   ]);
 

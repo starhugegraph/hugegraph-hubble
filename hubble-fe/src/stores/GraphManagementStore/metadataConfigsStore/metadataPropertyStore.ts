@@ -321,14 +321,14 @@ export class MetadataPropertyStore {
 
   fetchMetadataPropertyList = flow(function* fetchMetadataPropertyList(
     this: MetadataPropertyStore,
-    options?: { fetchAll?: boolean; reuseId?: number }
+    options?: { fetchAll?: boolean; reuseId?: string }
   ) {
     this.requestStatus.fetchMetadataPropertyList = 'pending';
     try {
       const result: AxiosResponse<responseData<
         MetadataPropertyListResponse
       >> = yield axios
-        .get(`${baseUrl}/${this.appStore._currentValue.tenant}/graphs/${this.appStore._currentValue.graphs}/schema/propertykeys`, {
+        .get(`${baseUrl}/${this.appStore._currentValue.tenant}/graphs/${(options as any).reuseId}/schema/propertykeys`, {
           params: {
             page_no: this.metadataPropertyPageConfig.pageNumber,
             page_size: !options ? 10 : -1,
@@ -352,7 +352,7 @@ export class MetadataPropertyStore {
         throw new Error(result.data.message);
       }
 
-      if (options && typeof options.reuseId === 'number') {
+      if (options && typeof options.reuseId === 'string') {
         this.reuseableProperties = result.data.data.records;
       } else {
         this.metadataProperties = result.data.data.records;

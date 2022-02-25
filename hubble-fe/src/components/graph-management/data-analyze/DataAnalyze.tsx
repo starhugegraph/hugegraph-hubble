@@ -63,7 +63,7 @@ const DataAnalyze: React.FC = observer(() => {
       dataAnalyzeStore.fetchAllNodeStyle();
       dataAnalyzeStore.fetchAllEdgeStyle();
     }
-  }, [dataAnalyzeStore, appStore.tenant, appStore.graphs]);
+  }, [dataAnalyzeStore, appStore.date]);
 
   return (
     <section className="data-analyze">

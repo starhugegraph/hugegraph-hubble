@@ -388,7 +388,7 @@ const EdgeTypeList: React.FC = observer(() => {
   });
 
   useEffect(() => {
-    if (appStore.graphs != "null") {
+    if (appStore.graphs !== "null") {
       metadataPropertyStore.fetchMetadataPropertyList({ fetchAll: true });
       edgeTypeStore.fetchEdgeTypeList();
     }
@@ -398,8 +398,7 @@ const EdgeTypeList: React.FC = observer(() => {
     };
   }, [
     metadataPropertyStore,
-    appStore.graphs,
-    appStore.tenant,
+    appStore.date,
     edgeTypeStore
   ]);
 

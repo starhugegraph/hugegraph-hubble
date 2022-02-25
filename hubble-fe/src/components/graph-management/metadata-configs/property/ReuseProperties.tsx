@@ -266,8 +266,8 @@ const ReuseProperties: React.FC = observer(() => {
                   currentStatus === index + 1
                     ? 'process'
                     : currentStatus > index + 1
-                    ? 'finish'
-                    : 'wait'
+                      ? 'finish'
+                      : 'wait'
                 }
                 key={title}
               />
@@ -297,12 +297,12 @@ const ReuseProperties: React.FC = observer(() => {
                   mutateSelectedList([]);
 
                   metadataPropertyStore.fetchMetadataPropertyList({
-                    reuseId: Number(id)
+                    reuseId: id
                   });
 
                   const enable = graphManagementStore.graphData.find(
                     ({ name }) => name === selectedName
-                  )?.enabled;
+                  );
 
                   if (!enable) {
                     Message.error({
@@ -419,12 +419,12 @@ const ReuseProperties: React.FC = observer(() => {
               dataSource={
                 metadataPropertyStore.editedCheckedReusableProperties
                   ? metadataPropertyStore.editedCheckedReusableProperties!.propertykey_conflicts.map(
-                      ({ entity, status }) => ({
-                        name: entity.name,
-                        data_type: entity.data_type,
-                        status
-                      })
-                    )
+                    ({ entity, status }) => ({
+                      name: entity.name,
+                      data_type: entity.data_type,
+                      status
+                    })
+                  )
                   : []
               }
               pagination={false}

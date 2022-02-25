@@ -367,7 +367,7 @@ const AsyncTaskList: React.FC = observer(() => {
       };
     }
     // when page number changed, dispatch current useEffect to loop again
-  }, [params?.id, asyncTasksStore.asyncTasksPageConfig.pageNumber,appStore.tenant,appStore.graphs]);
+  }, [params?.id, asyncTasksStore.asyncTasksPageConfig.pageNumber,appStore.date]);
 
   useEffect(() => {
     document.addEventListener('click', handleOutSideClick, false);
@@ -617,6 +617,7 @@ export interface AsyncTaskListManipulationProps {
 export const AsyncTaskListManipulation: React.FC<AsyncTaskListManipulationProps> = observer(
   ({ id, type, status }) => {
     const asyncTasksStore = useContext(AsyncTasksStoreContext);
+    const appStore = useContext(AppStoreContext)
     const [isPopDeleteModal, switchPopDeleteModal] = useState(false);
     const deleteWrapperRef = useRef<HTMLDivElement>(null);
     const [, params] = useRoute('/graph-management/:id/async-tasks');
@@ -664,7 +665,7 @@ export const AsyncTaskListManipulation: React.FC<AsyncTaskListManipulationProps>
           <a
             target="_blank"
             className="async-task-list-table-outlink"
-            href={`/graph-management/${params!.id}/async-tasks/${id}/result`}
+            href={`/graph-management/${appStore.graphs}/async-tasks/${id}/result`}
           >
             {t('async-tasks.manipulations.check-result')}
           </a>
@@ -673,7 +674,7 @@ export const AsyncTaskListManipulation: React.FC<AsyncTaskListManipulationProps>
           <a
             target="_blank"
             className="async-task-list-table-outlink"
-            href={`/graph-management/${params!.id}/async-tasks/${id}/result`}
+            href={`/graph-management/${appStore.graphs}/async-tasks/${id}/result`}
           >
             {t('async-tasks.manipulations.check-reason')}
           </a>
