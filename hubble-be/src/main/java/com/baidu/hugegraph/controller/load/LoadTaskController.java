@@ -149,7 +149,7 @@ public class LoadTaskController extends BaseController {
         connection.setClientKey(config.get(HubbleOptions.META_CLIENT_KEY));
         connection.setCluster(config.get(HubbleOptions.META_CLUSTER));
         connection.setGraphSpace(graphSpace);
-        connection.setGraphSpace(graph);
+        connection.setGraph(graph);
         connection.setUsername((String) this.getSession("username"));
         connection.setPassword((String) this.getSession("password"));
 
