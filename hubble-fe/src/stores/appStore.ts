@@ -24,12 +24,18 @@ export class AppStore {
   @observable userInfo: any = {}
   @observable currentKey: any = 0
   @observable date: any = 0
+  @observable graphspaces: string[] = []
 
   @observable colorList: string[] = [];
 
   @observable.shallow requestStatus = {
     fetchColorList: 'pending'
   };
+
+  @action.bound
+  setGraphspaces(params: string[]) {
+    this.graphspaces = params;
+  }
 
   @action.bound
   setDate(params: Date) {

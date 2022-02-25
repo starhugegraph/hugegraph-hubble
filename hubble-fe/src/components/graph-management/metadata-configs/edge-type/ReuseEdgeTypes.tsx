@@ -12,7 +12,7 @@ import {
 import { cloneDeep } from 'lodash-es';
 import { useTranslation } from 'react-i18next';
 
-import { GraphManagementStoreContext } from '../../../../stores';
+import { AppStoreContext, GraphManagementStoreContext } from '../../../../stores';
 import MetadataConfigsRootStore from '../../../../stores/GraphManagementStore/metadataConfigsStore/metadataConfigsStore';
 
 import PassIcon from '../../../../assets/imgs/ic_pass.svg';
@@ -22,11 +22,14 @@ import './ReuseEdgeTypes.less';
 const ReuseEdgeTypes: React.FC = observer(() => {
   const graphManagementStore = useContext(GraphManagementStoreContext);
   const metadataConfigsRootStore = useContext(MetadataConfigsRootStore);
+  const appStore = useContext(AppStoreContext)
   const { edgeTypeStore } = metadataConfigsRootStore;
   const [currentStatus, setCurrentStatus] = useState(1);
   // acutally the name, not id in database
   const [selectedId, mutateSelectedId] = useState<[] | string>([]);
   const [selectedList, mutateSelectedList] = useState<string[]>([]);
+  const [graphspacesId, mutateGraphspacesId] = useState<string>(appStore.tenant);
+
   const { t } = useTranslation();
 
   // step 2
@@ -889,6 +892,34 @@ const ReuseEdgeTypes: React.FC = observer(() => {
             <div className="reuse-properties-row">
               <div className="reuse-properties-row-name">
                 <span className="metdata-essential-form-options">*</span>
+                <span>租户ID：</span>
+              </div>
+              <Select
+                width={420}
+                placeholder="请选择要复用的租户"
+                size="medium"
+                showSearch={false}
+                defaultValue={appStore.tenant}
+                onChange={async (selectedName: string) => {
+                  mutateSelectedId([])
+                  mutateGraphspacesId(selectedName)
+                  await graphManagementStore.fetchIdList(selectedName)
+                }}
+                value={graphspacesId}
+              >
+                {
+                  appStore.graphspaces.map(item => (
+                    <Select.Option value={item} key={item}>
+                      {item}
+                    </Select.Option>
+                  ))
+                }
+              </Select>
+            </div>
+
+            <div className="reuse-properties-row">
+              <div className="reuse-properties-row-name">
+                <span className="metdata-essential-form-options">*</span>
                 <span>图ID：</span>
               </div>
               <Select
@@ -897,7 +928,7 @@ const ReuseEdgeTypes: React.FC = observer(() => {
                 size="medium"
                 showSearch={false}
                 onChange={(selectedName: string) => {
-                  
+
                   mutateSelectedId(selectedName);
 
                   const id = graphManagementStore.idList.find(
@@ -907,7 +938,8 @@ const ReuseEdgeTypes: React.FC = observer(() => {
                   mutateSelectedList([]);
 
                   edgeTypeStore.fetchEdgeTypeList({
-                    reuseId: id
+                    reuseId: id,
+                    tenant: graphspacesId
                   });
 
                   const enable = graphManagementStore.graphData.find(
@@ -936,6 +968,7 @@ const ReuseEdgeTypes: React.FC = observer(() => {
                   ))}
               </Select>
             </div>
+
             <div
               className="reuse-properties-row"
               style={{ alignItems: 'normal' }}
@@ -984,6 +1017,7 @@ const ReuseEdgeTypes: React.FC = observer(() => {
                   setCurrentStatus(2);
                   edgeTypeStore.checkConflict(
                     selectedId as string,
+                    graphspacesId,
                     selectedList
                   );
 

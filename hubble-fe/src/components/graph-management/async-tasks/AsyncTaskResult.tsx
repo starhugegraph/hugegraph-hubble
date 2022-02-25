@@ -21,7 +21,6 @@ const TaskErrorLogs: React.FC = observer(() => {
 
   useEffect(() => {
     if (appStore.graphs !== "null") {
-      console.log(params,"jjj");
       asyncTasksStore.setCurrentId(Number(params!.id));
       asyncTasksStore.fetchAsyncTask(Number(params!.taskId),params!.id);
     }

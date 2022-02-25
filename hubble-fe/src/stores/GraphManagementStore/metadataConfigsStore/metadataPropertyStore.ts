@@ -322,14 +322,14 @@ export class MetadataPropertyStore {
 
   fetchMetadataPropertyList = flow(function* fetchMetadataPropertyList(
     this: MetadataPropertyStore,
-    options?: { fetchAll?: boolean; reuseId?: string }
+    options?: { fetchAll?: boolean; reuseId?: string, tenant?: string }
   ) {
     this.requestStatus.fetchMetadataPropertyList = 'pending';
     try {
       const result: AxiosResponse<responseData<
         MetadataPropertyListResponse
       >> = yield axios
-        .get(`${baseUrl}/${this.appStore._currentValue.tenant}/graphs/${options ? options.reuseId ? options.reuseId : this.appStore._currentValue.graphs : this.appStore._currentValue.graphs}/schema/propertykeys`, {
+        .get(`${baseUrl}/${options ? options.tenant ? options.tenant : this.appStore._currentValue.tenant : this.appStore._currentValue.tenant}/graphs/${options ? options.reuseId ? options.reuseId : this.appStore._currentValue.graphs : this.appStore._currentValue.graphs}/schema/propertykeys`, {
           params: {
             page_no: this.metadataPropertyPageConfig.pageNumber,
             page_size: !options ? 10 : -1,
@@ -344,7 +344,6 @@ export class MetadataPropertyStore {
           }
         })
         .catch(checkIfLocalNetworkOffline);
-console.log(result,"123123");
 
       if (result.data.status !== 200) {
         if (result.data.status === 401) {
@@ -364,9 +363,7 @@ console.log(result,"123123");
       if (result.data.data.records.length === 0) {
         if (this.isSearched.status === true) {
           this.currentTabStatus = 'list';
-        } else {
-          this.currentTabStatus = 'empty';
-        }
+        } 
       } else if (this.currentTabStatus !== 'reuse') {
         // if currentTabStatus is reuse, stay at reuse page
         this.currentTabStatus = 'list';
@@ -480,6 +477,8 @@ console.log(result,"123123");
 
   checkConflict = flow(function* checkConflict(
     this: MetadataPropertyStore,
+    reuseId:string,
+    tenant:string,
     selectedNameList: string[]
   ) {
     this.requestStatus.checkConflict = 'pending';
@@ -494,6 +493,12 @@ console.log(result,"123123");
             propertykeys: selectedNameList.map((selectedName) =>
               this.reuseableProperties.find(({ name }) => name === selectedName)
             )
+          },
+          {
+            params: {
+              reused_graph: reuseId,
+              reused_graphspace: tenant
+            }
           }
         )
         .catch(checkIfLocalNetworkOffline);

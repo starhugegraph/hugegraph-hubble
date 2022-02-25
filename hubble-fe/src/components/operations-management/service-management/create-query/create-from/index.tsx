@@ -27,12 +27,6 @@ const CreateFrom = (props: { getQuery: Function, setVisible: Function, detailDat
         return false
     }, [detailData])
 
-    const isShowUrl = useMemo(() => {
-        console.log();
-        if (form.getFieldValue('deployment_type') === "MANUAL") return true
-        return false
-    }, [form])
-
     // 获取需要编辑的数据并渲染
     useEffect(() => {
         if (isDisable) {
@@ -48,7 +42,6 @@ const CreateFrom = (props: { getQuery: Function, setVisible: Function, detailDat
 
     // 完成按钮
     const onFinish = (values: any) => {
-        values.urls = Array.isArray(values.urls) ? values.urls : values.urls.split(",").filter((i: string) => i)
         if (isDisable) {
             api.changeQueryDetail(appStore.tenant, detailData.name, values).then((res: any) => {
                 if (res && res.status === 200) {

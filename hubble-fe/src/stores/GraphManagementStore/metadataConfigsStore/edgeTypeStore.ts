@@ -20,12 +20,12 @@ import SelectedSolidArrowIcon from '../../../assets/imgs/ic_arrow_selected.svg';
 import NoSelectedSolidArrowIcon from '../../../assets/imgs/ic_arrow.svg';
 import SelectedSolidStraightIcon from '../../../assets/imgs/ic_straight_selected.svg';
 import NoSelectedSolidStraightIcon from '../../../assets/imgs/ic_straight.svg';
-import  AppStoreContext  from '../../appStore';
+import AppStoreContext from '../../appStore';
 
 export class EdgeTypeStore {
   metadataConfigsRootStore: MetadataConfigsRootStore;
-  appStore:any
-  
+  appStore: any
+
   constructor(MetadataConfigsRootStore: MetadataConfigsRootStore) {
     this.metadataConfigsRootStore = MetadataConfigsRootStore;
     this.appStore = AppStoreContext
@@ -165,31 +165,31 @@ export class EdgeTypeStore {
     EdgeTypeValidateFields,
     string | EdgeTypeValidatePropertyIndexes[]
   > = {
-    name: '',
-    sourceLabel: '',
-    targetLabel: '',
-    properties: '',
-    sortKeys: '',
-    propertyIndexes: [],
-    displayFeilds: []
-  };
+      name: '',
+      sourceLabel: '',
+      targetLabel: '',
+      properties: '',
+      sortKeys: '',
+      propertyIndexes: [],
+      displayFeilds: []
+    };
 
   @observable.shallow validateEditEdgeTypeErrorMessage: Record<
     'propertyIndexes',
     EdgeTypeValidatePropertyIndexes[]
   > = {
-    propertyIndexes: []
-  };
+      propertyIndexes: []
+    };
 
   @observable validateReuseErrorMessage: Record<
     'edgeType' | 'vertexType' | 'property' | 'property_index',
     string
   > = {
-    edgeType: '',
-    vertexType: '',
-    property: '',
-    property_index: ''
-  };
+      edgeType: '',
+      vertexType: '',
+      property: '',
+      property_index: ''
+    };
 
   @computed get reusableEdgeTypeDataMap() {
     const dataMap: Record<string, Record<'key' | 'title', string>> = {};
@@ -1209,7 +1209,7 @@ export class EdgeTypeStore {
 
   fetchEdgeTypeList = flow(function* fetchEdgeTypeList(
     this: EdgeTypeStore,
-    options?: { fetchAll?: boolean; reuseId?: string }
+    options?: { fetchAll?: boolean; reuseId?: string, tenant?: string }
   ) {
     this.requestStatus.fetchEdgeTypeList = 'pending';
 
@@ -1218,11 +1218,15 @@ export class EdgeTypeStore {
         ? options.reuseId
         : this.appStore._currentValue.graphs;
 
+    const tenant_id = options && typeof options.tenant === 'string'
+      ? options.tenant
+      : this.appStore._currentValue.tenant;
+
     try {
       const result: AxiosResponse<responseData<
         EdgeTypeListResponse
       >> = yield axios
-        .get(`${baseUrl}/${this.appStore._currentValue.tenant}/graphs/${conn_id}/schema/edgelabels`, {
+        .get(`${baseUrl}/${tenant_id}/graphs/${conn_id}/schema/edgelabels`, {
           params: {
             page_no: this.edgeTypeListPageConfig.pageNumber,
             page_size: !options ? 10 : -1,
@@ -1336,11 +1340,11 @@ export class EdgeTypeStore {
       const result: AxiosResponse<responseData<null>> = yield axios
         .delete(
           `${baseUrl}/${this.appStore._currentValue.tenant}/graphs/${this.appStore._currentValue.graphs}/schema/edgelabels?` +
-            combinedParams +
-            `&skip_using=${String(
-              Array.isArray(selectedEdgeTypeNames) &&
-                selectedEdgeTypeNames.length !== 1
-            )}`
+          combinedParams +
+          `&skip_using=${String(
+            Array.isArray(selectedEdgeTypeNames) &&
+            selectedEdgeTypeNames.length !== 1
+          )}`
         )
         .catch(checkIfLocalNetworkOffline);
 
@@ -1351,7 +1355,7 @@ export class EdgeTypeStore {
       if (
         selectedEdgeTypeNames.length === this.edgeTypes.length &&
         this.edgeTypeListPageConfig.pageNumber ===
-          Math.ceil(this.edgeTypeListPageConfig.pageTotal / 10) &&
+        Math.ceil(this.edgeTypeListPageConfig.pageTotal / 10) &&
         this.edgeTypeListPageConfig.pageNumber > 1
       ) {
         this.edgeTypeListPageConfig.pageNumber =
@@ -1368,6 +1372,7 @@ export class EdgeTypeStore {
   checkConflict = flow(function* checkConflict(
     this: EdgeTypeStore,
     reuseId: string,
+    tenant:string,
     selectedEdgeTypes: string[]
   ) {
     this.requestStatus.checkConflict = 'pending';
@@ -1377,7 +1382,7 @@ export class EdgeTypeStore {
         CheckedReusableData
       >> = yield axios
         .post(
-          `${baseUrl}/${this.appStore._currentValue.tenant}/graphs/${reuseId}/schema/edgelabels/check_conflict`,
+          `${baseUrl}/${this.appStore._currentValue.tenant}/graphs/${this.appStore._currentValue.graphs}/schema/edgelabels/check_conflict`,
           {
             edgelabels: selectedEdgeTypes.map((selectedEdgeType) =>
               this.reusableEdgeTypes.find(
@@ -1387,10 +1392,8 @@ export class EdgeTypeStore {
           },
           {
             params: {
-              reused_graph: this.metadataConfigsRootStore.graphManagementStore.idList.find(
-                ({ name }) => name === reuseId
-              )!.id,
-              reused_graphspace:this.appStore._currentValue.tenant
+              reused_graph: reuseId,
+              reused_graphspace: tenant
             }
           }
         )

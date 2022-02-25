@@ -929,7 +929,7 @@ export class VertexTypeStore {
 
   fetchVertexTypeList = flow(function* fetchVertexTypeList(
     this: VertexTypeStore,
-    options?: { fetchAll?: boolean; reuseId?: number }
+    options?: { fetchAll?: boolean; reuseId?: string, tenant?: string }
   ) {
     this.requestStatus.fetchVertexTypeList = 'pending';
 
@@ -938,11 +938,15 @@ export class VertexTypeStore {
         ? options.reuseId
         : this.appStore._currentValue.graphs;
 
+    const tenant_id = options && typeof options.tenant === 'string'
+      ? options.tenant
+      : this.appStore._currentValue.tenant;
+
     try {
       const result: AxiosResponse<responseData<
         VertexTypeListResponse
       >> = yield axios
-        .get(`${baseUrl}/${this.appStore._currentValue.tenant}/graphs/${conn_id}/schema/vertexlabels`, {
+        .get(`${baseUrl}/${tenant_id}/graphs/${conn_id}/schema/vertexlabels`, {
           params: {
             page_no: this.vertexListPageConfig.pageNumber,
             page_size: !options ? 10 : -1,
@@ -1115,6 +1119,7 @@ export class VertexTypeStore {
   checkConflict = flow(function* checkConflict(
     this: VertexTypeStore,
     reuseId: string,
+    tenant:string,
     selectedVertexTypes: string[]
   ) {
     this.requestStatus.checkConflict = 'pending';
@@ -1122,7 +1127,7 @@ export class VertexTypeStore {
     try {
       const result: AxiosResponse<responseData<null>> = yield axios
         .post(
-          `${baseUrl}/${this.appStore._currentValue.tenant}/graphs/${reuseId}/schema/vertexlabels/check_conflict`,
+          `${baseUrl}/${this.appStore._currentValue.tenant}/graphs/${this.appStore._currentValue.graphs}/schema/vertexlabels/check_conflict`,
           {
             vertexlabels: selectedVertexTypes.map((selectedVertexType) =>
               this.reusableVertexTypes.find(
@@ -1132,10 +1137,8 @@ export class VertexTypeStore {
           },
           {
             params: {
-              reused_graph: this.metadataConfigsRootStore.graphManagementStore.idList.find(
-                ({ name }) => name === reuseId
-              )!.id,
-              reused_graphspace:this.appStore._currentValue.tenant
+              reused_graph: reuseId,
+              reused_graphspace: tenant
             }
           }
         )
@@ -1144,7 +1147,6 @@ export class VertexTypeStore {
       if (result.data.status !== 200) {
         throw new Error(result.data.message);
       }
-      console.log(result, "1111111");
 
       this.checkedReusableData = result.data.data;
       this.editedCheckedReusableData = cloneDeep(result.data.data);
