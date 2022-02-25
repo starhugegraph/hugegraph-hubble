@@ -148,7 +148,6 @@ export class AsyncTasksStore {
           `${baseUrl}/${this.appStore._currentValue.tenant}/graphs/${graphs}/async-tasks/${id}`
         )
         .catch(checkIfLocalNetworkOffline);
-      console.log(result, "xxxxx");
 
       if (result.data.status !== 200) {
         this.errorInfo.fetchAsyncTask.code = result.data.status;

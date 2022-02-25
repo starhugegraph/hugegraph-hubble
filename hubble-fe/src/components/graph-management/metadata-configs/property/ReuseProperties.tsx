@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useContext, useState, useEffect, useMemo } from 'react';
 import { observer } from 'mobx-react';
 import {
   Select,
@@ -12,7 +12,7 @@ import {
 import { cloneDeep } from 'lodash-es';
 import { useTranslation } from 'react-i18next';
 
-import { GraphManagementStoreContext } from '../../../../stores';
+import { AppStoreContext, GraphManagementStoreContext } from '../../../../stores';
 import MetadataConfigsRootStore from '../../../../stores/GraphManagementStore/metadataConfigsStore/metadataConfigsStore';
 
 import PassIcon from '../../../../assets/imgs/ic_pass.svg';
@@ -22,11 +22,18 @@ import './ReuseProperties.less';
 const ReuseProperties: React.FC = observer(() => {
   const graphManagementStore = useContext(GraphManagementStoreContext);
   const metadataConfigsRootStore = useContext(MetadataConfigsRootStore);
+  const appStore = useContext(AppStoreContext)
   const { metadataPropertyStore } = metadataConfigsRootStore;
   const [currentStatus, setCurrentStatus] = useState(1);
   // acutally the name, not id in database
   const [selectedId, mutateSelectedId] = useState<[] | string>([]);
+  const [graphspacesId, mutateGraphspacesId] = useState<string>(appStore.tenant);
   const [selectedList, mutateSelectedList] = useState<string[]>([]);
+
+  const loading = useMemo<boolean>(() => {
+    return graphManagementStore.requestStatus.fetchIdList === "pending"
+  }, [graphManagementStore.requestStatus.fetchIdList])
+
   const { t } = useTranslation();
 
   // step 2
@@ -280,9 +287,38 @@ const ReuseProperties: React.FC = observer(() => {
             <div className="reuse-properties-row">
               <div className="reuse-properties-row-name">
                 <span className="metdata-essential-form-options">*</span>
+                <span>租户ID：</span>
+              </div>
+              <Select
+                width={420}
+                placeholder="请选择要复用的租户"
+                size="medium"
+                showSearch={false}
+                defaultValue={appStore.tenant}
+                onChange={async (selectedName: string) => {
+                  mutateSelectedId([])
+                  mutateGraphspacesId(selectedName)
+                  await graphManagementStore.fetchIdList(selectedName)
+                }}
+                value={graphspacesId}
+              >
+                {
+                  appStore.graphspaces.map(item => (
+                    <Select.Option value={item} key={item}>
+                      {item}
+                    </Select.Option>
+                  ))
+                }
+              </Select>
+            </div>
+
+            <div className="reuse-properties-row">
+              <div className="reuse-properties-row-name">
+                <span className="metdata-essential-form-options">*</span>
                 <span>图ID：</span>
               </div>
               <Select
+                loading={loading}
                 width={420}
                 placeholder="请选择要复用的图"
                 size="medium"
@@ -297,7 +333,8 @@ const ReuseProperties: React.FC = observer(() => {
                   mutateSelectedList([]);
 
                   metadataPropertyStore.fetchMetadataPropertyList({
-                    reuseId: id
+                    reuseId: id,
+                    tenant: graphspacesId
                   });
 
                   const enable = graphManagementStore.graphData.find(
@@ -312,13 +349,9 @@ const ReuseProperties: React.FC = observer(() => {
                     });
                   }
                 }}
-                value={selectedId}
+                value={selectedId ? selectedId : "此租户空间无图"}
               >
                 {graphManagementStore.idList
-                  .filter(
-                    ({ id }) =>
-                      Number(id) !== metadataConfigsRootStore.currentId
-                  )
                   .map(({ name }) => (
                     <Select.Option value={name} key={name}>
                       {name}
@@ -326,6 +359,7 @@ const ReuseProperties: React.FC = observer(() => {
                   ))}
               </Select>
             </div>
+
             <div
               className="reuse-properties-row"
               style={{ alignItems: 'normal' }}
@@ -372,7 +406,11 @@ const ReuseProperties: React.FC = observer(() => {
                 disabled={selectedList.length === 0}
                 onClick={() => {
                   setCurrentStatus(2);
-                  metadataPropertyStore.checkConflict(selectedList);
+                  metadataPropertyStore.checkConflict(
+                    selectedId as string,
+                    graphspacesId,
+                    selectedList
+                    );
 
                   if (
                     metadataPropertyStore.requestStatus.checkConflict ===

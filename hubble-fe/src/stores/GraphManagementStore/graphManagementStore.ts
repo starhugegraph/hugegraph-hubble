@@ -345,14 +345,17 @@ export class GraphManagementStore {
     }
   });
 
-  fetchIdList = flow(function* fetchIdList(this: GraphManagementStore) {
+  fetchIdList = flow(function* fetchIdList(
+    this: GraphManagementStore,
+    tenant?: string
+  ) {
     this.resetErrorInfo();
     this.requestStatus.fetchIdList = 'pending';
     // api.getGraphsName
     try {
       const result: AxiosResponse<GraphDataResponse> = yield axios.get<
         GraphData
-      >(baseUrl + `/${this.appStore._currentValue.tenant}/graphs`, {
+      >(baseUrl + `/${tenant ? tenant : this.appStore._currentValue.tenant}/graphs`, {
         params: {
           page_size: -1
         }
@@ -362,7 +365,6 @@ export class GraphManagementStore {
         if (result.data.status === 200) {
           this.requestStatus.fetchIdList = 'success';
         }
-        console.log(result);
 
         this.idList = result.data.data.records.map(({ name }) => ({
           id: name,

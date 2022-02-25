@@ -8,7 +8,6 @@ const Index = ({ isModalVisible, setIsModalVisible, detail, tenant, graphs }) =>
     const [loading, setLoading] = useState(true)
     useEffect(() => {
         detail && api.getComputeDetail(tenant, graphs, detail).then(res => {
-            console.log(res, "111");
             if (res.status === 200) setDetail(res.data)
             setLoading(false)
         })

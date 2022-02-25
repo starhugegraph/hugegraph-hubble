@@ -62,6 +62,7 @@ function Header(
                     appStore.setTenant(defaultGraphspaces);
                     setUserActive(defaultGraphspaces)
                 }
+                appStore.setGraphspaces(res.data.graphspaces)
                 setUserListSelect(res.data.graphspaces);
             } else {
                 setUserActive("获取失败")

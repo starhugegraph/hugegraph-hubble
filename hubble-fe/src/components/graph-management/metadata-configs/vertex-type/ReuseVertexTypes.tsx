@@ -12,7 +12,7 @@ import {
 import { cloneDeep } from 'lodash-es';
 import { useTranslation } from 'react-i18next';
 
-import { GraphManagementStoreContext } from '../../../../stores';
+import { AppStoreContext, GraphManagementStoreContext } from '../../../../stores';
 import MetadataConfigsRootStore from '../../../../stores/GraphManagementStore/metadataConfigsStore/metadataConfigsStore';
 
 import PassIcon from '../../../../assets/imgs/ic_pass.svg';
@@ -22,11 +22,14 @@ import './ReuseVertexTypes.less';
 const ReuseVertexTypes: React.FC = observer(() => {
   const graphManagementStore = useContext(GraphManagementStoreContext);
   const metadataConfigsRootStore = useContext(MetadataConfigsRootStore);
+  const appStore = useContext(AppStoreContext)
   const { vertexTypeStore } = metadataConfigsRootStore;
   const [currentStatus, setCurrentStatus] = useState(1);
   // acutally the name, not id in database
   const [selectedId, mutateSelectedId] = useState<[] | string>([]);
   const [selectedList, mutateSelectedList] = useState<string[]>([]);
+  const [graphspacesId, mutateGraphspacesId] = useState<string>(appStore.tenant);
+
   const { t } = useTranslation();
 
   // step 2
@@ -708,8 +711,8 @@ const ReuseVertexTypes: React.FC = observer(() => {
                   currentStatus === index + 1
                     ? 'process'
                     : currentStatus > index + 1
-                    ? 'finish'
-                    : 'wait'
+                      ? 'finish'
+                      : 'wait'
                 }
                 key={title}
               />
@@ -719,8 +722,37 @@ const ReuseVertexTypes: React.FC = observer(() => {
 
         {currentStatus === 1 && (
           <>
+
             <div className="reuse-properties-row">
-              <div className="reuse-properties-row-name" style={{ width: 106 }}>
+              <div className="reuse-properties-row-name">
+                <span className="metdata-essential-form-options">*</span>
+                <span>租户ID：</span>
+              </div>
+              <Select
+                width={420}
+                placeholder="请选择要复用的租户"
+                size="medium"
+                showSearch={false}
+                defaultValue={appStore.tenant}
+                onChange={async (selectedName: string) => {
+                  mutateSelectedId([])
+                  mutateGraphspacesId(selectedName)
+                  await graphManagementStore.fetchIdList(selectedName)
+                }}
+                value={graphspacesId}
+              >
+                {
+                  appStore.graphspaces.map(item => (
+                    <Select.Option value={item} key={item}>
+                      {item}
+                    </Select.Option>
+                  ))
+                }
+              </Select>
+            </div>
+
+            <div className="reuse-properties-row">
+              <div className="reuse-properties-row-name">
                 <span className="metdata-essential-form-options">*</span>
                 <span>图ID：</span>
               </div>
@@ -739,7 +771,8 @@ const ReuseVertexTypes: React.FC = observer(() => {
                   mutateSelectedList([]);
 
                   vertexTypeStore.fetchVertexTypeList({
-                    reuseId: id
+                    reuseId: id,
+                    tenant:graphspacesId
                   });
 
                   const enable = graphManagementStore.graphData.find(
@@ -768,6 +801,7 @@ const ReuseVertexTypes: React.FC = observer(() => {
                   ))}
               </Select>
             </div>
+
             <div
               className="reuse-properties-row"
               style={{ alignItems: 'normal' }}
@@ -816,6 +850,7 @@ const ReuseVertexTypes: React.FC = observer(() => {
                   setCurrentStatus(2);
                   vertexTypeStore.checkConflict(
                     selectedId as string,
+                    graphspacesId,
                     selectedList
                   );
 
@@ -864,11 +899,11 @@ const ReuseVertexTypes: React.FC = observer(() => {
               dataSource={
                 vertexTypeStore.editedCheckedReusableData
                   ? vertexTypeStore.editedCheckedReusableData!.vertexlabel_conflicts.map(
-                      ({ entity, status }) => ({
-                        name: entity.name,
-                        status
-                      })
-                    )
+                    ({ entity, status }) => ({
+                      name: entity.name,
+                      status
+                    })
+                  )
                   : []
               }
               pagination={false}
@@ -885,12 +920,12 @@ const ReuseVertexTypes: React.FC = observer(() => {
               dataSource={
                 vertexTypeStore.editedCheckedReusableData
                   ? vertexTypeStore.editedCheckedReusableData!.propertykey_conflicts.map(
-                      ({ entity, status }) => ({
-                        name: entity.name,
-                        data_type: entity.data_type,
-                        status
-                      })
-                    )
+                    ({ entity, status }) => ({
+                      name: entity.name,
+                      data_type: entity.data_type,
+                      status
+                    })
+                  )
                   : []
               }
               pagination={false}
@@ -907,12 +942,12 @@ const ReuseVertexTypes: React.FC = observer(() => {
               dataSource={
                 vertexTypeStore.editedCheckedReusableData
                   ? vertexTypeStore.editedCheckedReusableData!.propertyindex_conflicts.map(
-                      ({ entity, status }) => ({
-                        name: entity.name,
-                        owner: entity.owner,
-                        status
-                      })
-                    )
+                    ({ entity, status }) => ({
+                      name: entity.name,
+                      owner: entity.owner,
+                      status
+                    })
+                  )
                   : []
               }
               pagination={false}
