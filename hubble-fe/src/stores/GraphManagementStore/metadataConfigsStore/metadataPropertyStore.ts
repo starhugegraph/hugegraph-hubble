@@ -15,6 +15,7 @@ import {
   NewMetadataProperty
 } from '../../types/GraphManagementStore/metadataConfigsStore';
 import AppStoreContext from '../../appStore';
+import appStore from '../../appStore';
 
 export class MetadataPropertyStore {
   metadataConfigsRootStore: MetadataConfigsRootStore;
@@ -328,7 +329,7 @@ export class MetadataPropertyStore {
       const result: AxiosResponse<responseData<
         MetadataPropertyListResponse
       >> = yield axios
-        .get(`${baseUrl}/${this.appStore._currentValue.tenant}/graphs/${(options as any).reuseId}/schema/propertykeys`, {
+        .get(`${baseUrl}/${this.appStore._currentValue.tenant}/graphs/${options ? options.reuseId ? options.reuseId : this.appStore._currentValue.graphs : this.appStore._currentValue.graphs}/schema/propertykeys`, {
           params: {
             page_no: this.metadataPropertyPageConfig.pageNumber,
             page_size: !options ? 10 : -1,
@@ -343,6 +344,7 @@ export class MetadataPropertyStore {
           }
         })
         .catch(checkIfLocalNetworkOffline);
+console.log(result,"123123");
 
       if (result.data.status !== 200) {
         if (result.data.status === 401) {

@@ -212,7 +212,6 @@ export default function GraphData() {
                 setCreateConfirmKey(false);
                 form.setFieldsValue({ graph: '', schema: null, auth: true });
                 setCreateKey(false);
-                onSearch('');
                 setInpValue('');
                 setPageObj(defaultPageObj);
                 setTimeout(() => {
@@ -334,7 +333,7 @@ export default function GraphData() {
                     </Form.Item>
 
                     <Form.Item
-                        label="schema"
+                        label="schema模版"
                         name="schema"
                     >
                         <Select placeholder="请选择schema" allowClear>
@@ -407,8 +406,11 @@ export default function GraphData() {
                                                 onConfirm={() => {
                                                     api.deleteGraphs(appStore.tenant, record.name).then(res => {
                                                         if (res.status === 200) {
-                                                            message.success("删除成功")
+                                                            message.success("删除成功,即将刷新")
                                                             onSearch('')
+                                                            setTimeout(() => {
+                                                                window.location.reload()
+                                                            }, 700)
                                                         }
                                                     })
                                                 }}
