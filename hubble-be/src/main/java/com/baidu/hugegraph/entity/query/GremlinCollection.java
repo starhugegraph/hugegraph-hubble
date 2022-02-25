@@ -25,6 +25,7 @@ import com.baidu.hugegraph.annotation.MergeProperty;
 import com.baidu.hugegraph.common.Identifiable;
 import com.baidu.hugegraph.common.Mergeable;
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -52,6 +53,7 @@ public class GremlinCollection implements Identifiable, Mergeable {
 
     @MergeProperty
     @JsonProperty("graphspace")
+    @TableField("graphspace")
     private String graphSpace;
 
     @MergeProperty

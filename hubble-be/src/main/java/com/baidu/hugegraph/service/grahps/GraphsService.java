@@ -122,6 +122,9 @@ public class GraphsService {
         // Only for v3.0.0
         conf.put("backend", "hstore");
         conf.put("serializer", "binary");
+        if(StringUtils.isNotEmpty(schemaTemplate)) {
+            conf.put("schema.init_template", schemaTemplate);
+        }
 
         return client.graphs().createGraph(graph, JsonUtil.toJson(conf));
     }

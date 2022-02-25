@@ -21,6 +21,8 @@ package com.baidu.hugegraph.controller.graphs;
 
 import java.util.Set;
 
+import com.baidu.hugegraph.service.space.SchemaTemplateService;
+import com.baidu.hugegraph.structure.space.SchemaTemplate;
 import com.google.common.collect.ImmutableMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -42,6 +44,9 @@ public class GraphsController extends BaseController {
 
     @Autowired
     GraphsService graphsService;
+
+    @Autowired
+    SchemaTemplateService schemaTemplateService;
 
     @GetMapping("list")
     public Object listNames(@PathVariable("graphspace") String graphspace) {
@@ -87,15 +92,17 @@ public class GraphsController extends BaseController {
                          @RequestParam(value = "auth", required = false,
                                  defaultValue = "false") boolean isAuth,
                          @RequestParam(value = "schema", required = false)
-                                 String schema) {
+                                 String schemaTemplage) {
+
         return this.graphsService.create(this.authClient(graphspace, null),
-                                         graph, schema);
+                                         graph, schemaTemplage);
     }
 
     @DeleteMapping("{graph}")
     public void delete(@PathVariable("graphspace") String graphspace,
                        @PathVariable("graph") String graph,
-                       @RequestParam("message") String message) {
+                       @RequestParam(value = "message", required = false)
+                               String message) {
 
         this.graphsService.delete(this.authClient(graphspace, graph), graph,
                                   message);
