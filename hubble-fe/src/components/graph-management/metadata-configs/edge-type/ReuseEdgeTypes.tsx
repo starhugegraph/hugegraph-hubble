@@ -239,7 +239,9 @@ const ReuseEdgeTypes: React.FC = observer(() => {
                 if (edgeTypeEditIndex !== null) {
                   return;
                 }
-
+                if (edgeTypeStore.reusableEdgeTypeNameChangeIndexes.has(index)) {
+                  edgeTypeStore.reusableEdgeTypeNameChangeIndexes.delete(index)
+                }
                 setEdgeTypeEditIndex(null);
 
                 // remove selected status of the property in <Transfer />
@@ -639,6 +641,10 @@ const ReuseEdgeTypes: React.FC = observer(() => {
                   return;
                 }
 
+                if (edgeTypeStore.reusablePropertyNameChangeIndexes.has(index)) {
+                  edgeTypeStore.reusablePropertyNameChangeIndexes.delete(index)
+                }
+                
                 setPropertyEditIndex(null);
 
                 edgeTypeStore.deleteReuseData('propertykey_conflicts', index);
@@ -1020,7 +1026,7 @@ const ReuseEdgeTypes: React.FC = observer(() => {
                     graphspacesId,
                     selectedList
                   );
-
+                  edgeTypeStore.clearReusableNameChangeIndexes()
                   if (edgeTypeStore.requestStatus.checkConflict === 'failed') {
                     Message.error({
                       content: edgeTypeStore.errorMessage,

@@ -161,6 +161,7 @@ const ReuseProperties: React.FC = observer(() => {
                 className="metadata-properties-manipulation"
                 style={{ marginRight: 16 }}
                 onClick={() => {
+
                   const isReady = metadataPropertyStore.validateRenameReuseProperty(
                     index
                   );
@@ -218,6 +219,10 @@ const ReuseProperties: React.FC = observer(() => {
                   return;
                 }
 
+                if (metadataPropertyStore.reusablePropertyNameChangeIndexes.has(index)) {
+                  metadataPropertyStore.reusablePropertyNameChangeIndexes.delete(index)
+                }
+
                 setEditIndex(null);
 
                 const editedCheckedReusableProperties = cloneDeep(
@@ -247,7 +252,7 @@ const ReuseProperties: React.FC = observer(() => {
             >
               删除
             </span>
-          </div>
+          </div >
         );
       }
     }
@@ -410,8 +415,8 @@ const ReuseProperties: React.FC = observer(() => {
                     selectedId as string,
                     graphspacesId,
                     selectedList
-                    );
-
+                  );
+                  metadataPropertyStore.clearReusablePropertyNameChangeIndexes()
                   if (
                     metadataPropertyStore.requestStatus.checkConflict ===
                     'failed'

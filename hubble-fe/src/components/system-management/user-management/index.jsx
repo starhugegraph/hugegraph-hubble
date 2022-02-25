@@ -60,10 +60,6 @@ function Index() {
             }
         })
     }
-    // 取消删除
-    function cancel() {
-        message.error('取消删除')
-    }
     // 搜索值
     function searchHandle(value) {
         setQuery(value)
@@ -82,17 +78,17 @@ function Index() {
 
         {
             title: '邮箱',
-            dataIndex: 'email',
+            dataIndex: 'user_email',
             align: "center"
         },
         {
             title: '手机',
-            dataIndex: 'phone',
+            dataIndex: 'user_phone',
             align: "center"
         },
         {
             title: '描述',
-            dataIndex: 'description',
+            dataIndex: 'user_description',
             align: "center"
         },
         {
@@ -106,7 +102,6 @@ function Index() {
                     <Popconfirm
                         title={`你确定要删除租户账号${tag.user_name}吗?`}
                         onConfirm={() => confirm(tag)}
-                        onCancel={cancel}
                         okText="确定"
                         cancelText="取消"
                     >
@@ -120,9 +115,9 @@ function Index() {
         <div className='graphData_wrapper' style={{ width: "100%", height: "calc(100vh - 130px)" }}>
             <div className='topDiv'>
                 <InputAdd
-                    searchHandle={searchHandle}
+                    setSearch={searchHandle}
                     createHandle={createHandle}
-                    placeholder='请输入用户关键字'
+                    placeholder='输入用户关键字'
                     >
                     创建用户
                 </InputAdd>

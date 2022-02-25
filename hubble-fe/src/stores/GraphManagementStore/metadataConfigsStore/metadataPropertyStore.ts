@@ -363,7 +363,7 @@ export class MetadataPropertyStore {
       if (result.data.data.records.length === 0) {
         if (this.isSearched.status === true) {
           this.currentTabStatus = 'list';
-        } 
+        }
       } else if (this.currentTabStatus !== 'reuse') {
         // if currentTabStatus is reuse, stay at reuse page
         this.currentTabStatus = 'list';
@@ -477,12 +477,11 @@ export class MetadataPropertyStore {
 
   checkConflict = flow(function* checkConflict(
     this: MetadataPropertyStore,
-    reuseId:string,
-    tenant:string,
+    reuseId: string,
+    tenant: string,
     selectedNameList: string[]
   ) {
     this.requestStatus.checkConflict = 'pending';
-
     try {
       const result: AxiosResponse<responseData<
         CheckedReusableData
@@ -509,6 +508,14 @@ export class MetadataPropertyStore {
 
       this.checkedReusableProperties = result.data.data;
       this.editedCheckedReusableProperties = cloneDeep(result.data.data);
+      console.log(this.editedCheckedReusableProperties!.propertykey_conflicts.map(
+        ({ entity, status }) => ({
+          name: entity.name,
+          data_type: entity.data_type,
+          status
+        })
+      ), "this.editedCheckedReusableProperties");
+
       this.requestStatus.checkConflict = 'success';
     } catch (error) {
       this.requestStatus.checkConflict = 'failed';

@@ -15,14 +15,14 @@ const tailLayout = {
         span: 16,
     },
 };
-const Index = (props) => {
+const Index = ({ visible, setVisible, detailData, getUserData }) => {
     const [form] = Form.useForm();
-    const { visible, setVisible, detailData, getUserData } = props
     // 是否禁用
     const isDisabled = useMemo(() => {
         if (Object.keys(detailData).length !== 0) return true
         return false
     }, [detailData])
+
     // 是否回显
     useEffect(() => {
         if (isDisabled) {
@@ -37,12 +37,12 @@ const Index = (props) => {
         if (!isDisabled) {
             api.addUser(values).then(res => {
                 if (res.status === 200) {
-                    getUserData()
                     message.success("创建成功")
-                    setVisible(false)
+                    getUserData()
                 } else {
                     message.error("创建失败")
                 }
+                setVisible(false)
             })
         } else {
             api.putUser(detailData.id, values).then(res => {
@@ -59,7 +59,6 @@ const Index = (props) => {
     };
     // 取消
     const onReset = () => {
-        setVisible(false)
     };
     // 验证
     const serviceValidator = (rule, value) => {
@@ -87,7 +86,7 @@ const Index = (props) => {
     }
     const urlValidator = (_, value) => {
         let res = /^([a-zA-Z]|[0-9])(\w|\-)+@[a-zA-Z0-9]+\.([a-zA-Z]{2,4})$/.test(value)
-        if (res || value =="") {
+        if (res || value == "") {
             return Promise.resolve();
         } else if (value.length > 48) {
             return Promise.reject("最长48位")
@@ -128,7 +127,7 @@ const Index = (props) => {
                             { validator: passwordValidator }
                         ]
                     }
-                    extra={<span style={{fontSize:"12px"}}>长度5-16，可以为字母、数字和特殊符号(_ @)</span>}
+                    extra={<span style={{ fontSize: "12px" }}>长度5-16，可以为字母、数字和特殊符号(_ @)</span>}
                 >
                     <Input type={'password'} />
                 </Form.Item>
@@ -191,9 +190,9 @@ const Index = (props) => {
                 <Form.Item {...tailLayout}>
                     <Space>
                         <Button type="primary" htmlType="submit">
-                            {Object.keys(detailData).length === 0 ? "创建" : "保存"}
+                            {isDisabled ? "保存" : "创建"}
                         </Button>
-                        <Button htmlType="button" onClick={onReset}>
+                        <Button htmlType="button" onClick={()=>setVisible(false)}>
                             取消
                         </Button>
                     </Space>
