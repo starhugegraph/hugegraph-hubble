@@ -28,6 +28,7 @@ import LoadingFrontIcon from '../../../../assets/imgs/ic_loading_front.svg';
 
 import '../../data-analyze/DataAnalyze.less';
 import './GraphView.less';
+import { AppStoreContext } from '../../../../stores';
 
 const styles = {
   marginLeft: '12px'
@@ -40,6 +41,8 @@ const GraphView: React.FC = observer(() => {
     edgeTypeStore,
     graphViewStore
   } = useContext(MetadataConfigsRootStore);
+  
+  const appStore = useContext(AppStoreContext)
 
   useEffect(() => {
     metadataPropertyStore.fetchMetadataPropertyList({
@@ -54,7 +57,7 @@ const GraphView: React.FC = observer(() => {
       vertexTypeStore.dispose();
       edgeTypeStore.dispose();
     };
-  }, [edgeTypeStore, graphViewStore, metadataPropertyStore, vertexTypeStore]);
+  }, [edgeTypeStore, graphViewStore, metadataPropertyStore, vertexTypeStore, appStore.date]);
 
   return (
     <div className="metadata-configs-content-wrapper">
