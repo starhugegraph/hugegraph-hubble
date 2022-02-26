@@ -15,13 +15,14 @@ function Index() {
 
     // 获取数据
     useEffect(() => {
-        setLoading(true)
         getGraphspacesData()
     }, [page, query])
     // 获取租户
     const getGraphspacesData = () => {
+        setLoading(true)
         api.getGraphspaces({ ...page, query }).then(res => {
             if (res && res.status === 200) {
+                console.log(res.data, "tenant");
                 setListData(res.data)
             }
             setLoading(false)
@@ -57,10 +58,6 @@ function Index() {
                 }, 500);
             }
         })
-    }
-    // 取消删除
-    function cancel() {
-        message.error('取消删除')
     }
     // 搜索值
     function searchHandle(value) {
@@ -134,7 +131,6 @@ function Index() {
                     <Popconfirm
                         title={`你确定要删除租户账号${tag.name}吗?`}
                         onConfirm={() => confirm(tag)}
-                        onCancel={cancel}
                         okText="确定"
                         cancelText="取消"
                     >
@@ -148,10 +144,10 @@ function Index() {
         <div className='graphData_wrapper' style={{ width: "100%", height: "calc(100vh - 130px)" }}>
             <div className='topDiv'>
                 <InputAdd
-                    searchHandle={searchHandle}
+                    setSearch={searchHandle}
                     createHandle={createHandle}
-                    placeholder='请输入租户关键字'
-                    >
+                    placeholder='输入租户关键字'
+                >
                     创建租户
                 </InputAdd>
             </div>
@@ -172,7 +168,13 @@ function Index() {
                 }
                 onChange={pageChange}
             />
-            <CreatModal getGraphspaces={getGraphspacesData} visible={visible} setVisible={setVisible} detailData={detailData}></CreatModal>
+            <CreatModal
+                getGraphspaces={getGraphspacesData}
+                visible={visible}
+                setVisible={setVisible}
+                detailData={detailData}
+            >
+            </CreatModal>
         </div>
     )
 }

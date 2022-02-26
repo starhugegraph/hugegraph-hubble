@@ -441,7 +441,7 @@ const EdgeTypeList: React.FC = observer(() => {
           <Button
             size="medium"
             style={styles.button}
-            disabled={isLoading}
+            disabled={isLoading|| size(currentSelectedRowKeys) !== 0}
             onClick={() => {
               edgeTypeStore.changeCurrentTabStatus('reuse');
             }}

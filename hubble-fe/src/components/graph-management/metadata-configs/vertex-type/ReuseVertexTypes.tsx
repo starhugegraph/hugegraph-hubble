@@ -239,7 +239,9 @@ const ReuseVertexTypes: React.FC = observer(() => {
                 if (vertexTypeEditIndex !== null) {
                   return;
                 }
-
+                if (vertexTypeStore.reusableVertexTypeNameChangeIndexes.has(index)) {
+                  vertexTypeStore.reusableVertexTypeNameChangeIndexes.delete(index)
+                }
                 setPropertyEditIndex(null);
 
                 // remove selected status of the property in <Transfer />
@@ -464,7 +466,9 @@ const ReuseVertexTypes: React.FC = observer(() => {
                 if (propertyEditIndex !== null) {
                   return;
                 }
-
+                if (vertexTypeStore.reusablePropertyNameChangeIndexes.has(index)) {
+                  vertexTypeStore.reusablePropertyNameChangeIndexes.delete(index)
+                }
                 setPropertyEditIndex(null);
 
                 vertexTypeStore.deleteReuseData('propertykey_conflicts', index);
@@ -666,7 +670,9 @@ const ReuseVertexTypes: React.FC = observer(() => {
                 if (propertyIndexEditIndex !== null) {
                   return;
                 }
-
+                if (vertexTypeStore.reusablePropertyIndexNameChangeIndexes.has(index)) {
+                  vertexTypeStore.reusablePropertyIndexNameChangeIndexes.delete(index)
+                }
                 setPropertyIndexEditIndex(null);
 
                 vertexTypeStore.deleteReuseData(
@@ -772,7 +778,7 @@ const ReuseVertexTypes: React.FC = observer(() => {
 
                   vertexTypeStore.fetchVertexTypeList({
                     reuseId: id,
-                    tenant:graphspacesId
+                    tenant: graphspacesId
                   });
 
                   const enable = graphManagementStore.graphData.find(
@@ -853,7 +859,7 @@ const ReuseVertexTypes: React.FC = observer(() => {
                     graphspacesId,
                     selectedList
                   );
-
+                  vertexTypeStore.clearReusableNameChangeIndexes()
                   if (
                     vertexTypeStore.requestStatus.checkConflict === 'failed'
                   ) {

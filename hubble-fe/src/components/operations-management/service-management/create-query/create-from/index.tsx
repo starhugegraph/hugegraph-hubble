@@ -2,6 +2,7 @@ import React, { useMemo, useState, useEffect, useContext } from 'react';
 import { Form, Input, Button, Select, InputNumber, Space, message } from 'antd';
 import api from '../../../../../api/api'
 import { AppStoreContext } from '../../../../../stores'
+import { string } from 'yargs';
 const { Option } = Select;
 
 const layout = {
@@ -42,6 +43,9 @@ const CreateFrom = (props: { getQuery: Function, setVisible: Function, detailDat
 
     // 完成按钮
     const onFinish = (values: any) => {
+        if (values.urls) {
+            values.urls = Array.isArray(values.urls) ? values.urls : values.urls.split(',').filter((i: string) => i)
+        }
         if (isDisable) {
             api.changeQueryDetail(appStore.tenant, detailData.name, values).then((res: any) => {
                 if (res && res.status === 200) {

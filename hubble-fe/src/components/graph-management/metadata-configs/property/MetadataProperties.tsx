@@ -209,7 +209,7 @@ const MetadataProperties: React.FC = observer(() => {
       // fetch previous page data if it's empty
       if (
         metadataPropertyStore.requestStatus.fetchMetadataPropertyList ===
-          'success' &&
+        'success' &&
         size(metadataPropertyStore.metadataProperties) === 0 &&
         metadataPropertyStore.metadataPropertyPageConfig.pageNumber > 1
       ) {
@@ -460,7 +460,10 @@ const MetadataProperties: React.FC = observer(() => {
           <Button
             size="medium"
             style={styles.button}
-            disabled={isLoading || metadataPropertyStore.isCreateNewProperty}
+            disabled={isLoading ||
+              metadataPropertyStore.isCreateNewProperty ||
+              size(currentSelectedRowKeys) !== 0
+            }
             onClick={() => {
               mutateSelectedRowKeys([]);
               metadataPropertyStore.changeCurrentTabStatus('reuse');
@@ -515,23 +518,23 @@ const MetadataProperties: React.FC = observer(() => {
             isLoading
               ? []
               : metadataPropertyStore.isCreateNewProperty
-              ? metadataPropertyStore.reunionMetadataProperty
-              : metadataPropertyStore.metadataProperties
+                ? metadataPropertyStore.reunionMetadataProperty
+                : metadataPropertyStore.metadataProperties
           }
           pagination={
             isLoading
               ? null
               : {
-                  hideOnSinglePage: false,
-                  pageNo:
-                    metadataPropertyStore.metadataPropertyPageConfig.pageNumber,
-                  pageSize: 10,
-                  showSizeChange: false,
-                  showPageJumper: false,
-                  total:
-                    metadataPropertyStore.metadataPropertyPageConfig.pageTotal,
-                  onPageNoChange: handlePageChange
-                }
+                hideOnSinglePage: false,
+                pageNo:
+                  metadataPropertyStore.metadataPropertyPageConfig.pageNumber,
+                pageSize: 10,
+                showSizeChange: false,
+                showPageJumper: false,
+                total:
+                  metadataPropertyStore.metadataPropertyPageConfig.pageTotal,
+                onPageNoChange: handlePageChange
+              }
           }
         />
         <Modal
@@ -595,7 +598,7 @@ const MetadataProperties: React.FC = observer(() => {
                   name,
                   status:
                     metadataPropertyStore.metadataPropertyUsingStatus !==
-                      null &&
+                    null &&
                     // data may have some delay which leads to no matching propety value
                     !!metadataPropertyStore.metadataPropertyUsingStatus[name]
                 };
@@ -740,9 +743,9 @@ const MetadataPropertiesManipulation: React.FC<MetadataPropertiesManipulationPro
           tooltipWrapper={
             <div ref={deleteWrapperRef}>
               {metadataPropertyStore.metadataPropertyUsingStatus &&
-              metadataPropertyStore.metadataPropertyUsingStatus[
+                metadataPropertyStore.metadataPropertyUsingStatus[
                 propertyName
-              ] ? (
+                ] ? (
                 <p style={{ width: 200 }}>当前属性数据正在使用中，不可删除。</p>
               ) : (
                 <>
