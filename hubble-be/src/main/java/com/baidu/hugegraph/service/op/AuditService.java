@@ -51,6 +51,7 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import com.baidu.hugegraph.util.PageUtil;
@@ -205,10 +206,11 @@ public class AuditService extends ESService {
         return querys;
     }
 
+    @Cacheable(value = "ES_QUERY", key="#root.targetClass.name+':'+#root" +
+            ".methodName")
     public List<String> listServices() throws IOException {
         Set<String> services = new HashSet<>();
 
-        GetAliasResponse res = esClient().indices().getAlias();
         GetAliasRequest req = new GetAliasRequest.Builder().index(
                 auditIndexPattern).build();
         esClient().indices().getAlias(req).result().keySet()
