@@ -33,7 +33,7 @@ const JobErrorLogs: React.FC = observer(() => {
   useEffect(() => {
     const init = async () => {
       await importManagerStore.fetchFailedReason(
-        Number(params!.id),
+        params!.id,
         Number(params!.jobId)
       );
 

@@ -32,7 +32,10 @@ const IndexTypeMappings: Record<string, string> = {
   SEARCH: '全文索引'
 };
 
-const PropertyIndex: React.FC = observer(() => {
+type Props = {
+  appStore: any
+}
+const PropertyIndex: React.FC<Props> = observer(({ appStore }) => {
   const { metadataPropertyIndexStore } = useContext(MetadataConfigsRootStore);
   const [preLoading, switchPreLoading] = useState(true);
   const [currentTab, switchCurrentTab] = useState<'vertex' | 'edge'>('vertex');
@@ -40,7 +43,7 @@ const PropertyIndex: React.FC = observer(() => {
   const isLoading =
     preLoading ||
     metadataPropertyIndexStore.requestStatus.fetchMetadataPropertIndexes ===
-      'pending';
+    'pending';
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     metadataPropertyIndexStore.mutateSearchWords(e.target.value);
@@ -71,8 +74,9 @@ const PropertyIndex: React.FC = observer(() => {
   }, [currentTab]);
 
   useEffect(() => {
-    metadataPropertyIndexStore.fetchMetadataPropertIndexes(currentTab);
-
+    if (appStore.graphs !== "null") {
+      metadataPropertyIndexStore.fetchMetadataPropertIndexes(currentTab);
+    }
     return () => {
       metadataPropertyIndexStore.dispose();
     };
@@ -106,35 +110,35 @@ const PropertyIndex: React.FC = observer(() => {
 
         return startIndex !== -1
           ? {
-              children: (
-                <div>
-                  <Highlighter
-                    highlightClassName="vertex-index-search-highlights"
-                    searchWords={[metadataPropertyIndexStore.isSearched.value]}
-                    autoEscape={true}
-                    textToHighlight={text}
-                  />
-                </div>
-              ),
-              props: {
-                rowSpan: collpaseNumbers[startIndex]
-              }
+            children: (
+              <div>
+                <Highlighter
+                  highlightClassName="vertex-index-search-highlights"
+                  searchWords={[metadataPropertyIndexStore.isSearched.value]}
+                  autoEscape={true}
+                  textToHighlight={text}
+                />
+              </div>
+            ),
+            props: {
+              rowSpan: collpaseNumbers[startIndex]
             }
+          }
           : {
-              children: (
-                <div>
-                  <Highlighter
-                    highlightClassName="vertex-index-search-highlights"
-                    searchWords={[metadataPropertyIndexStore.isSearched.value]}
-                    autoEscape={true}
-                    textToHighlight={text}
-                  />
-                </div>
-              ),
-              props: {
-                rowSpan: 0
-              }
-            };
+            children: (
+              <div>
+                <Highlighter
+                  highlightClassName="vertex-index-search-highlights"
+                  searchWords={[metadataPropertyIndexStore.isSearched.value]}
+                  autoEscape={true}
+                  textToHighlight={text}
+                />
+              </div>
+            ),
+            props: {
+              rowSpan: 0
+            }
+          };
       }
     },
     {
@@ -265,18 +269,18 @@ const PropertyIndex: React.FC = observer(() => {
             isLoading
               ? null
               : {
-                  hideOnSinglePage: false,
-                  pageNo:
-                    metadataPropertyIndexStore.metadataPropertyIndexPageConfig
-                      .pageNumber,
-                  pageSize: 10,
-                  showSizeChange: false,
-                  showPageJumper: false,
-                  total:
-                    metadataPropertyIndexStore.metadataPropertyIndexPageConfig
-                      .pageTotal,
-                  onPageNoChange: handlePageNumberChange
-                }
+                hideOnSinglePage: false,
+                pageNo:
+                  metadataPropertyIndexStore.metadataPropertyIndexPageConfig
+                    .pageNumber,
+                pageSize: 10,
+                showSizeChange: false,
+                showPageJumper: false,
+                total:
+                  metadataPropertyIndexStore.metadataPropertyIndexPageConfig
+                    .pageTotal,
+                onPageNoChange: handlePageNumberChange
+              }
           }
         />
       </div>

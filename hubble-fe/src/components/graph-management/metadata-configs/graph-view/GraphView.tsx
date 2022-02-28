@@ -41,17 +41,18 @@ const GraphView: React.FC = observer(() => {
     edgeTypeStore,
     graphViewStore
   } = useContext(MetadataConfigsRootStore);
-  
+
   const appStore = useContext(AppStoreContext)
 
   useEffect(() => {
-    metadataPropertyStore.fetchMetadataPropertyList({
-      fetchAll: true
-    });
+    if (appStore.graphs !== "null") {
+      metadataPropertyStore.fetchMetadataPropertyList({
+        fetchAll: true
+      });
 
-    vertexTypeStore.fetchVertexTypeList({ fetchAll: true });
-    edgeTypeStore.fetchEdgeTypeList({ fetchAll: true });
-
+      vertexTypeStore.fetchVertexTypeList({ fetchAll: true });
+      edgeTypeStore.fetchEdgeTypeList({ fetchAll: true });
+    }
     return () => {
       metadataPropertyStore.dispose();
       vertexTypeStore.dispose();
@@ -108,7 +109,7 @@ const GraphView: React.FC = observer(() => {
        * if use && at here it will dispatch re-render in this component
        * which cause all components below to re-render either
        */}
-      <GraphDataView />
+      <GraphDataView appStore={appStore} />
       <CreateProperty />
       <CreateVertex />
       <CreateEdge />
@@ -119,7 +120,10 @@ const GraphView: React.FC = observer(() => {
   );
 });
 
-const GraphDataView: React.FC = observer(() => {
+type view_props = {
+  appStore: any
+}
+const GraphDataView: React.FC<view_props> = observer(({ appStore }) => {
   const dataAnalyzeStore = useContext(DataAnalyzeStore);
   const {
     metadataPropertyStore,
@@ -183,16 +187,18 @@ const GraphDataView: React.FC = observer(() => {
   }, [graph, graphViewStore.originalGraphViewData]);
 
   useEffect(() => {
-    graphViewStore.fetchGraphViewData(
-      dataAnalyzeStore.colorMappings,
-      dataAnalyzeStore.vertexSizeMappings,
-      dataAnalyzeStore.vertexWritingMappings,
-      dataAnalyzeStore.edgeColorMappings,
-      dataAnalyzeStore.edgeThicknessMappings,
-      dataAnalyzeStore.edgeWithArrowMappings,
-      dataAnalyzeStore.edgeWritingMappings
-    );
-
+    if (appStore.graphs !== "null") {
+      
+      graphViewStore.fetchGraphViewData(
+        dataAnalyzeStore.colorMappings,
+        dataAnalyzeStore.vertexSizeMappings,
+        dataAnalyzeStore.vertexWritingMappings,
+        dataAnalyzeStore.edgeColorMappings,
+        dataAnalyzeStore.edgeThicknessMappings,
+        dataAnalyzeStore.edgeWithArrowMappings,
+        dataAnalyzeStore.edgeWritingMappings
+      );
+    }
     return () => {
       graphViewStore.dispose();
     };
@@ -204,7 +210,8 @@ const GraphDataView: React.FC = observer(() => {
     dataAnalyzeStore.edgeThicknessMappings,
     dataAnalyzeStore.edgeWithArrowMappings,
     dataAnalyzeStore.edgeWritingMappings,
-    graphViewStore
+    graphViewStore,
+    appStore.date
   ]);
 
   useEffect(() => {

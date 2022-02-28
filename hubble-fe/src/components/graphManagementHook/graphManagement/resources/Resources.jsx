@@ -118,6 +118,7 @@ export default function Resources() {
                     isAdd: false,
                     key: 'PROPERTY_KEY',
                     type: 'type',
+                    isChildren: true
                 },
                 {
                     title: '顶点类型',
@@ -125,6 +126,7 @@ export default function Resources() {
                     isAdd: false,
                     key: 'VERTEX_LABEL',
                     type: 'type',
+                    isChildren: true
                 },
                 {
                     title: '边类型',
@@ -132,6 +134,7 @@ export default function Resources() {
                     isAdd: false,
                     key: 'EDGE_LABEL',
                     type: 'type',
+                    isChildren: true
                 },
                 {
                     title: '索引类型',
@@ -139,6 +142,7 @@ export default function Resources() {
                     isAdd: false,
                     key: 'INDEX_LABEL',
                     type: 'type',
+                    isChildren: true
                 }
             ],
             type: 'type',
@@ -451,16 +455,16 @@ export default function Resources() {
         }
     };
     // 选中时修改三维数组，修改checked值
-    const setChecked = (key, value) => {
+    const setChecked = (key, value, allCheck, isChildren) => {
         let arr = JSON.parse(JSON.stringify(collapseList));
+ 
         // 针对于元数组的选中处理
-        if (key === 'SCHEMA') {
+        if (key === 'SCHEMA' || (allCheck && value && !arr[0].checked && !isChildren)) {
             arr[0].children.forEach((item) => {
                 item.checked = value;
             });
             arr[0].checked = value;
             setCollapseList(arr);
-            return;
         }
         if (key === 'VERTEX') {
             if (value && arr[1].children && arr[1].children.length) {
@@ -498,6 +502,11 @@ export default function Resources() {
                 for (let j = 0; j < arr[i].children.length; j++) {
                     if (arr[i].children[j].key === key) {
                         arr[i].children[j].checked = value;
+                        if (isChildren) {
+                            const res = arr[0].children.every(item => item.checked)
+                            console.log(res);
+                            arr[0].checked = res 
+                        }
                         setCollapseList(arr);
                         return;
                     }
@@ -548,7 +557,7 @@ export default function Resources() {
                                     disabled={see}
                                     onClick={(checked, e) => {
                                         e.stopPropagation();
-                                        setChecked(item.key, checked);
+                                        setChecked(item.key, checked, true, item.isChildren);
                                     }}
                                 />
                             </div>
@@ -565,7 +574,7 @@ export default function Resources() {
                                 disabled={see}
                                 onClick={(checked, e) => {
                                     e.stopPropagation();
-                                    setChecked(item.key, checked);
+                                    setChecked(item.key, checked, true, item.isChildren);
                                 }}
                             />
                             <Button
@@ -601,12 +610,14 @@ export default function Resources() {
                                     disabled={see}
                                     onClick={(checked, e) => {
                                         e.stopPropagation();
-                                        setChecked(item.key, checked);
+                                        setChecked(item.key, checked, false, item.isChildren);
                                     }}
                                 />
                             </div>
                         </div>
-                    } key={item.key}>
+                    }
+                        key={item.key}
+                    >
                         <Collapse>
                             {renderCollapse(item.children)}
                         </Collapse>
@@ -623,7 +634,7 @@ export default function Resources() {
                             disabled={see}
                             onClick={(checked, e) => {
                                 e.stopPropagation();
-                                setChecked(item.key, checked);
+                                setChecked(item.key, checked, false, item.isChildren);
                             }}
                         />
                         <Button

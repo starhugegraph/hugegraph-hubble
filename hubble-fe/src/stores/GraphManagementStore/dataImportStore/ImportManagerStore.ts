@@ -339,7 +339,7 @@ export class ImportManagerStore {
 
   fetchFailedReason = flow(function* fetchFailedReason(
     this: ImportManagerStore,
-    connectId: number,
+    connectId: number | string,
     jobId: number
   ) {
     this.requestStatus.fetchFailedReason = 'pending';
@@ -349,9 +349,10 @@ export class ImportManagerStore {
         JobFailedReason[]
       >> = yield axios
         .get<responseData<JobFailedReason[]>>(
-          `${baseUrl}/${this.appStore._currentValue.tenant}/graphs/${this.appStore._currentValue.graphs}/job-manager/${jobId}/reason`
+          `${baseUrl}/${this.appStore._currentValue.tenant}/graphs/${connectId}/job-manager/${jobId}/reason`
         )
         .catch(checkIfLocalNetworkOffline);
+      console.log(result);
 
       if (result.data.status !== 200) {
         this.errorInfo.fetchFailedReason.code = result.data.status;

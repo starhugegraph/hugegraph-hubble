@@ -63,7 +63,7 @@ const MetadataConfig: React.FC = observer(() => {
       case 'edge-type':
         return <EdgeTypeList key="edge-type-list" />;
       case 'property-index':
-        return <PropertyIndex key="property-index-list" />;
+        return <PropertyIndex key="property-index-list" appStore={appStore}/>;
     }
   };
 
@@ -74,7 +74,7 @@ const MetadataConfig: React.FC = observer(() => {
     window.scrollTo(0, 0);
     graphManagementStore.fetchIdList();
 
-    if (match && params && appStore.graphs != "null") {
+    if (match && params && appStore.graphs !== "null") {
       appStore.setCurrentId(Number(params.id));
       // fetch node colors
       dataAnalyzeStore.fetchAllNodeStyle();

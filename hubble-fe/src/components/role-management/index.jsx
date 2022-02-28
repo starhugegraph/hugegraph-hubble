@@ -68,10 +68,6 @@ function Index() {
     function cancel() {
         message.error('取消删除')
     }
-    // 搜索值
-    function searchHandle(value) {
-        setQuery(value)
-    }
     // 关联资源按钮
     function associatedHandle(tag) {
         setGroupId_resources({ group_id: tag.id, group_name: tag.group_name })
@@ -141,7 +137,7 @@ function Index() {
         <div className='graphData_wrapper' style={{ width: "100%", height: "calc(100vh - 130px)" }}>
             <div className='topDiv'>
                 <InputAdd
-                    searchHandle={searchHandle}
+                    setSearch={setQuery}
                     createHandle={createHandle}
                     placeholder='请输入角色关键字'
                     >

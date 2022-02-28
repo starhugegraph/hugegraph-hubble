@@ -57,9 +57,7 @@ const Index = ({ visible, setVisible, detailData, getUserData }) => {
         }
         form.resetFields()
     };
-    // 取消
-    const onReset = () => {
-    };
+
     // 验证
     const serviceValidator = (rule, value) => {
         let res = /^[a-zA-Z][a-zA-Z0-9_]*$/.test(value)
@@ -69,11 +67,11 @@ const Index = ({ visible, setVisible, detailData, getUserData }) => {
             return Promise.resolve()
         }
     }
-    const passwordValidator = (rule, value) => {
+    const passwordValidator = (_, value) => {
         // let res = /^(?![a-zA-Z]+$)(?![A-Z0-9]+$)(?![A-Z\W_]+$)(?![a-z0-9]+$)(?![a-z\W_]+$)(?![0-9\W_]+$)[a-zA-Z0-9\W_]{8,}$/
         // let res = /^(?=.*\d)(?=.*[A-Za-z])[\x20-\x7e]{8,16}$/
         const res = /^[-\w+@]{5,16}$/
-        if (res.test(value)) {
+        if (res.test(value) || isDisabled) {
             return Promise.resolve()
         } else {
             return Promise.reject("格式错误,并且长度为5-16位")
@@ -123,11 +121,22 @@ const Index = ({ visible, setVisible, detailData, getUserData }) => {
                     label="用户密码"
                     rules={
                         [
-                            { required: true, message: "此项为必填项" },
+                            { required: !isDisabled, message: "此项为必填项" },
                             { validator: passwordValidator }
                         ]
                     }
-                    extra={<span style={{ fontSize: "12px" }}>长度5-16，可以为字母、数字和特殊符号(_ @)</span>}
+                    extra={<>
+                        <span
+                            style={{ fontSize: "12px" }}
+                        >
+                            长度5-16，可以为字母、数字和特殊符号(_ @)
+                        </span>
+                        {isDisabled ? <span
+                            style={{ fontSize: "12px",display:"block"}}
+                        >
+                            密码为空,则不更新。
+                        </span> : null}
+                    </>}
                 >
                     <Input type={'password'} />
                 </Form.Item>
@@ -166,15 +175,6 @@ const Index = ({ visible, setVisible, detailData, getUserData }) => {
                 </Form.Item>
 
                 <Form.Item
-                    name="is_clusteradmin"
-                    label="是否为集群管理员"
-                    valuePropName="checked"
-                    initialValue={false}
-                >
-                    <Switch defaultChecked={false}></Switch>
-                </Form.Item>
-
-                <Form.Item
                     name="user_description"
                     label="描述"
                     initialValue={""}
@@ -192,7 +192,7 @@ const Index = ({ visible, setVisible, detailData, getUserData }) => {
                         <Button type="primary" htmlType="submit">
                             {isDisabled ? "保存" : "创建"}
                         </Button>
-                        <Button htmlType="button" onClick={()=>setVisible(false)}>
+                        <Button htmlType="button" onClick={() => setVisible(false)}>
                             取消
                         </Button>
                     </Space>

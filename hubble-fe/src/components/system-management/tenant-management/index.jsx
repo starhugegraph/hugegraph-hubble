@@ -59,10 +59,6 @@ function Index() {
             }
         })
     }
-    // 搜索值
-    function searchHandle(value) {
-        setQuery(value)
-    }
     const columns = [
         {
             title: '名称',
@@ -144,7 +140,7 @@ function Index() {
         <div className='graphData_wrapper' style={{ width: "100%", height: "calc(100vh - 130px)" }}>
             <div className='topDiv'>
                 <InputAdd
-                    setSearch={searchHandle}
+                    setSearch={setQuery}
                     createHandle={createHandle}
                     placeholder='输入租户关键字'
                 >

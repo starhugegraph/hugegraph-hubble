@@ -14,7 +14,6 @@ import GraphManagementSidebar from './graph-management/GraphManagementSidebar';
 import Home from './home/Home';
 import './App.less'
 
-
 const App: React.FC = () => {
   const [isLogin, setLogin] = useState(localStorage.getItem('lg'))
   return (

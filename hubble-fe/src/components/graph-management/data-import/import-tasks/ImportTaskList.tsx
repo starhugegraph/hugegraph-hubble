@@ -428,6 +428,7 @@ export const ImportManagerManipulation: React.FC<ImportManagerManipulationProps>
   ({ jobId, jobName, status }) => {
     const importManagerStore = useContext(ImportManagerStoreContext);
     const dataImportRootStore = useContext(DataImportRootStoreContext);
+    const appStore = useContext(AppStoreContext)
     const { dataMapStore, serverDataImportStore } = dataImportRootStore;
     const [isPopDeleteModal, switchPopDeleteModal] = useState(false);
     const [, params] = useRoute(
@@ -530,22 +531,21 @@ export const ImportManagerManipulation: React.FC<ImportManagerManipulationProps>
           </span>
         )}
         {status === 'FAILED' && (
-          // <span
-          //   onClick={() => {
-          //     setLocation(
-          //       `/graph-management/${
-          //         params!.id
-          //       }/data-import/job-error-log/${jobId}`
-          //     );
-          //   }}
-          // >
-          //   {t('import-manager.list-column-manipulations.check-error-log')}
-          // </span>
+          /*     <span
+                onClick={() => {
+                  setLocation(
+                    `/graph-management/${
+                      params!.id
+                    }/data-import/job-error-log/${jobId}`
+                  );
+                }}
+              >
+                {t('import-manager.list-column-manipulations.check-error-log')}
+              </span> */
           <a
             target="_blank"
             className="import-manager-table-manipulations-outlink"
-            href={`/graph-management/${params!.id
-              }/data-import/job-error-log/${jobId}`}
+            href={`/graph-management/${appStore.graphs}/data-import/job-error-log/${jobId}`}
           >
             {t('import-manager.list-column-manipulations.check-error-log')}
           </a>
