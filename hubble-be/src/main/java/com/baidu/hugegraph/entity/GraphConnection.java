@@ -82,10 +82,6 @@ public class GraphConnection implements Identifiable, Mergeable {
     private String graph;
 
     @MergeProperty
-    @JsonProperty
-    private String url;
-
-    @MergeProperty
     @JsonProperty("host")
     private String host;
 

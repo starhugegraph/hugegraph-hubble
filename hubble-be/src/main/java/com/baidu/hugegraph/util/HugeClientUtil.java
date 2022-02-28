@@ -43,25 +43,22 @@ public final class HugeClientUtil {
     public static HugeClient tryConnect(GraphConnection connection) {
         String graphSpace = connection.getGraphSpace();
         String graph = connection.getGraph();
-        String url = connection.getUrl();
         String host = connection.getHost();
         Integer port = connection.getPort();
         String token = connection.getToken();
         String username = connection.getUsername();
         String password = connection.getPassword();
         int timeout = connection.getTimeout();
-        String protocol = connection.getProtocol() == null ?
+        String protocol = StringUtils.isEmpty(connection.getProtocol()) ?
                           DEFAULT_PROTOCOL :
                           connection.getProtocol();
         String trustStoreFile = connection.getTrustStoreFile();
         String trustStorePassword = connection.getTrustStorePassword();
 
-        if (StringUtils.isEmpty(url)) {
-            url = UriComponentsBuilder.newInstance()
-                                             .scheme(protocol)
-                                             .host(host).port(port)
-                                             .toUriString();
-        }
+        String url = UriComponentsBuilder.newInstance()
+                                  .scheme(protocol)
+                                  .host(host).port(port)
+                                  .toUriString();
         if (username == null) {
             username = "";
             password = "";
