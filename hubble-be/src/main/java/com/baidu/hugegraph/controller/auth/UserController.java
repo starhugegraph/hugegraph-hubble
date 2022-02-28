@@ -70,9 +70,9 @@ public class UserController extends BaseController {
     }
 
     @PostMapping
-    public void create(@RequestBody User user) {
+    public void create(@RequestBody UserEntity userEntity) {
         HugeClient client = this.authClient(null, null);
-        userService.create(client, user);
+        userService.add(client, userEntity);
     }
 
 
@@ -84,9 +84,9 @@ public class UserController extends BaseController {
 
     @PutMapping("{id}")
     public void update(@PathVariable("id") String id,
-                       @RequestBody User user) {
-        user.setId(id);
-        userService.update(this.authClient(null, null), user);
+                       @RequestBody UserEntity userEntity) {
+        userEntity.setId(id);
+        userService.update(this.authClient(null, null), userEntity);
     }
 
     @DeleteMapping("{id}")

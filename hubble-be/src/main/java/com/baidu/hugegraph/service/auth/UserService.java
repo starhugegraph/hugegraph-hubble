@@ -22,10 +22,8 @@ package com.baidu.hugegraph.service.auth;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
-import com.google.common.collect.ImmutableSet;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,9 +33,6 @@ import com.baidu.hugegraph.driver.AuthManager;
 import com.baidu.hugegraph.driver.HugeClient;
 import com.baidu.hugegraph.entity.auth.UserEntity;
 import com.baidu.hugegraph.exception.InternalException;
-import com.baidu.hugegraph.options.HubbleOptions;
-import com.baidu.hugegraph.structure.auth.HugePermission;
-import com.baidu.hugegraph.structure.auth.HugeResource;
 import com.baidu.hugegraph.structure.auth.User;
 import com.baidu.hugegraph.util.PageUtil;
 
@@ -49,6 +44,9 @@ public class UserService extends AuthService{
     BelongService belongService;
 
     @Autowired
+    ManagerService managerService;
+
+    @Autowired
     private HugeConfig config;
 
     public List<UserEntity> listUsers(HugeClient hugeClient) {
@@ -57,15 +55,14 @@ public class UserService extends AuthService{
         List<User> users = auth.listUsers();
         List<UserEntity> ues= new ArrayList<>(users.size());
         users.forEach(u -> {
-            ues.add(convert(u));
+            ues.add(convert(hugeClient, u));
         });
 
         return ues;
     }
 
     public UserEntity getUser(HugeClient client, String name) {
-        client.auth().getUser(name);
-        return convert(client.auth().getUser(name));
+        return convert(client, client.auth().getUser(name));
     }
 
     public Object queryPage(HugeClient hugeClient, String query,
@@ -74,7 +71,7 @@ public class UserService extends AuthService{
                 hugeClient.auth().listUsers().stream()
                           .filter((u) -> u.name().contains(query))
                           .sorted(Comparator.comparing(User::name))
-                          .map((u) -> convert(u))
+                          .map((u) -> convert(hugeClient, u))
                           .collect(Collectors.toList());
 
         return PageUtil.page(results, pageNo, pageSize);
@@ -88,13 +85,25 @@ public class UserService extends AuthService{
             throw new InternalException("auth.user.get.%s Not Exits",
                     userId);
         }
-        return convert(user);
+        UserEntity userEntity = convert(hugeClient, user);
+
+        return userEntity;
     }
 
     public void add(HugeClient client, UserEntity ue) {
         User user = new User();
         user.name(ue.getName());
-        client.auth().createUser(user);
+        user.password(ue.getPassword());
+        user.phone(ue.getPhone());
+        user.email(ue.getEmail());
+        user.avatar(ue.getAvatar());
+        user.description(ue.getDescription());
+
+        User newUser = client.auth().createUser(user);
+        if (newUser != null) {
+            // add superadmin
+            client.auth().addSuperAdmin(newUser.id().toString());
+        }
     }
 
 
@@ -107,7 +116,7 @@ public class UserService extends AuthService{
         hugeClient.auth().deleteUser(userId);
     }
 
-    protected UserEntity convert(User user) {
+    protected UserEntity convert(HugeClient client, User user) {
         if (user == null) {
             return null;
         }
@@ -117,18 +126,36 @@ public class UserService extends AuthService{
         u.setName(user.name());
         u.setEmail(user.email());
         u.setPhone(user.phone());
-        u.setDescription(user.description());
         u.setAvatar(user.avatar());;
+        u.setDescription(user.description());
+        u.setCreate(user.createTime());
+        u.setUpdate(user.updateTime());
+        u.setCreator(user.creator());
+
+        u.setSuperadmin(isSuperAdmin(client, user.id().toString()));
 
         return u;
     }
 
-    public Object update(HugeClient hugeClient, User user) {
-        return hugeClient.auth().updateUser(user);
-    }
+    public void update(HugeClient hugeClient, UserEntity userEntity) {
+        User user = new User();
+        user.setId(userEntity.getId());
+        user.name(userEntity.getName());
+        user.password(userEntity.getPassword());
+        user.phone(userEntity.getPhone());
+        user.email(userEntity.getEmail());
+        user.description(userEntity.getDescription());
 
-    public Object create(HugeClient hugeClient, User user) {
-        return hugeClient.auth().createUser(user);
+        // 设置超级管理员权限
+        boolean curSuperAdmin = isSuperAdmin(hugeClient, user.id().toString());
+        if (curSuperAdmin && !userEntity.isSuperadmin()) {
+            hugeClient.auth().delSuperAdmin(user.id().toString());
+        }
+        if (!curSuperAdmin && userEntity.isSuperadmin()) {
+            hugeClient.auth().addSuperAdmin(user.id().toString());
+        }
+
+        hugeClient.auth().updateUser(user);
     }
 
     public String userLevel(HugeClient client, String uid) {
