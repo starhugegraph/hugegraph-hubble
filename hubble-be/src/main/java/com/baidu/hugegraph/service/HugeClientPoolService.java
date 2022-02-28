@@ -19,12 +19,17 @@
 
 package com.baidu.hugegraph.service;
 
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URL;
+import java.net.URLDecoder;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.annotation.PreDestroy;
 
 import com.baidu.hugegraph.driver.factory.MetaHugeClientFactory;
+import com.baidu.hugegraph.exception.ExternalException;
 import com.baidu.hugegraph.options.HubbleOptions;
 import com.baidu.hugegraph.util.HugeClientUtil;
 import com.google.common.base.Strings;
@@ -36,6 +41,7 @@ import com.baidu.hugegraph.driver.HugeClient;
 import com.baidu.hugegraph.entity.GraphConnection;
 
 import lombok.extern.log4j.Log4j2;
+import org.springframework.web.util.UriComponentsBuilder;
 
 @Log4j2
 @Service
@@ -91,7 +97,33 @@ public final class HugeClientPoolService
         }
 
         GraphConnection connection = new GraphConnection();
-        connection.setUrl(url);
+
+        // parse url
+        String text = url;
+        String scheme = null;
+        int schemeIdx = url.indexOf("://");
+        if (schemeIdx > 0) {
+            scheme = url.substring(0, schemeIdx);
+            text = url.substring(schemeIdx + 3);
+        }
+
+        int port = -1;
+        int portIdx = text.lastIndexOf(":");
+        if (portIdx > 0) {
+            try {
+                port = Integer.parseInt(text.substring(portIdx + 1));
+            } catch (NumberFormatException e) {
+                throw new IllegalArgumentException("Invalid HTTP host: " + text,
+                                                   e);
+            }
+
+            text = text.substring(0, portIdx);
+
+            connection.setProtocol(scheme);
+            connection.setHost(text);
+            connection.setPort(port);
+        }
+
         connection.setToken(token);
         connection.setGraphSpace(graphSpace);
         connection.setGraph(graph);
