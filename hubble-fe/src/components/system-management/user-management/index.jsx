@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react'
-import {Button, Table, Space, Popconfirm, message } from 'antd'
+import { Button, Table, Space, Popconfirm, message } from 'antd'
 import CreatModal from './create-tenant'
 import api from '../../../api/api'
 import { InputAdd } from '../../common'
@@ -12,7 +12,7 @@ function Index() {
     const [visible, setVisible] = useState(false)//编辑与创建的模态框
     const [query, setQuery] = useState("")//搜索值
     const [loading, setLoading] = useState("")//table加载
- 
+
     // 获取数据
     useEffect(() => {
         setLoading(true)
@@ -60,10 +60,6 @@ function Index() {
             }
         })
     }
-    // 搜索值
-    function searchHandle(value) {
-        setQuery(value)
-    }
     const columns = [
         {
             title: '用户账号',
@@ -72,7 +68,7 @@ function Index() {
         },
         {
             title: '创建时间',
-            dataIndex: 'create_time',
+            dataIndex: 'user_create',
             align: "center",
         },
 
@@ -112,13 +108,17 @@ function Index() {
         },
     ];
     return (
-        <div className='graphData_wrapper' style={{ width: "100%", height: "calc(100vh - 130px)" }}>
+        <div className='graphData_wrapper'
+            style={{
+                width: "100%",
+                height: "calc(100vh - 130px)"
+            }}>
             <div className='topDiv'>
                 <InputAdd
-                    setSearch={searchHandle}
+                    setSearch={setQuery}
                     createHandle={createHandle}
                     placeholder='输入用户关键字'
-                    >
+                >
                     创建用户
                 </InputAdd>
             </div>

@@ -14,7 +14,7 @@ const TaskErrorLogs: React.FC = observer(() => {
 
   useEffect(() => {
     serverDataImportStore.checkErrorLogs(
-      Number(params!.id),
+      params!.id,
       Number(params!.jobId),
       Number(params!.taskId)
     );

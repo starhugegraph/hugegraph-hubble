@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 import classnames from 'classnames';
 import { Switch, Input, Button, Table, Tooltip, Message } from '@baidu/one-ui';
 
-import { DataImportRootStoreContext } from '../../../../../stores';
+import { AppStoreContext, DataImportRootStoreContext } from '../../../../../stores';
 import { useInitDataImport } from '../../../../../hooks';
 
 import type {
@@ -690,6 +690,7 @@ export interface ImportManipulationsProps {
 const ImportManipulations: React.FC<ImportManipulationsProps> = observer(
   ({ importStatus, taskIndex, loopQuery }) => {
     const dataImportRootStore = useContext(DataImportRootStoreContext);
+    const appStore = useContext(AppStoreContext)
     const { serverDataImportStore } = dataImportRootStore;
     const { t } = useTranslation();
     const manipulations: string[] = [];
@@ -812,7 +813,7 @@ const ImportManipulations: React.FC<ImportManipulationsProps> = observer(
                 target="_blank"
                 className="import-tasks-manipulation"
                 key={manipulation}
-                href={`/graph-management/${dataImportRootStore.currentId}/data-import/${dataImportRootStore.currentJobId}/task-error-log/${serverDataImportStore.importTasks[taskIndex].id}`}
+                href={`/graph-management/${appStore.graphs}/data-import/${dataImportRootStore.currentJobId}/task-error-log/${serverDataImportStore.importTasks[taskIndex].id}`}
                 style={{ marginRight: 8, textDecoration: 'none' }}
                 onClick={() => {
                   handleClickManipulation(manipulation);

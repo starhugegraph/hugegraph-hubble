@@ -47,7 +47,19 @@ import AsyncTaskResult from '../graph-management/async-tasks/AsyncTaskResult';
 import { useLocationWithConfirmation } from '../../hooks';
 import { compKeyObj } from '../../stores/utils';
 import { defaultMenuList } from '../../configs/userAuth.js'
+import axios from 'axios'
 
+axios.interceptors.response.use(
+  (response) => {
+    if (response.data.status !== 200 && response.data.status !== 401) {
+      message.error(response.data.message);
+    }
+    return response;
+  },
+  (error) => {
+    message.error('请求出错：', error);
+  }
+);
 const { Option } = Select;
 const { Header, Sider, Content } = Layout;
 

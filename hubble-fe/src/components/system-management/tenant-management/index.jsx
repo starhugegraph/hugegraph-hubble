@@ -22,7 +22,6 @@ function Index() {
         setLoading(true)
         api.getGraphspaces({ ...page, query }).then(res => {
             if (res && res.status === 200) {
-                console.log(res.data, "tenant");
                 setListData(res.data)
             }
             setLoading(false)
@@ -58,10 +57,6 @@ function Index() {
                 }, 500);
             }
         })
-    }
-    // 搜索值
-    function searchHandle(value) {
-        setQuery(value)
     }
     const columns = [
         {
@@ -144,7 +139,7 @@ function Index() {
         <div className='graphData_wrapper' style={{ width: "100%", height: "calc(100vh - 130px)" }}>
             <div className='topDiv'>
                 <InputAdd
-                    setSearch={searchHandle}
+                    setSearch={setQuery}
                     createHandle={createHandle}
                     placeholder='输入租户关键字'
                 >

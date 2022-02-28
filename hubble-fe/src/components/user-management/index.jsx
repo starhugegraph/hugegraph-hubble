@@ -68,14 +68,6 @@ export default function Index() {
             }
         })
     }
-    // 取消删除
-    function cancel() {
-        message.error('取消删除')
-    }
-    // 搜索值
-    function searchHandle(value) {
-        setQuery(value);
-    }
     const columns = [
         {
             title: '用户账号',
@@ -100,7 +92,7 @@ export default function Index() {
         },
         {
             title: '邮箱',
-            dataIndex: 'mail',
+            dataIndex: 'email',
             align: "center"
         },
         {
@@ -114,7 +106,6 @@ export default function Index() {
                     <Popconfirm
                         title={`你确定要删除用户账号${tag.user_name}吗?`}
                         onConfirm={() => confirm(tag)}
-                        onCancel={cancel}
                         okText="确定"
                         cancelText="取消"
                     >
@@ -128,7 +119,7 @@ export default function Index() {
         <div className='graphData_wrapper' style={{ width: "100%", height: "calc(100vh - 130px)" }}>
             <div className='topDiv'>
                 <InputAdd
-                    searchHandle={searchHandle}
+                    setSearch={setQuery}
                     createHandle={createHandle}
                     placeholder='请输入用户关键字'
                     >

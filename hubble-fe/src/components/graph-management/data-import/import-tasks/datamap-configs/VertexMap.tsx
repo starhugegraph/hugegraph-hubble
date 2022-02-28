@@ -50,7 +50,7 @@ const VertexMap: React.FC<VertexMapProps> = observer(
         : dataMapStore.filteredColumnNamesInVertexNewSelection;
 
     const findVertex = (collection: VertexType[], label: string) =>
-      collection.find(({ name }) => name === label);
+    collection.find(({ name }) => name === label);
 
     const selectedVertex = findVertex(
       dataImportRootStore.vertexTypes,
