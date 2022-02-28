@@ -19,6 +19,8 @@
 
 package com.baidu.hugegraph.handler;
 
+import com.baidu.hugegraph.exception.ServerException;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -35,6 +37,8 @@ import com.baidu.hugegraph.exception.UnauthorizedException;
 
 import lombok.extern.log4j.Log4j2;
 
+import java.util.List;
+
 @Log4j2
 @RestControllerAdvice
 public class ExceptionAdvisor {
@@ -45,6 +49,7 @@ public class ExceptionAdvisor {
     @ExceptionHandler(InternalException.class)
     @ResponseStatus(HttpStatus.OK)
     public Response exceptionHandler(InternalException e) {
+        log.info("Log InternalException: ", e);
         String message = this.handleMessage(e.getMessage(), e.args());
         return Response.builder()
                        .status(Constant.STATUS_INTERNAL_ERROR)
@@ -56,6 +61,7 @@ public class ExceptionAdvisor {
     @ExceptionHandler(ExternalException.class)
     @ResponseStatus(HttpStatus.OK)
     public Response exceptionHandler(ExternalException e) {
+        log.info("Log ExternalException: ", e);
         String message = this.handleMessage(e.getMessage(), e.args());
         return Response.builder()
                        .status(e.status())
@@ -75,9 +81,27 @@ public class ExceptionAdvisor {
                        .build();
     }
 
+    @ExceptionHandler(ServerException.class)
+    @ResponseStatus(HttpStatus.OK)
+    public Response exceptionHandler(ServerException e) {
+        String logMessage = "Log ServerException: \n" + e.exception() + "\n";
+        if (e.trace() != null) {
+            logMessage += StringUtils.join((List<String>) e.trace(), "\n");
+        }
+        log.info(logMessage);
+
+        String message = this.handleMessage(e.getMessage(), null);
+        return Response.builder()
+                       .status(Constant.STATUS_BAD_REQUEST)
+                       .message(message)
+                       .cause(e.getCause())
+                       .build();
+    }
+
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.OK)
     public Response exceptionHandler(Exception e) {
+        log.info("Log Exception: ", e);
         String message = this.handleMessage(e.getMessage(), null);
         return Response.builder()
                        .status(Constant.STATUS_BAD_REQUEST)
@@ -89,6 +113,7 @@ public class ExceptionAdvisor {
     @ExceptionHandler(IllegalGremlinException.class)
     @ResponseStatus(HttpStatus.OK)
     public Response exceptionHandler(IllegalGremlinException e) {
+        log.info("Log IllegalGremlinException: ", e);
         String message = this.handleMessage(e.getMessage(), e.args());
         return Response.builder()
                        .status(Constant.STATUS_ILLEGAL_GREMLIN)
@@ -100,6 +125,7 @@ public class ExceptionAdvisor {
     @ExceptionHandler(UnauthorizedException.class)
     @ResponseStatus(HttpStatus.OK)
     public Response exceptionHandler(UnauthorizedException e) {
+        log.info("Log UnauthorizedException: ", e);
         String message = e.getMessage();
         return Response.builder()
                        .status(Constant.STATUS_UNAUTHORIZED)

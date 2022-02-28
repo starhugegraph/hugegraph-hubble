@@ -56,6 +56,7 @@ public class LoginController extends BaseController {
         // Get User Info
         client = this.authClient(null, null);
         return userService.getUser(client, login.name());
+        // return ImmutableMap.of("token", this.getToken());
     }
 
     @GetMapping("/status")

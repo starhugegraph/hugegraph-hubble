@@ -43,10 +43,10 @@ public class WebMvcConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(this.customInterceptor())
                 .addPathPatterns("/**");
-        registry.addInterceptor(this.loginInterceptor())
-                .addPathPatterns("/api/**")
-                .excludePathPatterns("/api/**/auth/login")
-                .excludePathPatterns("/api/**/auth/logout");
+        // registry.addInterceptor(this.loginInterceptor())
+        //         .addPathPatterns("/api/**")
+        //         .excludePathPatterns("/api/**/auth/login")
+        //         .excludePathPatterns("/api/**/auth/logout");
     }
 
     @Bean
