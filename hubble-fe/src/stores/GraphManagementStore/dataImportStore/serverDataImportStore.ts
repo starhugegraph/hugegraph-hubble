@@ -21,7 +21,7 @@ import AppStoreContext from '../../appStore';
 
 export class ServerDataImportStore {
   dataImportRootStore: DataImportRootStore;
-  appStore:any
+  appStore: any
 
   constructor(dataImportRootStore: DataImportRootStore) {
     this.dataImportRootStore = dataImportRootStore;
@@ -195,8 +195,7 @@ export class ServerDataImportStore {
         ImportTasks[]
       >> = yield axios
         .get<responseData<ImportTasks[]>>(
-          `${baseUrl}/${this.appStore._currentValue.tenant}/graphs/${this.appStore._currentValue.graphs}/job-manager/${
-            this.dataImportRootStore.currentJobId
+          `${baseUrl}/${this.appStore._currentValue.tenant}/graphs/${this.appStore._currentValue.graphs}/job-manager/${this.dataImportRootStore.currentJobId
           }/load-tasks/ids?${taskIds.map((id) => 'task_ids=' + id).join('&')}`
         )
         .catch(checkIfLocalNetworkOffline);
@@ -294,8 +293,7 @@ export class ServerDataImportStore {
         ImportTasks[]
       >> = yield axios
         .post<responseData<ImportTasks[]>>(
-          `${baseUrl}/${this.appStore._currentValue.tenant}/graphs/${this.appStore._currentValue.graphs}/job-manager/${
-            this.dataImportRootStore.currentJobId
+          `${baseUrl}/${this.appStore._currentValue.tenant}/graphs/${this.appStore._currentValue.graphs}/job-manager/${this.dataImportRootStore.currentJobId
           }/load-tasks/start?${fileIds
             .map((id) => 'file_mapping_ids=' + id)
             .join('&')}`,
@@ -473,16 +471,16 @@ export class ServerDataImportStore {
 
   checkErrorLogs = flow(function* checkErrorLogs(
     this: ServerDataImportStore,
-    id: number,
+    id: string | number,
     jobId: number,
     taskId: number
   ) {
     this.requestStatus.checkErrorLogs = 'pending';
-
+    const connect_id = (typeof id) === "string" ? id : this.appStore.graphs
     try {
       const result: AxiosResponse<responseData<string>> = yield axios
         .get<responseData<string>>(
-          `${baseUrl}/${this.appStore._currentValue.tenant}/graphs/${this.appStore._currentValue.graphs}/job-manager/${jobId}/load-tasks/${taskId}/reason`
+          `${baseUrl}/${this.appStore._currentValue.tenant}/graphs/${connect_id}/job-manager/${jobId}/load-tasks/${taskId}/reason`
         )
         .catch(checkIfLocalNetworkOffline);
 

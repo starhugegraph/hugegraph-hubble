@@ -504,7 +504,6 @@ export default function Resources() {
                         arr[i].children[j].checked = value;
                         if (isChildren) {
                             const res = arr[0].children.every(item => item.checked)
-                            console.log(res);
                             arr[0].checked = res 
                         }
                         setCollapseList(arr);

@@ -36,7 +36,7 @@ export class DataImportRootStore {
     this.appStore = AppStoreContext
   }
 
-  @observable currentId: number | null = null;
+  @observable currentId: number | string | null = null;
   @observable currentJobId: number | null = null;
   @observable currentStatus = '';
   @observable currentStep = NaN;
@@ -65,7 +65,7 @@ export class DataImportRootStore {
   }
 
   @action
-  setCurrentId(id: number) {
+  setCurrentId(id: number | string) {
     this.currentId = id;
   }
 

@@ -813,7 +813,7 @@ const ImportManipulations: React.FC<ImportManipulationsProps> = observer(
                 target="_blank"
                 className="import-tasks-manipulation"
                 key={manipulation}
-                href={`/graph-management/${appStore.currentId}/data-import/${dataImportRootStore.currentJobId}/task-error-log/${serverDataImportStore.importTasks[taskIndex].id}`}
+                href={`/graph-management/${appStore.graphs}/data-import/${dataImportRootStore.currentJobId}/task-error-log/${serverDataImportStore.importTasks[taskIndex].id}`}
                 style={{ marginRight: 8, textDecoration: 'none' }}
                 onClick={() => {
                   handleClickManipulation(manipulation);

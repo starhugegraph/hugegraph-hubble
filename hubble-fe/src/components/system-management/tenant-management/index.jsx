@@ -22,7 +22,6 @@ function Index() {
         setLoading(true)
         api.getGraphspaces({ ...page, query }).then(res => {
             if (res && res.status === 200) {
-                console.log(res.data, "tenant");
                 setListData(res.data)
             }
             setLoading(false)

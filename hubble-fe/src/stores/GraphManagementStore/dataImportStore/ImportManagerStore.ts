@@ -352,7 +352,6 @@ export class ImportManagerStore {
           `${baseUrl}/${this.appStore._currentValue.tenant}/graphs/${connectId}/job-manager/${jobId}/reason`
         )
         .catch(checkIfLocalNetworkOffline);
-      console.log(result);
 
       if (result.data.status !== 200) {
         this.errorInfo.fetchFailedReason.code = result.data.status;
