@@ -19,29 +19,24 @@
 
 package com.baidu.hugegraph.service;
 
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URL;
-import java.net.URLDecoder;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
-
 import javax.annotation.PreDestroy;
 
-import com.baidu.hugegraph.driver.factory.MetaHugeClientFactory;
-import com.baidu.hugegraph.exception.ExternalException;
-import com.baidu.hugegraph.options.HubbleOptions;
-import com.baidu.hugegraph.util.HugeClientUtil;
+import com.baidu.hugegraph.exception.ParameterizedException;
+import com.baidu.hugegraph.util.UrlUtil;
 import com.google.common.base.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import lombok.extern.log4j.Log4j2;
+import org.springframework.util.CollectionUtils;
 
 import com.baidu.hugegraph.config.HugeConfig;
 import com.baidu.hugegraph.driver.HugeClient;
 import com.baidu.hugegraph.entity.GraphConnection;
-
-import lombok.extern.log4j.Log4j2;
-import org.springframework.web.util.UriComponentsBuilder;
+import com.baidu.hugegraph.driver.factory.MetaHugeClientFactory;
+import com.baidu.hugegraph.options.HubbleOptions;
+import com.baidu.hugegraph.util.HugeClientUtil;
 
 @Log4j2
 @Service
@@ -81,6 +76,11 @@ public final class HugeClientPoolService
         List<String> urls =
                 hugeClientFactory.getServerURL(this.cluster, graphSpace, graph);
 
+        if (CollectionUtils.isEmpty(urls)) {
+            // Get Service url From Default
+            throw new ParameterizedException("No service available");
+        }
+
         String url = urls.get((int) (Math.random() * urls.size()));
 
         String key = Strings.lenientFormat("%s-%s-%s-%s", url, graphSpace,
@@ -98,30 +98,13 @@ public final class HugeClientPoolService
 
         GraphConnection connection = new GraphConnection();
 
-        // parse url
-        String text = url;
-        String scheme = null;
-        int schemeIdx = url.indexOf("://");
-        if (schemeIdx > 0) {
-            scheme = url.substring(0, schemeIdx);
-            text = url.substring(schemeIdx + 3);
-        }
-
-        int port = -1;
-        int portIdx = text.lastIndexOf(":");
-        if (portIdx > 0) {
-            try {
-                port = Integer.parseInt(text.substring(portIdx + 1));
-            } catch (NumberFormatException e) {
-                throw new IllegalArgumentException("Invalid HTTP host: " + text,
-                                                   e);
-            }
-
-            text = text.substring(0, portIdx);
-
-            connection.setProtocol(scheme);
-            connection.setHost(text);
-            connection.setPort(port);
+        try {
+            UrlUtil.Host host = UrlUtil.parseHost(url);
+            connection.setProtocol(host.getScheme());
+            connection.setHost(host.getHost());
+            connection.setPort(host.getPort());
+        } catch (IllegalArgumentException e) {
+            throw new ParameterizedException("Parse url(%s) error", e, url);
         }
 
         connection.setToken(token);
