@@ -19,8 +19,8 @@
 
 package com.baidu.hugegraph.controller.space;
 
-import com.baidu.hugegraph.exception.ParameterizedException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,11 +31,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.baidu.hugegraph.driver.factory.MetaHugeClientFactory;
+import com.baidu.hugegraph.exception.ParameterizedException;
 import com.baidu.hugegraph.common.Constant;
 import com.baidu.hugegraph.controller.BaseController;
 import com.baidu.hugegraph.service.space.OLTPServerService;
 import com.baidu.hugegraph.driver.HugeClient;
 import com.baidu.hugegraph.structure.space.OLTPService;
+
+import java.util.List;
 
 @RestController
 @RequestMapping(Constant.API_VERSION + "graphspaces/{graphspace}/services/oltp")
@@ -43,6 +47,8 @@ public class ServiceController extends BaseController {
 
     @Autowired
     OLTPServerService oltpService;
+    @Autowired
+    private MetaHugeClientFactory metaHugeClientFactory;
 
     @GetMapping
     public Object queryPage(@PathVariable("graphspace") String graphspace,
@@ -52,15 +58,21 @@ public class ServiceController extends BaseController {
                                     defaultValue = "1") int pageNo,
                             @RequestParam(name = "page_size", required = false,
                                     defaultValue = "10") int pageSize) {
-        return oltpService.queryPage(this.authClient(graphspace, null),
-                                     query, pageNo, pageSize);
+        try (HugeClient client = defaultClient(graphspace, null);){
+            return oltpService.queryPage(client, query, pageNo, pageSize);
+        } catch (Throwable t) {
+            throw t;
+        }
     }
 
     @GetMapping("{service}")
     public Object get(@PathVariable("graphspace") String graphspace,
                       @PathVariable("service") String service) {
-        return oltpService.get(this.authClient(graphspace, null),
-                               service);
+        try (HugeClient client = defaultClient(graphspace, null);){
+            return oltpService.get(client, service);
+        } catch (Throwable t) {
+            throw t;
+        }
     }
 
     @PostMapping
@@ -77,8 +89,11 @@ public class ServiceController extends BaseController {
             serviceEntity.setUrls(null);
         }
 
-        return oltpService.create(this.authClient(graphspace, null),
-                                  serviceEntity);
+        try (HugeClient client = defaultClient(graphspace, null);){
+            return oltpService.create(client, serviceEntity);
+        } catch (Throwable t) {
+            throw t;
+        }
     }
 
     @PutMapping("{service}")
@@ -88,8 +103,11 @@ public class ServiceController extends BaseController {
 
         serviceEntity.setName(service);
 
-        return oltpService.update(this.authClient(graphspace, null),
-                                  serviceEntity);
+        try (HugeClient client = defaultClient(graphspace, null);){
+            return oltpService.update(client, serviceEntity);
+        } catch (Throwable t) {
+            throw t;
+        }
     }
 
     @DeleteMapping("{service}")
@@ -100,8 +118,31 @@ public class ServiceController extends BaseController {
                                              "'DEFAULT' under the graphspace " +
                                              "named 'DEFAULT'!");
         }
-        HugeClient client = this.authClient(graphspace, null);
-        oltpService.delete(client, service);
+        try (HugeClient client = defaultClient(graphspace, null);){
+            oltpService.delete(client, service);
+        } catch (Throwable t) {
+            throw t;
+        }
     }
 
+    protected HugeClient defaultClient(String graphSpace, String graph) {
+        // Get Service url From Default
+        List<String> urls =
+                metaHugeClientFactory.getServerURL(this.cluster,
+                                                   MetaHugeClientFactory.DEFAULT_GRAPHSPACE,
+                                                   MetaHugeClientFactory.DEFAULT_SERVICE);
+
+        String url = urls.get((int) (Math.random() * urls.size()));
+
+        if (CollectionUtils.isEmpty(urls)) {
+            throw new ParameterizedException("No url in service(%s/%s)",
+                                             MetaHugeClientFactory.DEFAULT_GRAPHSPACE,
+                                             MetaHugeClientFactory.DEFAULT_SERVICE);
+        }
+
+        HugeClient client = hugeClientPoolService.create(url, graphSpace, graph,
+                                                         this.getToken());
+
+        return client;
+    }
 }
