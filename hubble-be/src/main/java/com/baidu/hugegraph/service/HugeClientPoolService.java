@@ -26,6 +26,7 @@ import javax.annotation.PreDestroy;
 import com.baidu.hugegraph.exception.ParameterizedException;
 import com.baidu.hugegraph.util.UrlUtil;
 import com.google.common.base.Strings;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import lombok.extern.log4j.Log4j2;
@@ -50,7 +51,7 @@ public final class HugeClientPoolService
     @Autowired
     private String cluster;
     @Autowired
-    private MetaHugeClientFactory hugeClientFactory;
+    private MetaHugeClientFactory metaHugeClientFactory;
 
     @PreDestroy
     public void destroy() {
@@ -62,26 +63,27 @@ public final class HugeClientPoolService
 
     public HugeClient createUnauthClient() {
         // Get all graphspace under cluster
-        return getOrCreate(null, null, null);
+        return getOrCreate(null, null, null, null);
     }
 
     public HugeClient createAuthClient(String graphSpace,
                                        String graph, String token) {
-        return getOrCreate(graphSpace, graph, token);
+        return getOrCreate(null, graphSpace, graph, token);
     }
 
-    public synchronized HugeClient getOrCreate(String graphSpace,
-                                               String graph,
-                                               String token) {
-        List<String> urls =
-                hugeClientFactory.getServerURL(this.cluster, graphSpace, graph);
+    public HugeClient getOrCreate(String url, String graphSpace, String graph,
+                                  String token) {
+        if (StringUtils.isEmpty(url)) {
+            List<String> urls =
+                    metaHugeClientFactory.getServerURL(this.cluster, graphSpace,
+                                                       graph);
 
-        if (CollectionUtils.isEmpty(urls)) {
-            // Get Service url From Default
-            throw new ParameterizedException("No service available");
+            if (CollectionUtils.isEmpty(urls)) {
+                // Get Service url From Default
+                throw new ParameterizedException("No service available");
+            }
+            url = urls.get((int) (Math.random() * urls.size()));
         }
-
-        String url = urls.get((int) (Math.random() * urls.size()));
 
         String key = Strings.lenientFormat("%s-%s-%s-%s", url, graphSpace,
                                            graph, token);
@@ -94,6 +96,35 @@ public final class HugeClientPoolService
                 client.close();
                 this.remove(key);
             }
+        }
+        client = create(url, graphSpace, graph, token);
+        synchronized (this) {
+            if (client != null) {
+                HugeClient oldClient = this.get(key);
+                if (oldClient != null) {
+                    // 其他请求已经创建了新client.
+                    client.close();
+                    client = oldClient;
+                } else {
+                    this.put(key, client);
+                }
+            }
+        }
+        return client;
+    }
+
+    public HugeClient create(String url, String graphSpace, String graph,
+                             String token) {
+        if (StringUtils.isEmpty(url)) {
+            List<String> urls =
+                    metaHugeClientFactory.getServerURL(this.cluster, graphSpace,
+                                                       graph);
+
+            if (CollectionUtils.isEmpty(urls)) {
+                // Get Service url From Default
+                throw new ParameterizedException("No service available");
+            }
+            url = urls.get((int) (Math.random() * urls.size()));
         }
 
         GraphConnection connection = new GraphConnection();
@@ -116,10 +147,8 @@ public final class HugeClientPoolService
             connection.setTimeout(timeout);
         }
         this.sslService.configSSL(this.config, connection);
-        client = HugeClientUtil.tryConnect(connection);
-        if (client != null) {
-            this.put(key, client);
-        }
+        HugeClient client = HugeClientUtil.tryConnect(connection);
+
         return client;
     }
 
