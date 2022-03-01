@@ -42,7 +42,6 @@ import { Algorithm } from '../../../stores/factory/dataAnalyzeStore/algorithmSto
 
 import ArrowIcon from '../../../assets/imgs/ic_arrow_16.svg';
 import EmptyIcon from '../../../assets/imgs/ic_sousuo_empty.svg';
-import { toJS } from 'mobx';
 
 export const AlgorithmInternalNameMapping: Record<string, string> = {
   rings: 'loop-detection',
@@ -878,7 +877,7 @@ const ExecLogAndQueryCollections: React.FC = observer(() => {
             {tabIndex === 0 ? (
               <Table
                 columns={execLogsColumnConfigs}
-                dataSource={dataAnalyzeStore.executionLogData}
+                dataSource={appStore.graphs !== "null" ? dataAnalyzeStore.executionLogData : []}
                 pagination={{
                   showPageJumper: false,
                   pageSize: dataAnalyzeStore.pageConfigs.executionLog.pageSize,
@@ -920,7 +919,7 @@ const ExecLogAndQueryCollections: React.FC = observer(() => {
                       )
                   }}
                   columns={queryFavoriteColumnConfigs}
-                  dataSource={dataAnalyzeStore.favoriteQueryData}
+                  dataSource={appStore.graphs !== "null" ? dataAnalyzeStore.favoriteQueryData : []}
                   onSortClick={handleFavoriteSortClick}
                   pagination={{
                     showPageJumper: false,

@@ -71,6 +71,9 @@ export default function GraphSchema() {
     let [pageObj, setPageObj] = useState(defaultPageObj);
     // 搜索框数据
     let [inpValue, setInpValue] = useState('');
+    // 创建loading
+    const [createLoading, setCreateLoading] = useState(false);
+    
     useEffect(()=>{
         onSearch(inpValue, '', true);
     }, [pageObj.current,appStore.tenant]);
@@ -173,8 +176,11 @@ export default function GraphSchema() {
     };
     // 创建确认操作
     const confirmCreate = () => {
+        setCreateLoading(true)
         if (eidtKey) {
+            console.log(1);
             api.editSchema(appStore.tenant, deleteData, formData).then((res) => {
+                setCreateLoading(false)
                 if (res.status === 200) {
                     message.success(res.message);
                     setCreateConfirmKey(false);
@@ -189,6 +195,7 @@ export default function GraphSchema() {
             return;
         }
         api.createSchema(appStore.tenant, formData).then((res) => {
+            setCreateLoading(false)
             if (res.status === 200) {
                 message.success(res.message);
                 setCreateConfirmKey(false);
@@ -239,6 +246,7 @@ export default function GraphSchema() {
                 visible={createConfirmKey}
                 onCancel={()=> {setCreateConfirmKey(false);}}
                 onOk={confirmCreate}
+                confirmLoading={createLoading}
                 okText="确认"
                 cancelText="取消"
                 style={

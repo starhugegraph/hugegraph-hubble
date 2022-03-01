@@ -64,6 +64,8 @@ export default function GraphData() {
 
     // loading
     const [loading, setLoading] = useState(false);
+    // 创建loading
+    const [createLoading, setCreateLoading] = useState(false);
     // 表格数据
     let [tableData, setTableData] = useState([]);
     // 创建图弹窗
@@ -206,7 +208,9 @@ export default function GraphData() {
     };
     // 创建确认操作
     const confirmCreate = () => {
+        setCreateLoading(true)
         api.createGraph(appStore.tenant, formData).then((res) => {
+            setCreateLoading(false)
             if (res.status === 200) {
                 message.success("创建成功,即将刷新页面");
                 setCreateConfirmKey(false);
@@ -289,6 +293,7 @@ export default function GraphData() {
                 visible={createConfirmKey}
                 onCancel={() => { setCreateConfirmKey(false) }}
                 onOk={confirmCreate}
+                confirmLoading={createLoading}
                 okText="确认"
                 cancelText="取消"
                 style={

@@ -50,6 +50,7 @@ import CloseIcon from '../../../../assets/imgs/ic_close_16.svg';
 
 import './VertexTypeList.less';
 import { AppStoreContext } from '../../../../stores';
+import { message } from 'antd';
 
 const styles = {
   button: {
@@ -127,7 +128,7 @@ const VertexTypeList: React.FC = observer(() => {
   const dropdownWrapperRef = useRef<HTMLDivElement>(null);
   const deleteWrapperInDrawerRef = useRef<HTMLDivElement>(null);
 
-  const isLoading =
+  let isLoading =
     preLoading ||
     vertexTypeStore.requestStatus.fetchVertexTypeList === 'pending';
 
@@ -449,7 +450,7 @@ const VertexTypeList: React.FC = observer(() => {
           <Button
             size="medium"
             style={styles.button}
-            disabled={isLoading|| size(currentSelectedRowKeys) !== 0}
+            disabled={isLoading || size(currentSelectedRowKeys) !== 0}
             onClick={() => {
               vertexTypeStore.changeCurrentTabStatus('reuse');
             }}
@@ -493,23 +494,23 @@ const VertexTypeList: React.FC = observer(() => {
             onChange: handleSelectedTableRow
           }}
           onSortClick={handleSortClick}
-          dataSource={isLoading ? [] : vertexTypeStore.vertexTypes}
+          dataSource={isLoading || appStore.graphs ? [] : vertexTypeStore.vertexTypes}
           pagination={
             isLoading
               ? null
               : {
-                  hideOnSinglePage: false,
-                  pageNo: vertexTypeStore.vertexListPageConfig.pageNumber,
-                  pageSize: 10,
-                  showSizeChange: false,
-                  showPageJumper: false,
-                  total: vertexTypeStore.vertexListPageConfig.pageTotal,
-                  onPageNoChange: (e: React.ChangeEvent<HTMLSelectElement>) => {
-                    // mutateSelectedRowKeys([]);
-                    vertexTypeStore.mutatePageNumber(Number(e.target.value));
-                    vertexTypeStore.fetchVertexTypeList();
-                  }
+                hideOnSinglePage: false,
+                pageNo: vertexTypeStore.vertexListPageConfig.pageNumber,
+                pageSize: 10,
+                showSizeChange: false,
+                showPageJumper: false,
+                total: vertexTypeStore.vertexListPageConfig.pageTotal,
+                onPageNoChange: (e: React.ChangeEvent<HTMLSelectElement>) => {
+                  // mutateSelectedRowKeys([]);
+                  vertexTypeStore.mutatePageNumber(Number(e.target.value));
+                  vertexTypeStore.fetchVertexTypeList();
                 }
+              }
           }
         />
 
@@ -755,14 +756,14 @@ const VertexTypeList: React.FC = observer(() => {
                             vertexTypeStore.editedSelectedVertexType.style
                               .display_fields.length !== 0
                               ? vertexTypeStore.editedSelectedVertexType.style
-                                  .display_fields
+                                .display_fields
                               : vertexTypeStore.selectedVertexType!.style
-                                  .display_fields,
+                                .display_fields,
                           size:
                             vertexTypeStore.editedSelectedVertexType.style
                               .size !== null
                               ? vertexTypeStore.editedSelectedVertexType.style
-                                  .size
+                                .size
                               : vertexTypeStore.selectedVertexType!.style.size
                         }
                       });
@@ -786,7 +787,7 @@ const VertexTypeList: React.FC = observer(() => {
                                 .color !== null
                                 ? vertexTypeStore.editedSelectedVertexType.style.color.toLowerCase()
                                 : vertexTypeStore.selectedVertexType!.style.color!.toLowerCase()) ===
-                              color
+                                color
                                 ? 'new-vertex-type-options-border new-vertex-type-options-color'
                                 : 'new-vertex-type-options-no-border new-vertex-type-options-color'
                             }
@@ -810,7 +811,7 @@ const VertexTypeList: React.FC = observer(() => {
                     style={{ paddingLeft: 7 }}
                     value={
                       vertexTypeStore.editedSelectedVertexType.style.size !==
-                      null
+                        null
                         ? vertexTypeStore.editedSelectedVertexType.style.size
                         : vertexTypeStore.selectedVertexType!.style.size
                     }
@@ -828,9 +829,9 @@ const VertexTypeList: React.FC = observer(() => {
                             vertexTypeStore.editedSelectedVertexType.style
                               .display_fields.length !== 0
                               ? vertexTypeStore.editedSelectedVertexType.style
-                                  .display_fields
+                                .display_fields
                               : vertexTypeStore.selectedVertexType!.style
-                                  .display_fields,
+                                .display_fields,
                           size: value
                         }
                       });
@@ -862,7 +863,7 @@ const VertexTypeList: React.FC = observer(() => {
                 </div>
                 {
                   IDStrategyMappings[
-                    vertexTypeStore.selectedVertexType!.id_strategy
+                  vertexTypeStore.selectedVertexType!.id_strategy
                   ]
                 }
               </div>
@@ -963,11 +964,11 @@ const VertexTypeList: React.FC = observer(() => {
                                     property.name
                                   )
                                     ? addedPropertiesInSelectedVertextType.delete(
-                                        property.name
-                                      )
+                                      property.name
+                                    )
                                     : addedPropertiesInSelectedVertextType.add(
-                                        property.name
-                                      );
+                                      property.name
+                                    );
 
                                   vertexTypeStore.mutateEditedSelectedVertexType(
                                     {
@@ -1130,12 +1131,12 @@ const VertexTypeList: React.FC = observer(() => {
                     .length !== 0 ||
                     vertexTypeStore.editedSelectedVertexType
                       .append_property_indexes.length !== 0) && (
-                    <div className="metadata-drawer-options-list-row metadata-drawer-options-list-row-normal">
-                      <span>索引名称</span>
-                      <span>索引类型</span>
-                      <span>属性</span>
-                    </div>
-                  )}
+                      <div className="metadata-drawer-options-list-row metadata-drawer-options-list-row-normal">
+                        <span>索引名称</span>
+                        <span>索引类型</span>
+                        <span>属性</span>
+                      </div>
+                    )}
                   {vertexTypeStore
                     .selectedVertexType!.property_indexes.filter(
                       (propertyIndex) =>
@@ -1290,10 +1291,10 @@ const VertexTypeList: React.FC = observer(() => {
                                   .validateEditVertexTypeErrorMessage
                                   .propertyIndexes.length !== 0
                                   ? (vertexTypeStore
-                                      .validateEditVertexTypeErrorMessage
-                                      .propertyIndexes[
-                                      index
-                                    ] as VertexTypeValidatePropertyIndexes).name
+                                    .validateEditVertexTypeErrorMessage
+                                    .propertyIndexes[
+                                    index
+                                  ] as VertexTypeValidatePropertyIndexes).name
                                   : ''
                               }
                               value={name}
@@ -1697,7 +1698,7 @@ const VertexTypeListManipulation: React.FC<VertexTypeListManipulation> = observe
             tooltipWrapper={
               <div ref={deleteWrapperRef}>
                 {vertexTypeStore.vertexTypeUsingStatus &&
-                vertexTypeStore.vertexTypeUsingStatus[vertexName] ? (
+                  vertexTypeStore.vertexTypeUsingStatus[vertexName] ? (
                   <p style={{ width: 200 }}>
                     当前顶点类型正在使用中，不可删除。
                   </p>

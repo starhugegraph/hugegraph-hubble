@@ -50,16 +50,28 @@ import { defaultMenuList } from '../../configs/userAuth.js'
 import axios from 'axios'
 
 axios.interceptors.response.use(
-  (response) => {
-    if (response.data.status !== 200 && response.data.status !== 401) {
-      message.error(response.data.message);
+    (response) => {
+        if (response.data.status !== 200
+            &&
+            response.config.responseType !== "arraybuffer"
+            &&
+            response.data.status !== 401
+        ) {
+            message.error(response.data.message);
+        } else if (response.data.status === 401) {
+            message.error("授权过期");
+            localStorage.clear()
+            setTimeout(() => {
+                window.location.reload()
+            }, 800);
+        }
+        return response;
+    },
+    (error) => {
+        message.error('请求出错：', error);
     }
-    return response;
-  },
-  (error) => {
-    message.error('请求出错：', error);
-  }
 );
+
 const { Option } = Select;
 const { Header, Sider, Content } = Layout;
 
@@ -88,17 +100,13 @@ const Home = () => {
         if (appStore.tenant !== 'null') {
             const res = await api.getGraphsName(appStore.tenant)
             setGraphsLoading(false)
-            if (res.status === 200
-                && res.data.graphs
-                && res.data.graphs.length) {
-                appStore.setGraphs(res.data.graphs[0]);
-                setGraphsSelect(res.data.graphs);
-                appStore.setDate(new Date())
-                return;
-            }
-            appStore.setGraphs("null");
-            setGraphsSelect([]);
-            message.warning("注意:当前图空间为空!")
+            let isResTrue = (res.status === 200 
+            && res.data.graphs 
+            && res.data.graphs.length)
+            appStore.setGraphs(isResTrue ? res.data.graphs[0] : "null");
+            setGraphsSelect(isResTrue ? res.data.graphs : []);
+            appStore.setDate(new Date());
+            !isResTrue && message.warning("注意:当前图空间为空,可能导致数据获取出错！");
         }
     };
 

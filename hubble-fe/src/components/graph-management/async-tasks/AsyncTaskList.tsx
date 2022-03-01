@@ -31,6 +31,7 @@ import WhiteCloseIcon from '../../../assets/imgs/ic_close_white.svg';
 import type { AsyncTask } from '../../../stores/types/GraphManagementStore/asyncTasksStore';
 
 import './AsyncTaskList.less';
+import { message } from 'antd';
 
 const AsyncTaskList: React.FC = observer(() => {
   const graphManagementStore = useContext(GraphManagementStoreContext);
@@ -301,7 +302,7 @@ const AsyncTaskList: React.FC = observer(() => {
     }
   ];
 
-  const isLoading =
+  let isLoading =
     preLoading ||
     asyncTasksStore.requestStatus.fetchAsyncTaskList === 'pending';
 
@@ -367,7 +368,7 @@ const AsyncTaskList: React.FC = observer(() => {
       };
     }
     // when page number changed, dispatch current useEffect to loop again
-  }, [params?.id, asyncTasksStore.asyncTasksPageConfig.pageNumber,appStore.date]);
+  }, [params?.id, asyncTasksStore.asyncTasksPageConfig.pageNumber, appStore.date]);
 
   useEffect(() => {
     document.addEventListener('click', handleOutSideClick, false);
@@ -591,7 +592,7 @@ const AsyncTaskList: React.FC = observer(() => {
             )
           }}
           dataSource={
-            isLoading && !isInLoop ? [] : asyncTasksStore.asyncTaskList
+            ((isLoading && !isInLoop) || appStore.graphs==="null") ? [] : asyncTasksStore.asyncTaskList
           }
           pagination={{
             hideOnSinglePage: false,

@@ -8,7 +8,7 @@
  */
 import React, { useCallback, useState, useEffect } from 'react';
 import { useLocation } from 'wouter';
-import { message, Popconfirm } from 'antd';
+import { message, Popconfirm, Tooltip } from 'antd';
 import api from '../../api/api'
 import './AppBar.less';
 
@@ -16,7 +16,7 @@ const AppBar = ({ setLogin }) => {
   const [_, setLocation] = useLocation();
   const [loading, setLoading] = useState(false)
   const [userInfo] = useState(JSON.parse(localStorage.getItem("userInfo")))
-  
+
   const setRoute = useCallback(
     (route) => () => {
       setLocation(route);
@@ -70,7 +70,9 @@ const AppBar = ({ setLogin }) => {
           onConfirm={outLog}
           loading={loading}
         >
-          <span style={{ color: "#69c0ff", cursor: "pointer" }}>{userInfo != null ? userInfo.user_name : null}</span>
+          <Tooltip title="点击可注销登录">
+            <span>{userInfo != null ? userInfo.user_name : null}</span>
+          </Tooltip>
         </Popconfirm>
       </div>
     </nav>

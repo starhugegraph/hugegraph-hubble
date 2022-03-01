@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react'
-import { Table, Space, Button, message, Popconfirm, Input } from 'antd';
+import { Table, Space, Button, message, Popconfirm } from 'antd';
 import DetailComputing from './computing-detail'
 import { AppStoreContext } from '../../../stores';
 import api from '../../../api/api'

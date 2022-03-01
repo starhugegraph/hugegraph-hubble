@@ -29,6 +29,7 @@ import LoadingFrontIcon from '../../../../assets/imgs/ic_loading_front.svg';
 import '../../data-analyze/DataAnalyze.less';
 import './GraphView.less';
 import { AppStoreContext } from '../../../../stores';
+import { message } from 'antd';
 
 const styles = {
   marginLeft: '12px'
@@ -41,7 +42,6 @@ const GraphView: React.FC = observer(() => {
     edgeTypeStore,
     graphViewStore
   } = useContext(MetadataConfigsRootStore);
-
   const appStore = useContext(AppStoreContext)
 
   useEffect(() => {
@@ -109,7 +109,7 @@ const GraphView: React.FC = observer(() => {
        * if use && at here it will dispatch re-render in this component
        * which cause all components below to re-render either
        */}
-      <GraphDataView appStore={appStore} />
+      {appStore.graphs !== "null" ? <GraphDataView appStore={appStore} /> : null}
       <CreateProperty />
       <CreateVertex />
       <CreateEdge />
@@ -188,7 +188,6 @@ const GraphDataView: React.FC<view_props> = observer(({ appStore }) => {
 
   useEffect(() => {
     if (appStore.graphs !== "null") {
-      
       graphViewStore.fetchGraphViewData(
         dataAnalyzeStore.colorMappings,
         dataAnalyzeStore.vertexSizeMappings,

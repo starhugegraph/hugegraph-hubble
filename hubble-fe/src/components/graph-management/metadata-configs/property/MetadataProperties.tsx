@@ -31,6 +31,7 @@ import WhiteCloseIcon from '../../../../assets/imgs/ic_close_white.svg';
 import './MetadataProperties.less';
 import ReuseProperties from './ReuseProperties';
 import { AppStoreContext } from '../../../../stores';
+import { message } from 'antd';
 
 const styles = {
   button: {
@@ -93,7 +94,7 @@ const MetadataProperties: React.FC = observer(() => {
   const [isShowModal, switchShowModal] = useState(false);
   const appStore = useContext(AppStoreContext)
 
-  const isLoading =
+  let isLoading =
     preLoading ||
     metadataPropertyStore.requestStatus.fetchMetadataPropertyList === 'pending';
 
@@ -115,6 +116,10 @@ const MetadataProperties: React.FC = observer(() => {
   };
 
   const handleSearch = async () => {
+    if (appStore.graphs === "null") {
+      message.error("当前图空间为空,暂无法搜索")
+      return
+    }
     metadataPropertyStore.mutatePageNumber(1);
     metadataPropertyStore.switchIsSearchedStatus(true);
     await metadataPropertyStore.fetchMetadataPropertyList();
@@ -386,6 +391,7 @@ const MetadataProperties: React.FC = observer(() => {
           <MetadataPropertiesManipulation
             propertyName={records.name}
             propertyIndex={index}
+            appStore={appStore}
           />
         );
       }
@@ -515,7 +521,7 @@ const MetadataProperties: React.FC = observer(() => {
           }}
           onSortClick={handleSortClick}
           dataSource={
-            isLoading
+            isLoading || appStore.graphs === "null"
               ? []
               : metadataPropertyStore.isCreateNewProperty
                 ? metadataPropertyStore.reunionMetadataProperty
@@ -615,11 +621,12 @@ const MetadataProperties: React.FC = observer(() => {
 export interface MetadataPropertiesManipulationProps {
   propertyName: string;
   propertyIndex: number;
+  appStore: any;
   // allSelectedKeys: number[];
 }
 
 const MetadataPropertiesManipulation: React.FC<MetadataPropertiesManipulationProps> = observer(
-  ({ propertyName, propertyIndex }) => {
+  ({ propertyName, propertyIndex, appStore }) => {
     const { metadataPropertyStore } = useContext(MetadataConfigsRootStore);
     const [isPopDeleteModal, switchPopDeleteModal] = useState(false);
     const [isDeleting, switchDeleting] = useState(false);
@@ -671,6 +678,10 @@ const MetadataPropertiesManipulation: React.FC<MetadataPropertiesManipulationPro
               metadataPropertyStore.validateNewProperty();
 
               if (!metadataPropertyStore.isCreatedReady) {
+                return;
+              } else if (appStore.graphs === "null") {
+                message.error("当前图空间为空,无法创建")
+                metadataPropertyStore.switchIsCreateNewProperty(false);
                 return;
               }
 

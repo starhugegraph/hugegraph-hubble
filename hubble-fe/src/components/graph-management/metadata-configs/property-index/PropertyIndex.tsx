@@ -7,6 +7,7 @@ import { Input, Table } from '@baidu/one-ui';
 import { LoadingDataView } from '../../../common';
 import MetadataConfigsRootStore from '../../../../stores/GraphManagementStore/metadataConfigsStore/metadataConfigsStore';
 import './PropertyIndex.less';
+import { message } from 'antd';
 
 const variants = {
   initial: {
@@ -40,7 +41,7 @@ const PropertyIndex: React.FC<Props> = observer(({ appStore }) => {
   const [preLoading, switchPreLoading] = useState(true);
   const [currentTab, switchCurrentTab] = useState<'vertex' | 'edge'>('vertex');
 
-  const isLoading =
+  let isLoading =
     preLoading ||
     metadataPropertyIndexStore.requestStatus.fetchMetadataPropertIndexes ===
     'pending';
@@ -80,7 +81,7 @@ const PropertyIndex: React.FC<Props> = observer(({ appStore }) => {
     return () => {
       metadataPropertyIndexStore.dispose();
     };
-  }, [currentTab, metadataPropertyIndexStore]);
+  }, [currentTab, metadataPropertyIndexStore, appStore.date]);
 
   const columnConfigs = [
     {
@@ -192,9 +193,12 @@ const PropertyIndex: React.FC<Props> = observer(({ appStore }) => {
       <div className="vertex-index-tab-wrapper">
         <div
           onClick={() => {
-            if (currentTab !== 'vertex') {
-              metadataPropertyIndexStore.fetchMetadataPropertIndexes('vertex');
+            if (appStore.graphs === "null") {
+              message.error("当前没有图空间,无法获取数据");
             }
+            /*   if (currentTab !== 'vertex'&& appStore.graphs !== "null") {
+                metadataPropertyIndexStore.fetchMetadataPropertIndexes('vertex');
+              } */
 
             metadataPropertyIndexStore.mutateSearchWords('');
             metadataPropertyIndexStore.mutatePageNumber(1);
@@ -212,9 +216,12 @@ const PropertyIndex: React.FC<Props> = observer(({ appStore }) => {
         </div>
         <div
           onClick={() => {
-            if (currentTab !== 'edge') {
-              metadataPropertyIndexStore.fetchMetadataPropertIndexes('edge');
+            if (appStore.graphs === "null") {
+              message.error("当前没有图空间,无法获取数据");
             }
+            /*  if (currentTab !== 'edge' && appStore.graphs !== "null") {
+               metadataPropertyIndexStore.fetchMetadataPropertIndexes('edge');
+             } */
 
             metadataPropertyIndexStore.mutateSearchWords('');
             metadataPropertyIndexStore.mutatePageNumber(1);
@@ -263,7 +270,7 @@ const PropertyIndex: React.FC<Props> = observer(({ appStore }) => {
             )
           }}
           dataSource={
-            isLoading ? [] : metadataPropertyIndexStore.metadataPropertyIndexes
+            isLoading || appStore.graphs ? [] : metadataPropertyIndexStore.metadataPropertyIndexes
           }
           pagination={
             isLoading

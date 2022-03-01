@@ -1,35 +1,35 @@
 @active-color: #2b65ff;
 
 .navigator {
-  position: fixed;
-  display: flex;
-  width: 100%;
-  height: 60px;
-  padding: 0 16px 0 21px;
+  position  : fixed;
+  display   : flex;
+  width     : 100%;
+  height    : 60px;
+  padding   : 0 16px 0 21px;
   background: #121212;
   box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
-  z-index: 99;
+  z-index   : 99;
 }
 
 .navigator-logo {
-  width: 125px;
-  height: 31px;
-  margin: 14px 0 15px;
-  background: url(../../assets/imgs/logo.png);
+  width          : 125px;
+  height         : 31px;
+  margin         : 14px 0 15px;
+  background     : url(../../assets/imgs/logo.png);
   background-size: cover;
-  cursor: pointer;
+  cursor         : pointer;
 }
 
 .navigator-items {
-  display: flex;
+  display    : flex;
   margin-left: 83px;
 }
 
 .navigator-item {
-  height: 60px;
-  color: #fff;
+  height   : 60px;
+  color    : #fff;
   font-size: 16px;
-  cursor: pointer;
+  cursor   : pointer;
 
   &.dark {
     color: #a1a3a6;
@@ -38,13 +38,13 @@
   &.active {
     // border-bottom: 2px solid @active-color;
     border-bottom: 2px solid #fff;
-    color: #fff;
+    color        : #fff;
     // color: @active-color;
   }
 
-  & > span {
-    display: block;
-    margin: 20px auto 16px;
+  &>span {
+    display    : block;
+    margin     : 20px auto 16px;
     line-height: 24px;
   }
 
@@ -54,25 +54,57 @@
 }
 
 .navigator-additions {
-  margin-left: auto;
+  margin-left     : auto;
   // margin-top: 23px;
   // margin-bottom: 23px;
-  margin-right: 20px;
-  font-size: 14px;
-  color: #fff;
-  display: flex;
-  justify-content: space-evenly;
-  align-items: center;
+  margin-right    : 20px;
+  font-size       : 14px;
+  color           : #fff;
+  display         : flex;
+  justify-content : space-evenly;
+  align-items     : center;
 
-  & > span {
+  &>span {
     margin: 0 0 0px 16px;
+    color : #69c0ff;
+    cursor: pointer;
   }
 
-  & > .navigator-additions-img {
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    background-image:linear-gradient(to bottom,#fff,#999);
+  @keyframes img-animation {
+    0% {
+      transform: rotate(0deg);
+      transform: translate(0px);
+    }
+
+    25% {
+      transform: rotate(90deg);
+      transform: translate(-60px, -10px);
+    }
+
+    50% {
+      transform: rotate(180deg);
+      transform: translate(-120px, 5px);
+    }
+
+    75% {
+      transform: rotate(270deg);
+      transform: translate(-60px, 10px);
+
+    }
+
+    100% {
+      transform: rotate(360deg);
+      transform: translate(0px);
+    }
+  }
+
+  &>.navigator-additions-img {
+    animation       : img-animation 1s ease 1s 1;
+    z-index         : 99;
+    width           : 36px;
+    height          : 36px;
+    border-radius   : 50%;
+    background-image: linear-gradient(to bottom, rgb(64, 123, 233), rgb(72, 222, 233));
   }
 
   &.dark {
