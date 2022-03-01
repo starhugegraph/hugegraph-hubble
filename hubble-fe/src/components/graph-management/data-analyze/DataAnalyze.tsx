@@ -21,6 +21,7 @@ import {
   DataAnalyzeStoreContext
 } from '../../../stores';
 import './DataAnalyze.less';
+import { message } from 'antd';
 
 const DataAnalyze: React.FC = observer(() => {
 

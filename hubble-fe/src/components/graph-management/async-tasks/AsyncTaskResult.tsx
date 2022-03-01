@@ -8,6 +8,7 @@ import { convertStringToJSON } from '../../../utils';
 import { AppStoreContext, AsyncTasksStoreContext } from '../../../stores';
 
 import './AsyncTaskResult.less';
+import { message } from 'antd';
 
 const TaskErrorLogs: React.FC = observer(() => {
   const asyncTasksStore = useContext(AsyncTasksStoreContext);
@@ -22,7 +23,7 @@ const TaskErrorLogs: React.FC = observer(() => {
   useEffect(() => {
     if (appStore.graphs !== "null") {
       asyncTasksStore.setCurrentId(Number(params!.id));
-      asyncTasksStore.fetchAsyncTask(Number(params!.taskId),params!.id);
+      asyncTasksStore.fetchAsyncTask(Number(params!.taskId), params!.id);
     }
     return () => {
       asyncTasksStore.dispose();

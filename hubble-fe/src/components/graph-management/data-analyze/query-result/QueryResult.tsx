@@ -11,7 +11,6 @@ import {
   DataAnalyzeStoreContext,
   AsyncTasksStoreContext
 } from '../../../../stores';
-import { Algorithm } from '../../../../stores/factory/dataAnalyzeStore/algorithmStore';
 import EmptyIcon from '../../../../assets/imgs/ic_sousuo_empty.svg';
 import LoadingBackIcon from '../../../../assets/imgs/ic_loading_back.svg';
 import LoadingFrontIcon from '../../../../assets/imgs/ic_loading_front.svg';

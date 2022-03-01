@@ -56,6 +56,7 @@ import NoSelectedSoilidStraightIcon from '../../../../assets/imgs/ic_straight.sv
 
 import './EdgeTypeList.less';
 import { AppStoreContext } from '../../../../stores';
+import { message } from 'antd';
 
 const styles = {
   button: {
@@ -125,7 +126,7 @@ const EdgeTypeList: React.FC = observer(() => {
   const dropdownWrapperRef = useRef<HTMLDivElement>(null);
   const deleteWrapperInDrawerRef = useRef<HTMLDivElement>(null);
 
-  const isLoading =
+  let isLoading =
     preLoading || edgeTypeStore.requestStatus.fetchEdgeTypeList === 'pending';
 
   const currentSelectedRowKeys = intersection(
@@ -441,7 +442,7 @@ const EdgeTypeList: React.FC = observer(() => {
           <Button
             size="medium"
             style={styles.button}
-            disabled={isLoading|| size(currentSelectedRowKeys) !== 0}
+            disabled={isLoading || size(currentSelectedRowKeys) !== 0}
             onClick={() => {
               edgeTypeStore.changeCurrentTabStatus('reuse');
             }}
@@ -484,23 +485,23 @@ const EdgeTypeList: React.FC = observer(() => {
             onChange: handleSelectedTableRow
           }}
           onSortClick={handleSortClick}
-          dataSource={isLoading ? [] : edgeTypeStore.edgeTypes}
+          dataSource={isLoading || appStore.graphs ? [] : edgeTypeStore.edgeTypes}
           pagination={
             isLoading
               ? null
               : {
-                  hideOnSinglePage: false,
-                  pageNo: edgeTypeStore.edgeTypeListPageConfig.pageNumber,
-                  pageSize: 10,
-                  showSizeChange: false,
-                  showPageJumper: false,
-                  total: edgeTypeStore.edgeTypeListPageConfig.pageTotal,
-                  onPageNoChange: (e: React.ChangeEvent<HTMLSelectElement>) => {
-                    // mutateSelectedRowKeys([]);
-                    edgeTypeStore.mutatePageNumber(Number(e.target.value));
-                    edgeTypeStore.fetchEdgeTypeList();
-                  }
+                hideOnSinglePage: false,
+                pageNo: edgeTypeStore.edgeTypeListPageConfig.pageNumber,
+                pageSize: 10,
+                showSizeChange: false,
+                showPageJumper: false,
+                total: edgeTypeStore.edgeTypeListPageConfig.pageTotal,
+                onPageNoChange: (e: React.ChangeEvent<HTMLSelectElement>) => {
+                  // mutateSelectedRowKeys([]);
+                  edgeTypeStore.mutatePageNumber(Number(e.target.value));
+                  edgeTypeStore.fetchEdgeTypeList();
                 }
+              }
           }
         />
         <Modal
@@ -721,23 +722,23 @@ const EdgeTypeList: React.FC = observer(() => {
                               edgeTypeStore.editedSelectedEdgeType.style
                                 .with_arrow !== null
                                 ? edgeTypeStore.editedSelectedEdgeType.style
-                                    .with_arrow
+                                  .with_arrow
                                 : edgeTypeStore.selectedEdgeType!.style
-                                    .with_arrow,
+                                  .with_arrow,
                             thickness:
                               edgeTypeStore.editedSelectedEdgeType.style
                                 .thickness !== null
                                 ? edgeTypeStore.editedSelectedEdgeType.style
-                                    .thickness
+                                  .thickness
                                 : edgeTypeStore.selectedEdgeType!.style
-                                    .thickness,
+                                  .thickness,
                             display_fields:
                               edgeTypeStore.editedSelectedEdgeType.style
                                 .display_fields.length !== 0
                                 ? edgeTypeStore.editedSelectedEdgeType.style
-                                    .display_fields
+                                  .display_fields
                                 : edgeTypeStore.selectedEdgeType!.style
-                                    .display_fields
+                                  .display_fields
                           }
                         });
                       }}
@@ -760,7 +761,7 @@ const EdgeTypeList: React.FC = observer(() => {
                                   .color !== null
                                   ? edgeTypeStore.editedSelectedEdgeType.style.color.toLowerCase()
                                   : edgeTypeStore.selectedEdgeType!.style.color!.toLowerCase()) ===
-                                color
+                                  color
                                   ? 'new-vertex-type-options-border new-vertex-type-options-color'
                                   : 'new-vertex-type-options-no-border new-vertex-type-options-color'
                               }
@@ -786,7 +787,7 @@ const EdgeTypeList: React.FC = observer(() => {
                           edgeTypeStore.editedSelectedEdgeType.style
                             .with_arrow !== null
                             ? edgeTypeStore.editedSelectedEdgeType.style
-                                .with_arrow
+                              .with_arrow
                             : edgeTypeStore.selectedEdgeType!.style.with_arrow
                         ) ? (
                           <div>
@@ -813,16 +814,16 @@ const EdgeTypeList: React.FC = observer(() => {
                               edgeTypeStore.editedSelectedEdgeType.style
                                 .thickness !== null
                                 ? edgeTypeStore.editedSelectedEdgeType.style
-                                    .thickness
+                                  .thickness
                                 : edgeTypeStore.selectedEdgeType!.style
-                                    .thickness,
+                                  .thickness,
                             display_fields:
                               edgeTypeStore.editedSelectedEdgeType.style
                                 .display_fields.length !== 0
                                 ? edgeTypeStore.editedSelectedEdgeType.style
-                                    .display_fields
+                                  .display_fields
                                 : edgeTypeStore.selectedEdgeType!.style
-                                    .display_fields
+                                  .display_fields
                           }
                         });
                       }}
@@ -847,9 +848,9 @@ const EdgeTypeList: React.FC = observer(() => {
                                     ? item.blueicon
                                     : item.blackicon
                                   : edgeTypeStore.editedSelectedEdgeType.style
-                                      .with_arrow === item.flag
-                                  ? item.blueicon
-                                  : item.blackicon
+                                    .with_arrow === item.flag
+                                    ? item.blueicon
+                                    : item.blackicon
                               }
                               alt="toogleEdgeArrow"
                             />
@@ -867,7 +868,7 @@ const EdgeTypeList: React.FC = observer(() => {
                       style={{ paddingLeft: 7 }}
                       value={
                         edgeTypeStore.editedSelectedEdgeType.style.thickness !==
-                        null
+                          null
                           ? edgeTypeStore.editedSelectedEdgeType.style.thickness
                           : edgeTypeStore.selectedEdgeType!.style.thickness
                       }
@@ -879,9 +880,9 @@ const EdgeTypeList: React.FC = observer(() => {
                               edgeTypeStore.editedSelectedEdgeType.style
                                 .with_arrow !== null
                                 ? edgeTypeStore.editedSelectedEdgeType.style
-                                    .with_arrow
+                                  .with_arrow
                                 : edgeTypeStore.selectedEdgeType!.style
-                                    .with_arrow,
+                                  .with_arrow,
                             color:
                               edgeTypeStore.editedSelectedEdgeType.style
                                 .color !== null
@@ -893,9 +894,9 @@ const EdgeTypeList: React.FC = observer(() => {
                               edgeTypeStore.editedSelectedEdgeType.style
                                 .display_fields.length !== 0
                                 ? edgeTypeStore.editedSelectedEdgeType.style
-                                    .display_fields
+                                  .display_fields
                                 : edgeTypeStore.selectedEdgeType!.style
-                                    .display_fields
+                                  .display_fields
                           }
                         });
                       }}
@@ -1046,11 +1047,11 @@ const EdgeTypeList: React.FC = observer(() => {
                                       property.name
                                     )
                                       ? addedPropertiesInSelectedVertextType.delete(
-                                          property.name
-                                        )
+                                        property.name
+                                      )
                                       : addedPropertiesInSelectedVertextType.add(
-                                          property.name
-                                        );
+                                        property.name
+                                      );
 
                                     edgeTypeStore.mutateEditedSelectedEdgeType({
                                       ...edgeTypeStore.editedSelectedEdgeType,
@@ -1209,12 +1210,12 @@ const EdgeTypeList: React.FC = observer(() => {
                       .length !== 0 ||
                       edgeTypeStore.editedSelectedEdgeType
                         .append_property_indexes.length !== 0) && (
-                      <div className="metadata-drawer-options-list-row metadata-drawer-options-list-row-normal">
-                        <span>索引名称</span>
-                        <span>索引类型</span>
-                        <span>属性</span>
-                      </div>
-                    )}
+                        <div className="metadata-drawer-options-list-row metadata-drawer-options-list-row-normal">
+                          <span>索引名称</span>
+                          <span>索引类型</span>
+                          <span>属性</span>
+                        </div>
+                      )}
                     {edgeTypeStore
                       .selectedEdgeType!.property_indexes.filter(
                         (propertyIndex) =>
@@ -1366,7 +1367,7 @@ const EdgeTypeList: React.FC = observer(() => {
                               alignItems: 'flex-start',
                               position: 'relative'
                             }}
-                            // cannot set key prop with name here, weired
+                          // cannot set key prop with name here, weired
                           >
                             <div className="disable-input-absolute">
                               <Input
@@ -1378,10 +1379,10 @@ const EdgeTypeList: React.FC = observer(() => {
                                   edgeTypeStore.validateEditEdgeTypeErrorMessage
                                     .propertyIndexes.length !== 0
                                     ? (edgeTypeStore
-                                        .validateEditEdgeTypeErrorMessage
-                                        .propertyIndexes[
-                                        index
-                                      ] as EdgeTypeValidatePropertyIndexes).name
+                                      .validateEditEdgeTypeErrorMessage
+                                      .propertyIndexes[
+                                      index
+                                    ] as EdgeTypeValidatePropertyIndexes).name
                                     : ''
                                 }
                                 value={name}

@@ -16,6 +16,7 @@ import {
 
 import AddIcon from '../../../../assets/imgs/ic_add.svg';
 import HintIcon from '../../../../assets/imgs/ic_question_mark.svg';
+import { message } from 'antd';
 
 const styles = {
   button: {
@@ -46,6 +47,10 @@ const ImportTaskList: React.FC = observer(() => {
   };
 
   const handleSearch = async () => {
+    if (appStore.graphs === "null") {
+      message.error("当前图空间为空,暂无法搜索")
+      return;
+    }
     importManagerStore.mutateImportJobListPageNumber(1);
     importManagerStore.switchSearchedStatus(true);
     await importManagerStore.fetchImportJobList();
@@ -313,8 +318,12 @@ const ImportTaskList: React.FC = observer(() => {
             }
             onClick={async () => {
               switchCreatePopModal(false);
-              await importManagerStore.createNewJob();
-              importManagerStore.resetJob('new');
+              if (appStore.graphs !== "null") {
+                await importManagerStore.createNewJob();
+                importManagerStore.resetJob('new');
+              } else {
+                message.error("当前图为空,无法创建")
+              }
 
               if (importManagerStore.requestStatus.createNewJob === 'success') {
                 Message.success({
