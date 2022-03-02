@@ -19,6 +19,7 @@
 
 package com.baidu.hugegraph.controller.auth;
 
+import com.baidu.hugegraph.entity.auth.UserEntity;
 import com.google.common.collect.ImmutableMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -53,9 +54,12 @@ public class LoginController extends BaseController {
         this.setSession("password", login.password());
         this.setToken(result.token());
 
-        // Get User Info
+        // Get Current User Info
         client = this.authClient(null, null);
-        return userService.getUser(client, login.name());
+        UserEntity u = userService.getUser(client, login.name());
+        u.setSuperadmin(userService.isSuperAdmin(client));
+
+        return u;
     }
 
     @GetMapping("/status")
@@ -63,7 +67,7 @@ public class LoginController extends BaseController {
 
         HugeClient client = authClient(null, null);
 
-        String level = userService.userLevel(client, getUser());
+        String level = userService.userLevel(client);
 
         return ImmutableMap.of("level", level);
     }
