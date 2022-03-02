@@ -9,6 +9,7 @@
 import React, { useCallback, useState, useEffect } from 'react';
 import { useLocation } from 'wouter';
 import { message, Popconfirm, Tooltip } from 'antd';
+import storageFn from '../../utils/storage'
 import api from '../../api/api'
 import './AppBar.less';
 
@@ -40,8 +41,7 @@ const AppBar = ({ setLogin }) => {
       if (res && res.status === 200) {
         message.warning("已退出")
         localStorage.setItem("lg", "false")
-        localStorage.removeItem("tenant")
-        localStorage.removeItem("userInfo")
+        storageFn.removeStorage(["tenant","userInfo"])
         setLogin("false")
       }
     })

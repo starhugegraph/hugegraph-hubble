@@ -458,6 +458,10 @@ const MetadataProperties: React.FC = observer(() => {
               size(currentSelectedRowKeys) !== 0
             }
             onClick={() => {
+              if (appStore.graphs === "null") {
+                message.error("当前图空间为空,无法进行创建");
+                return;
+              }
               metadataPropertyStore.switchIsCreateNewProperty(true);
             }}
           >
@@ -509,7 +513,7 @@ const MetadataProperties: React.FC = observer(() => {
                   metadataPropertyStore.isSearched.status ? (
                     <span>无结果</span>
                   ) : (
-                    <EmptyPropertyHints />
+                    <EmptyPropertyHints appStore={appStore} />
                   )
                 }
               />
@@ -846,7 +850,7 @@ const MetadataPropertiesManipulation: React.FC<MetadataPropertiesManipulationPro
   }
 );
 
-const EmptyPropertyHints: React.FC = observer(() => {
+const EmptyPropertyHints: React.FC<any> = observer(({ appStore }) => {
   const { metadataPropertyStore } = useContext(MetadataConfigsRootStore);
 
   return (
@@ -873,6 +877,10 @@ const EmptyPropertyHints: React.FC = observer(() => {
           size="large"
           style={{ width: 112, marginRight: 16 }}
           onClick={() => {
+            if (appStore.graphs === "null") {
+              message.error("当前图空间为空,无法创建数据");
+              return;
+            }
             metadataPropertyStore.switchIsCreateNewProperty(true);
             metadataPropertyStore.changeCurrentTabStatus('list');
           }}

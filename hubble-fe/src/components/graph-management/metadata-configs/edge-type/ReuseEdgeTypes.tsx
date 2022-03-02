@@ -18,6 +18,7 @@ import MetadataConfigsRootStore from '../../../../stores/GraphManagementStore/me
 import PassIcon from '../../../../assets/imgs/ic_pass.svg';
 
 import './ReuseEdgeTypes.less';
+import { message } from 'antd';
 
 const ReuseEdgeTypes: React.FC = observer(() => {
   const graphManagementStore = useContext(GraphManagementStoreContext);
@@ -644,7 +645,7 @@ const ReuseEdgeTypes: React.FC = observer(() => {
                 if (edgeTypeStore.reusablePropertyNameChangeIndexes.has(index)) {
                   edgeTypeStore.reusablePropertyNameChangeIndexes.delete(index)
                 }
-                
+
                 setPropertyEditIndex(null);
 
                 edgeTypeStore.deleteReuseData('propertykey_conflicts', index);
@@ -858,7 +859,7 @@ const ReuseEdgeTypes: React.FC = observer(() => {
 
   useEffect(() => {
     // unlike metadata properties, all vertex types only needs here(in reuse)
-    edgeTypeStore.fetchEdgeTypeList({ fetchAll: true });
+    if (appStore.graphs !== "null") edgeTypeStore.fetchEdgeTypeList({ fetchAll: true });
   }, [edgeTypeStore]);
 
   return (
@@ -1020,6 +1021,10 @@ const ReuseEdgeTypes: React.FC = observer(() => {
                 style={{ width: 78, marginRight: 12 }}
                 disabled={selectedList.length === 0}
                 onClick={() => {
+                  if (appStore.graphs === "null") {
+                    message.error("当前图空间为空,无法复用属性");
+                    return;
+                  }
                   setCurrentStatus(2);
                   edgeTypeStore.checkConflict(
                     selectedId as string,

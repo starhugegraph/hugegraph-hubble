@@ -806,6 +806,10 @@ export default function Resources() {
     };
     // 一维数据处理为三维
     const mapNewData = (arr) => {
+        if(!arr){
+            message.error("资源数据错误");
+            return;
+        }
         /*
         *   处理规则
         *   前置条件，克隆一份初始三维数据
@@ -936,7 +940,7 @@ export default function Resources() {
             {/* 创建资源弹窗 */}
             <Modal
                 title={see ? '查看' : (eidtKey ? '编辑' : '创建')}
-                width={800}
+                width={600}
                 visible={createKey}
                 onCancel={() => {
                     setCreateKey(false);

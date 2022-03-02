@@ -51,6 +51,7 @@ function Index() {
     function confirm(value) {
         api.deleteGraphspaces(value.name).then(res => {
             if (res && res.status === 200) {
+                if (value.name === localStorage.getItem("tenant")) localStorage.removeItem("tenant");
                 message.success('删除成功');
                 setTimeout(() => {
                     window.location.reload()

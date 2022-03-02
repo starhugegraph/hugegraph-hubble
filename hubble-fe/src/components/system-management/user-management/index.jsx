@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Button, Table, Space, Popconfirm, message } from 'antd'
 import CreatModal from './create-tenant'
 import api from '../../../api/api'
@@ -15,10 +15,10 @@ function Index() {
 
     // 获取数据
     useEffect(() => {
-        setLoading(true)
-        getUserData()
+        setLoading(true);
+        getUserData();
         // setListData(demoData.data)
-    }, [page, query])
+    }, [page, query]);
 
     // 获取用户数据
     const getUserData = () => {

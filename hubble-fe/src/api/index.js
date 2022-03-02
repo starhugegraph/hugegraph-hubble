@@ -11,6 +11,7 @@
  */
 import axios from 'axios';
 import { message } from 'antd';
+import storageFn from '../utils/storage'
 import qs from 'qs';
 // cookie.split(';').forEach(item => {
 //     document.cookie = item.trim();
@@ -49,7 +50,7 @@ instance.interceptors.response.use(
             message.error(response.data.message);
         } else if (response.data.status === 401) {
             message.error("授权过期");
-            localStorage.clear()
+            storageFn.removeStorage(['lg','userInfo','tenant'])
             setTimeout(() => {
                 window.location.reload()
             }, 1000);

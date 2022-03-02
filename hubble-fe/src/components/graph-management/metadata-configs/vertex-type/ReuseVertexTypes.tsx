@@ -691,7 +691,7 @@ const ReuseVertexTypes: React.FC = observer(() => {
 
   useEffect(() => {
     // unlike metadata properties, all vertex types only needs here(in reuse)
-    vertexTypeStore.fetchVertexTypeList({ fetchAll: true });
+    if (appStore.graphs !== "null") vertexTypeStore.fetchVertexTypeList({ fetchAll: true });
   }, [vertexTypeStore]);
 
   return (
@@ -853,6 +853,14 @@ const ReuseVertexTypes: React.FC = observer(() => {
                 style={{ width: 78, marginRight: 12 }}
                 disabled={selectedList.length === 0}
                 onClick={() => {
+                  if (appStore.graphs === "null") {
+                    Message.error({
+                      content: "当前图空间为空,无法复用属性",
+                      size: 'medium',
+                      showCloseIcon: false
+                    });
+                    return;
+                  }
                   setCurrentStatus(2);
                   vertexTypeStore.checkConflict(
                     selectedId as string,
