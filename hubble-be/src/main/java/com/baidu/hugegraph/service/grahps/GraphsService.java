@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.google.common.collect.ImmutableSet;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -74,21 +75,8 @@ public class GraphsService {
 
     public Set<String> listGraphNames(HugeClient client, String graphSpace,
                                       String uid) {
-        if (uid == null || userService.isSuperAdmin(client, uid)) {
-            // Get All GraphNames
-            return new HashSet<>(client.graphs().listGraph());
-        }
 
-        HashSet<String> result = new HashSet<String>();
-
-        // Get All authorized graphs
-        User.UserRole role = client.auth().getUserRole(uid);
-        Map<String, Map<HugePermission, List<HugeResource>>>
-                graphs = role.roles().getOrDefault(graphSpace, null);
-        if (graphs != null) {
-            result.addAll(graphs.keySet());
-        }
-        return result;
+        return ImmutableSet.copyOf(client.graphs().listGraph());
     }
 
     @Deprecated

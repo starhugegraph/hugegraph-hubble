@@ -38,7 +38,6 @@ import com.baidu.hugegraph.controller.BaseController;
 import com.baidu.hugegraph.driver.HugeClient;
 import com.baidu.hugegraph.entity.auth.UserEntity;
 import com.baidu.hugegraph.service.auth.UserService;
-import com.baidu.hugegraph.structure.auth.User;
 
 @RestController
 @RequestMapping(Constant.API_VERSION + "auth/users")

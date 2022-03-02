@@ -24,6 +24,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.baidu.hugegraph.structure.auth.HugePermission;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -55,24 +56,31 @@ public class UserService extends AuthService{
         List<User> users = auth.listUsers();
         List<UserEntity> ues= new ArrayList<>(users.size());
         users.forEach(u -> {
-            ues.add(convert(hugeClient, u));
+            UserEntity ue = convert(hugeClient, u);
+            ue.setSuperadmin(isSuperAdmin(hugeClient, ue.getId()));
+            ues.add(ue);
         });
 
         return ues;
     }
 
     public UserEntity getUser(HugeClient client, String name) {
+        // No Check if user is superadmin;
         return convert(client, client.auth().getUser(name));
     }
 
     public Object queryPage(HugeClient hugeClient, String query,
                             int pageNo, int pageSize) {
+        List<UserEntity> ues= new ArrayList<>();
         List<UserEntity> results =
                 hugeClient.auth().listUsers().stream()
                           .filter((u) -> u.name().contains(query))
                           .sorted(Comparator.comparing(User::name))
-                          .map((u) -> convert(hugeClient, u))
-                          .collect(Collectors.toList());
+                          .map((u) -> {
+                              UserEntity ue = convert(hugeClient, u);
+                              ue.setSuperadmin(isSuperAdmin(hugeClient, ue.getId()));
+                              return ue;
+                          }).collect(Collectors.toList());
 
         return PageUtil.page(results, pageNo, pageSize);
     }
@@ -132,8 +140,6 @@ public class UserService extends AuthService{
         u.setUpdate(user.updateTime());
         u.setCreator(user.creator());
 
-        u.setSuperadmin(isSuperAdmin(client, user.id().toString()));
-
         return u;
     }
 
@@ -158,14 +164,13 @@ public class UserService extends AuthService{
         hugeClient.auth().updateUser(user);
     }
 
-    public String userLevel(HugeClient client, String uid) {
-        User.UserRole role = client.auth().getUserRole(uid);
+    public String userLevel(HugeClient client) {
 
-        if (isSuperAdmin(client, uid)) {
+        if (isSuperAdmin(client)) {
             return "ADMIN";
         }
 
-        if (isSpaceAdmin(client, uid)) {
+        if (isSpaceAdmin(client)) {
             return "SPACEADMIN";
         }
 
@@ -174,21 +179,35 @@ public class UserService extends AuthService{
     }
 
     public boolean isSuperAdmin(HugeClient client, String uid) {
+        // Only used by superadmin
         // Check: if user is spaceadmin for any graphspace
         return client.auth().listSuperAdmin().contains(uid);
     }
 
+    public boolean isSuperAdmin(HugeClient client) {
+        // Check: if current user is superadmin
+        return client.auth().isSuperAdmin();
+    }
+
+    /*
     public boolean isAssignSpaceAdmin(HugeClient client, String uid,
-                                String graphSpace) {
+                                      String graphSpace) {
+        // Only used by superadmin
         // Check: if user is spaceadmin for one graphSpace
         return client.auth().listSpaceAdmin(graphSpace).contains(uid);
     }
+     */
 
-    public boolean isSpaceAdmin(HugeClient client, String uid) {
-        // Check: if user is spaceadmin
+    public boolean isAssignSpaceAdmin(HugeClient client, String graphSpace) {
+        // Check: if current user is spaceadmin
+        return client.auth().isSpaceAdmin(graphSpace);
+    }
+
+    public boolean isSpaceAdmin(HugeClient client) {
+        // Check: if current user is spaceadmin
         List<String> graphSpaces = client.graphSpace().listGraphSpace();
         for (String gs : graphSpaces) {
-            if (isAssignSpaceAdmin(client, uid, gs)) {
+            if (isAssignSpaceAdmin(client, gs)) {
                 return true;
             }
         }
