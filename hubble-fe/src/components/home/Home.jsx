@@ -47,6 +47,7 @@ import AsyncTaskResult from '../graph-management/async-tasks/AsyncTaskResult';
 import { useLocationWithConfirmation } from '../../hooks';
 import { compKeyObj } from '../../stores/utils';
 import { defaultMenuList } from '../../configs/userAuth.js'
+import storageFn from '../../utils/storage'
 import axios from 'axios'
 
 axios.interceptors.response.use(
@@ -60,7 +61,7 @@ axios.interceptors.response.use(
             message.error(response.data.message);
         } else if (response.data.status === 401) {
             message.error("授权过期");
-            localStorage.clear()
+            storageFn.removeStorage(['lg','userInfo','tenant'])
             setTimeout(() => {
                 window.location.reload()
             }, 800);

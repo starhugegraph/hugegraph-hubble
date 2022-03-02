@@ -261,6 +261,10 @@ const ImportTaskList: React.FC = observer(() => {
           style={styles.button}
           disabled={isLoading || size(importManagerStore.importJobList) >= 500}
           onClick={() => {
+            if(appStore.graphs==="null"){
+              message.error("当前图空间为空,无法创建任务");
+              return;
+            }
             switchCreatePopModal(true);
           }}
         >
@@ -278,7 +282,7 @@ const ImportTaskList: React.FC = observer(() => {
                   importManagerStore.isSearched.status ? (
                     <span>{t('import-manager.hint.no-result')}</span>
                   ) : (
-                    <EmptyImportHints />
+                    <EmptyImportHints appStore={appStore}/>
                   )
                 }
               />
@@ -615,7 +619,7 @@ export const ImportManagerManipulation: React.FC<ImportManagerManipulationProps>
   }
 );
 
-export const EmptyImportHints: React.FC = observer(() => {
+export const EmptyImportHints: React.FC<any> = observer(({appStore}) => {
   const importManagerStore = useContext(ImportManagerStoreContext);
   const [isPopCreateModal, switchCreatePopModal] = useState(false);
   const { t } = useTranslation();
@@ -631,6 +635,10 @@ export const EmptyImportHints: React.FC = observer(() => {
           width: 112
         }}
         onClick={() => {
+          if(appStore.graphs==="null"){
+            message.error("当前图空间为空,无法创建任务");
+            return;
+          }
           switchCreatePopModal(true);
         }}
       >

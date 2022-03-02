@@ -476,7 +476,7 @@ const EdgeTypeList: React.FC = observer(() => {
             emptyText: (
               <LoadingDataView
                 isLoading={isLoading}
-                emptyView={<EmptyEdgeTypeHints />}
+                emptyView={<EmptyEdgeTypeHints appStore={appStore}/>}
               />
             )
           }}
@@ -1863,7 +1863,7 @@ const EdgeTypeListManipulation: React.FC<EdgeTypeListManipulation> = observer(
   }
 );
 
-const EmptyEdgeTypeHints: React.FC = observer(() => {
+const EmptyEdgeTypeHints: React.FC<any> = observer(({appStore}) => {
   const { edgeTypeStore } = useContext(MetadataConfigsRootStore);
 
   return (
@@ -1890,6 +1890,10 @@ const EmptyEdgeTypeHints: React.FC = observer(() => {
           size="large"
           style={{ width: 128, marginRight: 16 }}
           onClick={() => {
+            if(appStore.graphs==="null"){
+              message.error("当前图空间为空,无法创建")
+              return;
+            }
             edgeTypeStore.changeCurrentTabStatus('new');
           }}
         >

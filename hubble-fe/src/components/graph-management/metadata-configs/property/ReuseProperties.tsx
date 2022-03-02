@@ -410,6 +410,14 @@ const ReuseProperties: React.FC = observer(() => {
                 style={{ width: 78, marginRight: 12 }}
                 disabled={selectedList.length === 0}
                 onClick={() => {
+                  if (appStore.graphs === "null") {
+                    Message.error({
+                      content: "当前图空间为空,无法复用属性",
+                      size: 'medium',
+                      showCloseIcon: false
+                    })
+                    return
+                  }
                   setCurrentStatus(2);
                   metadataPropertyStore.checkConflict(
                     selectedId as string,

@@ -485,7 +485,7 @@ const VertexTypeList: React.FC = observer(() => {
             emptyText: (
               <LoadingDataView
                 isLoading={isLoading}
-                emptyView={<EmptyVertxTypeHints />}
+                emptyView={<EmptyVertxTypeHints appStore={appStore} />}
               />
             )
           }}
@@ -1785,7 +1785,7 @@ const VertexTypeListManipulation: React.FC<VertexTypeListManipulation> = observe
   }
 );
 
-const EmptyVertxTypeHints: React.FC = observer(() => {
+const EmptyVertxTypeHints: React.FC<any> = observer(({ appStore }) => {
   const { vertexTypeStore } = useContext(MetadataConfigsRootStore);
 
   return (
@@ -1812,6 +1812,10 @@ const EmptyVertxTypeHints: React.FC = observer(() => {
           size="large"
           style={{ width: 144, marginRight: 16 }}
           onClick={() => {
+            if (appStore.graphs === "null") {
+              message.error("当前图空间为空,无法创建");
+              return;
+            }
             vertexTypeStore.changeCurrentTabStatus('new');
           }}
         >

@@ -192,16 +192,16 @@ export default function Index(props) {
                 // properties级别渲染
                 if (item.type === 'properties') {
                     return (
-                        <div key={item.title} style={{padding: '8px 0px'}}>
-                            <span style={{margin: '0 20px'}}>{item.title}</span>
+                        <div key={item.title} style={{ padding: '8px 0px' }}>
+                            <span style={{ margin: '0 20px' }}>{item.title}</span>
                         </div>
                     );
                 }
                 // 没有children且不可添加渲染
                 if (!item.isAdd) {
                     return (
-                        <div key={item.title} style={{padding: '8px 0px'}}>
-                            <span style={{margin: '0 20px'}}>{item.title}:</span>
+                        <div key={item.title} style={{ padding: '8px 0px' }}>
+                            <span style={{ margin: '0 20px' }}>{item.title}:</span>
                             <Switch
                                 checked={item.checked}
                                 disabled={true}
@@ -211,8 +211,8 @@ export default function Index(props) {
                 }
                 // 没有children且可添加渲染
                 return (
-                    <div key={item.title} style={{padding: '8px 0px'}}>
-                        <span style={{margin: '0 20px'}}>{item.title}:</span>
+                    <div key={item.title} style={{ padding: '8px 0px' }}>
+                        <span style={{ margin: '0 20px' }}>{item.title}:</span>
                         <Switch
                             checked={item.checked}
                             disabled={true}
@@ -225,7 +225,7 @@ export default function Index(props) {
                 return (
                     <Panel header={
                         <div>
-                            <span style={{marginRight: '20px'}}>{item.title}:</span>
+                            <span style={{ marginRight: '20px' }}>{item.title}:</span>
                             <Switch
                                 checked={item.checked}
                                 disabled={true}
@@ -242,7 +242,7 @@ export default function Index(props) {
             return (
                 <Panel header={
                     <div>
-                        <span style={{marginRight: '20px'}}>{item.title}:</span>
+                        <span style={{ marginRight: '20px' }}>{item.title}:</span>
                         <Switch
                             checked={item.checked}
                             disabled={true}
@@ -272,6 +272,10 @@ export default function Index(props) {
         *   4. 其他type值所存在则直接改变checked
         *   5. 返回处理好的结果
         */
+        if (!arr) {
+            message.error("资源数据错误");
+            return;
+        }
         let list = JSON.parse(JSON.stringify(collapseListDefault));
         for (let i = 0; i < arr.length; i++) {
             if (arr[i].type === 'ALL') {
@@ -366,7 +370,7 @@ export default function Index(props) {
                         {targetList ? targetList.map(item => (<Option key={item.id} value={item.id}>{item.target_name}</Option>)) : null}
                     </Select>
                 </Form.Item>
-                <div style={{marginBottom: '20px'}}>
+                <div style={{ marginBottom: '20px' }}>
                     所有资源：
                     <Switch
                         checked={allKey}
@@ -375,7 +379,7 @@ export default function Index(props) {
                 </div>
 
                 <div style={{ display: "flex" }}>
-                    <div style={{marginRight: '40px'}}>
+                    <div style={{ marginRight: '40px' }}>
                         <Collapse>
                             {renderCollapse(collapseList)}
                         </Collapse>

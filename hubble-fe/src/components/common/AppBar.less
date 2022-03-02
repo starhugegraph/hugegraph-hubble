@@ -1,5 +1,78 @@
 @active-color: #2b65ff;
 
+@keyframes img-animation {
+  0% {
+    transform: rotate(0deg);
+    transform: translate(0px);
+  }
+
+  10% {
+    transform: rotate(90deg);
+    transform: translate(-10px, -10px);
+  }
+
+  20% {
+    transform: rotate(180deg);
+    transform: translate(-20px, 10px);
+  }
+
+  30% {
+    transform: rotate(270deg);
+    transform: translate(-30px, 20px);
+
+  }
+
+  40% {
+    transform: rotate(360deg);
+    transform: translate(-40px, 10px);
+  }
+
+  50% {
+    transform: rotate(360deg);
+    transform: translate(-50px, -10px);
+  }
+
+  60% {
+    transform: rotate(360deg);
+    transform: translate(-40px, 10px);
+  }
+
+  70% {
+    transform: rotate(360deg);
+    transform: translate(-30px, 20px);
+  }
+
+  80% {
+    transform: rotate(360deg);
+    transform: translate(-20px, 10px);
+  }
+
+  90% {
+    transform: rotate(360deg);
+    transform: translate(-10px, -10px);
+  }
+
+  100% {
+    transform: rotate(360deg);
+    transform: translate(0px);
+  }
+}
+
+@keyframes hover-zoom {
+  50% {
+    -webkit-transform: scale(1.1);
+    transform        : scale(1.1);
+    -webkit-filter   : brightness(90%);
+  }
+
+  100% {
+    -webkit-transform: scale(1);
+    transform        : scale(1);
+    /*css3滤镜亮度百分比*/
+    -webkit-filter   : brightness(100%);
+  }
+}
+
 .navigator {
   position  : fixed;
   display   : flex;
@@ -18,6 +91,10 @@
   background     : url(../../assets/imgs/logo.png);
   background-size: cover;
   cursor         : pointer;
+
+  &:hover {
+    animation: hover-zoom .5s ease-in 1;
+  }
 }
 
 .navigator-items {
@@ -70,36 +147,8 @@
     cursor: pointer;
   }
 
-  @keyframes img-animation {
-    0% {
-      transform: rotate(0deg);
-      transform: translate(0px);
-    }
-
-    25% {
-      transform: rotate(90deg);
-      transform: translate(-60px, -10px);
-    }
-
-    50% {
-      transform: rotate(180deg);
-      transform: translate(-120px, 5px);
-    }
-
-    75% {
-      transform: rotate(270deg);
-      transform: translate(-60px, 10px);
-
-    }
-
-    100% {
-      transform: rotate(360deg);
-      transform: translate(0px);
-    }
-  }
-
   &>.navigator-additions-img {
-    animation       : img-animation 1s ease 1s 1;
+    animation       : img-animation .8s ease 1s 1;
     z-index         : 99;
     width           : 36px;
     height          : 36px;

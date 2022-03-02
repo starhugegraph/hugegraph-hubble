@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { observer } from 'mobx-react';
 import { useTranslation } from 'react-i18next';
 
@@ -6,6 +6,7 @@ import LoadingBackIcon from '../../assets/imgs/ic_loading_back.svg';
 import LoadingFrontIcon from '../../assets/imgs/ic_loading_front.svg';
 
 import './LoadingDataView.less';
+import { AppStoreContext } from '../../stores';
 
 export interface LoadingDataViewProps {
   isLoading: boolean;
@@ -15,8 +16,9 @@ export interface LoadingDataViewProps {
 const LoadingDataView: React.FC<LoadingDataViewProps> = observer(
   ({ isLoading, emptyView }) => {
     const { t } = useTranslation();
+    const appStore = useContext(AppStoreContext)
 
-    return isLoading ? (
+    return (isLoading && appStore.graphs !== "null") ? (
       <div className="table-data-loading-wrapper">
         <div className="table-data-loading-bg">
           <img

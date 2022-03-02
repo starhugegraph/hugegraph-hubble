@@ -67,6 +67,10 @@ const GraphView: React.FC = observer(() => {
           size="medium"
           style={styles}
           onClick={() => {
+            if(appStore.graphs==="null"){
+              message.error("当前图空间为空,无法创建")
+              return;
+            }
             graphViewStore.setCurrentDrawer('create-property');
           }}
         >
@@ -76,6 +80,10 @@ const GraphView: React.FC = observer(() => {
           size="medium"
           style={styles}
           onClick={() => {
+            if(appStore.graphs==="null"){
+              message.error("当前图空间为空,无法创建")
+              return;
+            }
             graphViewStore.setCurrentDrawer('create-vertex');
           }}
         >
@@ -85,6 +93,10 @@ const GraphView: React.FC = observer(() => {
           size="medium"
           style={styles}
           onClick={() => {
+            if(appStore.graphs==="null"){
+              message.error("当前图空间为空,无法创建")
+              return;
+            }
             graphViewStore.setCurrentDrawer('create-edge');
           }}
         >
