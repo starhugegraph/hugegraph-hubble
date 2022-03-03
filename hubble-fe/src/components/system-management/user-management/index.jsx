@@ -17,8 +17,18 @@ function Index() {
     useEffect(() => {
         setLoading(true);
         getUserData();
-        // setListData(demoData.data)
     }, [page, query]);
+
+    useEffect(() => {
+        return () => {
+            setPage({})
+            setListData({})
+            setDetailData({})
+            setVisible(false)
+            setQuery("")
+            setLoading("")
+        }
+    }, []);
 
     // 获取用户数据
     const getUserData = () => {

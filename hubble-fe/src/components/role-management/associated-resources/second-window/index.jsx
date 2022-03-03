@@ -110,10 +110,23 @@ export default function Index(props) {
     const [collapseList, setCollapseList] = useState(collapseListDefault);
     const [allKey, setallKey] = useState(false);
     // 存放折叠面板所有的key名
-    const [collapseKeyList, setCollapseKeyList] = useState(collapseKeyListDefault);
+    const [_, setCollapseKeyList] = useState(collapseKeyListDefault);
     useEffect(() => {
         getTargetListFn();
+
     }, [appStore.tenant])
+
+    useEffect(() => {
+        return () => {
+            setTargetList([])
+            setPermission([])
+            setSelectId("")
+            setCollapseList([])
+            setallKey(false)
+            setCollapseKeyList([])
+        }
+    }, [])
+
     // 回显
     useEffect(() => {
         if (targetDetail.target_id) {
@@ -154,13 +167,17 @@ export default function Index(props) {
             if (targetDetail.target_id) {
                 api.putAssResources(
                     appStore.tenant,
-                    { target_id: values.target_id, permissions: permission, group_id: detailData.group_id }
+                    {
+                        target_id: values.target_id,
+                        permissions: permission,
+                        group_id: detailData.group_id
+                    }
                 ).then(res => {
                     if (res && res.status === 200) {
                         message.success("编辑关联成功")
-                        getAssData()
-                        setVisible(false)
                     }
+                    getAssData()
+                    setVisible(false)
                 })
             } else {
                 api.assResources(
@@ -169,9 +186,9 @@ export default function Index(props) {
                 ).then(res => {
                     if (res && res.status === 200) {
                         message.success("新增关联成功")
-                        getAssData()
-                        setVisible(false)
                     }
+                    getAssData()
+                    setVisible(false)
                 })
             }
         } else {

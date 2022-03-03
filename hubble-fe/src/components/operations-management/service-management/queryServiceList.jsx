@@ -26,8 +26,22 @@ export default function QueryServiceList() {
     // 获取数据
     useEffect(() => {
         getQuery()
+
     }, [page, search, appStore.tenant])
 
+
+    useEffect(() => {
+        return () => {
+            setListData({});
+            setDetailData({});
+            setPutDetailData({});
+            setVisible(false);
+            setVisibleDetail(false);
+            setPage({});
+            setSearch("");
+            setLoading(false);
+        }
+    }, [])
     // 获取list数据
     const getQuery = () => {
         api.getQueryList(appStore.tenant, { query: search, ...page }).then(res => {
@@ -58,8 +72,9 @@ export default function QueryServiceList() {
     function confirm(value) {
         api.deleteQuery(appStore.tenant, value.name).then(res => {
             if (res && res.status === 200) {
-                getQuery()
+                message.success("删除成功")
             }
+            getQuery()
         })
     }
     // 分页数据

@@ -5,14 +5,17 @@ import { AppStoreContext } from '../../../../stores'
 
 const { Option } = Select
 
-export default function Index(props) {
-    const { visible, setVisible, detailData, getAssUserData } = props
+export default function Index({ visible, setVisible, detailData, getAssUserData }) {
     const [userList, setUserList] = useState([])//用户下拉菜单数据
     const [userId, setUserId] = useState([])//用户多选下拉值
     const appStore = useContext(AppStoreContext)
     // 调用下拉框获取数据方法
     useEffect(() => {
         getUser()
+        return () => {
+            setUserList([])
+            setUserId([])
+        }
     }, [])
 
     // 获取用户数据
@@ -33,9 +36,9 @@ export default function Index(props) {
             api.AssUsers(appStore.tenant, { user_ids: userId, group_id: detailData.group_id }).then(res => {
                 if (res && res.status === 200) {
                     message.success("新增成功")
-                    getAssUserData()
-                    setVisible(false)
                 }
+                getAssUserData()
+                setVisible(false)
             })
         } else {
             message.error("新增失败")
@@ -43,16 +46,13 @@ export default function Index(props) {
         // setVisible(false)
     };
 
-    const handleCancel = () => {
-        setVisible(false);
-    };
     return (
         <Modal
             visible={visible}
             closable={false}
             forceRender
             onOk={handleOk}
-            onCancel={handleCancel}
+            onCancel={()=>setVisible(false)}
             maskClosable={false}
             width={"700px"}
             title="增加"

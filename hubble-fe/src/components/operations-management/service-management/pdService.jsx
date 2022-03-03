@@ -9,6 +9,11 @@ function PdService() {
 
     useEffect(() => {
         getPdData()
+        return ()=>{
+            setListData([])
+            setLoading(false)
+            setPage({})
+        }
     }, [])
 
     //获取表格数据

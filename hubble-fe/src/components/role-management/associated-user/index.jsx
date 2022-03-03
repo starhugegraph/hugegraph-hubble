@@ -16,18 +16,29 @@ function Index(props) {
     const [page, setPage] = useState({})//分页条件
     const [visibleCreate, setVisibleCreate] = useState(false)//二级模态框
     const [needDeleteIds, setNeedDeleteIds] = useState([])//需要删除的Id数组
-    const [loading, setLoading] = useState([])//table加载
+    const [loading, setLoading] = useState(false)//table加载
     const appStore = useContext(AppStoreContext)
 
     // 获取数据
     useEffect(() => {
-        setLoading(true)
         if (detailData.group_id) {
             getAssUserData()
         }
+       
     }, [detailData, page])
+
+    useEffect(() => {
+        return () => {
+            setListData({})
+            setPage({})
+            setVisibleCreate(false)
+            setNeedDeleteIds([])
+            setLoading(false)
+        }
+    }, [])
     // 获取关联用户
     const getAssUserData = () => {
+        setLoading(true)
         api.lookAssUsers(appStore.tenant, { group_id: detailData.group_id }).then(res => {
             if (res && res.status === 200) {
                 setListData(res.data)
@@ -40,9 +51,9 @@ function Index(props) {
         api.deleteAssUser(appStore.tenant, value.id).then(res => {
             if (res && res.status === 200) {
                 message.success('删除成功');
-                getAssUserData()
-                setVisible(false)
             }
+            getAssUserData()
+            setVisible(false)
         })
     }
     // 取消删除
@@ -67,8 +78,8 @@ function Index(props) {
             api.deleteAssUserArray(appStore.tenant, { ids: needDeleteIds }).then(res => {
                 if (res && res.status === 200) {
                     message.success("删除成功")
-                    getAssUserData()
                 }
+                getAssUserData()
             })
         } else {
             message.error("没有选中任何关联用户")

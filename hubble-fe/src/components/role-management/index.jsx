@@ -23,12 +23,26 @@ function Index() {
 
     // 获取数据
     useEffect(() => {
-        setLoading(true)
         getRoleData()
     }, [page, query, appStore.tenant])
 
+    useEffect(() => {
+        return () => {
+            setPage({})
+            setListData({})
+            setDetailData({})
+            setVisible(false)
+            setVisibleAss(false)
+            setVisibleUser(false)
+            setGroupId_resources({})
+            setGroupId_user({})
+            setQuery("")
+            setLoading(false)
+        }
+    }, [])
     // 获取角色数据
     const getRoleData = () => {
+        setLoading(true)
         api.getRole(appStore.tenant, { ...page, query }).then(res => {
             setLoading(false)
             if (res && res.status === 200) {
@@ -140,7 +154,7 @@ function Index() {
                     setSearch={setQuery}
                     createHandle={createHandle}
                     placeholder='请输入角色关键字'
-                    >
+                >
                     创建角色
                 </InputAdd>
             </div>

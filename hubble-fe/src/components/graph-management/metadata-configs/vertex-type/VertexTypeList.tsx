@@ -494,7 +494,7 @@ const VertexTypeList: React.FC = observer(() => {
             onChange: handleSelectedTableRow
           }}
           onSortClick={handleSortClick}
-          dataSource={isLoading || appStore.graphs ? [] : vertexTypeStore.vertexTypes}
+          dataSource={(isLoading || appStore.graphs === "null") ? [] : vertexTypeStore.vertexTypes}
           pagination={
             isLoading
               ? null

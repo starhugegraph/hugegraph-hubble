@@ -16,7 +16,20 @@ function Index() {
     // 获取数据
     useEffect(() => {
         getGraphspacesData()
+
     }, [page, query])
+
+    useEffect(() => {
+        return () => {
+            setPage({})
+            setListData({})
+            setDetailData({})
+            setVisible(false)
+            setQuery("")
+            setLoading(false)
+        }
+    }, [])
+
     // 获取租户
     const getGraphspacesData = () => {
         setLoading(true)
@@ -55,7 +68,7 @@ function Index() {
                 message.success('删除成功');
                 setTimeout(() => {
                     window.location.reload()
-                }, 500);
+                }, 700);
             }
         })
     }
@@ -99,19 +112,19 @@ function Index() {
             align: "center",
         },
         {
-            title: '算法绑定名字空间',
+            title: '算法绑定命名空间',
             dataIndex: 'olap_namespace',
             align: "center",
             width: 150
         },
         {
-            title: '服务绑定名字空间',
+            title: '服务绑定命名空间',
             dataIndex: 'oltp_namespace',
             align: "center",
             width: 150
         },
         {
-            title: '储存绑定名字空间',
+            title: '储存绑定命名空间',
             dataIndex: 'storage_namespace',
             align: "center",
             width: 150

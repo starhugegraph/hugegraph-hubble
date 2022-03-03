@@ -90,12 +90,15 @@ export default function GraphData() {
     let [pageObj, setPageObj] = useState(defaultPageObj);
     // 搜索框数据
     let [inpValue, setInpValue] = useState('');
+    // 删除图时loading
+    let [deleteLoading, setDeleteLoading] = useState(false);
+
+    let [schemaNameList, setSchemaNameList] = useState([]);
 
     useEffect(() => {
         appStore.tenant && onSearch(inpValue, '', true);
     }, [pageObj.current, appStore.tenant]);
 
-    let [schemaNameList, setSchemaNameList] = useState([]);
 
     // 搜索
     const onSearch = (value, e, key) => {
@@ -220,7 +223,7 @@ export default function GraphData() {
                 setPageObj(defaultPageObj);
                 setTimeout(() => {
                     window.location.reload()
-                }, 1000);
+                }, 700);
             }
         });
     };
@@ -345,7 +348,7 @@ export default function GraphData() {
                             {
                                 schemaNameList.map((item) => {
                                     return (
-                                        <Option value={item}>{item}</Option>
+                                        <Option key={item} value={item}>{item}</Option>
                                     )
                                 })
                             }
@@ -378,6 +381,7 @@ export default function GraphData() {
                     <div className='mytable'>
                         <Table
                             dataSource={tableData}
+                            rowKey="name"
                             pagination={{
                                 current: pageObj.current,
                                 total: pageObj.total
@@ -388,8 +392,6 @@ export default function GraphData() {
                             {renderTabel(tableKeyList)}
                             <Column
                                 title='操作'
-                                dataIndex='operation'
-                                key='operation'
                                 render={(text, record) => {
                                     return (
                                         <div className='table_btndiv'>
@@ -409,14 +411,16 @@ export default function GraphData() {
                                             <Popconfirm
                                                 title="你确定要删除此图吗？"
                                                 onConfirm={() => {
+                                                    setDeleteLoading(true)
                                                     api.deleteGraphs(appStore.tenant, record.name).then(res => {
+                                                        setDeleteLoading(false)
                                                         if (res.status === 200) {
                                                             message.success("删除成功,即将刷新")
-                                                            onSearch('')
                                                             setTimeout(() => {
                                                                 window.location.reload()
                                                             }, 700)
                                                         }
+                                                        onSearch('')
                                                     })
                                                 }}
                                                 okText="确定"
@@ -424,6 +428,7 @@ export default function GraphData() {
                                             >
                                                 <Button
                                                     danger
+                                                    loading={deleteLoading}
                                                 >删除图</Button>
                                             </Popconfirm>
 

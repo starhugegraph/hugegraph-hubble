@@ -120,7 +120,8 @@ const AsyncTaskList: React.FC = observer(() => {
             {text}
           </div>
         );
-      }
+      },
+      fixed:"left"
     },
     {
       title: t('async-tasks.table-column-title.task-name'),
@@ -560,6 +561,7 @@ const AsyncTaskList: React.FC = observer(() => {
         <Table
           columns={columnConfigs}
           rowKey={(rowData: AsyncTask) => rowData.id}
+          scroll={{ x: 1000 }}
           rowSelection={{
             selectedRowKeys,
             onChange: handleSelectedTableRow,
@@ -592,7 +594,7 @@ const AsyncTaskList: React.FC = observer(() => {
             )
           }}
           dataSource={
-            ((isLoading && !isInLoop) || appStore.graphs==="null") ? [] : asyncTasksStore.asyncTaskList
+            ((isLoading && !isInLoop) || appStore.graphs === "null") ? [] : asyncTasksStore.asyncTaskList
           }
           pagination={{
             hideOnSinglePage: false,

@@ -20,8 +20,19 @@ export default function ComputingServices() {
         } else {
             setDataList({})
         }
+
     }, [appStore.date, page])
 
+    useEffect(() => {
+        return () => {
+            setDataList({});
+            setPage({});
+            setIsModalVisible(false);
+            setLoading(false);
+            setDetail("");
+        }
+    }, [])
+    
     // 获取计算table数据
     const getComputedTable = () => {
         setLoading(true)

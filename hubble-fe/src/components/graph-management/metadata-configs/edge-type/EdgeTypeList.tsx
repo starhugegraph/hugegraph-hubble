@@ -485,7 +485,7 @@ const EdgeTypeList: React.FC = observer(() => {
             onChange: handleSelectedTableRow
           }}
           onSortClick={handleSortClick}
-          dataSource={isLoading || appStore.graphs ? [] : edgeTypeStore.edgeTypes}
+          dataSource={(isLoading || appStore.graphs==="null") ? [] : edgeTypeStore.edgeTypes}
           pagination={
             isLoading
               ? null

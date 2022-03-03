@@ -11,6 +11,9 @@ const Index = ({ isModalVisible, setIsModalVisible, detail, tenant, graphs }) =>
             if (res.status === 200) setDetail(res.data)
             setLoading(false)
         })
+        return () => {
+            setLoading(false)
+        }
     }, [detail])
 
     return (
@@ -22,9 +25,9 @@ const Index = ({ isModalVisible, setIsModalVisible, detail, tenant, graphs }) =>
                 footer={null}>
                 <Skeleton loading={loading} active>
                     <Descriptions
-                     bordered 
-                     column={2}
-                     contentStyle={{padding:'10px'}}
+                        bordered
+                        column={2}
+                        contentStyle={{ padding: '10px' }}
                     >
                         <Descriptions.Item label="算法名称"></Descriptions.Item>
                         <Descriptions.Item label="图空间">{computedDetail.graph}</Descriptions.Item>
