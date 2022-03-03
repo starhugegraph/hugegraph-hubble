@@ -332,7 +332,7 @@ const ImportConfigs: React.FC<ImportConfigsProps> = observer(({ height }) => {
                 :
               </span>
               {!serverDataImportStore.readOnly &&
-              !serverDataImportStore.importConfigReadOnly ? (
+                !serverDataImportStore.importConfigReadOnly ? (
                 <Input
                   {...commonInputProps}
                   value={serverDataImportStore.importConfigs?.max_parse_errors}
@@ -359,7 +359,7 @@ const ImportConfigs: React.FC<ImportConfigsProps> = observer(({ height }) => {
                 :
               </span>
               {!serverDataImportStore.readOnly &&
-              !serverDataImportStore.importConfigReadOnly ? (
+                !serverDataImportStore.importConfigReadOnly ? (
                 <Input
                   {...commonInputProps}
                   value={serverDataImportStore.importConfigs?.max_insert_errors}
@@ -388,7 +388,7 @@ const ImportConfigs: React.FC<ImportConfigsProps> = observer(({ height }) => {
                 :
               </span>
               {!serverDataImportStore.readOnly &&
-              !serverDataImportStore.importConfigReadOnly ? (
+                !serverDataImportStore.importConfigReadOnly ? (
                 <Input
                   {...commonInputProps}
                   value={serverDataImportStore.importConfigs?.retry_times}
@@ -415,7 +415,7 @@ const ImportConfigs: React.FC<ImportConfigsProps> = observer(({ height }) => {
                 :
               </span>
               {!serverDataImportStore.readOnly &&
-              !serverDataImportStore.importConfigReadOnly ? (
+                !serverDataImportStore.importConfigReadOnly ? (
                 <Input
                   {...commonInputProps}
                   value={serverDataImportStore.importConfigs?.retry_interval}
@@ -439,7 +439,7 @@ const ImportConfigs: React.FC<ImportConfigsProps> = observer(({ height }) => {
                 {t('server-data-import.import-settings.InterpolationTimeout')}:
               </span>
               {!serverDataImportStore.readOnly &&
-              !serverDataImportStore.importConfigReadOnly ? (
+                !serverDataImportStore.importConfigReadOnly ? (
                 <Input
                   {...commonInputProps}
                   value={serverDataImportStore.importConfigs?.insert_timeout}
@@ -467,25 +467,25 @@ const ImportConfigs: React.FC<ImportConfigsProps> = observer(({ height }) => {
         dataImportRootStore.currentStatus === 'FAILED' ||
         (serverDataImportStore.isIrregularProcess &&
           serverDataImportStore.readOnly)) && (
-        <>
-          <div
-            className="import-tasks-step-content-header"
-            style={{ marginTop: 16 }}
-          >
-            <span>{t('server-data-import.import-details.title')}</span>
-          </div>
-          <div className="import-tasks-server-data-import-table-wrapper">
-            <Table
-              columns={columnConfigs}
-              dataSource={serverDataImportStore.importTasks}
-              locale={{
-                emptyText: t('server-data-import.hint.no-data') + '...'
-              }}
-              pagination={false}
-            />
-          </div>
-        </>
-      )}
+          <>
+            <div
+              className="import-tasks-step-content-header"
+              style={{ marginTop: 16 }}
+            >
+              <span>{t('server-data-import.import-details.title')}</span>
+            </div>
+            <div className="import-tasks-server-data-import-table-wrapper">
+              <Table
+                columns={columnConfigs}
+                dataSource={serverDataImportStore.importTasks}
+                locale={{
+                  emptyText: t('server-data-import.hint.no-data') + '...'
+                }}
+                pagination={false}
+              />
+            </div>
+          </>
+        )}
 
       {!serverDataImportStore.readOnly && (
         <div className="import-tasks-server-data-import-manipulations">
@@ -665,15 +665,15 @@ const ImportConfigs: React.FC<ImportConfigsProps> = observer(({ height }) => {
             }}
           >
             {dataImportRootStore.currentStatus === 'SUCCESS' ||
-            dataImportRootStore.currentStatus === 'FAILED' ||
-            (!isEmpty(serverDataImportStore.importTasks) &&
-              !serverDataImportStore.importTasks.some(
-                ({ status }) => status === 'RUNNING'
-              ))
+              dataImportRootStore.currentStatus === 'FAILED' ||
+              (!isEmpty(serverDataImportStore.importTasks) &&
+                !serverDataImportStore.importTasks.some(
+                  ({ status }) => status === 'RUNNING'
+                ))
               ? t('server-data-import.manipulations.finished')
               : dataImportRootStore.currentStatus === 'SETTING'
-              ? t('server-data-import.manipulations.start')
-              : t('server-data-import.manipulations.cancel')}
+                ? t('server-data-import.manipulations.start')
+                : t('server-data-import.manipulations.cancel')}
           </Button>
         </div>
       )}
@@ -795,6 +795,11 @@ const ImportManipulations: React.FC<ImportManipulationsProps> = observer(
           t('server-data-import.import-details.manipulations.retry')
         );
         break;
+      case 'INIT':
+        manipulations.push(
+          t('server-data-import.import-details.manipulations.INIT')
+        );
+        break
       case 'SUCCEED':
         break;
       default:

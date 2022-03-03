@@ -32,7 +32,7 @@ export default function GraphSchema() {
             title: 'schema模版名称'
         },
         {
-            key: 'create_time',
+            key: 'create',
             title: '创建时间'
         },
         {
@@ -178,7 +178,6 @@ export default function GraphSchema() {
     const confirmCreate = () => {
         setCreateLoading(true)
         if (eidtKey) {
-            console.log(1);
             api.editSchema(appStore.tenant, deleteData, formData).then((res) => {
                 setCreateLoading(false)
                 if (res.status === 200) {
@@ -187,10 +186,10 @@ export default function GraphSchema() {
                     form.setFieldsValue({name: '', schema: null});
                     setCreateKey(false);
                     setEidtKey(false);
-                    onSearch('');
                     setInpValue('');
                     setPageObj(defaultPageObj);
                 }
+                onSearch('');
             });
             return;
         }
@@ -202,9 +201,9 @@ export default function GraphSchema() {
                 form.setFieldsValue({name: '', schema: null});
                 setCreateKey(false);
                 setEidtKey(false);
-                onSearch('');
                 setPageObj(defaultPageObj);
             }
+            onSearch('');
         });
     };
     const inputChange = (e) => {
@@ -329,12 +328,11 @@ export default function GraphSchema() {
                                 total: pageObj.total
                             }}
                             onChange={pageChange}
+                            rowKey="name"
                         >
                             { renderTabel(tableKeyList) }
                             <Column
                                 title='操作'
-                                dataIndex='operation'
-                                key='operation'
                                 render={(text, record) => {
                                     return (
                                         <div className='table_btndiv'>

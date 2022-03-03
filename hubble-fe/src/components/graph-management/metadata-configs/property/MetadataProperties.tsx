@@ -525,7 +525,7 @@ const MetadataProperties: React.FC = observer(() => {
           }}
           onSortClick={handleSortClick}
           dataSource={
-            isLoading || appStore.graphs === "null"
+            (isLoading || appStore.graphs === "null")
               ? []
               : metadataPropertyStore.isCreateNewProperty
                 ? metadataPropertyStore.reunionMetadataProperty

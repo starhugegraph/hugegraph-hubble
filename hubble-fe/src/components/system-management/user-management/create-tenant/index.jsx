@@ -34,28 +34,28 @@ const Index = ({ visible, setVisible, detailData, getUserData }) => {
 
     // 完成提交
     const onFinish = (values) => {
+        form.resetFields()
         if (!isDisabled) {
             api.addUser(values).then(res => {
                 if (res.status === 200) {
                     message.success("创建成功")
-                    getUserData()
                 } else {
                     message.error("创建失败")
                 }
+                getUserData()
                 setVisible(false)
             })
         } else {
             api.putUser(detailData.id, values).then(res => {
                 if (res.status === 200) {
                     message.success("编辑成功")
-                    getUserData()
                 } else {
                     message.error("编辑失败")
                 }
+                getUserData()
                 setVisible(false)
             })
         }
-        form.resetFields()
     };
 
     // 验证

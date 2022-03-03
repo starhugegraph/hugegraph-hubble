@@ -7,12 +7,15 @@ function Index(props) {
     const [getDetailData, setGetDetailData] = useState(null)
 
     useEffect(() => {
-        if(detailData.name){
+        if (detailData.name) {
             api.getQueryDetail(tenant, detailData.name).then(res => {
-                if(res&&res.status===200){
+                if (res && res.status === 200) {
                     setGetDetailData(res.data)
                 }
             })
+        }
+        return () => {
+            setGetDetailData(null)
         }
     }, [detailData])
     return (

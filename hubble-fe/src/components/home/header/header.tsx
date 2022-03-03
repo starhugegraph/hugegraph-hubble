@@ -56,9 +56,8 @@ function Header(
                 if (tenant) {
                     appStore.setTenant(tenant);
                     setUserActive(tenant)
-
                 } else {
-                    let defaultGraphspaces = res.data.graphspaces[res.data.graphspaces.length - 1]
+                    let defaultGraphspaces = res.data.graphspaces[0]
                     appStore.setTenant(defaultGraphspaces);
                     setUserActive(defaultGraphspaces)
                 }

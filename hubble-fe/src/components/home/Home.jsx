@@ -64,7 +64,7 @@ axios.interceptors.response.use(
             storageFn.removeStorage(['lg','userInfo','tenant'])
             setTimeout(() => {
                 window.location.reload()
-            }, 800);
+            }, 700);
         }
         return response;
     },

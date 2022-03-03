@@ -14,6 +14,13 @@ function StorageService() {
     // 获取数据
     useEffect(() => {
         getStorageData()
+        return ()=>{
+            setDataList({})
+            setPage({})
+            setIsModalVisible(false)
+            setDetailNode(null)
+            setLoading(false)
+        }
     }, [page])
 
     // 获取数据

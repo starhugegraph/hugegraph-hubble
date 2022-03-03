@@ -2,7 +2,7 @@ import React, { useMemo, useState, useEffect, useContext } from 'react';
 import { Form, Input, Button, Select, InputNumber, Space, message } from 'antd';
 import api from '../../../../../api/api'
 import { AppStoreContext } from '../../../../../stores'
-import { string } from 'yargs';
+import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 const { Option } = Select;
 
 const layout = {
@@ -17,10 +17,26 @@ let OptionArray: any[] = []
 for (let i = 1; i <= 10; i++) {
     OptionArray.push(<Option value={i} key={i}>{i}</Option>)
 }
+
+const formItemLayout = {
+    labelCol: {
+        xs: { span: 24 },
+        sm: { span: 4 },
+    },
+    wrapperCol: {
+        xs: { span: 24 },
+        sm: { span: 20 },
+    },
+};
+const formItemLayoutWithOutLabel = {
+    wrapperCol: {
+        xs: { span: 24, offset: 0 },
+        sm: { span: 20, offset: 4 },
+    },
+};
 const CreateFrom = (props: { getQuery: Function, setVisible: Function, detailData: { graphspace: string, name: string } }) => {
     const { setVisible, detailData, getQuery } = props
     const [form] = Form.useForm();
-    const [nodes, setNodes] = useState([])//实例ip
     let appStore = useContext(AppStoreContext)//store仓库
     // 是否为编辑按钮跳转,是则禁用部分修改
     const isDisable = useMemo(() => {
@@ -36,7 +52,6 @@ const CreateFrom = (props: { getQuery: Function, setVisible: Function, detailDat
             })
             // setNodes((demoData.data.nodes as any))
         } else {
-            setNodes([])
             form.resetFields()
         }
     }, [detailData])
@@ -46,27 +61,25 @@ const CreateFrom = (props: { getQuery: Function, setVisible: Function, detailDat
         if (values.urls) {
             values.urls = Array.isArray(values.urls) ? values.urls : values.urls.split(',').filter((i: string) => i)
         }
+        console.log(values);
+        return;
         if (isDisable) {
             api.changeQueryDetail(appStore.tenant, detailData.name, values).then((res: any) => {
                 if (res && res.status === 200) {
                     message.success("编辑成功")
-                    setVisible(false)
-                    getQuery()
                 }
+                getQuery()
+                setVisible(false)
             })
         } else {
             api.addQueryData(appStore.tenant, values).then((res: any) => {
                 if (res && res.status === 200) {
                     message.success("添加成功")
-                    getQuery()
-                    setVisible(false)
                 }
+                getQuery()
+                setVisible(false)
             })
         }
-    };
-    // 取消按钮
-    const onReset = () => {
-        setVisible(false)
     };
     // 验证
     const serviceValidator = (rule: any, value: string) => {
@@ -132,7 +145,7 @@ const CreateFrom = (props: { getQuery: Function, setVisible: Function, detailDat
                                     {OptionArray}
                                 </Select>
                             </Form.Item>
-                            <div style={{ display: 'flex', justifyContent: "center", alignContent: "center" }}>
+                            <div className='formItemBox'>
                                 <Space>
                                     <Form.Item
                                         labelCol={{ span: 12 }}
@@ -154,6 +167,17 @@ const CreateFrom = (props: { getQuery: Function, setVisible: Function, detailDat
                                         <InputNumber min={1} ></InputNumber>
                                     </Form.Item>
                                 </Space>
+                            </div>
+
+                            <span style={{width:"50px",float:"left"}}>配置:</span>
+                            <div className='groupBox'>
+                                <Input.Group compact>
+                                    <Select defaultValue={"Zhengjiang"}>
+                                        <Option value="Zhejiang">Zhejiang</Option>
+                                        <Option value="Jiangsu">Jiangsu</Option>
+                                    </Select>
+                                    <Input style={{ width: '50%' }} />
+                                </Input.Group>
                             </div>
                         </>
                     ) : null
@@ -183,19 +207,13 @@ const CreateFrom = (props: { getQuery: Function, setVisible: Function, detailDat
                 }
             </Form.Item>
 
-            {nodes.length !== 0 ? <Form.Item label="实例IP">
-                {
-                    nodes.map(item => (<p key={item}>{item}</p>))
-                }
-            </Form.Item> : null}
-
             <Form.Item {...tailLayout}>
                 <Button type="primary" htmlType="submit">
                     提交
                 </Button>
                 &nbsp;
                 &nbsp;
-                <Button htmlType="button" onClick={onReset}>
+                <Button htmlType="button" onClick={() => setVisible(false)}>
                     取消
                 </Button>
             </Form.Item>

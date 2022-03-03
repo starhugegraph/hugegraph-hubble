@@ -52,7 +52,7 @@
         background-color: #fff;
         position        : fixed;
         top             : 124px;
-        left            : 0
+        left            : 0;
     }
 
     .ant-layout-sider.ant-layout-sider-dark {
@@ -92,9 +92,15 @@
 
 }
 
-
-
-    .ant-menu-submenu-title:hover,
-    .ant-menu-item-only-child:hover {
-        animation                 : hover-zoom .3s ease-in 1;
+.ant-menu-submenu-title:hover,
+.ant-menu-item-only-child:hover {
+    animation: hover-zoom .5s ease-in 1;
+}
+.groupBox{
+    display: flex;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    .ant-input-group-compact{
+        margin: 0px 0px 10px 10px;
     }
+}

@@ -37,6 +37,11 @@ const Index = ({ visible, setVisible, detailData, getUserData }) => {
         } else {
             form.resetFields()
         }
+        return ()=>{
+            setUserList(null)
+            setGroupList(null)
+            setFinishLoading(false)
+        }
     }, [detailData])
     
     // 获取下拉数据

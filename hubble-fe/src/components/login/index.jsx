@@ -36,17 +36,17 @@ export default function Index({ setLogin }) {
         }
     }, [])
 
-/*     // 验证
+    // 验证
     const passwordValidator = (rule, value) => {
         // let res = /^(?![a-zA-Z]+$)(?![A-Z0-9]+$)(?![A-Z\W_]+$)(?![a-z0-9]+$)(?![a-z\W_]+$)(?![0-9\W_]+$)[a-zA-Z0-9\W_]{8,}$/
         // let res = /^(?=.*\d)(?=.*[A-Za-z])[\x20-\x7e]{8,16}$/
-        const res = /^[-\w+!@#$%~^&*]{8,16}$/
+        const res = /^[-\w+_@]{5,16}$/
         if (res.test(value)) {
             return Promise.resolve()
         } else {
-            return Promise.reject("格式错误,并且长度要求为8-16位")
+            return Promise.reject("格式错误,并且长度要求为5-16位")
         }
-    } */
+    }
 
     return (
         <div className='loginContainer'>
@@ -91,7 +91,7 @@ export default function Index({ setLogin }) {
                                 message: '请输入您的密码!',
                             },
                             {
-                                // validator: passwordValidator
+                                validator: passwordValidator
                             }
                         ]}
                     >

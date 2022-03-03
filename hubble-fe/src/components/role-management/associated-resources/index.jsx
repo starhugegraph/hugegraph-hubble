@@ -23,7 +23,18 @@ function Index(props) {
             setLoading(true)
             getAssData()
         }
+
     }, [detailData, page])
+
+    useEffect(() => {
+        return () => {
+            setListData({});
+            setPage({})
+            setVisibleCreate(false)
+            setLoading(false)
+            setTargetDetail("")
+        }
+    }, [])
     // 获取关联数据
     const getAssData = () => {
         api.lookAssResources(appStore.tenant, { group_id: detailData.group_id, ...page }).then(res => {
@@ -43,8 +54,8 @@ function Index(props) {
         api.deleteAssResources(appStore.tenant, value).then(res => {
             if (res && res.status === 200) {
                 message.success('删除成功');
-                getAssData()
             }
+            getAssData()
         })
     }
     // 取消删除

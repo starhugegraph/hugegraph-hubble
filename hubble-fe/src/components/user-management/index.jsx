@@ -24,10 +24,19 @@ export default function Index() {
     // 获取数据
     useEffect(() => {
         getUserData()
+    }, [page, query, appStore.tenant])
+
+    useEffect(() => {
         return () => {
             setListData({})
+            setPage(null)
+            setDetailData({})
+            setVisible(false)
+            setQuery("")
+            setLoading(false)
         }
-    }, [page, query, appStore.tenant])
+    }, [])
+
     // 获取用户数据
     const getUserData = () => {
         api.getAuthUser(appStore.tenant, { ...page, query }).then(res => {
@@ -78,7 +87,6 @@ export default function Index() {
             title: '角色',
             dataIndex: 'groups',
             align: "center",
-            width: 250,
             render: (array) => (
                 <Tooltip title={array.map(item => item.group_name + '、')}>
                     <p style={textStyle}>{array.map(item => item.group_name + " ")}</p>
@@ -86,19 +94,8 @@ export default function Index() {
             )
         },
         {
-            title: '手机号',
-            dataIndex: 'phone',
-            align: "center"
-        },
-        {
-            title: '邮箱',
-            dataIndex: 'email',
-            align: "center"
-        },
-        {
             title: '操作',
             align: "center",
-            width: 200,
             fixed: "right",
             render: (tag) => (
                 <Space size="middle">
@@ -122,7 +119,7 @@ export default function Index() {
                     setSearch={setQuery}
                     createHandle={createHandle}
                     placeholder='请输入用户关键字'
-                    >
+                >
                     创建用户
                 </InputAdd>
             </div>
@@ -131,7 +128,7 @@ export default function Index() {
                 dataSource={listData.records}
                 loading={loading}
                 rowKey={'user_id'}
-                scroll={{ x: 1200 }}
+                scroll={{ x: 800 }}
                 pagination={
                     {
                         pageSizeOptions: ['5', '10', '15', '20'],

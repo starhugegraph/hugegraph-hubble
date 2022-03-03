@@ -270,7 +270,7 @@ const PropertyIndex: React.FC<Props> = observer(({ appStore }) => {
             )
           }}
           dataSource={
-            isLoading || appStore.graphs ? [] : metadataPropertyIndexStore.metadataPropertyIndexes
+            (isLoading || appStore.graphs==="null") ? [] : metadataPropertyIndexStore.metadataPropertyIndexes
           }
           pagination={
             isLoading

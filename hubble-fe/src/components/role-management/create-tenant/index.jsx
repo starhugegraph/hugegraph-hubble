@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo,useState,useContext} from 'react'
+import React, { useEffect, useMemo, useState, useContext } from 'react'
 import { Form, Input, Button, Modal, Space, Select, message } from 'antd';
 import api from '../../../api/api'
 import { AppStoreContext } from '../../../stores';
@@ -17,10 +17,9 @@ const tailLayout = {
     },
 };
 
-const Index = (props) => {
+const Index = ({ visible, setVisible, detailData, getRoleData }) => {
     const [form] = Form.useForm();
-    const { visible, setVisible, detailData,getRoleData} = props
-    const [loading,setLoading]= useState(false)
+    const [loading, setLoading] = useState(false)
     const appStore = useContext(AppStoreContext)
     // 是否禁用
     const isDisabled = useMemo(() => {
@@ -34,27 +33,30 @@ const Index = (props) => {
         } else {
             form.resetFields()
         }
+        return () => {
+            setLoading(false)
+        }
     }, [detailData])
     // 完成提交
     const onFinish = (values) => {
         setLoading(true)
-        if(isDisabled){
-            api.putRole(appStore.tenant,detailData.id,values).then(res=>{
-                if(res&&res.status===200){
+        if (isDisabled) {
+            api.putRole(appStore.tenant, detailData.id, values).then(res => {
+                if (res && res.status === 200) {
                     message.success("编辑成功")
-                    setVisible(false)
-                    getRoleData()
                 }
+                getRoleData()
                 setLoading(false)
+                setVisible(false)
             })
-        }else{
-            api.addRole(appStore.tenant,values).then(res=>{
-                if(res&&res.status===200){
+        } else {
+            api.addRole(appStore.tenant, values).then(res => {
+                if (res && res.status === 200) {
                     message.success("添加成功")
-                    setVisible(false)
-                    getRoleData()
                 }
+                getRoleData()
                 setLoading(false)
+                setVisible(false)
             })
         }
         form.resetFields()
@@ -97,7 +99,7 @@ const Index = (props) => {
                         ]
                     }
                 >
-                    <Input disabled={isDisabled}/>
+                    <Input disabled={isDisabled} />
                 </Form.Item>
 
                 <Form.Item

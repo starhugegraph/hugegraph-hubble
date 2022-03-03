@@ -53,7 +53,7 @@ instance.interceptors.response.use(
             storageFn.removeStorage(['lg','userInfo','tenant'])
             setTimeout(() => {
                 window.location.reload()
-            }, 1000);
+            }, 700);
         }
         return response;
     },

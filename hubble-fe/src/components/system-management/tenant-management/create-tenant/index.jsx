@@ -63,7 +63,7 @@ const Index = ({ visible, setVisible, detailData }) => {
                     setVisible(false)
                     setTimeout(() => {
                         window.location.reload()
-                    }, 500);
+                    }, 700);
                 }
             })
         } else {
@@ -74,7 +74,7 @@ const Index = ({ visible, setVisible, detailData }) => {
                     setVisible(false)
                     setTimeout(() => {
                         window.location.reload()
-                    }, 500);
+                    }, 700);
                 }
             })
         }

@@ -43,7 +43,7 @@ export const userAuthArray = [{
                 name: "系统管理",
                 children: [{
                         key: "5",
-                        name: "租户管理"
+                        name: "图空间管理"
                     },
                     {
                         key: "6",
@@ -160,7 +160,7 @@ export const defaultMenuList = [
             },
             {
                 key: '2',
-                name: '用户管理'
+                name: '用户角色管理'
             },
         ]
     },
@@ -190,7 +190,7 @@ export const defaultMenuList = [
         data: [
             {
                 key: '0',
-                name: '租户管理'
+                name: '图空间管理'
             }
         ]
     },

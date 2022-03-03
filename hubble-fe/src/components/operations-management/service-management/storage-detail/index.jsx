@@ -14,6 +14,10 @@ const Index = ({ isModalVisible, setIsModalVisible, node_id }) => {
                 setLoading(false)
             })
         }
+        return ()=>{
+            setDataList({})
+            setLoading(false)
+        }
     }, [node_id])
 
     const handleOk = () => {
