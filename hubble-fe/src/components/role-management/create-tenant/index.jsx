@@ -42,20 +42,20 @@ const Index = ({ visible, setVisible, detailData, getRoleData }) => {
         setLoading(true)
         if (isDisabled) {
             api.putRole(appStore.tenant, detailData.id, values).then(res => {
+                setLoading(false)
                 if (res && res.status === 200) {
                     message.success("编辑成功")
                 }
                 getRoleData()
-                setLoading(false)
                 setVisible(false)
             })
         } else {
             api.addRole(appStore.tenant, values).then(res => {
+                setLoading(false)
                 if (res && res.status === 200) {
                     message.success("添加成功")
                 }
                 getRoleData()
-                setLoading(false)
                 setVisible(false)
             })
         }

@@ -37,6 +37,7 @@ const formItemLayoutWithOutLabel = {
 const CreateFrom = (props: { getQuery: Function, setVisible: Function, detailData: { graphspace: string, name: string } }) => {
     const { setVisible, detailData, getQuery } = props
     const [form] = Form.useForm();
+    const [Loading,setLoading] = useState(false)
     let appStore = useContext(AppStoreContext)//store仓库
     // 是否为编辑按钮跳转,是则禁用部分修改
     const isDisable = useMemo(() => {
@@ -58,13 +59,13 @@ const CreateFrom = (props: { getQuery: Function, setVisible: Function, detailDat
 
     // 完成按钮
     const onFinish = (values: any) => {
+        setLoading(true)
         if (values.urls) {
             values.urls = Array.isArray(values.urls) ? values.urls : values.urls.split(',').filter((i: string) => i)
         }
-        console.log(values);
-        return;
         if (isDisable) {
             api.changeQueryDetail(appStore.tenant, detailData.name, values).then((res: any) => {
+                setLoading(false)
                 if (res && res.status === 200) {
                     message.success("编辑成功")
                 }
@@ -73,6 +74,7 @@ const CreateFrom = (props: { getQuery: Function, setVisible: Function, detailDat
             })
         } else {
             api.addQueryData(appStore.tenant, values).then((res: any) => {
+                setLoading(false)
                 if (res && res.status === 200) {
                     message.success("添加成功")
                 }
@@ -168,17 +170,6 @@ const CreateFrom = (props: { getQuery: Function, setVisible: Function, detailDat
                                     </Form.Item>
                                 </Space>
                             </div>
-
-                            <span style={{width:"50px",float:"left"}}>配置:</span>
-                            <div className='groupBox'>
-                                <Input.Group compact>
-                                    <Select defaultValue={"Zhengjiang"}>
-                                        <Option value="Zhejiang">Zhejiang</Option>
-                                        <Option value="Jiangsu">Jiangsu</Option>
-                                    </Select>
-                                    <Input style={{ width: '50%' }} />
-                                </Input.Group>
-                            </div>
                         </>
                     ) : null
                 }
@@ -208,7 +199,7 @@ const CreateFrom = (props: { getQuery: Function, setVisible: Function, detailDat
             </Form.Item>
 
             <Form.Item {...tailLayout}>
-                <Button type="primary" htmlType="submit">
+                <Button type="primary" htmlType="submit" loading={Loading}>
                     提交
                 </Button>
                 &nbsp;
