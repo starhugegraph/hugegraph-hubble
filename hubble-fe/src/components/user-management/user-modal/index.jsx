@@ -37,11 +37,7 @@ const Index = ({ visible, setVisible, detailData, getUserData }) => {
         } else {
             form.resetFields()
         }
-        return ()=>{
-            setUserList(null)
-            setGroupList(null)
-            setFinishLoading(false)
-        }
+     
     }, [detailData])
     
     // 获取下拉数据
@@ -49,6 +45,15 @@ const Index = ({ visible, setVisible, detailData, getUserData }) => {
         getUserListData()
         getRoleList()
     }, [appStore.tenant])
+
+    useEffect(() => {
+        return ()=>{
+            setUserList(null)
+            setGroupList(null)
+            setFinishLoading(false)
+        }
+    }, [])
+
     // 获取用户List
     const getUserListData = () => {
         api.getUserList().then(res => {

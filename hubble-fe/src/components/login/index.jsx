@@ -80,7 +80,7 @@ export default function Index({ setLogin }) {
                             }
                         ]}
                     >
-                        <Input placeholder='手机号、邮箱、用户名' />
+                        <Input placeholder='用户名' />
                     </Form.Item>
 
                     <Form.Item
