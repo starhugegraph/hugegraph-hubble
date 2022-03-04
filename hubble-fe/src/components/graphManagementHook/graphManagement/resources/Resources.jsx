@@ -358,7 +358,6 @@ export default function Resources() {
                 setPageObj(defaultPageObj);
             }
         });
-
     };
     // 打开新增label弹窗
     const openAddDom = (key) => {
@@ -457,7 +456,7 @@ export default function Resources() {
     // 选中时修改三维数组，修改checked值
     const setChecked = (key, value, allCheck, isChildren) => {
         let arr = JSON.parse(JSON.stringify(collapseList));
- 
+
         // 针对于元数组的选中处理
         if (key === 'SCHEMA' || (allCheck && value && !arr[0].checked && !isChildren)) {
             arr[0].children.forEach((item) => {
@@ -504,7 +503,7 @@ export default function Resources() {
                         arr[i].children[j].checked = value;
                         if (isChildren) {
                             const res = arr[0].children.every(item => item.checked)
-                            arr[0].checked = res 
+                            arr[0].checked = res
                         }
                         setCollapseList(arr);
                         return;
@@ -806,7 +805,7 @@ export default function Resources() {
     };
     // 一维数据处理为三维
     const mapNewData = (arr) => {
-        if(!arr){
+        if (!arr) {
             message.error("资源数据错误");
             return;
         }
@@ -1028,6 +1027,7 @@ export default function Resources() {
                                 total: pageObj.total
                             }}
                             onChange={pageChange}
+                            rowKey="id"
                         >
                             {renderTabel(tableKeyList)}
                             <Column
