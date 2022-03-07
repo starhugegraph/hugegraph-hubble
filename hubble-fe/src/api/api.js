@@ -749,8 +749,19 @@ const outTheData = (url, data) => {
         message.error("下载失败,请重试" + "错误信息：" + err)
     })
 };
+// 服务配置list
+const configsList = () => {
+    return new Promise((resolve, reject) => {
+        myaxios.get(`/services/oltp/options/list`).then(res => {
+            resolve(res);
+        }, error => {
+            reject(error);
+        });
+    });
+};
 
 export default {
+    configsList,
     deleteGraphs,
     deleteCompute,
     stopComputeDetail,

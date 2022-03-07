@@ -26,7 +26,6 @@ export default function QueryServiceList() {
     // 获取数据
     useEffect(() => {
         getQuery()
-
     }, [page, search, appStore.tenant])
 
 

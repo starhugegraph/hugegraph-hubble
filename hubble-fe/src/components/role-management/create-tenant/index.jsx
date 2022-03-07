@@ -61,10 +61,6 @@ const Index = ({ visible, setVisible, detailData, getRoleData }) => {
         }
         form.resetFields()
     };
-    // 取消
-    const onReset = () => {
-        setVisible(false)
-    };
     // 验证
     const serviceValidator = (rule, value) => {
         let res = /^(?!_)(?!.*?_$)[a-zA-Z0-9_\u4e00-\u9fa5]+$/.test(value)
@@ -120,7 +116,7 @@ const Index = ({ visible, setVisible, detailData, getRoleData }) => {
                         <Button type="primary" htmlType="submit" loading={loading}>
                             {Object.keys(detailData).length === 0 ? "创建" : "保存"}
                         </Button>
-                        <Button htmlType="button" onClick={onReset}>
+                        <Button htmlType="button" onClick={() => setVisible(false)}>
                             取消
                         </Button>
                     </Space>

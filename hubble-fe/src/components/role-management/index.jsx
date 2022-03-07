@@ -78,10 +78,6 @@ function Index() {
             }
         })
     }
-    // 取消删除
-    function cancel() {
-        message.error('取消删除')
-    }
     // 关联资源按钮
     function associatedHandle(tag) {
         setGroupId_resources({ group_id: tag.id, group_name: tag.group_name })
@@ -137,7 +133,6 @@ function Index() {
                     <Popconfirm
                         title={`你确定要删除角色${tag.group_name}吗?`}
                         onConfirm={() => confirm(tag)}
-                        onCancel={cancel}
                         okText="确定"
                         cancelText="取消"
                     >
