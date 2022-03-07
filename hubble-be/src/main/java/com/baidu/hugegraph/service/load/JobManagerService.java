@@ -22,6 +22,7 @@ package com.baidu.hugegraph.service.load;
 import java.util.Date;
 import java.util.List;
 
+import com.google.common.collect.ImmutableMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
@@ -136,5 +137,11 @@ public class JobManagerService {
         if (this.mapper.deleteById(id) != 1) {
             throw new InternalException("entity.delete.failed", id);
         }
+    }
+
+    @Transactional(isolation = Isolation.READ_COMMITTED)
+    public void removeByGraph(String graphSpace, String graph) {
+        this.mapper.deleteByMap(ImmutableMap.of("graphspace", graphSpace,
+                                                "graph", graph));
     }
 }

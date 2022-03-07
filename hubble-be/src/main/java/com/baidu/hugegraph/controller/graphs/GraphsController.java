@@ -21,8 +21,6 @@ package com.baidu.hugegraph.controller.graphs;
 
 import java.util.Set;
 
-import com.baidu.hugegraph.service.space.SchemaTemplateService;
-import com.baidu.hugegraph.structure.space.SchemaTemplate;
 import com.google.common.collect.ImmutableMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -37,6 +35,10 @@ import com.baidu.hugegraph.driver.HugeClient;
 import com.baidu.hugegraph.common.Constant;
 import com.baidu.hugegraph.controller.BaseController;
 import com.baidu.hugegraph.service.grahps.GraphsService;
+import com.baidu.hugegraph.service.load.JobManagerService;
+import com.baidu.hugegraph.service.query.ExecuteHistoryService;
+import com.baidu.hugegraph.service.query.GremlinCollectionService;
+import com.baidu.hugegraph.service.space.SchemaTemplateService;
 
 @RestController
 @RequestMapping(Constant.API_VERSION + "graphspaces/{graphspace}/graphs")
@@ -44,9 +46,14 @@ public class GraphsController extends BaseController {
 
     @Autowired
     GraphsService graphsService;
-
     @Autowired
     SchemaTemplateService schemaTemplateService;
+    @Autowired
+    ExecuteHistoryService executeHistoryService;
+    @Autowired
+    GremlinCollectionService gremlinCollectionService;
+    @Autowired
+    JobManagerService jobManagerService;
 
     @GetMapping("list")
     public Object listNames(@PathVariable("graphspace") String graphspace) {
@@ -106,6 +113,11 @@ public class GraphsController extends BaseController {
 
         this.graphsService.delete(this.authClient(graphspace, graph), graph,
                                   message);
+
+        // Clean Local DB Data
+        executeHistoryService.deleteByGraph(graphspace, graph);
+        gremlinCollectionService.deleteByGraph(graphspace, graph);
+        jobManagerService.removeByGraph(graphspace, graph);
     }
 
 

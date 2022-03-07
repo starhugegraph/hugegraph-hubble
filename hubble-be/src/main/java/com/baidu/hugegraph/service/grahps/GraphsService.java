@@ -21,8 +21,6 @@ package com.baidu.hugegraph.service.grahps;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -34,11 +32,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.baidu.hugegraph.service.auth.UserService;
-import com.baidu.hugegraph.structure.auth.HugePermission;
-import com.baidu.hugegraph.structure.auth.HugeResource;
 import com.baidu.hugegraph.driver.HugeClient;
 import com.baidu.hugegraph.loader.util.JsonUtil;
-import com.baidu.hugegraph.structure.auth.User;
 import com.baidu.hugegraph.util.PageUtil;
 
 @Log4j2
