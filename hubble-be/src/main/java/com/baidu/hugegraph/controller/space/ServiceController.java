@@ -126,12 +126,12 @@ public class ServiceController extends BaseController {
     }
 
     protected HugeClient defaultClient(String graphSpace, String graph) {
-        // Get Service url From Default
+        // Get Service url From Default service
         List<String> urls =
-                metaHugeClientFactory.getServerURL(this.cluster,
-                                                   MetaHugeClientFactory.DEFAULT_GRAPHSPACE,
-                                                   MetaHugeClientFactory.DEFAULT_SERVICE);
-
+                metaHugeClientFactory.getServiceConfig(this.cluster,
+                                                       MetaHugeClientFactory.DEFAULT_GRAPHSPACE,
+                                                       MetaHugeClientFactory.DEFAULT_SERVICE)
+                                     .getUrls();
         String url = urls.get((int) (Math.random() * urls.size()));
 
         if (CollectionUtils.isEmpty(urls)) {
