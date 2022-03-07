@@ -108,7 +108,7 @@ public class UserService extends AuthService{
         user.description(ue.getDescription());
 
         User newUser = client.auth().createUser(user);
-        if (newUser != null) {
+        if (newUser != null && ue.isSuperadmin()) {
             // add superadmin
             client.auth().addSuperAdmin(newUser.id().toString());
         }
