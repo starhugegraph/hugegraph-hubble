@@ -19,13 +19,14 @@
 
 package com.baidu.hugegraph.service.query;
 
-import com.baidu.hugegraph.driver.HugeClient;
+import com.google.common.collect.ImmutableMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import com.baidu.hugegraph.driver.HugeClient;
 import com.baidu.hugegraph.entity.query.GremlinCollection;
 import com.baidu.hugegraph.exception.InternalException;
 import com.baidu.hugegraph.mapper.query.GremlinCollectionMapper;
@@ -134,5 +135,11 @@ public class GremlinCollectionService {
         if (this.mapper.deleteById(id) != 1) {
             throw new InternalException("entity.delete.failed", id);
         }
+    }
+
+    @Transactional(isolation = Isolation.READ_COMMITTED)
+    public void deleteByGraph(String graphSpace, String graph) {
+        this.mapper.deleteByMap(ImmutableMap.of("graphspace", graphSpace,
+                                                "graph", graph));
     }
 }

@@ -22,6 +22,7 @@ package com.baidu.hugegraph.service.query;
 import java.time.Instant;
 import java.time.temporal.ChronoField;
 
+import com.google.common.collect.ImmutableMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -135,5 +136,11 @@ public class ExecuteHistoryService {
     public void removeExceedLimit() {
         int limit = this.config.get(HubbleOptions.EXECUTE_HISTORY_SHOW_LIMIT);
         this.mapper.deleteExceedLimit(limit);
+    }
+
+    @Transactional(isolation = Isolation.READ_COMMITTED)
+    public void deleteByGraph(String graphSpace, String graph) {
+        this.mapper.deleteByMap(ImmutableMap.of("graphspace", graphSpace,
+                                                "graph", graph));
     }
 }
