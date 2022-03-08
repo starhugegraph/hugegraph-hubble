@@ -20,8 +20,8 @@ const tailLayout = {
 
 const Index = ({ visible, setVisible, detailData, getUserData }) => {
     const [form] = Form.useForm();
-    const [userList, setUserList] = useState(null)
-    const [groupList, setGroupList] = useState(null)
+    const [userList, setUserList] = useState([])
+    const [groupList, setGroupList] = useState([])
     const [finishLoading, setFinishLoading] = useState(false)
     const appStore = useContext(AppStoreContext)
     // 是否禁用
@@ -37,19 +37,18 @@ const Index = ({ visible, setVisible, detailData, getUserData }) => {
         } else {
             form.resetFields()
         }
-     
     }, [detailData])
-    
+
     // 获取下拉数据
     useEffect(() => {
         getUserListData()
         getRoleList()
     }, [appStore.tenant])
-
+    
     useEffect(() => {
-        return ()=>{
-            setUserList(null)
-            setGroupList(null)
+        return () => {
+            setUserList([])
+            setGroupList([])
             setFinishLoading(false)
         }
     }, [])
@@ -76,7 +75,7 @@ const Index = ({ visible, setVisible, detailData, getUserData }) => {
         let groups = values.groups.map(item => ({ group_id: item.split(" ")[0], group_name: item.split(" ")[1] }))
         api.postAuthUser(appStore.tenant, { ...values, groups }).then(res => {
             if (res && res.status === 200) {
-                message.success(isDisabled ? "编辑成功":"新增成功")
+                message.success(isDisabled ? "编辑成功" : "新增成功")
                 getUserData()
             }
             setFinishLoading(false)
@@ -125,7 +124,7 @@ const Index = ({ visible, setVisible, detailData, getUserData }) => {
                         optionFilterProp="children"
                         filterOption={(input, option) => option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                     >
-                        {userList ? userList.map(item => (<Option key={item.id} value={item.id}>{item.user_name}</Option>)) : null}
+                        {userList.map(item => (<Option key={item.id} value={item.id}>{item.user_name}</Option>))}
                     </Select>
                 </Form.Item>
 
@@ -144,11 +143,11 @@ const Index = ({ visible, setVisible, detailData, getUserData }) => {
                         style={{ width: '100%' }}
                         placeholder="请选择所属角色"
                     >
-                        {groupList ?
+                        {
                             groupList.map(item =>
                                 (<Option key={item.id} value={item.id + " " + item.group_name}>{item.group_name}</Option>)
                             )
-                            : null}
+                        }
                     </Select>
                 </Form.Item>
 

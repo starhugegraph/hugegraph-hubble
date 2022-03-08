@@ -1,6 +1,6 @@
 
 // export const baseUrl = '/api/v1.3/graph-connections';
-// export const baseUrl = `http://172.24.194.98:8089/api/v1.3/graphspaces`;
+// export const baseUrl = `http://172.24.194.72:8089/api/v1.3/graphspaces`;
 export const baseUrl = `/api/v1.3/graphspaces`;
 
 export type dict<T> = Record<string, T>;

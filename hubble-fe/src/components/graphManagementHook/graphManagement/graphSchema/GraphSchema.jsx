@@ -73,10 +73,12 @@ export default function GraphSchema() {
     let [inpValue, setInpValue] = useState('');
     // 创建loading
     const [createLoading, setCreateLoading] = useState(false);
-    
-    useEffect(()=>{
+    // 创建loading
+    const [tableLoading, setTableLoading] = useState(false);
+
+    useEffect(() => {
         onSearch(inpValue, '', true);
-    }, [pageObj.current,appStore.tenant]);
+    }, [pageObj.current, appStore.tenant]);
 
     // 搜索
     const onSearch = (value, e, key) => {
@@ -89,7 +91,9 @@ export default function GraphSchema() {
             setPageObj(defaultPageObj);
             return;
         }
+        setTableLoading(true)
         api.getSchemaList(appStore.tenant, obj).then((res) => {
+            setTableLoading(false)
             if (res.status === 200) {
                 setPageObj({
                     current: res.data.current,
@@ -128,8 +132,8 @@ export default function GraphSchema() {
                 setEidtKey(true);
                 setCreateKey(true);
                 setDeleteData(data.name);
-                form.setFieldsValue({name: data.name, schema: res.data.name});
-                form.setFieldsValue({name: data.name, schema: res.data.schema});
+                form.setFieldsValue({ name: data.name, schema: res.data.name });
+                form.setFieldsValue({ name: data.name, schema: res.data.schema });
             }
         });
     };
@@ -183,7 +187,7 @@ export default function GraphSchema() {
                 if (res.status === 200) {
                     message.success(res.message);
                     setCreateConfirmKey(false);
-                    form.setFieldsValue({name: '', schema: null});
+                    form.setFieldsValue({ name: '', schema: null });
                     setCreateKey(false);
                     setEidtKey(false);
                     setInpValue('');
@@ -198,7 +202,7 @@ export default function GraphSchema() {
             if (res.status === 200) {
                 message.success(res.message);
                 setCreateConfirmKey(false);
-                form.setFieldsValue({name: '', schema: null});
+                form.setFieldsValue({ name: '', schema: null });
                 setCreateKey(false);
                 setEidtKey(false);
                 setPageObj(defaultPageObj);
@@ -214,10 +218,10 @@ export default function GraphSchema() {
             <Modal
                 title="查看schema"
                 visible={seeVisible}
-                onCancel={()=> {setSeeVisible(false)}}
+                onCancel={() => { setSeeVisible(false) }}
                 footer={null}
             >
-                <div style={{minHeight: '200px'}}>
+                <div style={{ minHeight: '200px' }}>
                     <Row>
                         <Col span={4}>schema: </Col>
                         <Col span={20}>{schemaData}</Col>
@@ -227,45 +231,45 @@ export default function GraphSchema() {
             <Modal
                 title="确认删除"
                 visible={deleteConfirmKey}
-                onCancel={()=> {setDeleteConfirmKey(false)}}
+                onCancel={() => { setDeleteConfirmKey(false) }}
                 onOk={confirmDelete}
                 okText="确认"
                 cancelText="取消"
                 style={
                     {
-                        height:"200px",
-                        width:"200px"
+                        height: "200px",
+                        width: "200px"
                     }
                 }
             >
-                    确定要删除{deleteData}吗？
+                确定要删除{deleteData}吗？
             </Modal>
             <Modal
                 title={eidtKey ? '确认编辑' : '确认创建'}
                 visible={createConfirmKey}
-                onCancel={()=> {setCreateConfirmKey(false);}}
+                onCancel={() => { setCreateConfirmKey(false); }}
                 onOk={confirmCreate}
                 confirmLoading={createLoading}
                 okText="确认"
                 cancelText="取消"
                 style={
                     {
-                        height:"200px",
-                        width:"200px"
+                        height: "200px",
+                        width: "200px"
                     }
                 }
             >
-                    确定要{eidtKey ? '修改' : '创建'}吗？
+                确定要{eidtKey ? '修改' : '创建'}吗？
             </Modal>
             {/* 创建图弹窗 */}
             <Modal
                 title={eidtKey ? '编辑' : '创建'}
                 width={600}
                 visible={createKey}
-                onCancel={()=> {
+                onCancel={() => {
                     setCreateKey(false);
                     setEidtKey(false);
-                    form.setFieldsValue({name: '', schema: null});
+                    form.setFieldsValue({ name: '', schema: null });
                 }}
                 footer={null}
             >
@@ -282,9 +286,9 @@ export default function GraphSchema() {
                         label="schema模版名称"
                         name="name"
                         rules={[
-                            {required: true, message: '请输入schema名称!' },
-                            {pattern: /^[a-zA-Z0-9_\u4e00-\u9fa5]+$/, message: '请输入正确的格式!'},
-                            {max: 48, message: '最大长度为48个字符!'}
+                            { required: true, message: '请输入schema名称!' },
+                            { pattern: /^[a-zA-Z0-9_\u4e00-\u9fa5]+$/, message: '请输入正确的格式!' },
+                            { max: 48, message: '最大长度为48个字符!' }
                         ]}
                     >
                         <Input placeholder="请输入schema名称" />
@@ -329,25 +333,26 @@ export default function GraphSchema() {
                             }}
                             onChange={pageChange}
                             rowKey="name"
+                            loading={tableLoading}
                         >
-                            { renderTabel(tableKeyList) }
+                            {renderTabel(tableKeyList)}
                             <Column
                                 title='操作'
                                 render={(text, record) => {
                                     return (
                                         <div className='table_btndiv'>
                                             <Button
-                                                onClick={()=> {openSeeModal(record)}}
+                                                onClick={() => { openSeeModal(record) }}
                                             >
                                                 查看
                                             </Button>
                                             <Button
-                                                onClick={()=> {openEditModal(record)}}
+                                                onClick={() => { openEditModal(record) }}
                                             >
                                                 编辑
                                             </Button>
                                             <Button
-                                                onClick={()=> {openDeleteConfirm(record)}}
+                                                onClick={() => { openDeleteConfirm(record) }}
                                             >
                                                 删除
                                             </Button>
