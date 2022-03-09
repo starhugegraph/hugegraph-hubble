@@ -31,7 +31,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.baidu.hugegraph.driver.factory.MetaHugeClientFactory;
+import com.baidu.hugegraph.driver.factory.PDHugeClientFactory;
 import com.baidu.hugegraph.exception.ParameterizedException;
 import com.baidu.hugegraph.common.Constant;
 import com.baidu.hugegraph.controller.BaseController;
@@ -48,7 +48,7 @@ public class ServiceController extends BaseController {
     @Autowired
     OLTPServerService oltpService;
     @Autowired
-    private MetaHugeClientFactory metaHugeClientFactory;
+    private PDHugeClientFactory pdHugeClientFactory;
 
     @GetMapping
     public Object queryPage(@PathVariable("graphspace") String graphspace,
@@ -128,16 +128,15 @@ public class ServiceController extends BaseController {
     protected HugeClient defaultClient(String graphSpace, String graph) {
         // Get Service url From Default service
         List<String> urls =
-                metaHugeClientFactory.getServiceConfig(this.cluster,
-                                                       MetaHugeClientFactory.DEFAULT_GRAPHSPACE,
-                                                       MetaHugeClientFactory.DEFAULT_SERVICE)
-                                     .getUrls();
+                pdHugeClientFactory.getURLs(this.cluster,
+                                            PDHugeClientFactory.DEFAULT_GRAPHSPACE,
+                                            PDHugeClientFactory.DEFAULT_SERVICE);
         String url = urls.get((int) (Math.random() * urls.size()));
 
         if (CollectionUtils.isEmpty(urls)) {
             throw new ParameterizedException("No url in service(%s/%s)",
-                                             MetaHugeClientFactory.DEFAULT_GRAPHSPACE,
-                                             MetaHugeClientFactory.DEFAULT_SERVICE);
+                                             PDHugeClientFactory.DEFAULT_GRAPHSPACE,
+                                             PDHugeClientFactory.DEFAULT_SERVICE);
         }
 
         HugeClient client = hugeClientPoolService.create(url, graphSpace, graph,

@@ -24,7 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.baidu.hugegraph.driver.factory.MetaHugeClientFactory;
+import com.baidu.hugegraph.driver.factory.PDHugeClientFactory;
 
 @Configuration
 public class MetaConfig {
@@ -35,23 +35,17 @@ public class MetaConfig {
 
     @Bean("cluster")
     public String getCluster() {
-        return this.config.get(HubbleOptions.META_CLUSTER);
+        return this.config.get(HubbleOptions.PD_CLUSTER);
     }
 
     @Bean
-    MetaHugeClientFactory hugeClientFactory() {
-        String type = this.config.get(HubbleOptions.META_TYPE);
-        String[] endpoints =
-                this.config.get(HubbleOptions.META_ENDPOINTS).split(",");
-        String ca = this.config.get(HubbleOptions.META_CA);
-        String clientCa = this.config.get(HubbleOptions.META_CLIENT_CA);
-        String clientKey = this.config.get(HubbleOptions.META_CLIENT_KEY);
+    PDHugeClientFactory pdHugeClientFactory() {
 
-        MetaHugeClientFactory.MetaDriverType metaType
-                = MetaHugeClientFactory.MetaDriverType.valueOf(type.toUpperCase());
+        String pdAddrs = this.config.get(HubbleOptions.PD_PEERS);
 
-        return new MetaHugeClientFactory(metaType, endpoints, ca,
-                                         clientCa, clientKey);
+        String routeType = this.config.get(HubbleOptions.ROUTE_TYPE);
+
+        return new PDHugeClientFactory(pdAddrs, routeType);
     }
 
 }

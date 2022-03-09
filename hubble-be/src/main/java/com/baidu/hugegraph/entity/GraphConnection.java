@@ -54,20 +54,11 @@ public class GraphConnection implements Identifiable, Mergeable {
     @JsonProperty("name")
     private String name;
 
-    @JsonProperty("meta_type")
-    private String metaType;
+    @JsonProperty("route_type")
+    private String routeType;
 
-    @JsonProperty("meta_endpoints")
-    private String[] endpoints;
-
-    @JsonProperty("meta_ca")
-    private String ca;
-
-    @JsonProperty("meta_client_ca")
-    private String clientCa;
-
-    @JsonProperty("meta_client_key")
-    private String clientKey;
+    @JsonProperty("pd_peers")
+    private String pdPeers;
 
     @MergeProperty
     @JsonProperty("cluster")

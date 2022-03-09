@@ -142,12 +142,8 @@ public class LoadTaskController extends BaseController {
                                 List<Integer> fileIds) {
         GraphConnection connection = new GraphConnection();
 
-        connection.setMetaType(config.get(HubbleOptions.META_TYPE));
-        connection.setEndpoints(config.get(HubbleOptions.META_ENDPOINTS).split(","));
-        connection.setCa(config.get(HubbleOptions.META_CA));
-        connection.setClientCa(config.get(HubbleOptions.META_CLIENT_CA));
-        connection.setClientKey(config.get(HubbleOptions.META_CLIENT_KEY));
-        connection.setCluster(config.get(HubbleOptions.META_CLUSTER));
+        connection.setRouteType(config.get(HubbleOptions.ROUTE_TYPE));
+        connection.setPdPeers(config.get(HubbleOptions.PD_PEERS));
         connection.setGraphSpace(graphSpace);
         connection.setGraph(graph);
         connection.setToken(this.getToken());
