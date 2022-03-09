@@ -20,6 +20,7 @@
 package com.baidu.hugegraph.controller;
 
 import java.util.List;
+import java.util.function.Function;
 import javax.servlet.http.HttpServletRequest;
 
 import com.baidu.hugegraph.common.Constant;
@@ -123,4 +124,28 @@ public abstract class BaseController {
         return this.hugeClientPoolService.createUnauthClient();
     }
 
+    protected HugeClient createAuthClient(String graphSpace, String graph) {
+        return this.hugeClientPoolService.create(null, graphSpace, graph,
+                                                 this.getToken());
+    }
+
+    protected HugeClient createUnauthClient(String graphSpace, String graph) {
+        return this.hugeClientPoolService.create(null, graphSpace, graph, null);
+    }
+
+    public <T> T doAuthRequest(Function<HugeClient, T> func) {
+        try(HugeClient client = createAuthClient(null, null)) {
+            return func.apply(client);
+        } catch (Throwable t) {
+            throw t;
+        }
+    }
+
+    public <T> T doUnauthRequest(Function<HugeClient, T> func) {
+        try(HugeClient client = createUnauthClient(null, null)) {
+            return func.apply(client);
+        } catch (Throwable t) {
+            throw t;
+        }
+    }
 }

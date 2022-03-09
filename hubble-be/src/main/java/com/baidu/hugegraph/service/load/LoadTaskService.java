@@ -360,11 +360,8 @@ public class LoadTaskService {
         LoadOptions options = new LoadOptions();
         // Fill with input and server params
         options.file = fileMapping.getPath();
-        options.metaType = connection.getMetaType();
-        options.metaURL = Arrays.asList(connection.getEndpoints());
-        options.metaCa = connection.getCa();
-        options.metaClientCa = connection.getClientCa();
-        options.metaClientKey = connection.getClientKey();
+        options.routeType = connection.getRouteType();
+        options.pdPeers = connection.getPdPeers();
         options.cluster = connection.getCluster();
         options.graphSpace = connection.getGraphSpace();
         // No need to specify a schema file

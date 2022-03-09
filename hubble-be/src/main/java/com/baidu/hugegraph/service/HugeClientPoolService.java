@@ -23,8 +23,6 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import javax.annotation.PreDestroy;
 
-import com.baidu.hugegraph.exception.ParameterizedException;
-import com.baidu.hugegraph.util.UrlUtil;
 import com.google.common.base.Strings;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,9 +33,11 @@ import org.springframework.util.CollectionUtils;
 import com.baidu.hugegraph.config.HugeConfig;
 import com.baidu.hugegraph.driver.HugeClient;
 import com.baidu.hugegraph.entity.GraphConnection;
-import com.baidu.hugegraph.driver.factory.MetaHugeClientFactory;
 import com.baidu.hugegraph.options.HubbleOptions;
 import com.baidu.hugegraph.util.HugeClientUtil;
+import com.baidu.hugegraph.driver.factory.PDHugeClientFactory;
+import com.baidu.hugegraph.exception.ParameterizedException;
+import com.baidu.hugegraph.util.UrlUtil;
 
 @Log4j2
 @Service
@@ -51,7 +51,7 @@ public final class HugeClientPoolService
     @Autowired
     private String cluster;
     @Autowired
-    private MetaHugeClientFactory metaHugeClientFactory;
+    private PDHugeClientFactory pdHugeClientFactory;
 
     @PreDestroy
     public void destroy() {
@@ -75,8 +75,7 @@ public final class HugeClientPoolService
                                   String token) {
         if (StringUtils.isEmpty(url)) {
             List<String> urls =
-                    metaHugeClientFactory.getServerURL(this.cluster, graphSpace,
-                                                       graph);
+                    pdHugeClientFactory.getAutoURLs(cluster, graphSpace, null);
 
             if (CollectionUtils.isEmpty(urls)) {
                 // Get Service url From Default
@@ -117,8 +116,8 @@ public final class HugeClientPoolService
                              String token) {
         if (StringUtils.isEmpty(url)) {
             List<String> urls =
-                    metaHugeClientFactory.getServerURL(this.cluster, graphSpace,
-                                                       graph);
+                    pdHugeClientFactory.getAutoURLs(this.cluster, graphSpace,
+                                                    graph);
 
             if (CollectionUtils.isEmpty(urls)) {
                 // Get Service url From Default

@@ -229,52 +229,28 @@ public class HubbleOptions extends OptionHolder {
                     "hugegraph"
             );
 
-    public static final ConfigOption<String> META_CLUSTER =
+    public static final ConfigOption<String> PD_CLUSTER =
             new ConfigOption<>(
-                    "meta.cluster",
+                    "cluster",
                     "The cluster which hubble connect to",
                     null,
-                    "hg"
+                    "hg_cluster"
             );
 
-    public static final ConfigOption<String> META_TYPE =
+    public static final ConfigOption<String> PD_PEERS =
             new ConfigOption<>(
-                    "meta.type",
-                    "The cluster which hubble connect to",
-                    allowValues("ETCD", "PD", "etcd", "pd"),
-                    "etcd"
-            );
-
-    public static final ConfigOption<String> META_ENDPOINTS =
-            new ConfigOption<>(
-                    "meta.endpoints",
-                    "The meta endpoints",
+                    "pd.peers",
+                    "The pd addresses",
                     null,
-                    "http://127.0.0.1:2379"
+                    "127.0.0.1:8686"
             );
 
-    public static final ConfigOption<String> META_CA =
+    public static final ConfigOption<String> ROUTE_TYPE =
             new ConfigOption<>(
-                    "meta.ca",
-                    "The meta ca",
-                    null,
-                    ""
-            );
-
-    public static final ConfigOption<String> META_CLIENT_CA =
-            new ConfigOption<>(
-                    "meta.client_ca",
-                    "client ca for meta",
-                    null,
-                    ""
-            );
-
-    public static final ConfigOption<String> META_CLIENT_KEY =
-            new ConfigOption<>(
-                    "meta.client_key",
-                    "client key for meta",
-                    null,
-                    ""
+                    "route.type",
+                    "use service url",
+                    allowValues("BOTH", "NODE_PORT", "DDS"),
+                    "NODE_PORT"
             );
 
     public static final ConfigOption<String> MONITOR_URL =
