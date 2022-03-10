@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo } from 'react'
-import { Form, Input, Button, Modal, Space, Switch, Select, message } from 'antd';
+import { Form, Input, Button, Modal, Space, Switch, message } from 'antd';
 import api from '../../../../api/api'
+import { useLocation } from 'wouter';
 const layout = {
     labelCol: {
         span: 8,
@@ -17,6 +18,7 @@ const tailLayout = {
 };
 const Index = ({ visible, setVisible, detailData, getUserData }) => {
     const [form] = Form.useForm();
+    const [_, setLocation] = useLocation()
     // 是否禁用
     const isDisabled = useMemo(() => {
         if (Object.keys(detailData).length !== 0) return true
@@ -34,6 +36,11 @@ const Index = ({ visible, setVisible, detailData, getUserData }) => {
 
     // 完成提交
     const onFinish = (values) => {
+        let res = Object.keys(values).every(key => values[key] === detailData[key])
+        if (res) {
+            message.warning("您没有进行任何修改")
+            return;
+        }
         form.resetFields()
         if (!isDisabled) {
             api.addUser(values).then(res => {
@@ -49,6 +56,12 @@ const Index = ({ visible, setVisible, detailData, getUserData }) => {
             api.putUser(detailData.id, values).then(res => {
                 if (res.status === 200) {
                     message.success("编辑成功")
+                    let nowLoginUser = JSON.parse(localStorage.getItem("userInfo"))
+                    if (detailData.user_name === nowLoginUser.user_name) {
+                        setLocation('/');
+                        window.location.reload();
+                        return;
+                    }
                 } else {
                     message.error("编辑失败")
                 }
@@ -132,7 +145,7 @@ const Index = ({ visible, setVisible, detailData, getUserData }) => {
                             长度5-16，可以为字母、数字和特殊符号(_ @)
                         </span>
                         {isDisabled ? <span
-                            style={{ fontSize: "12px",display:"block"}}
+                            style={{ fontSize: "12px", display: "block" }}
                         >
                             密码为空,则不更新。
                         </span> : null}

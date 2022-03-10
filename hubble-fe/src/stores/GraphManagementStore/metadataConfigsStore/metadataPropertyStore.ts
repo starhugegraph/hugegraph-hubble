@@ -15,7 +15,6 @@ import {
   NewMetadataProperty
 } from '../../types/GraphManagementStore/metadataConfigsStore';
 import AppStoreContext from '../../appStore';
-import appStore from '../../appStore';
 
 export class MetadataPropertyStore {
   metadataConfigsRootStore: MetadataConfigsRootStore;
