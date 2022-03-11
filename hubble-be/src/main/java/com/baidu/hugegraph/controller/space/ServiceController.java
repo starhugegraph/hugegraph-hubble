@@ -19,6 +19,7 @@
 
 package com.baidu.hugegraph.controller.space;
 
+import com.google.common.collect.ImmutableMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -125,19 +126,53 @@ public class ServiceController extends BaseController {
         }
     }
 
+    @GetMapping("{service}/start")
+    public void start(@PathVariable("graphspace") String graphspace,
+                       @PathVariable("service") String service) {
+
+        try (HugeClient client = defaultClient(graphspace, null);){
+            oltpService.start(client, service);
+        } catch (Throwable t) {
+            throw t;
+        }
+    }
+
+    @GetMapping("{service}/stop")
+    public void stop(@PathVariable("graphspace") String graphspace,
+                      @PathVariable("service") String service) {
+
+        try (HugeClient client = defaultClient(graphspace, null);){
+            oltpService.stop(client, service);
+        } catch (Throwable t) {
+            throw t;
+        }
+    }
+
+    @GetMapping("options/list")
+    public Object configOptions(@PathVariable("graphspace") String graphspace) {
+        try (HugeClient client = defaultClient(graphspace, null);){
+            List<String> fields = oltpService.configOptionList(client);
+
+            return ImmutableMap.of("options", fields);
+        } catch (Throwable t) {
+            throw t;
+        }
+    }
+
     protected HugeClient defaultClient(String graphSpace, String graph) {
         // Get Service url From Default service
         List<String> urls =
                 pdHugeClientFactory.getURLs(this.cluster,
                                             PDHugeClientFactory.DEFAULT_GRAPHSPACE,
                                             PDHugeClientFactory.DEFAULT_SERVICE);
-        String url = urls.get((int) (Math.random() * urls.size()));
 
         if (CollectionUtils.isEmpty(urls)) {
             throw new ParameterizedException("No url in service(%s/%s)",
                                              PDHugeClientFactory.DEFAULT_GRAPHSPACE,
                                              PDHugeClientFactory.DEFAULT_SERVICE);
         }
+
+        String url = urls.get((int) (Math.random() * urls.size()));
 
         HugeClient client = hugeClientPoolService.create(url, graphSpace, graph,
                                                          this.getToken());
