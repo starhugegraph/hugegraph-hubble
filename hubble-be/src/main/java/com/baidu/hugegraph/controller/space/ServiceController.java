@@ -165,13 +165,14 @@ public class ServiceController extends BaseController {
                 pdHugeClientFactory.getURLs(this.cluster,
                                             PDHugeClientFactory.DEFAULT_GRAPHSPACE,
                                             PDHugeClientFactory.DEFAULT_SERVICE);
-        String url = urls.get((int) (Math.random() * urls.size()));
 
         if (CollectionUtils.isEmpty(urls)) {
             throw new ParameterizedException("No url in service(%s/%s)",
                                              PDHugeClientFactory.DEFAULT_GRAPHSPACE,
                                              PDHugeClientFactory.DEFAULT_SERVICE);
         }
+
+        String url = urls.get((int) (Math.random() * urls.size()));
 
         HugeClient client = hugeClientPoolService.create(url, graphSpace, graph,
                                                          this.getToken());
