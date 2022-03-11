@@ -58,4 +58,16 @@ public class OLTPServerService {
     public Object update(HugeClient client, OLTPService service) {
         return client.serviceManager().updateService(service);
     }
+
+    public void start(HugeClient client, String service) {
+        client.serviceManager().startService(service);
+    }
+
+    public void stop(HugeClient client, String service) {
+        client.serviceManager().stopService(service);
+    }
+
+    public List<String> configOptionList(HugeClient client) {
+        return client.serviceManager().configOptinList();
+    }
 }
