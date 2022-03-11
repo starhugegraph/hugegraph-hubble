@@ -18,10 +18,10 @@ import qs from 'qs';
 // });
 // axios.defaults.baseURL = 'http://yq01-esm-bu-esm35.yq01.baidu.com:8666/baseline/web';
 const instance = axios.create({
-    // baseURL: `http://172.24.194.72:8089/api/v1.3`,
-    baseURL: '/api/v1.3',
+    baseURL: `http://172.24.194.72:8088/api/v1.3`,
+    // baseURL: '/api/v1.3',
     withCredentials: true,
-    timeout: 10000
+    timeout: 60000
 });
 /**
  * http request 拦截器

@@ -1,8 +1,7 @@
 import React, { ReactElement } from 'react'
 import CreateFrom from './create-from'
 import { Modal } from 'antd'
-export default function Index(props: { visible: boolean, setVisible: Function, detailData: any,getQuery:Function}): ReactElement {
-    const { visible, setVisible, detailData,getQuery} = props
+function Index({ visible, setVisible, detailData,getQuery}: { visible: boolean, setVisible: Function, detailData: any,getQuery:Function}): ReactElement {
     return (
         <Modal
             title={Object.keys(detailData).length===0?"创建查询":"编辑查询"}
@@ -14,3 +13,4 @@ export default function Index(props: { visible: boolean, setVisible: Function, d
         </Modal>
     )
 }
+export default React.memo(Index)

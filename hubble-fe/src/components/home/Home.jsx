@@ -61,7 +61,7 @@ axios.interceptors.response.use(
             message.error(response.data.message);
         } else if (response.data.status === 401) {
             message.error("授权过期");
-            storageFn.removeStorage(['lg','userInfo','tenant'])
+            storageFn.removeStorage(['lg', 'userInfo', 'tenant'])
             setTimeout(() => {
                 window.location.reload()
             }, 700);
@@ -72,6 +72,9 @@ axios.interceptors.response.use(
         message.error('请求出错：', error);
     }
 );
+axios.defaults = {
+    timeout: 60000
+}
 
 const { Option } = Select;
 const { Header, Sider, Content } = Layout;
@@ -101,9 +104,9 @@ const Home = () => {
         if (appStore.tenant !== 'null') {
             const res = await api.getGraphsName(appStore.tenant)
             setGraphsLoading(false)
-            let isResTrue = (res.status === 200 
-            && res.data.graphs 
-            && res.data.graphs.length)
+            let isResTrue = (res.status === 200
+                && res.data.graphs
+                && res.data.graphs.length)
             appStore.setGraphs(isResTrue ? res.data.graphs[0] : "null");
             setGraphsSelect(isResTrue ? res.data.graphs : []);
             appStore.setDate(new Date());
