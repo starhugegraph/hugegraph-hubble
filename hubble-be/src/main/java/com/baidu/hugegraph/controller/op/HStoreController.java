@@ -114,7 +114,7 @@ public class HStoreController extends BaseController {
 
         for(String nodeId: nodes) {
             try {
-                client.hStoreManager().nodeShutdown(nodeId);
+                client.hStoreManager().nodeStartup(nodeId);
             } catch (RuntimeException e) {
                 log.warn("startup hstore node({}) error", nodeId, e);
                 String msg = String.format("startup(%s) success, startup" +
