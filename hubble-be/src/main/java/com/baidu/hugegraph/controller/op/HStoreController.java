@@ -19,23 +19,32 @@
 
 package com.baidu.hugegraph.controller.op;
 
-import com.baidu.hugegraph.driver.HugeClient;
-import com.baidu.hugegraph.service.space.HStoreService;
-import com.baidu.hugegraph.structure.space.HStoreNodeInfo;
-import com.baidu.hugegraph.util.E;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import lombok.extern.log4j.Log4j2;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.baidu.hugegraph.common.Constant;
 import com.baidu.hugegraph.controller.BaseController;
+import com.baidu.hugegraph.driver.HugeClient;
+import com.baidu.hugegraph.service.space.HStoreService;
+import com.baidu.hugegraph.structure.space.HStoreNodeInfo;
+import com.baidu.hugegraph.util.E;
+import com.baidu.hugegraph.exception.ExternalException;
 
-import java.util.List;
-
+@Log4j2
 @RestController
 @RequestMapping(Constant.API_VERSION + "services/storage")
 public class HStoreController extends BaseController {
@@ -61,5 +70,91 @@ public class HStoreController extends BaseController {
         List<HStoreNodeInfo.HStorePartitionInfo> partitions =
                 client.hStoreManager().get(id).hStorePartitionInfoList();
         return ImmutableMap.of("shards", partitions);
+    }
+
+    /**
+     *
+     * @return the status of sotre cluster
+     * 	"Cluster_OK": "正常",
+     * 	"Batch_import_Mode": "单副本入库模式"
+     * 	"Partition_Split": "数据分裂中"
+     * 	"Cluster_Not_Ready": "集群未就绪"
+     * 	"Cluster_Fault": "集群异常"
+     */
+    @GetMapping("status")
+    public Object status() {
+        HugeClient client = this.authClient(null, null);
+        String status = client.hStoreManager().status();
+
+        return ImmutableMap.of("status", status);
+    }
+
+    /**
+     * Trigger the store cluster to start splitting
+     */
+    @GetMapping("split")
+    public void triggerSplit() {
+        HugeClient client = this.authClient(null, null);
+        client.hStoreManager().startSplit();
+    }
+
+    /**
+     * startup list of servers to be respecified by params
+     * @param request {"nodes": ["node_id1", ]}
+     */
+    @PostMapping("nodes/startup")
+    public void nodesStartup(@RequestBody Map<String, List<String>> request) {
+        List<String> nodes = request.getOrDefault("nodes", ImmutableList.of());
+
+        E.checkNotEmpty(nodes, "nodes");
+
+        HugeClient client = this.authClient(null, null);
+
+        List<String> successNodes = new ArrayList<>();
+
+        for(String nodeId: nodes) {
+            try {
+                client.hStoreManager().nodeStartup(nodeId);
+            } catch (RuntimeException e) {
+                log.warn("startup hstore node({}) error", nodeId, e);
+                String msg = String.format("startup(%s) success, startup" +
+                                                   "(%s) error.",
+                                           StringUtils.join(successNodes, ","),
+                                           nodeId);
+                throw new ExternalException(msg, e);
+            }
+
+            successNodes.add(nodeId);
+        }
+    }
+
+    /**
+     * startup list of servers to be respecified by params
+     * @param request
+     */
+    @PostMapping("nodes/shutdown")
+    public void nodesShutdown(@RequestBody Map<String, List<String>> request) {
+        List<String> nodes = request.getOrDefault("nodes", ImmutableList.of());
+
+        E.checkNotEmpty(nodes, "nodes");
+
+        HugeClient client = this.authClient(null, null);
+
+        List<String> successNodes = new ArrayList<>();
+
+        for(String nodeId: nodes) {
+            try {
+                client.hStoreManager().nodeShutdown(nodeId);
+            } catch (RuntimeException e) {
+                log.warn("shutdown hstore node({}) error", nodeId, e);
+                String msg = String.format("shutdown(%s) success, shutdown" +
+                                           "(%s) error.",
+                                           StringUtils.join(successNodes, ","),
+                                           nodeId);
+                throw new ExternalException(msg, e);
+            }
+
+            successNodes.add(nodeId);
+        }
     }
 }
