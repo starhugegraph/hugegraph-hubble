@@ -126,7 +126,7 @@ const Index = ({ visible, setVisible, detailData }) => {
                         </Form.Item>
                     </div>
 
-                    <div className='fromDiv'>
+                    <div className='fromDiv fromDiv2'>
                         <Form.Item
                             name="max_graph_number"
                             label="最大图数"

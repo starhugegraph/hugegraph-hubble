@@ -1,0 +1,16 @@
+{
+    "clusterState":{
+        "Cluster_OK":"正常",
+        "Batch_import_Mode":"单副本入库模式",
+        "Partition_Split": "数据分裂中",
+        "Cluster_Not_Ready": "集群未就绪",
+        "Cluster_Fault": "集群异常"
+    },
+    "clusterColor":{
+        "Cluster_OK": "success",
+		"Batch_import_Mode": "processing",
+		"Partition_Split": "warning",
+		"Cluster_Not_Ready": "default",
+		"Cluster_Fault": "error"
+    }
+}
