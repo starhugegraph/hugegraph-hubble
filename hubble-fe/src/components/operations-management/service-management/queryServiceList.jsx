@@ -14,20 +14,13 @@ export default function QueryServiceList() {
     const [visibleDetail, setVisibleDetail] = useState(false)//详情模态框
     const [page, setPage] = useState({})//分页条件
     const [search, setSearch] = useState("")//搜索条件
-    const [loading, setLoading] = useState(true)//加载
+    const [loading, setLoading] = useState(false)//加载
     let appStore = useContext(AppStoreContext);
-
-    /* // 默认排序
-    const reverseDataWithCreateTime = useMemo(() => {
-        if (listData.records) return listData.records.sort((a, b) => (+b.create_time.split("/").join("")) - (+a.create_time.split("/").join("")))
-        return []
-    }, [listData]) */
 
     // 获取数据
     useEffect(() => {
         getQuery()
     }, [page, search, appStore.tenant])
-
 
     useEffect(() => {
         return () => {
@@ -43,12 +36,12 @@ export default function QueryServiceList() {
     }, [])
     // 获取list数据
     const getQuery = () => {
+        setLoading(true)
         api.getQueryList(appStore.tenant, { query: search, ...page }).then(res => {
             if (res && res.status === 200) {
                 setListData(res.data)
             }
             setLoading(false)
-
         })
     }
 
@@ -93,8 +86,8 @@ export default function QueryServiceList() {
             dataIndex: 'deployment_type',
             align: "center",
             render: (value) => {
-                if (value === 'MANUAL') return "手动"
-                return "容器"
+                if (value === 'MANUAL') return "手动";
+                return "容器";
             }
         },
         {
@@ -129,12 +122,46 @@ export default function QueryServiceList() {
                 <Space size="middle">
                     <Button onClick={() => detailHandle(tag)}>详情</Button>
                     <Button onClick={() => changeHandle(tag)}>编辑</Button>
-                    <Button disabled>停止</Button>
-                    <Button disabled>启动</Button>
+                    <Popconfirm
+                        title={`确定要停止${tag.name}服务吗？`}
+                        onConfirm={() => api.queryEnd(appStore.tenant, tag.name).then(res => {
+                            if (res.status === 200) {
+                                message.success(`停止${tag.name}成功`)
+                            }
+                            getQuery()
+                        })}
+                        okText="确定"
+                        cancelText="取消"
+                        disabled={(tag.deployment_type === 'MANUAL') || tag.running <= 0}
+                    >
+                        <Button
+                            disabled={(tag.deployment_type === 'MANUAL') || tag.running <= 0}
+                        >
+                            停止
+                        </Button>
+                    </Popconfirm>
+
+                    <Popconfirm
+                        title={`确定要启动${tag.name}服务吗？`}
+                        onConfirm={() => api.queryStart(appStore.tenant, tag.name).then(res => {
+                            if (res.status === 200) {
+                                message.success(`启动${tag.name}成功`)
+                            }
+                            getQuery()
+                        })}
+                        okText="确定"
+                        cancelText="取消"
+                        disabled={(tag.deployment_type === 'MANUAL') || tag.running > 0}
+                    >
+                        <Button
+                            disabled={(tag.deployment_type === 'MANUAL') || tag.running > 0}
+                        >
+                            启动
+                        </Button>
+                    </Popconfirm>
                     <Popconfirm
                         title={`你确定要删除实例${tag.name}吗?`}
                         onConfirm={() => confirm(tag)}
-                        onCancel={() => message.warning('取消删除')}
                         okText="确定"
                         cancelText="取消"
                     >

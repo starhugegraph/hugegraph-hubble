@@ -750,9 +750,29 @@ const outTheData = (url, data) => {
     })
 };
 // 服务配置list
-const configsList = () => {
+const configsList = (graphspace) => {
     return new Promise((resolve, reject) => {
-        myaxios.get(`/services/oltp/options/list`).then(res => {
+        myaxios.get(`graphspaces/${graphspace}/services/oltp/options/list`).then(res => {
+            resolve(res);
+        }, error => {
+            reject(error);
+        });
+    });
+};
+// 服务启动
+const queryStart = (graphspace,service) => {
+    return new Promise((resolve, reject) => {
+        myaxios.get(`graphspaces/${graphspace}/services/oltp/${service}/start`).then(res => {
+            resolve(res);
+        }, error => {
+            reject(error);
+        });
+    });
+};
+// 服务启动
+const queryEnd = (graphspace,service) => {
+    return new Promise((resolve, reject) => {
+        myaxios.get(`graphspaces/${graphspace}/services/oltp/${service}/stop`).then(res => {
             resolve(res);
         }, error => {
             reject(error);
@@ -801,6 +821,8 @@ const StorageOutline = (node) => {
 };
 
 export default {
+    queryEnd,
+    queryStart,
     StorageClusterSplit,
     StorageOutline,
     StorageLine,

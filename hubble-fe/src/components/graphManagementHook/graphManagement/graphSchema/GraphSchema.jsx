@@ -199,7 +199,7 @@ export default function GraphSchema() {
         api.createSchema(appStore.tenant, formData).then((res) => {
             setCreateLoading(false)
             if (res.status === 200) {
-                message.success(res.message);
+                message.success("创建成功");
                 setCreateConfirmKey(false);
                 form.setFieldsValue({ name: '', schema: null });
                 setCreateKey(false);

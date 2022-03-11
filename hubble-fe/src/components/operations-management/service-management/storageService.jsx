@@ -26,28 +26,8 @@ function StorageService() {
         getStorageData()
     }, [page])
 
-
-    useInterval(() => {
-        getClusterState()
-    }, 2000)
-
-    // 重置
-    useEffect(() => {
-        getClusterState()
-        return () => {
-            setDataList({})
-            setPage({})
-            setIsModalVisible(false)
-            setDetailNode("")
-            setLoading(false)
-            setCheckData([])
-            setRowKeys([])
-            setClusterState("")
-        }
-    }, [])
-    
     // 集群状态
-    const getClusterState = () => { 
+    const getClusterState = () => {
         api.StorageCluster().then(res => {
             if (res.status === 200) {
                 if (res.data.status !== clusterState) {
@@ -69,6 +49,27 @@ function StorageService() {
             }
         })
     }
+
+    useInterval(() => {
+        getClusterState()
+    }, 2000)
+
+    // 重置
+    useEffect(() => {
+        getClusterState()
+        return () => {
+            setDataList({})
+            setPage({})
+            setIsModalVisible(false)
+            setDetailNode("")
+            setLoading(false)
+            setCheckData([])
+            setRowKeys([])
+            setClusterState("")
+        }
+    }, [])
+
+
     // 详情
     const detailHandle = (params) => {
         setDetailNode(params.id)
@@ -97,24 +98,18 @@ function StorageService() {
         fixed: "left"
     };
 
-    // 计算是否禁用上线
-    const isDisableOn = useMemo(() => {
+    const memoCallBack = (params) => {
         if (checkData.length === 0) return true;
-        let res = checkData.every(item => item.state === "Tombstone")
+        let res = checkData.every(item => item.state === params)
         if (res && clusterState === "Cluster_OK") {
             return false;
         }
         return true
-    }, [checkData,clusterState])
+    }
+    // 计算是否禁用上线
+    const isDisableOn = useMemo(() => memoCallBack("Tombstone"), [checkData, clusterState])
     // 计算是否禁用下线
-    const isDisableOff = useMemo(() => {
-        if (checkData.length === 0) return true;
-        let res = checkData.every(item => item.state === "Up")
-        if (res && clusterState === "Cluster_OK") {
-            return false;
-        }
-        return true;
-    }, [checkData,clusterState])
+    const isDisableOff = useMemo(() => memoCallBack("Up"), [checkData, clusterState])
 
     // 数据分裂
     const dataFar = () => {
@@ -124,6 +119,7 @@ function StorageService() {
             if (res.status === 200) {
                 message.success("操作成功!")
             }
+            getStorageData()
         })
     }
     // 列表项
