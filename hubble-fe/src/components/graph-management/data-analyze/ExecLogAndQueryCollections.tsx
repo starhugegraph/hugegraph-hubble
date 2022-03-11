@@ -205,7 +205,7 @@ const ExecLogAndQueryCollections: React.FC = observer(() => {
                   asyncTasksStore.mutateSearchWords(String(rowData.async_id));
                   asyncTasksStore.switchSearchedStatus(true);
 
-                  setLocation(`/graph-management/${params!.id}/async-tasks`);
+                  setLocation(`/graph-management/0/async-tasks`);
                 }}
               >
                 详情

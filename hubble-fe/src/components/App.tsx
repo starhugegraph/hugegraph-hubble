@@ -8,6 +8,8 @@
  */
 import React, { useState } from 'react';
 import { AppBar } from './common';
+import { ConfigProvider } from 'antd';
+import zh_CN from 'antd/es/locale/zh_CN';
 import Login from './login'
 import 'antd/dist/antd.css';
 import GraphManagementSidebar from './graph-management/GraphManagementSidebar';
@@ -22,7 +24,9 @@ const App: React.FC = () => {
         <>
           <AppBar setLogin={setLogin} />
           <GraphManagementSidebar />
-          <Home />
+          <ConfigProvider locale={zh_CN}>
+            <Home />
+          </ConfigProvider>
         </> :
         <Login setLogin={setLogin}></Login>
       }

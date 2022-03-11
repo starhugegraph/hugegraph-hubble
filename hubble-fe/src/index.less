@@ -1,7 +1,7 @@
 @import '~@baidu/one-ui/src/index.less';
 
-@primary-color: #2b65ff;
-@primary-hover-color: #527dff;
+@primary-color       : #2b65ff;
+@primary-hover-color : #527dff;
 @primary-active-color: #184bcc;
 
 * {
@@ -19,9 +19,9 @@ tr,
 th,
 td,
 p {
-  margin: 0;
+  margin : 0;
   padding: 0;
-  border: 0;
+  border : 0;
 }
 
 body {
@@ -38,7 +38,7 @@ body {
     '微软雅黑',
     Arial,
     sans-serif;
-  -webkit-font-smoothing: antialiased;
+  -webkit-font-smoothing : antialiased;
   -moz-osx-font-smoothing: grayscale;
 
   &.dark {
@@ -48,32 +48,10 @@ body {
   &::after {
     position: absolute;
     overflow: hidden;
-    left: -20000px;
+    left    : -20000px;
     // preload images which in hover state to solve blink issue
-    content:
-      url(./assets/imgs/ic_topback.svg)
-      url(./assets/imgs/ic_arrow_white.svg)
-      url(./assets/imgs/ic_shuju_normal.svg)
-      url(./assets/imgs/ic_shuju_pressed.svg)
-      url(./assets/imgs/ic_yuanshuju_normal.svg)
-      url(./assets/imgs/ic_yuanshuju_pressed.svg)
-      url(./assets/imgs/ic_cebianzhankai.svg)
-      url(./assets/imgs/ic_cebianshouqi.svg)
-      url(./assets/imgs/ic_daorushuju_normal.svg)
-      url(./assets/imgs/ic_daorushuju_pressed.svg)
-      url(./assets/imgs/ic_renwuguanli_normal.svg)
-      url(./assets/imgs/ic_renwuguanli_pressed.svg)
-      url(./assets/imgs/ic_tuzhanshi_normal.svg)
-      url(./assets/imgs/ic_tuzhanshi_hover.svg)
-      url(./assets/imgs/ic_tuzhanshi_pressed.svg)
-      url(./assets/imgs/ic_biaoge_normal.svg)
-      url(./assets/imgs/ic_biaoge_hover.svg)
-      url(./assets/imgs/ic_biaoge_pressed.svg)
-      url(./assets/imgs/ic_json_normal.svg) url(./assets/imgs/ic_json_hover.svg)
-      url(./assets/imgs/ic_json_pressed.svg) url(./assets/imgs/ic_close_16.svg)
-      url(./assets/imgs/ic_refresh.svg) url(./assets/imgs/ic_loading_back.svg)
-      url(./assets/imgs/ic_loading_front.svg)
-      url(./assets/imgs/ic_question_mark.svg);
+    content :
+      url(./assets/imgs/ic_topback.svg) url(./assets/imgs/ic_arrow_white.svg) url(./assets/imgs/ic_shuju_normal.svg) url(./assets/imgs/ic_shuju_pressed.svg) url(./assets/imgs/ic_yuanshuju_normal.svg) url(./assets/imgs/ic_yuanshuju_pressed.svg) url(./assets/imgs/ic_cebianzhankai.svg) url(./assets/imgs/ic_cebianshouqi.svg) url(./assets/imgs/ic_daorushuju_normal.svg) url(./assets/imgs/ic_daorushuju_pressed.svg) url(./assets/imgs/ic_renwuguanli_normal.svg) url(./assets/imgs/ic_renwuguanli_pressed.svg) url(./assets/imgs/ic_tuzhanshi_normal.svg) url(./assets/imgs/ic_tuzhanshi_hover.svg) url(./assets/imgs/ic_tuzhanshi_pressed.svg) url(./assets/imgs/ic_biaoge_normal.svg) url(./assets/imgs/ic_biaoge_hover.svg) url(./assets/imgs/ic_biaoge_pressed.svg) url(./assets/imgs/ic_json_normal.svg) url(./assets/imgs/ic_json_hover.svg) url(./assets/imgs/ic_json_pressed.svg) url(./assets/imgs/ic_close_16.svg) url(./assets/imgs/ic_refresh.svg) url(./assets/imgs/ic_loading_back.svg) url(./assets/imgs/ic_loading_front.svg) url(./assets/imgs/ic_question_mark.svg);
   }
 }
 
@@ -89,22 +67,22 @@ code {
 }
 
 .tooltips {
-  background: #fff;
-  box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.2);
+  background   : #fff;
+  box-shadow   : 0 2px 10px 0 rgba(0, 0, 0, 0.2);
   border-radius: 4px;
-  padding: 28px 24px 24px;
+  padding      : 28px 24px 24px;
 }
 
 .tooltips-dark {
-  border-radius: 3px;
+  border-radius   : 3px;
   background-color: rgba(0, 0, 0, 0.8);
-  border-color: transparent;
-  padding: 4px 8px;
-  color: #fff;
-  line-height: 18px;
-  font-size: 12px;
-  max-width: 240px;
-  word-wrap: break-word;
+  border-color    : transparent;
+  padding         : 4px 8px;
+  color           : #fff;
+  line-height     : 18px;
+  font-size       : 12px;
+  max-width       : 240px;
+  word-wrap       : break-word;
 
   // override tooltip-arrow
   .tooltip-arrow[data-placement*='bottom'] {
@@ -114,35 +92,35 @@ code {
   .tooltip-arrow[data-placement*='bottom']::before {
     border-color: transparent transparent rgba(0, 0, 0, 0.8) transparent;
     border-width: 0 0.3rem 0.3rem 0.3rem;
-    position: absolute;
-    top: 0;
+    position    : absolute;
+    top         : 0;
   }
 
   .tooltip-arrow[data-placement*='bottom']::after {
-    border-color: transparent transparent rgba(0, 0, 0, 0.8) transparent;
+    border-color   : transparent transparent rgba(0, 0, 0, 0.8) transparent;
     // border-color: rgba(0, 0, 0, 0.8);
-    border-width: 0 0.3rem 0.3rem 0.3rem;
+    border-width   : 0 0.3rem 0.3rem 0.3rem;
   }
 }
 
 .no-line-break {
-  overflow: hidden;
+  overflow     : hidden;
   text-overflow: ellipsis;
-  white-space: nowrap;
+  white-space  : nowrap;
 }
 
 .message-wrapper {
-  font-size: 14px;
+  font-size  : 14px;
   line-height: 22px;
 
   &-title {
     font-weight: 900;
-    margin: 3.6px 0 4px;
+    margin     : 3.6px 0 4px;
   }
 
   &-manipulation {
     cursor: pointer;
-    color: #2b65ff;
+    color : #2b65ff;
   }
 }
 
@@ -180,7 +158,7 @@ code {
     Arial,
     sans-serif;
   font-weight: bold;
-  font-size: 16px;
+  font-size  : 16px;
 }
 
 // drawers, e.g. metadata-configs vertex/edge types
@@ -199,8 +177,13 @@ code {
 }
 
 // also z-index is invalid if parent node has position: relative
-.new-fc-one-drawer-content-wrapper .new-fc-one-input-all-container {
+/* .new-fc-one-drawer-content-wrapper .new-fc-one-input-all-container {
   position: absolute;
+} */
+
+// also z-index is invalid if parent node has position: relative
+.new-fc-one-drawer-content-wrapper .new-fc-one-input-all-container {
+  position: relative;
 }
 
 // Steps process style
@@ -228,26 +211,26 @@ code {
 
 // override radio button primary color
 .new-fc-one-radio-button-wrapper-checked {
-  border: 1px solid @primary-color;
+  border          : 1px solid @primary-color;
   background-color: @primary-color;
-  color: #fff;
+  color           : #fff;
 
   &:hover {
-    border: 1px solid @primary-hover-color;
+    border          : 1px solid @primary-hover-color;
     background-color: @primary-hover-color;
-    color: #fff;
+    color           : #fff;
   }
 }
 
 // <Tab /> hovered color
 .new-fc-one-menu-horizontal-box .new-fc-one-menu-item-selected:hover {
-  color: @primary-hover-color;
+  color       : @primary-hover-color;
   border-color: @primary-hover-color;
 }
 
 // <Select /> mutliselect icon issue solution
 .new-fc-one-select-selection__choice__remove svg.icon-close {
-  width: 8px;
+  width : 8px;
   height: 8px;
 }
 
@@ -273,7 +256,7 @@ code {
   background-color: #2b65ff;
 }
 
-.new-fc-one-table-thead > tr > th:first-of-type {
+.new-fc-one-table-thead>tr>th:first-of-type {
   padding: 12px 16px 12px 20px;
 }
 
@@ -312,17 +295,17 @@ code {
   display: flex;
 }
 
-.new-fc-one-pagination .new-fc-one-pagination-pager-item > span {
-  display: flex;
+.new-fc-one-pagination .new-fc-one-pagination-pager-item>span {
+  display        : flex;
   justify-content: center;
-  align-items: center;
+  align-items    : center;
 }
 
 .one-ui-icon-svg.icon-angle-left,
 .one-ui-icon-svg.icon-angle-right {
-  position: static;
-  top: 0;
-  left: 0;
+  position : static;
+  top      : 0;
+  left     : 0;
   transform: translate(0, 0);
 }
 
@@ -330,8 +313,8 @@ code {
 input::-ms-clear,
 input::-ms-reveal {
   display: none;
-  height: 0;
-  width: 0;
+  height : 0;
+  width  : 0;
 }
 
 // ie11
@@ -339,3 +322,4 @@ input::-ms-reveal {
 :-ms-input-placeholder.new-fc-one-input {
   color: #999 !important;
 }
+

@@ -1,30 +1,47 @@
-import { Table, Button } from 'antd';
-import React, { useEffect, useState } from 'react'
+import { Table, Button, Space, Popconfirm, Tag, Spin, message } from 'antd';
+import { SlidersTwoTone, ApiTwoTone, BuildTwoTone } from '@ant-design/icons'
+import React, { useEffect, useMemo, useState } from 'react'
 import DetailModal from './storage-detail'
+import StorageSecondModal from './storage-secondModal';
 import api from '../../../api/api'
+import { useTranslation } from 'react-i18next'
+import { useInterval } from '../../../hooks'
 
 function StorageService() {
     const [dataList, setDataList] = useState({})//数据列表
     const [page, setPage] = useState({})//分页条件
     const [isModalVisible, setIsModalVisible] = useState(false);//详情的显隐 
-    const [detailNode, setDetailNode] = useState();//详情node
-    const [loading, setLoading] = useState(true)
+    const [secondModal, setSecondModal] = useState(false);//弹窗的显隐 
+    const [detailNode, setDetailNode] = useState("");//详情node
+    const [loading, setLoading] = useState(false)//加载
+    const [splitLoading, setSplitLoading] = useState(false)//分裂加载
+    const [checkData, setCheckData] = useState([])
+    const [rowKeys, setRowKeys] = useState([])
+    const [clusterState, setClusterState] = useState("")
+    const { t } = useTranslation()
     // const [query, setSearch] = useState("");//搜索值
 
     // 获取数据
     useEffect(() => {
         getStorageData()
-        return ()=>{
-            setDataList({})
-            setPage({})
-            setIsModalVisible(false)
-            setDetailNode(null)
-            setLoading(false)
-        }
     }, [page])
+
+    // 集群状态
+    const getClusterState = () => {
+        api.StorageCluster().then(res => {
+            if (res.status === 200) {
+                if (res.data.status !== clusterState) {
+                    setClusterState(res.data.status);
+                }
+            }
+        })
+    }
 
     // 获取数据
     const getStorageData = () => {
+        setRowKeys([])
+        setCheckData([])
+        setLoading(true)
         api.getStorageTableData(page).then(res => {
             setLoading(false)
             if (res.status === 200) {
@@ -32,6 +49,26 @@ function StorageService() {
             }
         })
     }
+
+    useInterval(() => {
+        getClusterState()
+    }, 2000)
+
+    // 重置
+    useEffect(() => {
+        getClusterState()
+        return () => {
+            setDataList({})
+            setPage({})
+            setIsModalVisible(false)
+            setDetailNode("")
+            setLoading(false)
+            setCheckData([])
+            setRowKeys([])
+            setClusterState("")
+        }
+    }, [])
+
 
     // 详情
     const detailHandle = (params) => {
@@ -43,15 +80,54 @@ function StorageService() {
         setPage({ page_no: params.current, page_size: params.pageSize })
     }
 
-    /* // 创建
-    const createHandle = () => {
+    // 多选框
+    const rowSelection = {
+        onChange: (rowKeys, selectedRows) => {
+            setRowKeys(rowKeys)
+            if (selectedRows.length) {
+                setCheckData(selectedRows.map(item => ({ id: item.id, state: item.state })));
+            } else {
+                setCheckData([])
+            }
+        },
+        getCheckboxProps: (record) => ({
+            name: record.name,
+        }),
+        selectedRowKeys: rowKeys,
+        columnWidth: "100px",
+        fixed: "left"
+    };
 
-    } */
+    const memoCallBack = (params) => {
+        if (checkData.length === 0) return true;
+        let res = checkData.every(item => item.state === params)
+        if (res && clusterState === "Cluster_OK") {
+            return false;
+        }
+        return true
+    }
+    // 计算是否禁用上线
+    const isDisableOn = useMemo(() => memoCallBack("Tombstone"), [checkData, clusterState])
+    // 计算是否禁用下线
+    const isDisableOff = useMemo(() => memoCallBack("Up"), [checkData, clusterState])
 
+    // 数据分裂
+    const dataFar = () => {
+        setSplitLoading(true)
+        api.StorageClusterSplit().then(res => {
+            setSplitLoading(false)
+            if (res.status === 200) {
+                message.success("操作成功!")
+            }
+            getStorageData()
+        })
+    }
+    // 列表项
     const columns = [
         {
             title: '节点名称',
             dataIndex: 'id',
+            width: 250,
             align: 'center'
         },
         {
@@ -68,11 +144,6 @@ function StorageService() {
             title: '状态',
             dataIndex: 'state',
             align: 'center',
-            /*  render: (status) => (
-                 <Space size="middle">
-                     <span>OK</span>
-                 </Space>
-             ), */
         },
         {
             title: '分片数量',
@@ -98,10 +169,48 @@ function StorageService() {
     ];
     return (
         <div className='query_list_container graphData_wrapper'>
-            <div className='topDiv'>
+            <div className='topDiv' style={{ justifyContent: "space-between", color: "#08979c" }}>
+                <Space>
+                    <span>储存集群状态:</span>
+                    {clusterState ? <Tag color={t(`clusterColor.${clusterState}`)}>
+                        {t(`clusterState.${clusterState}`)}
+                    </Tag> : <Spin size="small" />}
+                    <Popconfirm
+                        title="确认进行数据分裂吗?"
+                        onConfirm={dataFar}
+                        disabled={clusterState !== "Cluster_OK"}
+                    >
+                        <Button
+                            disabled={clusterState !== "Cluster_OK"}
+                            icon={<BuildTwoTone />}
+                            loading={splitLoading}
+                        >
+                            数据分裂
+                        </Button>
+                    </Popconfirm>
+                </Space>
+                <Space className='outLineBox'>
+                    <Button
+                        disabled={isDisableOn}
+                        icon={<SlidersTwoTone />}
+                    >
+                        上线
+                    </Button>
+                    <Button
+                        disabled={isDisableOff}
+                        onClick={() => setSecondModal(true)}
+                        icon={<ApiTwoTone />}
+                    >
+                        下线
+                    </Button>
+                </Space>
             </div>
             <Table
-                scroll={{ x: 1200 }}
+                rowSelection={{
+                    type: "checkbox",
+                    ...rowSelection,
+                }}
+                scroll={{ x: 1000 }}
                 loading={loading}
                 columns={columns}
                 dataSource={dataList.records}
@@ -123,6 +232,13 @@ function StorageService() {
                 setIsModalVisible={setIsModalVisible}
             >
             </DetailModal>
+            <StorageSecondModal
+                isModalVisible={secondModal}
+                setIsModalVisible={setSecondModal}
+                data={checkData}
+                getStorageData={getStorageData}
+            >
+            </StorageSecondModal>
         </div>
     )
 }

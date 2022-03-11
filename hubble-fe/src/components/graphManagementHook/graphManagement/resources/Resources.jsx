@@ -212,9 +212,12 @@ export default function Resources() {
     const [edge_children, setEdge_children] = useState([]);
     // 当前列表
     let [graphsSelect, setGraphsSelect] = useState([]);
+    // loading
+    let [loading, setLoading] = useState(false);
 
     // 搜索
     const onSearch = (value, e, key) => {
+        setLoading(true)
         const obj = {
             page_no: key ? pageObj.current : 1,
             page_size: pageObj.pageSize,
@@ -225,6 +228,7 @@ export default function Resources() {
             return;
         }
         api.getResourcesList(appStore.tenant, obj).then((res) => {
+            setLoading(false)
             if (res.status === 200) {
                 setPageObj({
                     current: res.data.current,
@@ -1028,6 +1032,7 @@ export default function Resources() {
                             }}
                             onChange={pageChange}
                             rowKey="id"
+                            loading={loading}
                         >
                             {renderTabel(tableKeyList)}
                             <Column

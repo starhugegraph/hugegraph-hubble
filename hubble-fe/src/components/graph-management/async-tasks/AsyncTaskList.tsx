@@ -31,7 +31,6 @@ import WhiteCloseIcon from '../../../assets/imgs/ic_close_white.svg';
 import type { AsyncTask } from '../../../stores/types/GraphManagementStore/asyncTasksStore';
 
 import './AsyncTaskList.less';
-import { message } from 'antd';
 
 const AsyncTaskList: React.FC = observer(() => {
   const graphManagementStore = useContext(GraphManagementStoreContext);

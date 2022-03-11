@@ -29,8 +29,8 @@ const outLogin = (data) => {
                 reject(error);
             });
         });
-    }
-    // 获取图列表
+};
+// 获取图列表
 const getGraphs = (graphspace, data) => {
     return new Promise((resolve, reject) => {
         myaxios.get(`/graphspaces/${graphspace}/graphs`, data).then(res => {
@@ -750,9 +750,69 @@ const outTheData = (url, data) => {
     })
 };
 // 服务配置list
-const configsList = () => {
+const configsList = (graphspace) => {
     return new Promise((resolve, reject) => {
-        myaxios.get(`/services/oltp/options/list`).then(res => {
+        myaxios.get(`graphspaces/${graphspace}/services/oltp/options/list`).then(res => {
+            resolve(res);
+        }, error => {
+            reject(error);
+        });
+    });
+};
+// 服务启动
+const queryStart = (graphspace,service) => {
+    return new Promise((resolve, reject) => {
+        myaxios.get(`graphspaces/${graphspace}/services/oltp/${service}/start`).then(res => {
+            resolve(res);
+        }, error => {
+            reject(error);
+        });
+    });
+};
+// 服务启动
+const queryEnd = (graphspace,service) => {
+    return new Promise((resolve, reject) => {
+        myaxios.get(`graphspaces/${graphspace}/services/oltp/${service}/stop`).then(res => {
+            resolve(res);
+        }, error => {
+            reject(error);
+        });
+    });
+};
+// 储存服务集群状态
+const StorageCluster = () => {
+    return new Promise((resolve, reject) => {
+        myaxios.get(`/services/storage/status`).then(res => {
+            resolve(res);
+        }, error => {
+            reject(error);
+        });
+    });
+};
+// 储存服务数据分裂
+const StorageClusterSplit = () => {
+    return new Promise((resolve, reject) => {
+        myaxios.get(`/services/storage/split`).then(res => {
+            resolve(res);
+        }, error => {
+            reject(error);
+        });
+    });
+};
+// 上线
+const StorageLine = (node) => {
+    return new Promise((resolve, reject) => {
+        myaxios.post(`/services/storage/nodes/startup`,node).then(res => {
+            resolve(res);
+        }, error => {
+            reject(error);
+        });
+    });
+};
+// 下线
+const StorageOutline = (node) => {
+    return new Promise((resolve, reject) => {
+        myaxios.post(`/services/storage/nodes/shutdown`,node).then(res => {
             resolve(res);
         }, error => {
             reject(error);
@@ -761,6 +821,12 @@ const configsList = () => {
 };
 
 export default {
+    queryEnd,
+    queryStart,
+    StorageClusterSplit,
+    StorageOutline,
+    StorageLine,
+    StorageCluster,
     configsList,
     deleteGraphs,
     deleteCompute,

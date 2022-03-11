@@ -41,8 +41,11 @@ const CreateFrom = ({ setVisible, detailData, getQuery }:
         if (isDisable) {
             setLoading(true)
             api.getQueryDetail(appStore.tenant, detailData.name).then((res: any) => {
-                form.setFieldsValue(res.data)
-                setLoading(false)
+                let keysArr = Object.keys(res.data.configs);
+                let newConfigs = keysArr.map(item => ({ key: item, value: res.data.configs[item] }));
+                res.data.configs = newConfigs;
+                form.setFieldsValue(res.data);
+                setLoading(false);
             })
             // setNodes((demoData.data.nodes as any))
         } else {
@@ -53,11 +56,14 @@ const CreateFrom = ({ setVisible, detailData, getQuery }:
 
     // 获取配置list
     useEffect(() => {
-        api.configsList().then(res => {
+        api.configsList(appStore.tenant).then(res => {
             if (res.status === 200) {
                 setOptionArray(res.data.options)
             }
         })
+    }, [appStore.tenant])
+
+    useEffect(() => {
         return () => {
             setChangeArray([])
             setOptionArray([])
@@ -72,45 +78,44 @@ const CreateFrom = ({ setVisible, detailData, getQuery }:
             values.urls = Array.isArray(values.urls) ? values.urls : values.urls.split(',').filter((i: string) => i)
         }
         if (values.configs && values.configs.length) {
+            console.log(values.configs);
             let configs = {}
-            const newArray = values.configs.map((item: { key: string, value: string }) => ({ [item.key]: item.value }));
+            const newArray = values.configs.map((item: { key: string, value: string }) => {
+                if (!item.value) return
+                return { [item.key]: item.value }
+            }
+            );
             newArray.forEach((item: any) => {
                 configs = { ...configs, ...item }
             });
             values.configs = configs;
         }
-        if (isDisable) {
-            api.changeQueryDetail(appStore.tenant, detailData.name, values).then((res: any) => {
-                setLoad(false)
-                if (res && res.status === 200) {
-                    message.success("编辑成功")
-                }
-                getQuery()
-                setVisible(false)
-            })
-        } else {
-            api.addQueryData(appStore.tenant, values).then((res: any) => {
-                setLoad(false)
-                if (res && res.status === 200) {
-                    message.success("添加成功")
-                }
-                getQuery()
-                setVisible(false)
-            })
-        }
         setChangeArray([])
+        const thenCallback = (res: any) => {
+            setLoad(false)
+            if (res && res.status === 200) {
+                message.success(`${isDisable ? "编辑" : "创建"}成功`)
+            }
+            getQuery()
+            setVisible(false)
+        }
+        if (isDisable) {
+            api.changeQueryDetail(appStore.tenant, detailData.name, values).then(thenCallback)
+        } else {
+            api.addQueryData(appStore.tenant, values).then(thenCallback)
+        }
     };
 
     // 配置下拉框事件
     const configChange = (value: string, name: number) => {
         setChangeArray((arr) => {
             arr[name] = value;
-            return arr;
+            return [...arr];
         })
     }
 
     // 验证
-    const serviceValidator = (rule: any, value: string) => {
+    const serviceValidator = (_: any, value: string) => {
         let res = /^(?!_)(?!.*?_$)[a-zA-Z0-9_\u4e00-\u9fa5]+$/.test(value)
         if (!res) {
             return Promise.reject("格式错误,只可包含中英文,下划线,不能以下划线结尾")
@@ -118,11 +123,11 @@ const CreateFrom = ({ setVisible, detailData, getQuery }:
             return Promise.resolve()
         }
     }
-    const urlValidator = (rule: any, value: string) => {
+    const urlValidator = (_: any, value: string) => {
         let res = /^(((https?|ftp|news):\/\/|\w+(\.\w+)+)(:\w+)?).*/.test(value)
         if (res) {
             return Promise.resolve();
-        }else if (value.length > 48) {
+        } else if (value.length > 48) {
             return Promise.reject("最长48位")
         } else {
             return Promise.reject("域名格式错误");
@@ -207,7 +212,7 @@ const CreateFrom = ({ setVisible, detailData, getQuery }:
                                                             name={[name, 'key']}
                                                             noStyle
                                                         >
-                                                            <Select style={{ minWidth: "150px" }} placeholder="请选择配置" onChange={(value) => configChange(value, name)}>
+                                                            <Select style={{ width: "180px" }} placeholder="请选择配置" onChange={(value) => configChange(value, name)}>
                                                                 {
                                                                     optionArray.map(item => (
                                                                         <Option
@@ -226,7 +231,6 @@ const CreateFrom = ({ setVisible, detailData, getQuery }:
                                                             {...restField}
                                                             name={[name, 'value']}
                                                             noStyle
-                                                            rules={[{ required: true, message: '请填写具体配置信息' }]}
                                                         >
                                                             <Input style={{ minWidth: "150px" }} placeholder='请输入配置信息' />
                                                         </Form.Item>
