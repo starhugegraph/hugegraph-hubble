@@ -7,13 +7,16 @@ import {
   AsyncTasksResources
 } from './graph-managment';
 
+import clusterState from './state-of-the-cluster.json'
+
 const translation = {
   translation: merge(
     CommonResources,
     DataAnalyzeResources,
     GraphManagementSideBarResources,
     DataImportResources,
-    AsyncTasksResources
+    AsyncTasksResources,
+    clusterState
   )
 };
 

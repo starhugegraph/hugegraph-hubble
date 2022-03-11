@@ -5,10 +5,11 @@ import api from '../../../../api/api';
 const Index = ({ isModalVisible, setIsModalVisible, node_id }) => {
     // const [page, setPage] = useState("")
     const [dataList, setDataList] = useState({})
-    const [loading, setLoading] = useState(true)
+    const [loading, setLoading] = useState(false)
     // 获取详情数据
     useEffect(() => {
         if (node_id) {
+            setLoading(true)
             api.getStorageDetailData(node_id).then(res => {
                 res.status === 200 && setDataList(res.data)
                 setLoading(false)
@@ -19,14 +20,6 @@ const Index = ({ isModalVisible, setIsModalVisible, node_id }) => {
             setLoading(false)
         }
     }, [node_id])
-
-    const handleOk = () => {
-        setIsModalVisible(false);
-    };
-
-    const handleCancel = () => {
-        setIsModalVisible(false);
-    };
 
  /*    // 分页条件
     const pageChange = (params) => {
@@ -44,27 +37,14 @@ const Index = ({ isModalVisible, setIsModalVisible, node_id }) => {
             dataIndex: 'graph_name',
             align: 'center',
         }
-        /* {
-            title: '操作',
-            align: 'center',
-            fixed: "right",
-            render: (tag) => [
-                <Button
-                    type="primary"
-                    onClick={() => detailHandle(tag)}
-                >
-                    详情
-                </Button>
-            ]
-        }, */
     ];
 
     return (
         <>
             <Modal title="储存服务详情"
                 visible={isModalVisible}
-                onOk={handleOk}
-                onCancel={handleCancel}
+                onOk={()=>setIsModalVisible(false)}
+                onCancel={()=>setIsModalVisible(false)}
                 footer={null}
             >
                 <Table

@@ -132,7 +132,6 @@ export default function GraphSchema() {
                 setEidtKey(true);
                 setCreateKey(true);
                 setDeleteData(data.name);
-                form.setFieldsValue({ name: data.name, schema: res.data.name });
                 form.setFieldsValue({ name: data.name, schema: res.data.schema });
             }
         });

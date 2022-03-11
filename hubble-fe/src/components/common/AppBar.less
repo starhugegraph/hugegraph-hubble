@@ -8,48 +8,48 @@
 
   10% {
     transform: rotate(90deg);
-    transform: translate(-10px, -10px);
+    transform: translate(-20px, -10px);
   }
 
   20% {
     transform: rotate(180deg);
-    transform: translate(-20px, 10px);
+    transform: translate(-40px, 10px);
   }
 
   30% {
     transform: rotate(270deg);
-    transform: translate(-30px, 20px);
+    transform: translate(-60px, 20px);
 
   }
 
   40% {
     transform: rotate(360deg);
-    transform: translate(-40px, 10px);
+    transform: translate(-80px, 10px);
   }
 
   50% {
     transform: rotate(360deg);
-    transform: translate(-50px, -10px);
+    transform: translate(-100px, -10px);
   }
 
   60% {
     transform: rotate(360deg);
-    transform: translate(-40px, 10px);
+    transform: translate(-80px, 10px);
   }
 
   70% {
     transform: rotate(360deg);
-    transform: translate(-30px, 20px);
+    transform: translate(-60px, 20px);
   }
 
   80% {
     transform: rotate(360deg);
-    transform: translate(-20px, 10px);
+    transform: translate(-40px, 10px);
   }
 
   90% {
     transform: rotate(360deg);
-    transform: translate(-10px, -10px);
+    transform: translate(-20px, -10px);
   }
 
   100% {
@@ -148,12 +148,17 @@
   }
 
   &>.navigator-additions-img {
-    animation       : img-animation .8s ease 1s 1;
+    animation       : img-animation .8s ease .5s 1;
     z-index         : 99;
     width           : 36px;
     height          : 36px;
     border-radius   : 50%;
     background-image: linear-gradient(to bottom, rgb(64, 123, 233), rgb(72, 222, 233));
+
+    &:hover {
+      animation       : hover-zoom .7s ease-in 1;
+      background-image: linear-gradient(to bottom, rgb(64, 233, 211), rgb(155, 72, 233));
+    }
   }
 
   &.dark {
