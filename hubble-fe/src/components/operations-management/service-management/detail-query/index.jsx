@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Descriptions, Modal, Skeleton } from 'antd';
+import { Descriptions, Modal, Skeleton, Tag } from 'antd';
 import api from '../../../../api/api'
 
 function Index({ visibleDetail, setVisibleDetail, detailData, tenant }) {
@@ -44,14 +44,25 @@ function Index({ visibleDetail, setVisibleDetail, detailData, tenant }) {
                             </>
                             : null
                     }
-                    <Descriptions.Item label="配置信息" contentStyle={{ display: 'flex', flexDirection: "column" }}>
+                    <Descriptions.Item
+                        label="配置信息"
+                        contentStyle={{ display: 'flex', flexDirection: "column" }}
+                    >
                         {
                             Object.keys(getDetailData.configs).map(item => (
-                                <Descriptions.Item
-                                    label={item}
+                                <div
+                                    style={{ margin: "3px 0px", fontSize: "14px" }}
+                                    key={item}
                                 >
-                                    {getDetailData.configs[item]}
-                                </Descriptions.Item>
+                                    <Tag
+                                        style={{ float: "left", fontSize: "14px" }}
+                                        color="orange"
+                                    >
+                                        {item}
+                                    </Tag>
+                                    :&nbsp;{getDetailData.configs[item]
+                                    }
+                                </div>
                             ))
                         }
                     </Descriptions.Item>
