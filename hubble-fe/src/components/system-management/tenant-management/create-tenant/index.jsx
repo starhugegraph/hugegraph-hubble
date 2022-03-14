@@ -1,5 +1,17 @@
 import React, { useMemo, useState, useEffect } from 'react'
-import { Form, Input, Button, Modal, Space, InputNumber, Select, message, Switch, Skeleton } from 'antd';
+import {
+    Form,
+    Input,
+    Button,
+    Modal,
+    Space,
+    InputNumber,
+    Select,
+    message,
+    Switch,
+    Skeleton
+} from 'antd';
+import MyFormItem from '../../../common/MyFormItem';
 import api from '../../../../api/api'
 const { Option } = Select
 const layout = {
@@ -55,28 +67,19 @@ const Index = ({ visible, setVisible, detailData }) => {
     // 完成提交
     const onFinish = (values) => {
         setLoading(true)
+        const thenCallBack= res => {
+            setLoading(false)
+            if (res && res.status === 200) {
+                message.success(`${isDisabled?"编辑":"新增"}成功，即将刷新页面`)
+                setTimeout(() => {
+                    window.location.reload()
+                }, 700);
+            }
+        }
         if (isDisabled) {
-            api.putGraphspaces(values.name, values).then(res => {
-                setLoading(false)
-                if (res && res.status === 200) {
-                    message.success("编辑成功")
-                    setVisible(false)
-                    setTimeout(() => {
-                        window.location.reload()
-                    }, 700);
-                }
-            })
+            api.putGraphspaces(values.name, values).then(thenCallBack)
         } else {
-            api.addGraphspacesList(values).then(res => {
-                setLoading(false)
-                if (res && res.status === 200) {
-                    message.success("新增成功")
-                    setVisible(false)
-                    setTimeout(() => {
-                        window.location.reload()
-                    }, 700);
-                }
-            })
+            api.addGraphspacesList(values).then(thenCallBack)
         }
     };
     // 验证
@@ -92,7 +95,7 @@ const Index = ({ visible, setVisible, detailData }) => {
     const userSelect = useMemo(() => userList.map(item => (<Option key={item.id}>{item.user_name}</Option>)), [userList])
     return (
         <Modal
-            title={Object.keys(detailData).length === 0 ? "创建" : "编辑"}
+            title={isDisabled ? "编辑" : "创建"}
             closable={false}
             visible={visible}
             footer={null}
@@ -104,7 +107,7 @@ const Index = ({ visible, setVisible, detailData }) => {
                     <div className='fromDiv'>
                         <Form.Item
                             name="name"
-                            label="租户名称"
+                            label="图空间名称"
                             rules={
                                 [
                                     { required: true, message: "此项为必填项" },
@@ -138,7 +141,7 @@ const Index = ({ visible, setVisible, detailData }) => {
                                 ]
                             }
                         >
-                            <InputNumber precision={0} stringMode min={1}></InputNumber>
+                            <InputNumber precision={0} min={1}></InputNumber>
                         </Form.Item>
 
                         <Form.Item
@@ -152,94 +155,119 @@ const Index = ({ visible, setVisible, detailData }) => {
                                 ]
                             }
                         >
-                            <InputNumber precision={0} stringMode min={1}></InputNumber>
-                        </Form.Item>
-
-                        <Form.Item
-                            name="storage_limit"
-                            label="储存资源"
-                            initialValue={1000}
-                            labelCol={10}
-                            extra={<span className='spanFontSize'>此单位为G</span>}
-                            rules={
-                                [
-                                    { required: true, message: "此项为必填项" },
-                                ]
-                            }
-                        >
-                            <InputNumber placeholder='G' precision={0} stringMode min={1} />
-                        </Form.Item>
-
-                        <Form.Item
-                            name="cpu_limit"
-                            label="计算资源"
-                            labelCol={10}
-                            initialValue={100}
-                            extra={<span className='spanFontSize'>此单位为G</span>}
-                            rules={
-                                [
-                                    { required: true, message: "此项为必填项" },
-                                ]
-                            }
-                        >
-                            <InputNumber placeholder='核' precision={0} stringMode min={1} />
-                        </Form.Item>
-
-                        <Form.Item
-                            name="memory_limit"
-                            label="内存资源"
-                            labelCol={10}
-                            initialValue={1000}
-                            extra={<span className='spanFontSize'>此单位为G</span>}
-                            rules={
-                                [
-                                    { required: true, message: "此项为必填项" },
-                                ]
-                            }
-                        >
-                            <InputNumber placeholder='G' precision={0} stringMode min={1} />
+                            <InputNumber precision={0} min={1}></InputNumber>
                         </Form.Item>
                     </div>
 
-                    <Form.Item
-                        name="olap_namespace"
-                        label="算法绑定命名空间"
-                        rules={
-                            [
-                                { required: true, message: "此项为必填项" },
-                            ]
-                        }
-                    >
-                        <Input />
-                    </Form.Item>
+                    <div id='formBox'>
+                        <h4 style={{ marginBottom: "10px" }}>图服务：</h4>
+                        <MyFormItem label='cpu资源'>
+                            <Form.Item
+                                name="cpu_limit"
+                                initialValue={100}
+                                noStyle
+                                rules={
+                                    [
+                                        { required: true, message: "此项为必填项" },
+                                    ]
+                                }
+                            >
+                                <InputNumber placeholder='核' precision={0} min={1} />
+                            </Form.Item>
+                        </MyFormItem>
 
-                    <Form.Item
-                        name="oltp_namespace"
-                        label="服务绑定命名空间"
-                        rules={
-                            [
-                                { required: true, message: "此项为必填项" },
-                            ]
-                        }
-                    >
-                        <Input />
-                    </Form.Item>
+                        <MyFormItem label="内存资源">
+                            <Form.Item
+                                name="memory_limit"
+                                initialValue={1000}
+                                noStyle
+                                rules={
+                                    [
+                                        { required: true, message: "此项为必填项" },
+                                    ]
+                                }
+                            >
+                                <InputNumber placeholder='G' precision={0} min={1} />
+                            </Form.Item>
+                        </MyFormItem>
 
-                    <Form.Item
-                        name="storage_namespace"
-                        label="存储绑定命名空间"
-                        rules={
-                            [
-                                { required: true, message: "此项为必填项" },
-                            ]
-                        }
-                    >
-                        <Input />
-                    </Form.Item>
+                        <Form.Item
+                            name="oltp_namespace"
+                            label="k8s命名空间"
+                            rules={
+                                [
+                                    { required: true, message: "此项为必填项" },
+                                ]
+                            }
+                        >
+                            <Input />
+                        </Form.Item>
+
+                        <h4 style={{ marginBottom: "10px" }}>计算任务：</h4>
+                        <MyFormItem label="cpu资源">
+                            <Form.Item
+                                name="compute_cpu_limit"
+                                initialValue={100}
+                                noStyle
+                                rules={
+                                    [
+                                        { required: true, message: "此项为必填项" },
+                                    ]
+                                }
+                            >
+                                <InputNumber placeholder='核' precision={0} min={1} />
+                            </Form.Item>
+                        </MyFormItem>
+
+                        <MyFormItem label="内存资源">
+                            <Form.Item
+                                name="compute_memory_limit"
+                                initialValue={1000}
+                                noStyle
+                                rules={
+                                    [
+                                        { required: true, message: "此项为必填项" },
+                                    ]
+                                }
+                            >
+                                <InputNumber placeholder='G' precision={0} min={1} />
+                            </Form.Item>
+                        </MyFormItem>
+
+                        <Form.Item
+                            name="olap_namespace"
+                            label="k8s命名空间"
+                            rules={
+                                [
+                                    { required: true, message: "此项为必填项" },
+                                ]
+                            }
+                        >
+                            <Input />
+                        </Form.Item>
+
+                        <h4 style={{ marginBottom: "10px" }}>存储服务：</h4>
+                        <MyFormItem label="硬盘">
+                            <Form.Item
+                                name="storage_limit"
+                                initialValue={1000}
+                                noStyle
+                                rules={
+                                    [
+                                        { required: true, message: "此项为必填项" },
+                                    ]
+                                }
+                            >
+                                <InputNumber placeholder='G' precision={0} min={1} />
+                            </Form.Item>
+                        </MyFormItem>
+                    </div>
+
+                    <hr />
 
                     <Form.Item
                         name="graphspace_admin"
-                        label="租户管理员"
+                        label="图空间管理员"
                     >
                         <Select
                             mode="multiple"

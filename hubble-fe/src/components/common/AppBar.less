@@ -2,59 +2,15 @@
 
 @keyframes img-animation {
   0% {
-    transform: rotate(0deg);
-    transform: translate(0px);
+    transform: translate(0px) rotate(0deg);
   }
 
-  10% {
-    transform: rotate(90deg);
-    transform: translate(-20px, -10px);
-  }
-
-  20% {
-    transform: rotate(180deg);
-    transform: translate(-40px, 10px);
-  }
-
-  30% {
-    transform: rotate(270deg);
-    transform: translate(-60px, 20px);
-
-  }
-
-  40% {
-    transform: rotate(360deg);
-    transform: translate(-80px, 10px);
-  }
-
-  50% {
-    transform: rotate(360deg);
-    transform: translate(-100px, -10px);
-  }
-
-  60% {
-    transform: rotate(360deg);
-    transform: translate(-80px, 10px);
-  }
-
-  70% {
-    transform: rotate(360deg);
-    transform: translate(-60px, 20px);
-  }
-
-  80% {
-    transform: rotate(360deg);
-    transform: translate(-40px, 10px);
-  }
-
-  90% {
-    transform: rotate(360deg);
-    transform: translate(-20px, -10px);
+  50%{
+    transform: translate(-200%,0px) rotate(-360deg);
   }
 
   100% {
-    transform: rotate(360deg);
-    transform: translate(0px);
+    transform: translate(0px,0px) rotate(0deg);
   }
 }
 
@@ -148,12 +104,12 @@
   }
 
   &>.navigator-additions-img {
-    animation       : img-animation .8s ease .5s 1;
+    animation       : img-animation 2s linear .5s 1;
     z-index         : 99;
     width           : 36px;
     height          : 36px;
     border-radius   : 50%;
-    background-image: linear-gradient(to bottom, rgb(64, 123, 233), rgb(72, 222, 233));
+    background-image: linear-gradient(to bottom, rgb(221, 16, 240), rgb(72, 222, 233));
 
     &:hover {
       animation       : hover-zoom .7s ease-in 1;

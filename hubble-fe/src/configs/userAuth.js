@@ -220,14 +220,5 @@ export const defaultMenuList = [
                 name: '审计'
             }
         ]
-    },
-    {
-        tab: 'monitoringManagement',
-        data: [
-            {
-                key: '0',
-                name: '监控'
-            }
-        ]
-    },
+    }
 ];

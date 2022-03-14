@@ -33,7 +33,7 @@ function SiderC({
   // 左侧菜单栏点击事件
   const menuLeftClick = (e: any) => {
     setCurrent('0');
-    (_ !== '/monitor') && setMenuList(defaultMenuList[e.key - 1].data);
+    (e.key !== '9') && setMenuList(defaultMenuList[e.key - 1].data);
     if (e.key === '1') {
       setLocation(`/graph-management/0/data-analyze`);
     } else if (e.key === '2') {
