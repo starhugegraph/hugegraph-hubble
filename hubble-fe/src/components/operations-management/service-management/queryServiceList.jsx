@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react'
 import CreateQuery from './create-query'
 import DetailModal from './detail-query'
-import { Button, Table, Space, Popconfirm, message, Input } from 'antd'
+import { Button, Table, Space, Popconfirm, message, Tag } from 'antd'
 import api from '../../../api/api'
 import { AppStoreContext } from '../../../stores'
 import { InputAdd } from '../../common'
@@ -91,9 +91,14 @@ export default function QueryServiceList() {
             }
         },
         {
-            title: '就绪',
+            title: '运行节点',
             align: "center",
-            render: (tag) => (<span>{tag.count + "/" + tag.running}</span>)
+            render: (tag) => {
+                if (tag.deployment_type === 'MANUAL'){
+                    return <Tag color="success">{tag.running}</Tag>
+                }
+                return <span>{tag.count}&nbsp;/&nbsp;<span style={{color:"#7cb305"}}>{tag.running}</span></span>
+            }
         },
         {
             title: '状态',

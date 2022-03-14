@@ -27,12 +27,17 @@ const Index = ({ visible, setVisible, detailData, getUserData }) => {
 
     // 是否回显
     useEffect(() => {
-        if (isDisabled) {
+        if (isDisabled&&visible) {
             form.setFieldsValue(detailData)
-        } else {
+        } else if(!isDisabled && visible){
             form.resetFields()
         }
-    }, [detailData])
+    }, [detailData,visible])
+
+    const cancel = () => {
+        form.resetFields()
+        setVisible(false)
+    }
 
     // 完成提交
     const onFinish = (values) => {
@@ -203,7 +208,7 @@ const Index = ({ visible, setVisible, detailData, getUserData }) => {
                         <Button type="primary" htmlType="submit">
                             {isDisabled ? "保存" : "创建"}
                         </Button>
-                        <Button htmlType="button" onClick={() => setVisible(false)}>
+                        <Button htmlType="button" onClick={cancel}>
                             取消
                         </Button>
                     </Space>

@@ -216,7 +216,6 @@ const CheckAndEditVertex: React.FC = observer(() => {
             } else {
               const id = vertexTypeStore.selectedVertexType!.name;
               const updateInfo: Record<string, any> = {};
-
               if (
                 !isEmpty(
                   vertexTypeStore.editedSelectedVertexType.append_properties

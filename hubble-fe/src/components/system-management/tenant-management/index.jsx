@@ -82,6 +82,7 @@ function Index() {
         {
             title: '是否开启鉴权',
             dataIndex: 'auth',
+            width: 150,
             align: "center",
             render: (value) => (<span>{value ? "是" : "否"}</span>)
         },
@@ -97,37 +98,47 @@ function Index() {
             )
         },
         {
-            title: '计算资源',
-            dataIndex: 'cpu_limit',
+            title: '图服务',
             align: "center",
+            width: 190,
+            render: (value) => (
+                <Tooltip title={`${value.cpu_limit}核/${value.memory_limit}G/${value.oltp_namespace}`}>
+                    <p style={{ overflow: 'hidden', whiteSpace: "nowrap", textOverflow: "ellipsis" }}>
+                        {`${value.cpu_limit}核/${value.memory_limit}G/${value.oltp_namespace}`}
+                    </p>
+                </Tooltip>
+            )
         },
         {
-            title: '储存资源',
+            title: '计算任务',
+            align: "center",
+            width: 190,
+            render: (value) => (
+                <Tooltip title={`${value.cpu_limit}核/${value.memory_limit}G/${value.olap_namespace}`}>
+                    <p style={{ overflow: 'hidden', whiteSpace: "nowrap", textOverflow: "ellipsis" }}>
+                        {`${value.compute_cpu_limit}核/${value.compute_memory_limit}G/${value.olap_namespace}`}
+                    </p>
+                </Tooltip>
+            )
+        },
+        {
+            title: '存储服务',
             dataIndex: 'storage_limit',
             align: "center",
+            render: (value) => (
+                <span>{value}G</span>
+            )
         },
         {
-            title: '内存资源',
-            dataIndex: 'memory_limit',
+            title: '管理员',
+            dataIndex: 'graphspace_admin',
             align: "center",
-        },
-        {
-            title: '算法绑定命名空间',
-            dataIndex: 'olap_namespace',
-            align: "center",
-            width: 150
-        },
-        {
-            title: '服务绑定命名空间',
-            dataIndex: 'oltp_namespace',
-            align: "center",
-            width: 150
-        },
-        {
-            title: '储存绑定命名空间',
-            dataIndex: 'storage_namespace',
-            align: "center",
-            width: 150
+            width:125,
+            render: (value) => (
+                <Tooltip title={value.join(",")}>
+                    <span style={{ overflow: 'hidden', whiteSpace: "nowrap", textOverflow: "ellipsis" }}>{value.join(",")}</span>
+                </Tooltip>
+            )
         },
         {
             title: '操作',
@@ -164,7 +175,7 @@ function Index() {
                 columns={columns}
                 dataSource={listData.records}
                 rowKey={'name'}
-                scroll={{ x: 1700 }}
+                scroll={{ x: 1200 }}
                 loading={loading}
                 pagination={
                     {
