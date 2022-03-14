@@ -23,6 +23,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 
@@ -30,12 +31,18 @@ import com.baidu.hugegraph.driver.HugeClient;
 import com.baidu.hugegraph.exception.InternalException;
 import com.baidu.hugegraph.structure.space.GraphSpace;
 import com.baidu.hugegraph.util.PageUtil;
+import com.baidu.hugegraph.entity.space.GraphSpaceEntity;
+import com.baidu.hugegraph.service.auth.UserService;
 
 @Service
 public class GraphSpaceService {
-    public IPage<GraphSpace> queryPage(HugeClient client, String query,
+
+    @Autowired
+    private UserService userService;
+
+    public IPage<GraphSpaceEntity> queryPage(HugeClient client, String query,
                                        int pageNo, int pageSize) {
-        List<GraphSpace> results =
+        List<GraphSpaceEntity> results =
                 client.graphSpace().listGraphSpace().stream()
                       .filter((s) -> s.contains(query))
                       .map((s) -> get(client, s))
@@ -50,13 +57,20 @@ public class GraphSpaceService {
                      .collect(Collectors.toList());
     }
 
-    public GraphSpace get(HugeClient authClient, String graphspace) {
+    public GraphSpaceEntity get(HugeClient authClient, String graphspace) {
         GraphSpace space = authClient.graphSpace().getGraphSpace(graphspace);
         if (space == null) {
             throw new InternalException("graphspace.get.{} Not Exits",
                                         graphspace);
         }
-        return space;
+
+        GraphSpaceEntity graphSpaceEntity
+                = GraphSpaceEntity.fromGraphSpace(space);
+
+        graphSpaceEntity.graphspaceAdmin =
+                userService.listGraphSpaceAdmin(authClient, graphspace);
+
+        return graphSpaceEntity;
     }
 
     public void delete(HugeClient authClient, String graphspace) {

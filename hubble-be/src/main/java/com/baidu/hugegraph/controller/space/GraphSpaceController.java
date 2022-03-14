@@ -78,16 +78,7 @@ public class GraphSpaceController extends BaseController {
     public GraphSpaceEntity get(@PathVariable("graphspace") String graphspace) {
         HugeClient client = this.authClient(null, null);
         // Get GraphSpace Info
-        GraphSpace graphSpace
-                = graphSpaceService.get(client, graphspace);
-
-        GraphSpaceEntity graphSpaceEntity
-                = GraphSpaceEntity.fromGraphSpace(graphSpace);
-
-        graphSpaceEntity.graphspaceAdmin =
-                userService.listGraphSpaceAdmin(client, graphspace);
-
-        return graphSpaceEntity;
+        return graphSpaceService.get(client, graphspace);
     }
 
     @PostMapping
