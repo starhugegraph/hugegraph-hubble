@@ -1052,8 +1052,8 @@ export class VertexTypeStore {
     try {
       const result: AxiosResponse<responseData<null>> = yield axios
         .put(
-          `${baseUrl}/${this.metadataConfigsRootStore.currentId
-          }/schema/vertexlabels/${this.selectedVertexType!.name}`,
+          `${baseUrl}/${this.appStore._currentValue.tenant}/graphs/${this.appStore._currentValue.graphs}`+
+          `/schema/vertexlabels/${this.selectedVertexType!.name}`,
           {
             append_properties: this.editedSelectedVertexType.append_properties,
             append_property_indexes: this.editedSelectedVertexType
