@@ -40,15 +40,15 @@ export default function GraphData() {
             title: '图空间'
         },
         {
-            key: 'graph_create',
+            key: 'create_time',
             title: '创建时间'
         },
         {
-            key: 'graph_update',
+            key: 'update_time',
             title: '更新时间'
         },
         {
-            key: 'graph_creator',
+            key: 'creator',
             title: '创建人'
         },
     ];
@@ -183,6 +183,8 @@ export default function GraphData() {
                     title={item.title}
                     dataIndex={item.key}
                     key={item.key}
+                    align="center"
+                    width="150px"
                 />
             )
         });
@@ -221,10 +223,10 @@ export default function GraphData() {
                 setCreateKey(false);
                 setInpValue('');
                 setPageObj(defaultPageObj);
-                setTimeout(() => {
-                    window.location.reload()
-                }, 700);
             }
+            setTimeout(() => {
+                window.location.reload()
+            }, 700);
         });
     };
     const inputChange = (e) => {
@@ -388,6 +390,7 @@ export default function GraphData() {
                             }}
                             onChange={pageChange}
                             loading={loading}
+                            scroll={{ x: 800 }}
                         >
                             {renderTabel(tableKeyList)}
                             <Column
@@ -429,12 +432,16 @@ export default function GraphData() {
                                                 <Button
                                                     danger
                                                     loading={deleteLoading}
-                                                >删除图</Button>
+                                                >
+                                                    删除图
+                                                </Button>
                                             </Popconfirm>
 
                                         </div>
                                     )
                                 }}
+                                fixed="right"
+                                width="450px"
                             />
                         </Table>
                     </div>
