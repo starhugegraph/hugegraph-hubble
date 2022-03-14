@@ -105,7 +105,9 @@ public class GraphsService {
         // Only for v3.0.0
         conf.put("backend", "hstore");
         conf.put("serializer", "binary");
-        if(StringUtils.isNotEmpty(schemaTemplate)) {
+        conf.put("task.scheduler_type", "etcd");
+        
+        if (StringUtils.isNotEmpty(schemaTemplate)) {
             conf.put("schema.init_template", schemaTemplate);
         }
 
