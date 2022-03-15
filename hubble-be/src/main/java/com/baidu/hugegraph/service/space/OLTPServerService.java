@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.baidu.hugegraph.driver.factory.PDHugeClientFactory;
+import com.google.common.collect.ImmutableSet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -66,22 +67,23 @@ public class OLTPServerService {
             }
         } else {
             // manual service： 通过PD判断当前服务状态
-            service.setStatus(serviceStatusFromPD(graphSpace, serviceName));
+            // 通过PD， 获取当前service可用URL, 判断当前服务是否存活
+            List<String> urls = pdHugeClientFactory.getURLs(cluster, graphSpace,
+                                                            serviceName);
+
+            // 设置当前运行节点数
+            service.setRunning((int) urls.stream().distinct().count());
+            // service.setStatus(serviceStatusFromPD(graphSpace, serviceName));
+
+            if (!CollectionUtils.isEmpty(urls)) {
+                service.setStatus(OLTPService.ServiceStatus.Running);
+            } else {
+                service.setStatus(OLTPService.ServiceStatus.Stoped);
+            }
+
         }
 
         return service;
-    }
-
-    public OLTPService.ServiceStatus serviceStatusFromPD(String graphSpace,
-                                                         String serviceName) {
-        // 通过PD， 后去当前service可用URL, 判断当前服务是否存活
-        List<String> urls = pdHugeClientFactory.getURLs(cluster, graphSpace,
-                                                        serviceName);
-        if (!CollectionUtils.isEmpty(urls)) {
-            return OLTPService.ServiceStatus.Running;
-        } else {
-            return OLTPService.ServiceStatus.Stoped;
-        }
     }
 
     public Object create(HugeClient client, OLTPService service) {
