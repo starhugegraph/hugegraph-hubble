@@ -79,7 +79,7 @@ public final class HugeClientPoolService
 
             if (CollectionUtils.isEmpty(urls)) {
                 // Get Service url From Default
-                throw new ParameterizedException("No service available");
+                throw new ParameterizedException("service.no-available");
             }
             url = urls.get((int) (Math.random() * urls.size()));
         }
@@ -121,7 +121,7 @@ public final class HugeClientPoolService
 
             if (CollectionUtils.isEmpty(urls)) {
                 // Get Service url From Default
-                throw new ParameterizedException("No service available");
+                throw new ParameterizedException("service.no-available");
             }
             url = urls.get((int) (Math.random() * urls.size()));
         }
@@ -134,7 +134,7 @@ public final class HugeClientPoolService
             connection.setHost(host.getHost());
             connection.setPort(host.getPort());
         } catch (IllegalArgumentException e) {
-            throw new ParameterizedException("Parse url(%s) error", e, url);
+            throw new ParameterizedException("service.url.parse.error", e, url);
         }
 
         connection.setToken(token);
