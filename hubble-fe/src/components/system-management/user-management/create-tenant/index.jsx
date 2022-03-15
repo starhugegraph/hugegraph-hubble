@@ -63,8 +63,8 @@ const Index = ({ visible, setVisible, detailData, getUserData }) => {
                     message.success("编辑成功")
                     let nowLoginUser = JSON.parse(localStorage.getItem("userInfo"))
                     if (detailData.user_name === nowLoginUser.user_name) {
-                        window.location.reload();
                         setLocation('/');
+                        window.location.reload();
                         return;
                     }
                 } else {

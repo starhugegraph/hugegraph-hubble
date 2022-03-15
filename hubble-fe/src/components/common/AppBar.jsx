@@ -8,11 +8,13 @@
  */
 import React, { useCallback, useState, useEffect } from 'react';
 import { useLocation } from 'wouter';
-import { message, Popconfirm, Tooltip } from 'antd';
+import { message,  Tooltip,Modal} from 'antd';
+import { ExclamationCircleOutlined } from '@ant-design/icons';
 import storageFn from '../../utils/storage'
 import api from '../../api/api'
 import './AppBar.less';
 
+const { confirm } = Modal;
 const AppBar = ({ setLogin }) => {
   const [_, setLocation] = useLocation();
   const [loading, setLoading] = useState(false)
@@ -41,39 +43,31 @@ const AppBar = ({ setLogin }) => {
       if (res && res.status === 200) {
         message.warning("已退出")
         localStorage.setItem("lg", "false")
-        storageFn.removeStorage(["tenant","userInfo"])
+        storageFn.removeStorage(["tenant", "userInfo"])
         setLogin("false")
       }
     })
   }
 
+  const confirmModal = () => confirm({
+    title: '你想要退出吗?',
+    icon: <ExclamationCircleOutlined />,
+    content: '确认退出后会自动跳转登陆界面',
+    onOk() {
+      outLog()
+    }
+  });
+
   return (
     <nav className="navigator">
       <div className="navigator-logo" onClick={setRoute('/')}></div>
-      {/* < className="navigator-items">
-        <div
-          className="navigator-item active"
-          onClick={setRoute('/graph-management')}
-        >
-          <span>图管理1</span>
-        </div>
-      </div> */}
       <div className="navigator-additions">
         <span
           className="navigator-additions-img"
         ></span>
-        <Popconfirm
-          title="确定要退出吗?"
-          okText="确定"
-          okType="danger"
-          cancelText="取消"
-          onConfirm={outLog}
-          loading={loading}
-        >
           <Tooltip title="点击可注销登录">
-            <span>{userInfo != null ? userInfo.user_name : null}</span>
+            <span onClick={confirmModal}>{userInfo != null ? userInfo.user_name : null}</span>
           </Tooltip>
-        </Popconfirm>
       </div>
     </nav>
   );
