@@ -23,15 +23,18 @@ import java.util.List;
 import java.util.function.Function;
 import javax.servlet.http.HttpServletRequest;
 
-import com.baidu.hugegraph.common.Constant;
-import com.baidu.hugegraph.driver.HugeClient;
-import com.baidu.hugegraph.service.HugeClientPoolService;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import com.baidu.hugegraph.common.Constant;
+import com.baidu.hugegraph.driver.HugeClient;
+import com.baidu.hugegraph.driver.factory.PDHugeClientFactory;
+import com.baidu.hugegraph.exception.ParameterizedException;
+import com.baidu.hugegraph.service.HugeClientPoolService;
 import com.baidu.hugegraph.common.Identifiable;
 import com.baidu.hugegraph.common.Mergeable;
 import com.baidu.hugegraph.util.EntityUtil;
@@ -42,9 +45,10 @@ public abstract class BaseController {
 
     @Autowired
     protected String cluster;
-
     @Autowired
     protected HugeClientPoolService hugeClientPoolService;
+    @Autowired
+    protected PDHugeClientFactory pdHugeClientFactory;
 
     public static final String ORDER_ASC = "asc";
     public static final String ORDER_DESC = "desc";
@@ -147,5 +151,26 @@ public abstract class BaseController {
         } catch (Throwable t) {
             throw t;
         }
+    }
+
+    protected HugeClient defaultClient(String graphSpace, String graph) {
+        // Get Service url From Default service
+        List<String> urls =
+                pdHugeClientFactory.getURLs(this.cluster,
+                                            PDHugeClientFactory.DEFAULT_GRAPHSPACE,
+                                            PDHugeClientFactory.DEFAULT_SERVICE);
+
+        if (CollectionUtils.isEmpty(urls)) {
+            throw new ParameterizedException("No url in service(%s/%s)",
+                                             PDHugeClientFactory.DEFAULT_GRAPHSPACE,
+                                             PDHugeClientFactory.DEFAULT_SERVICE);
+        }
+
+        String url = urls.get((int) (Math.random() * urls.size()));
+
+        HugeClient client = hugeClientPoolService.create(url, graphSpace, graph,
+                                                         this.getToken());
+
+        return client;
     }
 }

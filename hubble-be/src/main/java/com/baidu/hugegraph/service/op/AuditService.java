@@ -69,6 +69,7 @@ public class AuditService extends ESService {
         List<String> indexes = new ArrayList<>();
 
         List<AuditEntity> logs = new ArrayList<>();
+        int count = 0;
 
         List<String> services = new ArrayList<>();
         if (CollectionUtils.isNotEmpty(auditReq.services)) {
@@ -78,26 +79,29 @@ public class AuditService extends ESService {
         }
         services.forEach(s -> indexes.add(s + "_hugegraphaudit-*"));
 
-        FieldSort sort =
-                SortOptionsBuilders.field().field(auditSortKey)
-                                   .order(SortOrder.valueOf(sortOrder)).build();
-        SortOptions sortKeyOption =
-                new SortOptions.Builder().field(sort).build();
+        if (CollectionUtils.isNotEmpty(indexes)) {
+            FieldSort sort =
+                    SortOptionsBuilders.field().field(auditSortKey)
+                                       .order(SortOrder.valueOf(sortOrder)).build();
+            SortOptions sortKeyOption =
+                    new SortOptions.Builder().field(sort).build();
 
-        int begine = Math.max(auditReq.pageNo - 1, 0);
-        List<Query> querys = buildESQuery(auditReq);
-        SearchResponse<Map> search = esClient().search((s) ->
-            s.index(indexes).from(begine * auditReq.pageSize)
-             .size(auditReq.pageSize)
-             .query(q -> q.bool( boolQuery -> boolQuery.must(querys))
-             ).sort(sortKeyOption), Map.class);
+            int begine = Math.max(auditReq.pageNo - 1, 0);
+            List<Query> querys = buildESQuery(auditReq);
+            SearchResponse<Map> search = esClient().search((s) ->
+                s.index(indexes).from(begine * auditReq.pageSize)
+                 .size(auditReq.pageSize)
+                 .query(q -> q.bool( boolQuery -> boolQuery.must(querys))
+                 ).sort(sortKeyOption), Map.class);
 
-        for (Hit<Map> hit: search.hits().hits()) {
-            logs.add(AuditEntity.fromMap((Map<String, Object>) hit.source()));
+            for (Hit<Map> hit: search.hits().hits()) {
+                logs.add(AuditEntity.fromMap((Map<String, Object>) hit.source()));
+            }
+
+            count = (int) (search.hits().total().value());
         }
 
-        return PageUtil.newPage(logs, auditReq.pageNo, auditReq.pageSize,
-                                (int) (search.hits().total().value()));
+        return PageUtil.newPage(logs, auditReq.pageNo, auditReq.pageSize, count);
     }
 
     public List<AuditEntity> export(AuditReq auditReq) throws IOException {

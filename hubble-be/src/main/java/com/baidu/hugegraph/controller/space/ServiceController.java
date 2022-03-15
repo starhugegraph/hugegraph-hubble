@@ -48,8 +48,6 @@ public class ServiceController extends BaseController {
 
     @Autowired
     OLTPServerService oltpService;
-    @Autowired
-    private PDHugeClientFactory pdHugeClientFactory;
 
     @GetMapping
     public Object queryPage(@PathVariable("graphspace") String graphspace,
@@ -159,24 +157,4 @@ public class ServiceController extends BaseController {
         }
     }
 
-    protected HugeClient defaultClient(String graphSpace, String graph) {
-        // Get Service url From Default service
-        List<String> urls =
-                pdHugeClientFactory.getURLs(this.cluster,
-                                            PDHugeClientFactory.DEFAULT_GRAPHSPACE,
-                                            PDHugeClientFactory.DEFAULT_SERVICE);
-
-        if (CollectionUtils.isEmpty(urls)) {
-            throw new ParameterizedException("No url in service(%s/%s)",
-                                             PDHugeClientFactory.DEFAULT_GRAPHSPACE,
-                                             PDHugeClientFactory.DEFAULT_SERVICE);
-        }
-
-        String url = urls.get((int) (Math.random() * urls.size()));
-
-        HugeClient client = hugeClientPoolService.create(url, graphSpace, graph,
-                                                         this.getToken());
-
-        return client;
-    }
 }
