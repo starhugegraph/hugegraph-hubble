@@ -206,7 +206,7 @@ public class LogService extends ESService {
 
     @Cacheable(value = "ES_QUERY", key="#root.targetClass.name+':'+#root" +
             ".methodName")
-    public List<String> listServices() throws IOException {
+    public synchronized List<String> listServices() throws IOException {
         Set<String> services = new HashSet<>();
 
         GetAliasResponse res = esClient().indices().getAlias();
