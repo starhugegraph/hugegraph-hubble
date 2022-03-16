@@ -10,7 +10,6 @@ import com.baidu.hugegraph.util.E;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpHost;
-import org.apache.logging.log4j.util.Strings;
 import org.elasticsearch.client.RestClient;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -68,5 +67,9 @@ public abstract class ESService {
         RestClient restClient = RestClient.builder(hosts).build();
 
         return restClient;
+    }
+
+    protected String logAuditPattern() {
+        return config.get(HubbleOptions.LOG_AUDIT_PATTERN);
     }
 }

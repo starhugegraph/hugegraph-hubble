@@ -268,4 +268,12 @@ public class HubbleOptions extends OptionHolder {
                     null,
                     ""
             );
+
+    public static final ConfigOption<String> LOG_AUDIT_PATTERN =
+            new ConfigOption<>(
+                    "log.audit.pattern",
+                    "the index name of audit log",
+                    null,
+                    "hugegraphaudit"
+            );
 }
