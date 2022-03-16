@@ -257,7 +257,7 @@ const Index = ({ visible, setVisible, detailData }) => {
                         </Form.Item>
 
                         <Form.Item
-                            name="internal_algorithm_image_ur"
+                            name="internal_algorithm_image_url"
                             label="算法镜像地址"
                         >
                             <Input />
