@@ -226,7 +226,7 @@ export default function GraphData() {
             }
             setTimeout(() => {
                 window.location.reload()
-            }, 700);
+            }, 1000);
         });
     };
     const inputChange = (e) => {

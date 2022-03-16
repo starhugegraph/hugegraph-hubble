@@ -7,7 +7,7 @@ type Props = {
 
 const MyFormItem: React.FC<Props> = ({ label, children }) => {
     return (
-        <Form.Item label={label} required>
+        <Form.Item label={label} labelCol={{span:10}} required >
             <Space>
                 {children}
                 <span className='spanFontSize'>G</span>

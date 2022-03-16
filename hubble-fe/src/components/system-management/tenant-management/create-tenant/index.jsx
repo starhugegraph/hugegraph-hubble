@@ -67,10 +67,10 @@ const Index = ({ visible, setVisible, detailData }) => {
     // 完成提交
     const onFinish = (values) => {
         setLoading(true)
-        const thenCallBack= res => {
+        const thenCallBack = res => {
             setLoading(false)
             if (res && res.status === 200) {
-                message.success(`${isDisabled?"编辑":"新增"}成功，即将刷新页面`)
+                message.success(`${isDisabled ? "编辑" : "新增"}成功，即将刷新页面`)
                 setTimeout(() => {
                     window.location.reload()
                 }, 700);
@@ -161,36 +161,37 @@ const Index = ({ visible, setVisible, detailData }) => {
 
                     <div id='formBox'>
                         <h4 style={{ marginBottom: "10px" }}>图服务：</h4>
-                        <MyFormItem label='cpu资源'>
-                            <Form.Item
-                                name="cpu_limit"
-                                initialValue={100}
-                                noStyle
-                                rules={
-                                    [
-                                        { required: true, message: "此项为必填项" },
-                                    ]
-                                }
-                            >
-                                <InputNumber placeholder='核' precision={0} min={1} />
-                            </Form.Item>
-                        </MyFormItem>
+                        <div className='fromDiv formDivCenter'>
+                            <MyFormItem label='cpu资源' >
+                                <Form.Item
+                                    name="cpu_limit"
+                                    initialValue={100}
+                                    noStyle
+                                    rules={
+                                        [
+                                            { required: true, message: "此项为必填项" },
+                                        ]
+                                    }
+                                >
+                                    <InputNumber placeholder='核' precision={0} min={1} />
+                                </Form.Item>
+                            </MyFormItem>
 
-                        <MyFormItem label="内存资源">
-                            <Form.Item
-                                name="memory_limit"
-                                initialValue={1000}
-                                noStyle
-                                rules={
-                                    [
-                                        { required: true, message: "此项为必填项" },
-                                    ]
-                                }
-                            >
-                                <InputNumber placeholder='G' precision={0} min={1} />
-                            </Form.Item>
-                        </MyFormItem>
-
+                            <MyFormItem label="内存资源" >
+                                <Form.Item
+                                    name="memory_limit"
+                                    initialValue={1000}
+                                    noStyle
+                                    rules={
+                                        [
+                                            { required: true, message: "此项为必填项" },
+                                        ]
+                                    }
+                                >
+                                    <InputNumber placeholder='G' precision={0} min={1} />
+                                </Form.Item>
+                            </MyFormItem>
+                        </div>
                         <Form.Item
                             name="oltp_namespace"
                             label="k8s命名空间"
@@ -204,35 +205,37 @@ const Index = ({ visible, setVisible, detailData }) => {
                         </Form.Item>
 
                         <h4 style={{ marginBottom: "10px" }}>计算任务：</h4>
-                        <MyFormItem label="cpu资源">
-                            <Form.Item
-                                name="compute_cpu_limit"
-                                initialValue={100}
-                                noStyle
-                                rules={
-                                    [
-                                        { required: true, message: "此项为必填项" },
-                                    ]
-                                }
-                            >
-                                <InputNumber placeholder='核' precision={0} min={1} />
-                            </Form.Item>
-                        </MyFormItem>
+                        <div className='fromDiv formDivCenter'>
+                            <MyFormItem label="cpu资源">
+                                <Form.Item
+                                    name="compute_cpu_limit"
+                                    initialValue={100}
+                                    noStyle
+                                    rules={
+                                        [
+                                            { required: true, message: "此项为必填项" },
+                                        ]
+                                    }
+                                >
+                                    <InputNumber placeholder='核' precision={0} min={1} />
+                                </Form.Item>
+                            </MyFormItem>
 
-                        <MyFormItem label="内存资源">
-                            <Form.Item
-                                name="compute_memory_limit"
-                                initialValue={1000}
-                                noStyle
-                                rules={
-                                    [
-                                        { required: true, message: "此项为必填项" },
-                                    ]
-                                }
-                            >
-                                <InputNumber placeholder='G' precision={0} min={1} />
-                            </Form.Item>
-                        </MyFormItem>
+                            <MyFormItem label="内存资源">
+                                <Form.Item
+                                    name="compute_memory_limit"
+                                    initialValue={1000}
+                                    noStyle
+                                    rules={
+                                        [
+                                            { required: true, message: "此项为必填项" },
+                                        ]
+                                    }
+                                >
+                                    <InputNumber placeholder='G' precision={0} min={1} />
+                                </Form.Item>
+                            </MyFormItem>
+                        </div>
 
                         <Form.Item
                             name="olap_namespace"
@@ -245,6 +248,21 @@ const Index = ({ visible, setVisible, detailData }) => {
                         >
                             <Input />
                         </Form.Item>
+                        
+                        <Form.Item
+                            name="operator_image_path"
+                            label="Operator镜像地址"
+                        >
+                            <Input />
+                        </Form.Item>
+
+                        <Form.Item
+                            name="internal_algorithm_image_ur"
+                            label="算法镜像地址"
+                        >
+                            <Input />
+                        </Form.Item>
+
 
                         <h4 style={{ marginBottom: "10px" }}>存储服务：</h4>
                         <MyFormItem label="硬盘">
@@ -258,7 +276,7 @@ const Index = ({ visible, setVisible, detailData }) => {
                                     ]
                                 }
                             >
-                                <InputNumber placeholder='G' precision={0} min={1} />
+                                <InputNumber style={{width:200}} placeholder='G' precision={0} min={1} />
                             </Form.Item>
                         </MyFormItem>
                     </div>

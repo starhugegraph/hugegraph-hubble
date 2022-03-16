@@ -27,12 +27,12 @@ const Index = ({ visible, setVisible, detailData, getUserData }) => {
 
     // 是否回显
     useEffect(() => {
-        if (isDisabled&&visible) {
+        if (isDisabled && visible) {
             form.setFieldsValue(detailData)
-        } else if(!isDisabled && visible){
+        } else if (!isDisabled && visible) {
             form.resetFields()
         }
-    }, [detailData,visible])
+    }, [detailData, visible])
 
     const cancel = () => {
         form.resetFields()
@@ -63,8 +63,10 @@ const Index = ({ visible, setVisible, detailData, getUserData }) => {
                     message.success("编辑成功")
                     let nowLoginUser = JSON.parse(localStorage.getItem("userInfo"))
                     if (detailData.user_name === nowLoginUser.user_name) {
-                        setLocation('/');
-                        window.location.reload();
+                        setTimeout(() => {
+                            setLocation('/');
+                            window.location.reload();
+                        }, 700)
                         return;
                     }
                 } else {
