@@ -212,7 +212,7 @@ public class LogService extends ESService {
         GetAliasResponse res = esClient().indices().getAlias();
         res.result().keySet().stream()
            // filter hidden index and audit index
-           .filter(x -> !(x.startsWith(".") || x.contains("hugegraphaudit")))
+           .filter(x -> !(x.startsWith(".") || x.contains(logAuditPattern())))
            .forEach(indexName -> services.add(indexName.split("-")[0]));
 
         return services.stream().sorted().collect(Collectors.toList());
