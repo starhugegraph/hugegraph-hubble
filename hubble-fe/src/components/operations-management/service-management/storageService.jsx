@@ -192,6 +192,7 @@ function StorageService() {
                 <Space className='outLineBox'>
                     <Button
                         disabled={isDisableOn}
+                        onClick={() => setSecondModal(true)}
                         icon={<SlidersTwoTone />}
                     >
                         上线
