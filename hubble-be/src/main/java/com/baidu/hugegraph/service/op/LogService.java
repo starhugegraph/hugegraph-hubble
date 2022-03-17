@@ -206,13 +206,13 @@ public class LogService extends ESService {
 
     @Cacheable(value = "ES_QUERY", key="#root.targetClass.name+':'+#root" +
             ".methodName")
-    public List<String> listServices() throws IOException {
+    public synchronized List<String> listServices() throws IOException {
         Set<String> services = new HashSet<>();
 
         GetAliasResponse res = esClient().indices().getAlias();
         res.result().keySet().stream()
            // filter hidden index and audit index
-           .filter(x -> !(x.startsWith(".") || x.contains("hugegraphaudit")))
+           .filter(x -> !(x.startsWith(".") || x.contains(logAuditPattern())))
            .forEach(indexName -> services.add(indexName.split("-")[0]));
 
         return services.stream().sorted().collect(Collectors.toList());

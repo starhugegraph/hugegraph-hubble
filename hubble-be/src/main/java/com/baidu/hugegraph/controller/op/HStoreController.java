@@ -26,6 +26,7 @@ import java.util.Map;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import lombok.extern.log4j.Log4j2;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -116,11 +117,10 @@ public class HStoreController extends BaseController {
             try {
                 client.hStoreManager().nodeStartup(nodeId);
             } catch (RuntimeException e) {
+                log.info("startup hstore node({}) success", successNodes);
                 log.warn("startup hstore node({}) error", nodeId, e);
-                String msg = String.format("startup(%s) success, startup" +
-                                                   "(%s) error.",
-                                           StringUtils.join(successNodes, ","),
-                                           nodeId);
+                String msg = String.format("shutdown(%s) error: %s", nodeId,
+                                           e.getMessage());
                 throw new ExternalException(msg, e);
             }
 
@@ -146,11 +146,10 @@ public class HStoreController extends BaseController {
             try {
                 client.hStoreManager().nodeShutdown(nodeId);
             } catch (RuntimeException e) {
+                log.info("shutdown hstore node({}) success", successNodes);
                 log.warn("shutdown hstore node({}) error", nodeId, e);
-                String msg = String.format("shutdown(%s) success, shutdown" +
-                                           "(%s) error.",
-                                           StringUtils.join(successNodes, ","),
-                                           nodeId);
+                String msg = String.format("shutdown(%s) error: %s", nodeId,
+                                           e.getMessage());
                 throw new ExternalException(msg, e);
             }
 

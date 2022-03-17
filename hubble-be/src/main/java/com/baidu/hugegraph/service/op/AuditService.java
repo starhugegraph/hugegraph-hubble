@@ -41,7 +41,6 @@ import co.elastic.clients.elasticsearch._types.query_dsl.TermsQueryField;
 import co.elastic.clients.elasticsearch.core.SearchResponse;
 import co.elastic.clients.elasticsearch.core.search.Hit;
 import co.elastic.clients.elasticsearch.indices.GetAliasRequest;
-import co.elastic.clients.elasticsearch.indices.GetAliasResponse;
 import co.elastic.clients.json.JsonData;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -59,8 +58,6 @@ import com.baidu.hugegraph.entity.op.AuditEntity;
 
 @Service
 public class AuditService extends ESService {
-
-    public static String auditIndexPattern = "*_hugegraphaudit-*";
 
     private final String auditSortKey = "@timestamp";
     private final String sortOrder = "Asc";
@@ -95,7 +92,11 @@ public class AuditService extends ESService {
                  ).sort(sortKeyOption), Map.class);
 
             for (Hit<Map> hit: search.hits().hits()) {
-                logs.add(AuditEntity.fromMap((Map<String, Object>) hit.source()));
+                String service = hit.index().split("_")[0];
+                AuditEntity auditEntity =
+                        AuditEntity.fromMap((Map<String, Object>) hit.source());
+                auditEntity.setService(service);
+                logs.add(auditEntity);
             }
 
             count = (int) (search.hits().total().value());
@@ -115,7 +116,7 @@ public class AuditService extends ESService {
         } else {
             services.addAll(listServices());
         }
-        services.forEach(s -> indexes.add(s + "_hugegraphaudit-*"));
+        services.forEach(s -> indexes.add(auditIndexName(s)));
 
         FieldSort sort =
                 SortOptionsBuilders.field().field(auditSortKey)
@@ -212,11 +213,11 @@ public class AuditService extends ESService {
 
     @Cacheable(value = "ES_QUERY", key="#root.targetClass.name+':'+#root" +
             ".methodName")
-    public List<String> listServices() throws IOException {
+    public synchronized List<String> listServices() throws IOException {
         Set<String> services = new HashSet<>();
 
         GetAliasRequest req = new GetAliasRequest.Builder().index(
-                auditIndexPattern).build();
+                auditIndexPattern()).build();
         esClient().indices().getAlias(req).result().keySet()
                   .stream().filter(x -> !x.startsWith("."))
                   .forEach(indexName -> {
@@ -225,6 +226,13 @@ public class AuditService extends ESService {
                   });
 
         return services.stream().sorted().collect(Collectors.toList());
+    }
+
+    protected String auditIndexPattern() {
+        return "*_" + logAuditPattern() + "-*";
+    }
+    protected String auditIndexName(String logType) {
+        return  logType + "_" + logAuditPattern() + "-*";
     }
 
     @NoArgsConstructor
