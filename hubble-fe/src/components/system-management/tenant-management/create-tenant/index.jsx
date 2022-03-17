@@ -248,7 +248,7 @@ const Index = ({ visible, setVisible, detailData }) => {
                         >
                             <Input />
                         </Form.Item>
-                        
+
                         <Form.Item
                             name="operator_image_path"
                             label="Operator镜像地址"
