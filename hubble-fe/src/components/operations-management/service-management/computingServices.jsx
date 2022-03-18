@@ -83,12 +83,7 @@ export default function ComputingServices() {
             align: 'center'
         },
         {
-            title: '租户',
-            dataIndex: 'graphspace',
-            align: 'center',
-        },
-        {
-            title: '就绪',
+            title: '进度',
             dataIndex: 'task_progress',
             align: 'center',
         },
