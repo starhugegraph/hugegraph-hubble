@@ -27,4 +27,6 @@ public class ComputerServiceEntity {
     public String description;
     @JsonProperty("task_create")
     public long create;
+    @JsonProperty("task_input")
+    public String input;
 }

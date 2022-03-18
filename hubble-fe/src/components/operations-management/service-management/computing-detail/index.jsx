@@ -26,17 +26,13 @@ const Index = ({ isModalVisible, setIsModalVisible, detail, tenant, graphs }) =>
                 <Skeleton loading={loading} active>
                     <Descriptions
                         bordered
-                        column={2}
+                        column={1}
                         contentStyle={{ padding: '10px' }}
                     >
-                        <Descriptions.Item label="算法名称"></Descriptions.Item>
-                        <Descriptions.Item label="图空间">{computedDetail.graph}</Descriptions.Item>
                         <Descriptions.Item label="实例名称">{computedDetail.task_name}</Descriptions.Item>
-                        <Descriptions.Item label="状态" span={0}>
-                            <Badge status="processing" text="" />
-                        </Descriptions.Item>
+                        <Descriptions.Item label="状态" span={0}>{computedDetail.task_status} </Descriptions.Item>
                         <Descriptions.Item label="创建时间">{timestampToTime(computedDetail.task_create)}</Descriptions.Item>
-                        <Descriptions.Item label="运行参数"></Descriptions.Item>
+                        <Descriptions.Item label="运行参数">{computedDetail.task_input}</Descriptions.Item>
                     </Descriptions>
                 </Skeleton>
             </Modal>
