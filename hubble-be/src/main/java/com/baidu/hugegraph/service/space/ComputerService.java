@@ -70,6 +70,7 @@ public class ComputerService {
         entity.setProgress(task.progress());
         entity.setDescription(task.description());
         entity.setCreate(task.createTime());
+        entity.setInput(task.input());
 
         if (StringUtils.isNotEmpty(task.input())) {
             try {
