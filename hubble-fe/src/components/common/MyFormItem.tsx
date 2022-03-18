@@ -10,7 +10,7 @@ const MyFormItem: React.FC<Props> = ({ label, children }) => {
         <Form.Item label={label} colon={false} required >
             <Space>
                 {children}
-                <span className='spanFontSize'>G</span>
+                <span className='spanFontSize'>{label === "cpu资源" ? "核" : "G"}</span>
             </Space>
         </Form.Item>
     )
