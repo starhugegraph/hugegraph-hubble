@@ -1904,7 +1904,7 @@ export class DataAnalyzeStore {
       });
 
       const result: AxiosResponse<responseData<GraphView>> = yield axios.post(
-        `${baseUrl}/${this.appStore._currentValue.tenant}/graphs/${this.appStore._currentValue.graphs}/graph/vertex`,
+        `${baseUrl}/${this.appStore._currentValue.tenant}/graphs/${this.appStore._currentValue.graphs}/vertex`,
         {
           id: this.newGraphNodeConfigs.id,
           label: this.newGraphNodeConfigs.label,
@@ -1978,7 +1978,7 @@ export class DataAnalyzeStore {
       });
 
       const result: AxiosResponse<responseData<GraphView>> = yield axios.post(
-        `${baseUrl}/${this.appStore._currentValue.tenant}/graphs/${this.appStore._currentValue.graphs}/graph/edge`,
+        `${baseUrl}/${this.appStore._currentValue.tenant}/graphs/${this.appStore._currentValue.graphs}/edge`,
         {
           label: this.newGraphEdgeConfigs.label,
           source: vertices[0],
@@ -2163,7 +2163,7 @@ export class DataAnalyzeStore {
       const result: AxiosResponse<responseData<
         GraphNode | GraphEdge
       >> = yield axios.put<responseData<GraphNode | GraphEdge>>(
-        `${baseUrl}/${this.appStore._currentValue.tenant}/graphs/${this.appStore._currentValue.graphs}/graph/${this.graphInfoDataSet === 'node' ? 'vertex' : 'edge'
+        `${baseUrl}/${this.appStore._currentValue.tenant}/graphs/${this.appStore._currentValue.graphs}/${this.graphInfoDataSet === 'node' ? 'vertex' : 'edge'
         }/${encodeURIComponent(id)}`,
         this.graphInfoDataSet === 'node'
           ? {
