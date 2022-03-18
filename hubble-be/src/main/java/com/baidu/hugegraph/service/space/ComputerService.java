@@ -20,8 +20,13 @@
 package com.baidu.hugegraph.service.space;
 
 import java.util.ArrayList;
+import java.util.Map;
 
+import com.baidu.hugegraph.rest.SerializeException;
+import com.baidu.hugegraph.util.JsonUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import lombok.extern.log4j.Log4j2;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import com.baidu.hugegraph.driver.HugeClient;
@@ -29,6 +34,7 @@ import com.baidu.hugegraph.entity.space.ComputerServiceEntity;
 import com.baidu.hugegraph.structure.Task;
 import com.baidu.hugegraph.util.PageUtil;
 
+@Log4j2
 @Service
 public class ComputerService {
     public IPage<ComputerServiceEntity> queryPage(HugeClient client,
@@ -38,8 +44,6 @@ public class ComputerService {
         ArrayList results = new ArrayList<ComputerService>();
         client.computer().list(pageSize).forEach((t) -> {
             ComputerServiceEntity entity = convert(t);
-            entity.setGraphSpace(client.getGraphSpaceName());
-            entity.setGraph(client.getGraphName());
             results.add(entity);
         });
 
@@ -62,10 +66,21 @@ public class ComputerService {
         entity.setId(task.id());
         entity.setName(task.name());
         entity.setType(task.type());
+        entity.setStatus(task.status());
+        entity.setProgress(task.progress());
         entity.setDescription(task.description());
         entity.setCreate(task.createTime());
 
+        if (StringUtils.isNotEmpty(task.input())) {
+            try {
+                Map<String, Object> input = JsonUtil.fromJson(task.input(),
+                                                              Map.class);
 
+                entity.setAlgorithm(input.get("algorithm").toString());
+            } catch (SerializeException e) {
+                log.info("load task.input error", e);
+            }
+        }
         return entity;
     }
 
