@@ -135,6 +135,7 @@ const Index = ({ visible, setVisible, detailData }) => {
                             label="最大图数"
                             initialValue={100}
                             labelCol={10}
+                            colon={false}
                             rules={
                                 [
                                     { required: true, message: "此项为必填项" },
@@ -149,6 +150,7 @@ const Index = ({ visible, setVisible, detailData }) => {
                             label="最大角色数"
                             labelCol={10}
                             initialValue={100}
+                            colon={false}
                             rules={
                                 [
                                     { required: true, message: "此项为必填项" },
