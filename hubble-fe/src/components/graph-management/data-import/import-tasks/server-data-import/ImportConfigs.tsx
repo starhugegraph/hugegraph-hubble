@@ -532,6 +532,7 @@ const ImportConfigs: React.FC<ImportConfigsProps> = observer(({ height }) => {
                 isEmpty(serverDataImportStore.importTasks))
             }
             onClick={async () => {
+              console.log(dataImportRootStore.currentStatus, "xxx");
               if (
                 dataImportRootStore.currentStatus === 'SUCCESS' ||
                 dataImportRootStore.currentStatus === 'FAILED' ||
@@ -795,11 +796,6 @@ const ImportManipulations: React.FC<ImportManipulationsProps> = observer(
           t('server-data-import.import-details.manipulations.retry')
         );
         break;
-      case 'INIT':
-        manipulations.push(
-          t('server-data-import.import-details.manipulations.INIT')
-        );
-        break
       case 'SUCCEED':
         break;
       default:
