@@ -142,6 +142,7 @@ public class LoadTaskController extends BaseController {
                                 List<Integer> fileIds) {
         GraphConnection connection = new GraphConnection();
 
+        connection.setCluster(config.get(HubbleOptions.PD_CLUSTER));
         connection.setRouteType(config.get(HubbleOptions.ROUTE_TYPE));
         connection.setPdPeers(config.get(HubbleOptions.PD_PEERS));
         connection.setGraphSpace(graphSpace);
