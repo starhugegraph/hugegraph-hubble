@@ -44,7 +44,7 @@ public class ComputerService {
                                                   int pageSize) {
         ArrayList results = new ArrayList<ComputerService>();
         List<Task> tasks = client.computer().list(500);
-        tasks.stream().skip((pageNo - 1) * pageSize).limit(pageSize)
+        tasks.stream().skip(Math.max(pageNo - 1, 0) * pageSize).limit(pageSize)
              .forEach((t) -> {
                  ComputerServiceEntity entity = get(client, t.id());
                  results.add(entity);
