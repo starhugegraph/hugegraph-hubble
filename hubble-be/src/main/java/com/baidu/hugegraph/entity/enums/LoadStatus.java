@@ -33,8 +33,8 @@ public enum LoadStatus implements IEnum<Byte> {
 
     STOPPED(4),
 
+    // No Used
     INIT(5);
-    ;
 
     private byte code;
 

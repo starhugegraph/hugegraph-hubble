@@ -163,23 +163,19 @@ public class LoadTask implements Runnable {
         this.vertices = mapping.getVertexMappingLabels();
         this.edges = mapping.getEdgeMappingLabels();
         this.fileTotalLines = mapping.getTotalLines();
-        // this.status = LoadStatus.RUNNING;
-        this.status = LoadStatus.INIT;
+        this.status = LoadStatus.RUNNING;
         this.fileReadLines = 0L;
         this.lastDuration = 0L;
         this.currDuration = 0L;
         this.createTime = HubbleUtil.nowDate();
+
+        this.loader = new HugeGraphLoader(this.options);
     }
 
     @Override
     public void run() {
         Ex.check(this.options != null, "The load options shouldn't be null");
         log.info("LoadTask is start running : {}", this.id);
-        this.loader = new HugeGraphLoader(this.options);
-
-        this.lock.lock();
-        this.status = LoadStatus.RUNNING;
-        this.lock.unlock();
 
         boolean noError;
         try {
