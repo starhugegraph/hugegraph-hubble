@@ -203,8 +203,10 @@ const PropertyIndex: React.FC<Props> = observer(({ appStore }) => {
             metadataPropertyIndexStore.mutateSearchWords('');
             metadataPropertyIndexStore.mutatePageNumber(1);
             metadataPropertyIndexStore.switchIsSearchedStatus(false);
+            if (currentTab !== "vertex") {
+              switchPreLoading(true);
+            }
             switchCurrentTab('vertex');
-            switchPreLoading(true);
           }}
           className={
             currentTab === 'vertex'
@@ -226,8 +228,10 @@ const PropertyIndex: React.FC<Props> = observer(({ appStore }) => {
             metadataPropertyIndexStore.mutateSearchWords('');
             metadataPropertyIndexStore.mutatePageNumber(1);
             metadataPropertyIndexStore.switchIsSearchedStatus(false);
+            if (currentTab !== "edge") {
+              switchPreLoading(true);
+            }
             switchCurrentTab('edge');
-            switchPreLoading(true);
           }}
           className={
             currentTab === 'edge'
@@ -270,7 +274,7 @@ const PropertyIndex: React.FC<Props> = observer(({ appStore }) => {
             )
           }}
           dataSource={
-            (isLoading || appStore.graphs==="null") ? [] : metadataPropertyIndexStore.metadataPropertyIndexes
+            (isLoading || appStore.graphs === "null") ? [] : metadataPropertyIndexStore.metadataPropertyIndexes
           }
           pagination={
             isLoading

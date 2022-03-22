@@ -310,7 +310,6 @@
       },
       "manipulations": {
         "pause": "暂停",
-        "INIT":"初始化完成",
         "resume": "继续",
         "retry": "重试",
         "abort": "终止",

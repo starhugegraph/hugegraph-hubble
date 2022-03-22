@@ -277,6 +277,15 @@ export function defaultDateTimeParams() {
 }
 
 export function compKeyObj(path: string) {
+  if (path.includes("/import-tasks/")||(/\/import-manager\/(\d)*\/details$/g).test(path)) {
+    return {
+      menuObj: {
+        c_key: "2",
+        f_key: "sub1"
+      },
+      headerCurrentKey: "1"
+    }
+  }
   switch (path) {
     case "/graph-management/0/data-analyze":
       return {
