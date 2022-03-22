@@ -78,17 +78,18 @@ const CreateFrom = ({ setVisible, detailData, getQuery }:
             values.urls = Array.isArray(values.urls) ? values.urls : values.urls.split(',').filter((i: string) => i)
         }
         if (values.configs && values.configs.length) {
-            console.log(values.configs);
             let configs = {}
             const newArray = values.configs.map((item: { key: string, value: string }) => {
-                if (!item.value) return
-                return { [item.key]: item.value }
+                if (!item.value) return;
+                return { [item.key]: item.value };
             }
             );
             newArray.forEach((item: any) => {
                 configs = { ...configs, ...item }
             });
             values.configs = configs;
+        } else {
+            values.configs = {}
         }
         setChangeArray([])
         const thenCallback = (res: any) => {

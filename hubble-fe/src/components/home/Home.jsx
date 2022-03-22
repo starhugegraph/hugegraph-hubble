@@ -79,7 +79,7 @@ const Home = () => {
     // 头部导航菜单数据
     let [menuList, setMenuList] = useState([]);
     // 路由地址
-    const [_] = useLocation();
+    const [_,setLocation] = useLocation();
     // 图名选择框loading
     let [graphsLoading, setGraphsLoading] = useState(false);
     // 当前选中的图
@@ -90,6 +90,12 @@ const Home = () => {
     useEffect(() => {
         setGraphsActive(appStore.graphs === "null" ? "暂无" : appStore.graphs);
     }, [appStore.graphs]);
+
+    useEffect(() => {
+        if (_.includes("/import-tasks/")||(/\/import-manager\/(\d)*\/details$/g).test(_)) {
+            setLocation("/graph-management/0/data-import/import-manager")
+          }
+    }, []);
 
     // 获取图列表
     const getGraphsList = async () => {
@@ -157,7 +163,7 @@ const Home = () => {
         let res = compKeyObj(_)
         setMenuList(defaultMenuList[+res.menuObj.c_key - 1].data)
         setCurrent(res.headerCurrentKey)
-        return res.menuObj
+        return res.menuObj;
     }, [_])
 
     return (
