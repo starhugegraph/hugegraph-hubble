@@ -20,6 +20,7 @@
 package com.baidu.hugegraph.service.space;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import com.baidu.hugegraph.rest.SerializeException;
@@ -42,13 +43,14 @@ public class ComputerService {
                                                   int pageNo,
                                                   int pageSize) {
         ArrayList results = new ArrayList<ComputerService>();
-        client.computer().list(pageSize).forEach((t) -> {
-            ComputerServiceEntity entity = convert(t);
-            results.add(entity);
-        });
+        List<Task> tasks = client.computer().list(500);
+        tasks.stream().skip((pageNo - 1) * pageSize).limit(pageSize)
+             .forEach((t) -> {
+                 ComputerServiceEntity entity = get(client, t.id());
+                 results.add(entity);
+             });
 
-        // TODO: get job count
-        int count = 0;
+        int count = tasks.size();
 
         return PageUtil.newPage(results, pageNo, pageSize, count);
     }
@@ -70,7 +72,6 @@ public class ComputerService {
         entity.setProgress(task.progress());
         entity.setDescription(task.description());
         entity.setCreate(task.createTime());
-        entity.setInput(task.input());
 
         if (StringUtils.isNotEmpty(task.input())) {
             try {
@@ -78,6 +79,7 @@ public class ComputerService {
                                                               Map.class);
 
                 entity.setAlgorithm(input.get("algorithm").toString());
+                entity.setInput(input.get("params").toString());
             } catch (SerializeException e) {
                 log.info("load task.input error", e);
             }
