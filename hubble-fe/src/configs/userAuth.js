@@ -169,7 +169,7 @@ export const defaultMenuList = [
         data: [
             {
                 key: '0',
-                name: '查询服务'
+                name: '图服务'
             },
             {
                 key: '1',
