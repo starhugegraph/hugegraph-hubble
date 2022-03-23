@@ -982,6 +982,11 @@ export default function Resources() {
                         rules={[{ required: true, message: '请选择图!' }]}
                     >
                         <Select placeholder="请选择图" disabled={see}>
+                            <Option
+                                value={"*"}
+                            >
+                                所有
+                            </Option>
                             {selectRender(graphsSelect)}
                         </Select>
                     </Form.Item>
@@ -1043,16 +1048,19 @@ export default function Resources() {
                                     return (
                                         <div className='table_btndiv'>
                                             <Button
+                                                disabled={record.id === "DEFAULT_SPACE_TARGET" && appStore.graphspacesAuthBoolean}
                                                 onClick={() => { openSeeModal(record) }}
                                             >
                                                 查看
                                             </Button>
                                             <Button
+                                                disabled={record.id === "DEFAULT_SPACE_TARGET" && appStore.graphspacesAuthBoolean}
                                                 onClick={() => { openEditModal(record) }}
                                             >
                                                 编辑
                                             </Button>
                                             <Button
+                                                disabled={record.id === "DEFAULT_SPACE_TARGET" && appStore.graphspacesAuthBoolean}
                                                 onClick={() => { openDeleteConfirm(record) }}
                                             >
                                                 删除
