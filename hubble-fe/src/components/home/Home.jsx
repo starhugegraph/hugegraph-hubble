@@ -6,7 +6,7 @@
  * @Description: 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  * @FilePath: /hubble-fe/src/components/home/home.js
  */
-import React, { useState, useContext, useEffect, useMemo } from 'react';
+import React, { useState, useContext, useEffect, useMemo, useCallback } from 'react';
 import './Home.less';
 import { Select, Layout, message } from 'antd';
 import {
@@ -37,6 +37,7 @@ import HeaderC from './header/header';
 import SiderC from './sider'
 import Not404Find from '../404'
 import api from '../../api/api';
+import { toJS } from 'mobx';
 
 import {
     TaskErrorLogs,
@@ -79,7 +80,7 @@ const Home = () => {
     // 头部导航菜单数据
     let [menuList, setMenuList] = useState([]);
     // 路由地址
-    const [_,setLocation] = useLocation();
+    const [_, setLocation] = useLocation();
     // 图名选择框loading
     let [graphsLoading, setGraphsLoading] = useState(false);
     // 当前选中的图
@@ -92,10 +93,36 @@ const Home = () => {
     }, [appStore.graphs]);
 
     useEffect(() => {
-        if (_.includes("/import-tasks/")||(/\/import-manager\/(\d)*\/details$/g).test(_)) {
+        api.getGraphspaces().then(res => {
+            if (res.status === 200) {
+                appStore.setGraphspacesAuth(res.data.records)
+            }
+        })
+        if (_.includes("/import-tasks/")
+            ||
+            (/\/import-manager\/(\d)*\/details$/g).test(_)
+        ) {
             setLocation("/graph-management/0/data-import/import-manager")
-          }
+        }
     }, []);
+
+    useEffect(() => {
+        if (
+            (/(\/0\/role)|(\/resources)|(\/user)/.test(_) && !appStore.graphspacesAuthBoolean)
+        ) {
+            message.warning("图空间权限不足")
+            setLocation("/graph-management/0/data-analyze")
+        }
+    }, [appStore.graphspacesAuthBoolean]);
+
+    const isShowAuth = useCallback(() => {
+        let res = toJS(appStore.graphspacesAuth)
+        if (res.length && appStore.tenant !== "null") {
+            appStore.setGraphspacesAuthBoolean(res.find(item => item.name === appStore.tenant).auth);
+            return appStore.graphspacesAuthBoolean;
+        };
+        return true;
+    }, [appStore.tenant, appStore.graphspacesAuth]);
 
     // 获取图列表
     const getGraphsList = async () => {
@@ -109,7 +136,7 @@ const Home = () => {
             appStore.setGraphs(isResTrue ? res.data.graphs[0] : "null");
             setGraphsSelect(isResTrue ? res.data.graphs : []);
             appStore.setDate(new Date());
-            !isResTrue && message.warning("注意:当前图空间为空,可能导致数据获取出错！");
+            !isResTrue && message.warning("注意:当前图空间下图列表为空,可能导致数据获取出错！");
         }
     };
 
@@ -187,6 +214,7 @@ const Home = () => {
                                 setMenuList={setMenuList}
                                 defaultMenuList={defaultMenuList}
                                 testKeyObj={testKeyObj}
+                                isShowAuth={isShowAuth}
                             ></SiderC>
                         </div>
                     </Sider>

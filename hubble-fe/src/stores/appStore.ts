@@ -28,13 +28,25 @@ export class AppStore {
 
   @observable colorList: string[] = [];
 
+  @observable graphspacesAuth: any[] = [];
+  @observable graphspacesAuthBoolean: boolean = true;
+
   @observable.shallow requestStatus = {
     fetchColorList: 'pending'
   };
 
   @action.bound
+  setGraphspacesAuthBoolean(params: boolean) {
+    this.graphspacesAuthBoolean = params;
+  }
+  @action.bound
   setGraphspaces(params: string[]) {
     this.graphspaces = params;
+  }
+
+  @action.bound
+  setGraphspacesAuth(params: any[]) {
+    this.graphspacesAuth = params;
   }
 
   @action.bound

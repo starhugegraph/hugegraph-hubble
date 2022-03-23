@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState, useContext } from 'react'
 import { useLocation } from 'wouter';
 import api from '../../../api/api'
 import { Menu } from 'antd'
@@ -9,13 +9,15 @@ interface _Props {
   setCurrent: Function,
   setMenuList: (params: any[]) => void,
   defaultMenuList: any[],
-  testKeyObj: { c_key: string, f_key: string }
+  testKeyObj: { c_key: string, f_key: string },
+  isShowAuth:()=>boolean
 }
 function SiderC({
   setCurrent,
   setMenuList,
   defaultMenuList,
-  testKeyObj
+  testKeyObj,
+  isShowAuth
 }: _Props) {
   // 路由地址
   const [_, setLocation] = useLocation();
@@ -58,10 +60,14 @@ function SiderC({
       })
     }
   };
+
   // 左侧菜单根据用户权限渲染
   const leftMenuAuth = (arr: any[]) => {
     return arr.map(item => {
       if (!item.children) {
+        if (item.name === '权限管理'&&!isShowAuth()) {
+          return null;
+        }
         return (<Menu.Item key={item.key}>{item.name}</Menu.Item>)
       } else {
         return (<Menu.SubMenu key={item.key} icon={<SnippetsOutlined />} title={item.name}>
