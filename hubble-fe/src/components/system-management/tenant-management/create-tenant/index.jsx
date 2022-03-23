@@ -293,7 +293,7 @@ const Index = ({ visible, setVisible, detailData }) => {
                             mode="multiple"
                             allowClear
                             style={{ width: '100%' }}
-                            placeholder="选择租户管理员"
+                            placeholder="选择图空间管理员"
                         >
                             {userList.length ? userSelect : null}
                         </Select>
@@ -309,7 +309,7 @@ const Index = ({ visible, setVisible, detailData }) => {
                             ]
                         }
                     >
-                        <Input.TextArea placeholder='租户描述，可选'></Input.TextArea>
+                        <Input.TextArea placeholder='图空间描述，可选'></Input.TextArea>
                     </Form.Item>
 
                     <Form.Item {...tailLayout}>

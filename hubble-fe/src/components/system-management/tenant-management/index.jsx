@@ -149,7 +149,7 @@ function Index() {
                 <Space size="middle">
                     <Button onClick={() => changeHandle(tag)}>编辑</Button>
                     <Popconfirm
-                        title={`你确定要删除租户账号${tag.name}吗?`}
+                        title={`你确定要删除图空间${tag.name}吗?`}
                         onConfirm={() => confirm(tag)}
                         okText="确定"
                         cancelText="取消"
@@ -166,9 +166,9 @@ function Index() {
                 <InputAdd
                     setSearch={setQuery}
                     createHandle={createHandle}
-                    placeholder='输入租户关键字'
+                    placeholder='输入图空间关键字'
                 >
-                    创建租户
+                    创建图空间
                 </InputAdd>
             </div>
             <Table
