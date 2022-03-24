@@ -110,7 +110,6 @@ const Home = () => {
         if (
             (/(\/0\/role)|(\/resources)|(\/user)/.test(_) && !appStore.graphspacesAuthBoolean)
         ) {
-            message.warning("图空间权限不足")
             setLocation("/graph-management/0/data-analyze")
         }
     }, [appStore.graphspacesAuthBoolean]);
