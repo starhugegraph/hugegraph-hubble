@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.baidu.hugegraph.driver.factory.PDHugeClientFactory;
-import com.google.common.collect.ImmutableSet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -58,14 +57,7 @@ public class OLTPServerService {
         OLTPService service = client.serviceManager().getService(serviceName);
 
         // 判断当前service状态
-        if (service.checkIsK8s()) {
-            // k8s service： 根据当前running数判断
-            if (service.getRunning() > 0) {
-                service.setStatus(OLTPService.ServiceStatus.Running);
-            } else {
-                service.setStatus(OLTPService.ServiceStatus.Stoped);
-            }
-        } else {
+        if (!service.checkIsK8s()) {
             // manual service： 通过PD判断当前服务状态
             // 通过PD， 获取当前service可用URL, 判断当前服务是否存活
             List<String> urls = pdHugeClientFactory.getURLs(cluster, graphSpace,
@@ -76,9 +68,9 @@ public class OLTPServerService {
             // service.setStatus(serviceStatusFromPD(graphSpace, serviceName));
 
             if (!CollectionUtils.isEmpty(urls)) {
-                service.setStatus(OLTPService.ServiceStatus.Running);
+                service.setStatus(OLTPService.ServiceStatus.RUNNING);
             } else {
-                service.setStatus(OLTPService.ServiceStatus.Stoped);
+                service.setStatus(OLTPService.ServiceStatus.STOPED);
             }
 
         }
