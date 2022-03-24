@@ -137,10 +137,10 @@ export default function QueryServiceList() {
                         })}
                         okText="确定"
                         cancelText="取消"
-                        disabled={(tag.deployment_type === 'MANUAL') || tag.status === "UNKNOWN" || tag.status === "RUNNING" || tag.status === "STARTING"}
+                        disabled={(tag.deployment_type === 'MANUAL') || tag.status !== "STOPPED"}
                     >
                         <Button
-                            disabled={(tag.deployment_type === 'MANUAL') || tag.status === "UNKNOWN" || tag.status === "RUNNING" || tag.status === "STARTING"}
+                            disabled={(tag.deployment_type === 'MANUAL') || tag.status !== "STOPPED"}
                         >
                             启动
                         </Button>
@@ -155,10 +155,10 @@ export default function QueryServiceList() {
                         })}
                         okText="确定"
                         cancelText="取消"
-                        disabled={(tag.deployment_type === 'MANUAL') || tag.status === "STOPED" || tag.status === "STARTING" || tag.status === "UNKNOWN"}
+                        disabled={(tag.deployment_type === 'MANUAL') || tag.status !== "RUNNING" }
                     >
                         <Button
-                            disabled={(tag.deployment_type === 'MANUAL') || tag.status === "STOPED" || tag.status === "STARTING" || tag.status === "UNKNOWN"}
+                            disabled={(tag.deployment_type === 'MANUAL') || tag.status !== "RUNNING" }
                         >
                             停止
                         </Button>
