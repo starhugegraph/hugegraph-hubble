@@ -128,25 +128,6 @@ export default function QueryServiceList() {
                     <Button onClick={() => detailHandle(tag)}>详情</Button>
                     <Button onClick={() => changeHandle(tag)}>编辑</Button>
                     <Popconfirm
-                        title={`确定要停止${tag.name}服务吗？`}
-                        onConfirm={() => api.queryEnd(appStore.tenant, tag.name).then(res => {
-                            if (res.status === 200) {
-                                message.success(`停止${tag.name}成功`)
-                            }
-                            getQuery()
-                        })}
-                        okText="确定"
-                        cancelText="取消"
-                        disabled={(tag.deployment_type === 'MANUAL') || tag.running <= 0}
-                    >
-                        <Button
-                            disabled={(tag.deployment_type === 'MANUAL') || tag.running <= 0}
-                        >
-                            停止
-                        </Button>
-                    </Popconfirm>
-
-                    <Popconfirm
                         title={`确定要启动${tag.name}服务吗？`}
                         onConfirm={() => api.queryStart(appStore.tenant, tag.name).then(res => {
                             if (res.status === 200) {
@@ -156,21 +137,45 @@ export default function QueryServiceList() {
                         })}
                         okText="确定"
                         cancelText="取消"
-                        disabled={(tag.deployment_type === 'MANUAL') || tag.running > 0}
+                        disabled={(tag.deployment_type === 'MANUAL') || tag.status === "UNKNOWN" || tag.status === "RUNNING" || tag.status === "STARTING"}
                     >
                         <Button
-                            disabled={(tag.deployment_type === 'MANUAL') || tag.running > 0}
+                            disabled={(tag.deployment_type === 'MANUAL') || tag.status === "UNKNOWN" || tag.status === "RUNNING" || tag.status === "STARTING"}
                         >
                             启动
                         </Button>
                     </Popconfirm>
                     <Popconfirm
-                        title={`你确定要删除实例${tag.name}吗?`}
+                        title={`确定要停止${tag.name}服务吗？`}
+                        onConfirm={() => api.queryEnd(appStore.tenant, tag.name).then(res => {
+                            if (res.status === 200) {
+                                message.success(`停止${tag.name}成功`)
+                            }
+                            getQuery()
+                        })}
+                        okText="确定"
+                        cancelText="取消"
+                        disabled={(tag.deployment_type === 'MANUAL') || tag.status === "STOPED" || tag.status === "STARTING" || tag.status === "UNKNOWN"}
+                    >
+                        <Button
+                            disabled={(tag.deployment_type === 'MANUAL') || tag.status === "STOPED" || tag.status === "STARTING" || tag.status === "UNKNOWN"}
+                        >
+                            停止
+                        </Button>
+                    </Popconfirm>
+
+                    <Popconfirm
+                        title={`你确定要删除实例${tag.name}吗?手动模式需先停止服务.`}
                         onConfirm={() => confirm(tag)}
                         okText="确定"
                         cancelText="取消"
+                        disabled={(tag.deployment_type === 'MANUAL') && (tag.status === "RUNNING")}
                     >
-                        <Button type='ghost' danger>删除</Button>
+                        <Button type='ghost' danger
+                            disabled={(tag.deployment_type === 'MANUAL') && (tag.status === "RUNNING")}
+				        >
+				           删除
+				        </Button>
                     </Popconfirm>
                 </Space>
             ),

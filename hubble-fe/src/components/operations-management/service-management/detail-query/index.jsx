@@ -39,8 +39,8 @@ function Index({ visibleDetail, setVisibleDetail, detailData, tenant }) {
                         getDetailData.deployment_type === "K8S" ?
                             <>
                                 <Descriptions.Item label="实例最大个数">{getDetailData.count}</Descriptions.Item>
-                                <Descriptions.Item label="CPU最大值">{getDetailData.cpu_limit}</Descriptions.Item>
-                                <Descriptions.Item label="内存最大值">{getDetailData.memory_limit}</Descriptions.Item>
+                                <Descriptions.Item label="CPU最大值(核)">{getDetailData.cpu_limit}</Descriptions.Item>
+                                <Descriptions.Item label="内存最大值(G)">{getDetailData.memory_limit}</Descriptions.Item>
                             </>
                             : null
                     }
