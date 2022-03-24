@@ -137,6 +137,7 @@ const CreateFrom = ({ setVisible, detailData, getQuery }:
 
     return (
         <Skeleton loading={isShowLoading} active>
+            <p style={{ color: "#fa8c16" , display:isDisable?"block":"none",marginBottom:"10px"}}>容器模式需要重启后生效</p>
             <Form {...layout} form={form} name="control-hooks" onFinish={onFinish}>
 
                 <Form.Item name="name" label="实例名称" rules={[
