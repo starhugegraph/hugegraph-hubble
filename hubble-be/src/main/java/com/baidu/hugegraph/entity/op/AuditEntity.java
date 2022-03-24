@@ -64,7 +64,7 @@ public class AuditEntity {
     private String ip;
 
     @JsonProperty("audit_result")
-    private String result;
+    private String result = "Success";
 
     public static AuditEntity fromMap(Map<String, Object> source) {
         Map<String, String> jsonData = (Map<String, String>) source.get("json");
