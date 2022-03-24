@@ -70,7 +70,7 @@ public class OLTPServerService {
             if (!CollectionUtils.isEmpty(urls)) {
                 service.setStatus(OLTPService.ServiceStatus.RUNNING);
             } else {
-                service.setStatus(OLTPService.ServiceStatus.STOPED);
+                service.setStatus(OLTPService.ServiceStatus.STOPPED);
             }
 
         }
