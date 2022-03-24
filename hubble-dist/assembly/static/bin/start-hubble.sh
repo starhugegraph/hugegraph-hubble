@@ -1,7 +1,6 @@
 #!/bin/bash
 
 export LANG=zh_CN.UTF-8
-set -e
 
 HOME_PATH=`dirname $0`
 HOME_PATH=`cd ${HOME_PATH}/.. && pwd`
