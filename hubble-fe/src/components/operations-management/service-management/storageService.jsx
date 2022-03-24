@@ -188,6 +188,7 @@ function StorageService() {
                             数据分裂
                         </Button>
                     </Popconfirm>
+					<p style={{ color: "#fa8c16" }}>数据分裂时，禁止数据入库</p>
                 </Space>
                 <Space className='outLineBox'>
                     <Button
