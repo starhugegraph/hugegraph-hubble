@@ -91,6 +91,15 @@ const Index = ({ visible, setVisible, detailData }) => {
             return Promise.resolve()
         }
     }
+    // 验证
+    const k8sValidator = (_, value) => {
+        let res = /^[a-z][a-z0-9\-]*$/.test(value)
+        if (!res) {
+            return Promise.reject("以字母开头,只能包含小写字母、数字、-")
+        } else {
+            return Promise.resolve()
+        }
+    }
     // 管理员
     const userSelect = useMemo(() => userList.map(item => (<Option key={item.id}>{item.user_name}</Option>)), [userList])
     return (
@@ -200,6 +209,7 @@ const Index = ({ visible, setVisible, detailData }) => {
                             rules={
                                 [
                                     { required: true, message: "此项为必填项" },
+                                    { validator: k8sValidator }
                                 ]
                             }
                         >
@@ -245,6 +255,7 @@ const Index = ({ visible, setVisible, detailData }) => {
                             rules={
                                 [
                                     { required: true, message: "此项为必填项" },
+                                    { validator: k8sValidator }
                                 ]
                             }
                         >
@@ -278,7 +289,7 @@ const Index = ({ visible, setVisible, detailData }) => {
                                     ]
                                 }
                             >
-                                <InputNumber style={{width:200}} placeholder='G' precision={0} min={1} />
+                                <InputNumber style={{ width: 200 }} placeholder='G' precision={0} min={1} />
                             </Form.Item>
                         </MyFormItem>
                     </div>

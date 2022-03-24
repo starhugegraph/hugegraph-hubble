@@ -115,10 +115,13 @@ const Home = () => {
     }, [appStore.graphspacesAuthBoolean]);
 
     const isShowAuth = useCallback(() => {
-        let res = toJS(appStore.graphspacesAuth)
+        let res = toJS(appStore.graphspacesAuth);
         if (res.length && appStore.tenant !== "null") {
-            appStore.setGraphspacesAuthBoolean(res.find(item => item.name === appStore.tenant).auth);
-            return appStore.graphspacesAuthBoolean;
+            let obj = res.find(item => item.name === appStore.tenant);
+            if (obj) {
+                appStore.setGraphspacesAuthBoolean(obj.auth);
+                return appStore.graphspacesAuthBoolean;
+            }
         };
         return true;
     }, [appStore.tenant, appStore.graphspacesAuth]);
@@ -129,9 +132,11 @@ const Home = () => {
         if (appStore.tenant !== 'null') {
             const res = await api.getGraphsName(appStore.tenant)
             setGraphsLoading(false)
-            let isResTrue = (res.status === 200
+            let isResTrue = (
+                res.status === 200
                 && res.data.graphs
-                && res.data.graphs.length)
+                && res.data.graphs.length
+            )
             appStore.setGraphs(isResTrue ? res.data.graphs[0] : "null");
             setGraphsSelect(isResTrue ? res.data.graphs : []);
             appStore.setDate(new Date());

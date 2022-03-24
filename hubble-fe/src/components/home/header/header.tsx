@@ -52,8 +52,8 @@ function Header(
                 && res.data.graphspaces
                 && res.data.graphspaces.length
             ) {
-                const tenant = localStorage.getItem("tenant")
-                if (tenant) {
+                const tenant = localStorage.getItem("tenant");
+                if (tenant && res.data.graphspaces.some((i: String) => i === tenant)) {
                     appStore.setTenant(tenant);
                     setUserActive(tenant)
                 } else {
