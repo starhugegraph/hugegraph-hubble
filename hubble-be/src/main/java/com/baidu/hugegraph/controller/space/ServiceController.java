@@ -102,6 +102,14 @@ public class ServiceController extends BaseController {
 
         serviceEntity.setName(service);
 
+        if (serviceEntity.getDepleymentType()
+                == OLTPService.DepleymentType.MANUAL) {
+            serviceEntity.setRouteType(null);
+        } else {
+            serviceEntity.setRouteType("NodePort");
+            serviceEntity.setUrls(null);
+        }
+
         try (HugeClient client = defaultClient(graphspace, null);){
             return oltpService.update(client, serviceEntity);
         } catch (Throwable t) {
