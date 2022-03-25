@@ -265,6 +265,11 @@ const Index = ({ visible, setVisible, detailData }) => {
                         <Form.Item
                             name="operator_image_path"
                             label="Operator镜像地址"
+							rules={
+								[
+									{ required: true, message: "此项为必填项" }
+								]
+							}
                         >
                             <Input />
                         </Form.Item>
@@ -272,6 +277,11 @@ const Index = ({ visible, setVisible, detailData }) => {
                         <Form.Item
                             name="internal_algorithm_image_url"
                             label="算法镜像地址"
+							rules={
+								[
+									{ required: true, message: "此项为必填项" }
+								]
+							}
                         >
                             <Input />
                         </Form.Item>
