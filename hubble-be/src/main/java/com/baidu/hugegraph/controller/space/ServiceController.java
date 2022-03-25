@@ -21,7 +21,6 @@ package com.baidu.hugegraph.controller.space;
 
 import com.google.common.collect.ImmutableMap;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -32,7 +31,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.baidu.hugegraph.driver.factory.PDHugeClientFactory;
+import com.baidu.hugegraph.util.E;
 import com.baidu.hugegraph.exception.ParameterizedException;
 import com.baidu.hugegraph.common.Constant;
 import com.baidu.hugegraph.controller.BaseController;
@@ -100,15 +99,13 @@ public class ServiceController extends BaseController {
                          @PathVariable("service") String service,
                          @RequestBody OLTPService serviceEntity) {
 
-        serviceEntity.setName(service);
+        E.checkArgument(!serviceEntity.getDepleymentType()
+                                      .equals(OLTPService.DepleymentType.MANUAL),
+                        "service.manual.disable.modify");
 
-        if (serviceEntity.getDepleymentType()
-                == OLTPService.DepleymentType.MANUAL) {
-            serviceEntity.setRouteType(null);
-        } else {
-            serviceEntity.setRouteType("NodePort");
-            serviceEntity.setUrls(null);
-        }
+        serviceEntity.setName(service);
+        serviceEntity.setRouteType("NodePort");
+        serviceEntity.setUrls(null);
 
         try (HugeClient client = defaultClient(graphspace, null);){
             return oltpService.update(client, serviceEntity);
