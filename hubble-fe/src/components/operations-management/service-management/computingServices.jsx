@@ -121,8 +121,11 @@ export default function ComputingServices() {
                         onConfirm={() => confirm(tag.id)}
                         okText="确定"
                         cancelText="取消"
+                        disabled={tag.task_status !== "running"}
                     >
-                        <Button type='ghost' danger>停止</Button>
+                        <Button type='ghost' danger
+                            disabled={tag.task_status !== "running"}
+                        > 停止</Button>
                     </Popconfirm>
                     <Popconfirm
                         title={`你确定要删除计算实例${tag.task_name}吗?`}
