@@ -2,7 +2,7 @@ import React from 'react';
 import { observer } from 'mobx-react';
 import TooltipTrigger, { Trigger } from 'react-popper-tooltip';
 import 'react-popper-tooltip/dist/styles.css';
-
+import {Spin} from 'antd'
 import type { Placement, Modifiers } from 'popper.js';
 
 export interface TooltipProps {
@@ -16,6 +16,7 @@ export interface TooltipProps {
   childrenWrapperElement?: 'div' | 'span' | 'img';
   childrenProps?: any;
   children?: React.ReactNode;
+  disabled?: boolean
 }
 
 const Tooltip: React.FC<TooltipProps> = observer(
@@ -29,7 +30,8 @@ const Tooltip: React.FC<TooltipProps> = observer(
     tooltipWrapperProps,
     tooltipArrowClassName,
     childrenWrapperElement = 'span',
-    childrenProps
+    childrenProps,
+    disabled
   }) => (
     <TooltipTrigger
       trigger={trigger}
@@ -63,16 +65,15 @@ const Tooltip: React.FC<TooltipProps> = observer(
       {({ getTriggerProps, triggerRef }) => {
         const Tag = childrenWrapperElement;
 
-        return (
-          <Tag
+        return disabled ?
+          (<Spin/>) : (<Tag
             {...getTriggerProps({
               ref: triggerRef,
               ...childrenProps
             })}
           >
             {children}
-          </Tag>
-        );
+          </Tag>)
       }}
     </TooltipTrigger>
   )

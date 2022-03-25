@@ -116,7 +116,6 @@ const GraphQueryResult: React.FC<GraphQueryResult> = observer(({ hidden }) => {
             // would be dispatched even if click is not on node and edge
             dataAnalyzeStore.switchClickOnNodeOrEdge(true);
             clearTimeout(timer);
-
             timer = window.setTimeout(() => {
               const nodeId = nodes[0];
               const node = dataAnalyzeStore.graphData.data.graph_view.vertices.find(
