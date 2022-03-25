@@ -466,6 +466,7 @@ export class DataAnalyzeStore {
         ? this.vertexTypes.find(({ name }) => name === config.label)
         : this.edgeTypes.find(({ name }) => name === config.label);
 
+
     if (!isUndefined(selectedLabel)) {
       const nonNullableProperties = selectedLabel.properties.filter(
         ({ nullable }) => !nullable
@@ -510,9 +511,9 @@ export class DataAnalyzeStore {
           ? this.selectedGraphData.properties
           : this.selectedGraphLinkData.properties
       );
-
       // to keep sort of primary keys, need to iter it first
       if (type === 'vertex') {
+      // console.log((selectedLabel as VertexType).primary_keys,selectedGraphDataPropertKeys);
         (selectedLabel as VertexType).primary_keys.forEach((name) => {
           if (selectedGraphDataPropertKeys.includes(name)) {
             this.editedSelectedGraphDataProperties.primary.set(
@@ -534,6 +535,7 @@ export class DataAnalyzeStore {
             remove(selectedGraphDataPropertKeys, (key) => key === name);
           }
         });
+        console.log((selectedLabel as EdgeType).sort_keys,this.editedSelectedGraphDataProperties.primary);
       }
 
       selectedLabel.properties
@@ -545,7 +547,6 @@ export class DataAnalyzeStore {
               convertArrayToString(selectedGraphData.properties[name])
             );
           }
-
           remove(selectedGraphDataPropertKeys, (key) => key === name);
         });
 

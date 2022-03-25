@@ -120,7 +120,7 @@ const AsyncTaskList: React.FC = observer(() => {
           </div>
         );
       },
-      fixed:"left"
+      fixed: "left"
     },
     {
       title: t('async-tasks.table-column-title.task-name'),
@@ -621,6 +621,7 @@ export const AsyncTaskListManipulation: React.FC<AsyncTaskListManipulationProps>
     const asyncTasksStore = useContext(AsyncTasksStoreContext);
     const appStore = useContext(AppStoreContext)
     const [isPopDeleteModal, switchPopDeleteModal] = useState(false);
+    const [isDisabled, setDisabled] = useState(false);
     const deleteWrapperRef = useRef<HTMLDivElement>(null);
     const [, params] = useRoute('/graph-management/:id/async-tasks');
     const { t } = useTranslation();
@@ -688,6 +689,7 @@ export const AsyncTaskListManipulation: React.FC<AsyncTaskListManipulationProps>
           status !== 'restoring' && (
             <Tooltip
               tooltipShown={isPopDeleteModal}
+              disabled={isDisabled}
               placement="bottom-end"
               modifiers={{
                 offset: {
@@ -719,7 +721,7 @@ export const AsyncTaskListManipulation: React.FC<AsyncTaskListManipulationProps>
                       style={{ width: 60 }}
                       onClick={async () => {
                         switchPopDeleteModal(false);
-
+                        setDisabled(true);
                         await asyncTasksStore.deleteAsyncTask([id]);
 
                         if (
@@ -731,7 +733,7 @@ export const AsyncTaskListManipulation: React.FC<AsyncTaskListManipulationProps>
                             size: 'medium',
                             showCloseIcon: false
                           });
-
+                          setDisabled(false);
                           asyncTasksStore.fetchAsyncTaskList();
                         }
 
@@ -744,6 +746,7 @@ export const AsyncTaskListManipulation: React.FC<AsyncTaskListManipulationProps>
                             size: 'medium',
                             showCloseIcon: false
                           });
+                          setDisabled(false);
                         }
                       }}
                     >
