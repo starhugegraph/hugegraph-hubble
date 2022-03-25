@@ -40,12 +40,12 @@ public class GraphSpaceService {
     @Autowired
     private UserService userService;
 
-    public IPage<GraphSpaceEntity> queryPage(HugeClient client, String query,
+    public IPage<GraphSpace> queryPage(HugeClient client, String query,
                                        int pageNo, int pageSize) {
-        List<GraphSpaceEntity> results =
+        List<GraphSpace> results =
                 client.graphSpace().listGraphSpace().stream()
                       .filter((s) -> s.contains(query))
-                      .map((s) -> get(client, s))
+                      .map((s) -> getNoAuth(client, s))
                       .sorted(Comparator.comparing(GraphSpace::getName))
                       .collect(Collectors.toList());
 
@@ -55,6 +55,17 @@ public class GraphSpaceService {
     public List<String> listAll(HugeClient client) {
         return client.graphSpace().listGraphSpace().stream().sorted()
                      .collect(Collectors.toList());
+    }
+
+    public GraphSpace getNoAuth(HugeClient authClient,
+                                      String graphspace) {
+        GraphSpace space = authClient.graphSpace().getGraphSpace(graphspace);
+        if (space == null) {
+            throw new InternalException("graphspace.get.{} Not Exits",
+                                        graphspace);
+        }
+
+        return space;
     }
 
     public GraphSpaceEntity get(HugeClient authClient, String graphspace) {
