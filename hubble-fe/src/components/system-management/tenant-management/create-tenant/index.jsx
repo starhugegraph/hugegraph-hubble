@@ -213,7 +213,7 @@ const Index = ({ visible, setVisible, detailData }) => {
                                 ]
                             }
                         >
-                            <Input />
+                            <Input disabled={isDisabled} />
                         </Form.Item>
 
                         <h4 style={{ marginBottom: "10px" }}>计算任务：</h4>
@@ -259,7 +259,7 @@ const Index = ({ visible, setVisible, detailData }) => {
                                 ]
                             }
                         >
-                            <Input />
+                            <Input disabled={isDisabled} />
                         </Form.Item>
 
                         <Form.Item
