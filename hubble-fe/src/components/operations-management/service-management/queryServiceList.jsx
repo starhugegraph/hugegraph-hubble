@@ -126,7 +126,9 @@ export default function QueryServiceList() {
             render: (tag) => (
                 <Space size="middle">
                     <Button onClick={() => detailHandle(tag)}>详情</Button>
-                    <Button onClick={() => changeHandle(tag)}>编辑</Button>
+                    <Button onClick={() => changeHandle(tag)}
+                        disabled={(tag.deployment_type === 'MANUAL')}
+					>编辑</Button>
                     <Popconfirm
                         title={`确定要启动${tag.name}服务吗？`}
                         onConfirm={() => api.queryStart(appStore.tenant, tag.name).then(res => {
