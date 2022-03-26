@@ -63,9 +63,11 @@ public class OLTPServerService {
             List<String> urls = pdHugeClientFactory.getURLs(cluster, graphSpace,
                                                             serviceName);
 
+            urls = urls.stream().distinct().collect(Collectors.toList());
             // 设置当前运行节点数
-            service.setRunning((int) urls.stream().distinct().count());
-            // service.setStatus(serviceStatusFromPD(graphSpace, serviceName));
+            service.setRunning((int) urls.size());
+            // 手动启动的service使用pd中的urls
+            service.setUrls(urls);
 
             if (!CollectionUtils.isEmpty(urls)) {
                 service.setStatus(OLTPService.ServiceStatus.RUNNING);
