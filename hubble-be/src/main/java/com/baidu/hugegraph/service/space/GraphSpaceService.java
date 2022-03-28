@@ -45,11 +45,17 @@ public class GraphSpaceService {
         List<GraphSpace> results =
                 client.graphSpace().listGraphSpace().stream()
                       .filter((s) -> s.contains(query))
-                      .map((s) -> getNoAuth(client, s))
+                      .map((s) -> get(client, s))
                       .sorted(Comparator.comparing(GraphSpace::getName))
                       .collect(Collectors.toList());
 
         return PageUtil.page(results, pageNo, pageSize);
+    }
+
+    public boolean isAuth(HugeClient client, String graphSpace) {
+        GraphSpace space = getNoAuth(client, graphSpace);
+
+        return space.isAuth();
     }
 
     public List<String> listAll(HugeClient client) {
