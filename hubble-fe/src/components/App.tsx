@@ -6,7 +6,7 @@
  * @Description: 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  * @FilePath: /hubble-fe/src/components/App.tsx
  */
-import React, { useContext, useEffect, useState } from 'react';
+import React, {useState } from 'react';
 import { AppBar } from './common';
 import { ConfigProvider } from 'antd';
 import zh_CN from 'antd/es/locale/zh_CN';
@@ -15,15 +15,9 @@ import 'antd/dist/antd.css';
 import GraphManagementSidebar from './graph-management/GraphManagementSidebar';
 import Home from './home/Home';
 import './App.less';
-import { AppStoreContext } from '../stores';
-import api from '../api/api'
 
 const App: React.FC = () => {
   const [isLogin, setLogin] = useState(localStorage.getItem('lg'));
-  const appStore = useContext(AppStoreContext);
-
-  
-
   return (
     <div>
       {isLogin === "true" ?
