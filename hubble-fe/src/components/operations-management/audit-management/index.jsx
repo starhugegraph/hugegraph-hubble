@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Button } from 'antd';
 import ProTable from '@ant-design/pro-table';
 import api from '../../../api/api'
-import { defaultDateTimeParams } from '../../../stores/utils';
+import { defaultDateTimeParams, timeSort } from '../../../stores/utils';
 
 const columns = [
     {
@@ -31,7 +31,6 @@ const columns = [
             initialValue: defaultDateTimeParams().start,
         },
         order: 13,
-        sorter: true,
     },
     {
         title: "服务",
@@ -95,16 +94,6 @@ const columns = [
         }
     },
     {
-        title: "用户IP",
-        dataIndex: 'audit_ip',
-        valueType: 'text',
-        width: 50,
-        formItemProps: {
-            name: "ip",
-            label: "IP"
-        }
-    },
-    {
         title: "操作结果",
         dataIndex: 'audit_result',
         width: 50,
@@ -126,11 +115,12 @@ export default () => {
                         page_no: params.current,
                         page_size: params.pageSize,
                     }
-                    setParams(apiParams)
-                    let res = await api.getAuditTableData(apiParams)
+                    setParams(apiParams);
+                    let res = await api.getAuditTableData(apiParams);
+                    let records = timeSort(res.data.records, "audit_datetime")
                     if (res.status === 200) {
                         return {
-                            data: res.data.records,
+                            data: records,
                             total: res.data.total,
                             success: true
                         }

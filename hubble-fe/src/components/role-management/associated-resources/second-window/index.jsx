@@ -12,7 +12,7 @@ const options = [
     { label: '执行', value: 'EXECUTE' },
 ];
 export default function Index(props) {
-    const { visible, setVisible, detailData, targetDetail, getAssData } = props
+    const { visible, setVisible, detailData, targetDetail, setVisibleFather } = props
     const [targetList, setTargetList] = useState([])//资源名称下拉菜单数据
     const [permission, setPermission] = useState([])//permission选择框
     const [selectId, setSelectId] = useState("")//资源Id
@@ -111,17 +111,17 @@ export default function Index(props) {
     const [allKey, setallKey] = useState(false);
     // 存放折叠面板所有的key名
     const [_, setCollapseKeyList] = useState(collapseKeyListDefault);
-    useEffect(() => {
-        getTargetListFn();
 
-    }, [appStore.tenant])
+    useEffect(() => {
+        visible && getTargetListFn();
+    }, [appStore.tenant, visible])
 
     useEffect(() => {
         return () => {
             setTargetList([])
             setPermission([])
-            setSelectId("")
             setCollapseList([])
+            setSelectId("")
             setallKey(false)
             setCollapseKeyList([])
         }
@@ -176,8 +176,7 @@ export default function Index(props) {
                     if (res && res.status === 200) {
                         message.success("编辑关联成功")
                     }
-                    getAssData()
-                    setVisible(false)
+                    setVisibelFalse()
                 })
             } else {
                 api.assResources(
@@ -187,17 +186,22 @@ export default function Index(props) {
                     if (res && res.status === 200) {
                         message.success("新增关联成功")
                     }
-                    getAssData()
-                    setVisible(false)
+                    setVisibelFalse()
                 })
             }
         } else {
             message.warning("确定已选择资源了吗？")
         }
     };
+    const setVisibelFalse = () => {
+        setVisible(false)
+        setVisibleFather(false)
+        form.resetFields()
+    }
     // Modal关闭
     const handleCancel = () => {
         setVisible(false);
+        form.resetFields()
     };
     // 渲染折叠面板（三维数组）
     const renderCollapse = (arr) => {
@@ -382,7 +386,7 @@ export default function Index(props) {
                 autoComplete="off"
                 form={form}
             >
-                <Form.Item name="target_id" style={{ marginTop: "10px", width: "300px" }} label="资源名称">
+                <Form.Item value={selectId} name="target_id" style={{ marginTop: "10px", width: "300px" }} label="资源名称">
                     <Select placeholder="请选择资源名称" onChange={(id) => setSelectId(id)}>
                         {targetList ? targetList.map(item => (<Option key={item.id} value={item.id}>{item.target_name}</Option>)) : null}
                     </Select>

@@ -5,24 +5,27 @@ import { AppStoreContext } from '../../../../stores'
 
 const { Option } = Select
 
-export default function Index({ visible, setVisible, detailData, getAssUserData }) {
+export default function Index({ listData, visible, setVisible, detailData, getAssUserData }) {
     const [userList, setUserList] = useState([])//用户下拉菜单数据
     const [userId, setUserId] = useState([])//用户多选下拉值
     const appStore = useContext(AppStoreContext)
     // 调用下拉框获取数据方法
     useEffect(() => {
-        getUser()
+        if (visible) {
+            getUser()
+        }
         return () => {
             setUserList([])
             setUserId([])
         }
-    }, [])
+    }, [visible])
 
     // 获取用户数据
     const getUser = () => {
         api.getUserList().then(res => {
             if (res && res.status === 200) {
-                setUserList(res.data.users)
+                let arr = res.data.users.filter(item => listData.every(i => item.user_name !== i.user_name))
+                setUserList(arr)
             }
         })
     }
@@ -52,7 +55,7 @@ export default function Index({ visible, setVisible, detailData, getAssUserData 
             closable={false}
             forceRender
             onOk={handleOk}
-            onCancel={()=>setVisible(false)}
+            onCancel={() => setVisible(false)}
             maskClosable={false}
             width={"700px"}
             title="增加"
@@ -63,6 +66,7 @@ export default function Index({ visible, setVisible, detailData, getAssUserData 
                 用户：<Select
                     style={{ width: "300px" }}
                     onChange={selectHandle}
+                    value={userId}
                     allowClear
                     mode="multiple"
                     placeholder="请添加用户"
