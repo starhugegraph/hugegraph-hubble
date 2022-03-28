@@ -24,7 +24,6 @@ function Index(props) {
         if (detailData.group_id) {
             getAssUserData()
         }
-       
     }, [detailData, page])
 
     useEffect(() => {
@@ -158,7 +157,14 @@ function Index(props) {
                     </Popconfirm>
                 </Space>
             </div>
-            <SecondModal visible={visibleCreate} getAssUserData={getAssUserData} setVisible={setVisibleCreate} detailData={detailData}></SecondModal>
+            <SecondModal
+                visible={visibleCreate}
+                getAssUserData={getAssUserData}
+                setVisible={setVisibleCreate}
+                detailData={detailData}
+                listData={listData.records}
+            >
+            </SecondModal>
         </Modal>
     )
 }

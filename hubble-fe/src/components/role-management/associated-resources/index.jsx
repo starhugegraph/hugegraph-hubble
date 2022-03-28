@@ -151,7 +151,7 @@ function Index(props) {
                     <Button onClick={() => setVisible(false)}>取消</Button>
                 </Space>
             </div>
-            <SecondModal getAssData={getAssData} visible={visibleCreate} setVisible={setVisibleCreate} detailData={detailData} targetDetail={targetDetail}></SecondModal>
+            <SecondModal visible={visibleCreate} setVisible={setVisibleCreate} setVisibleFather={setVisible} detailData={detailData} targetDetail={targetDetail}></SecondModal>
         </Modal>
     )
 }

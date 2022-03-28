@@ -277,7 +277,7 @@ export function defaultDateTimeParams() {
 }
 
 export function compKeyObj(path: string) {
-  if (path.includes("/import-tasks/")||(/\/import-manager\/(\d)*\/details$/g).test(path)) {
+  if (path.includes("/import-tasks/") || (/\/import-manager\/(\d)*\/details$/g).test(path)) {
     return {
       menuObj: {
         c_key: "2",
@@ -451,4 +451,16 @@ export function timestampToTime(unixtime: number | string) {
   second = second < 10 ? +('0' + second) : second;
   // return y + '-' + m + '-' + d + ' ' + h + ':' + minute + ':' + second;//年月日时分秒
   return y + '-' + m + '-' + d + ' ' + h + ':' + minute;
+}
+
+export function timeSort(array: any[], type: string) {
+  if (!array.length) return []
+  let res = array.sort((a, b) => {
+    let arrA = a[type].split(" ");
+    let arrB = b[type].split(" ");
+    return (+(arrB[0].split("-").join("") + arrB[1].split(":").join("")) - +(arrA[0].split("-").join("") + arrA[1].split(":").join("")))
+  });
+  return res
+  // let res = array.sort((a,b)=>+(a[type]))
+  // console.log(res);
 }

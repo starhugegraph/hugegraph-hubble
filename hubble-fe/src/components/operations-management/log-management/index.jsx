@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Button, Tooltip } from 'antd';
 import ProTable from '@ant-design/pro-table';
 import api from '../../../api/api'
-import { defaultDateTimeParams } from '../../../stores/utils';
+import { defaultDateTimeParams,timeSort } from '../../../stores/utils';
 
 const columns = [
     {
@@ -126,9 +126,10 @@ export default () => {
                     }
                     setParams(apiParams)
                     let res = await api.getLogTableData(apiParams)
+                    let records = timeSort(res.data.records,"log_datetime")
                     if (res.status === 200) {
                         return {
-                            data: res.data.records,
+                            data: records,
                             total: res.data.total,
                             success: true
                         }
