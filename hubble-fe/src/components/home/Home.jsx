@@ -87,17 +87,22 @@ const Home = () => {
     let [graphsActive, setGraphsActive] = useState('');
     // 当前图列表
     let [graphsSelect, setGraphsSelect] = useState([]);
+    // 图空间鉴权
+    let [graphspaceAuth, setGraphspaceAuth] = useState(null);
 
     useEffect(() => {
         setGraphsActive(appStore.graphs === "null" ? "暂无" : appStore.graphs);
     }, [appStore.graphs]);
 
     useEffect(() => {
-        api.getGraphspaces().then(res => {
-            if (res.status === 200) {
-                appStore.setGraphspacesAuth(res.data.records)
-            }
-        })
+        if (appStore.tenant !== "null") {
+            api.graphspaceAuth(appStore.tenant).then(res => {
+                setGraphspaceAuth(res.data.auth)
+            })
+        }
+    }, [appStore.tenant]);
+
+    useEffect(() => {
         if (_.includes("/import-tasks/")
             ||
             (/\/import-manager\/(\d)*\/details$/g).test(_)
@@ -108,23 +113,11 @@ const Home = () => {
 
     useEffect(() => {
         if (
-            (/(\/0\/role)|(\/resources)|(\/user)/.test(_) && !appStore.graphspacesAuthBoolean)
+            (/(\/0\/role)|(\/resources)|(\/user)/.test(_) && !graphspaceAuth)
         ) {
             setLocation("/graph-management/0/data-analyze")
         }
-    }, [appStore.graphspacesAuthBoolean]);
-
-    const isShowAuth = useCallback(() => {
-        let res = toJS(appStore.graphspacesAuth);
-        if (res.length && appStore.tenant !== "null") {
-            let obj = res.find(item => item.name === appStore.tenant);
-            if (obj) {
-                appStore.setGraphspacesAuthBoolean(obj.auth);
-                return appStore.graphspacesAuthBoolean;
-            }
-        };
-        return true;
-    }, [appStore.tenant, appStore.graphspacesAuth]);
+    }, [graphspaceAuth]);
 
     // 获取图列表
     const getGraphsList = async () => {
@@ -218,7 +211,7 @@ const Home = () => {
                                 setMenuList={setMenuList}
                                 defaultMenuList={defaultMenuList}
                                 testKeyObj={testKeyObj}
-                                isShowAuth={isShowAuth}
+                                auth={graphspaceAuth}
                             ></SiderC>
                         </div>
                     </Sider>

@@ -819,8 +819,19 @@ const StorageOutline = (node) => {
         });
     });
 };
+//图空间鉴权
+const graphspaceAuth = (graphspace) => {
+    return new Promise((resolve, reject) => {
+        myaxios.get(`graphspaces/${graphspace}/auth`).then(res => {
+            resolve(res);
+        }, error => {
+            reject(error);
+        });
+    });
+};
 
 export default {
+    graphspaceAuth,
     queryEnd,
     queryStart,
     StorageClusterSplit,
