@@ -121,7 +121,7 @@ const Index = ({ visible, setVisible, detailData }) => {
                                 [
                                     { required: true, message: "此项为必填项" },
                                     { max: 48, message: "字符长度最多48位" },
-                                    { validator: serviceValidator }
+                                    { validator: k8sValidator }
                                 ]
                             }
                         >
