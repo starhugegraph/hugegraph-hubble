@@ -84,9 +84,9 @@ const Index = ({ visible, setVisible, detailData }) => {
     };
     // 验证
     const serviceValidator = (_, value) => {
-        let res = /^[5A-Za-z0-9\_]+$/.test(value)
+        let res = /^[5A-Za-z0-9\-]+$/.test(value)
         if (!res) {
-            return Promise.reject("格式错误,只可包含英文、数字、下划线")
+            return Promise.reject("格式错误,只可包含英文、数字、-")
         } else {
             return Promise.resolve()
         }
