@@ -56,25 +56,24 @@ public class OLTPServerService {
         String graphSpace = client.getGraphSpaceName();
         OLTPService service = client.serviceManager().getService(serviceName);
 
-        // 判断当前service状态
+        // 通过PD， 获取当前service可用URL, 判断当前服务是否存活
+        List<String> urls = pdHugeClientFactory.getURLs(cluster, graphSpace,
+                                                        serviceName);
+        urls = urls.stream().distinct().collect(Collectors.toList());
+
+        // service使用pd中的urls
+        service.setUrls(urls);
+
         if (!service.checkIsK8s()) {
             // manual service： 通过PD判断当前服务状态
-            // 通过PD， 获取当前service可用URL, 判断当前服务是否存活
-            List<String> urls = pdHugeClientFactory.getURLs(cluster, graphSpace,
-                                                            serviceName);
-
-            urls = urls.stream().distinct().collect(Collectors.toList());
             // 设置当前运行节点数
             service.setRunning((int) urls.size());
-            // 手动启动的service使用pd中的urls
-            service.setUrls(urls);
 
             if (!CollectionUtils.isEmpty(urls)) {
                 service.setStatus(OLTPService.ServiceStatus.RUNNING);
             } else {
                 service.setStatus(OLTPService.ServiceStatus.STOPPED);
             }
-
         }
 
         return service;
