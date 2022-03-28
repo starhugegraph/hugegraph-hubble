@@ -74,6 +74,13 @@ public class GraphSpaceController extends BaseController {
                                            query, pageNo, pageSize);
     }
 
+    @GetMapping("{graphspace}/auth")
+    public Object isAuth(@PathVariable("graphspace") String graphSpace) {
+        boolean isAuth = graphSpaceService.isAuth(this.authClient(null, null),
+                                                  graphSpace);
+        return ImmutableMap.of("auth", isAuth);
+    }
+
     @GetMapping("{graphspace}")
     public GraphSpaceEntity get(@PathVariable("graphspace") String graphspace) {
         HugeClient client = this.authClient(null, null);
