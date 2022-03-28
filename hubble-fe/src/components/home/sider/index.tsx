@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState, useContext } from 'react'
 import { useLocation } from 'wouter';
 import api from '../../../api/api'
-import { Menu } from 'antd'
+import { Menu, Spin } from 'antd'
 import { SnippetsOutlined } from '@ant-design/icons';
 import { userAuthArray } from '../../../configs/userAuth';
 
@@ -10,19 +10,20 @@ interface _Props {
   setMenuList: (params: any[]) => void,
   defaultMenuList: any[],
   testKeyObj: { c_key: string, f_key: string },
-  isShowAuth:()=>boolean
+  auth: boolean
 }
 function SiderC({
   setCurrent,
   setMenuList,
   defaultMenuList,
   testKeyObj,
-  isShowAuth
+  auth
 }: _Props) {
   // 路由地址
   const [_, setLocation] = useLocation();
   // 左侧菜单状态
   let [userMenu, setUserMenu] = useState([]);
+
   // 左侧菜单
   useEffect(() => {
     api.getSiderAuthUser().then(res => {
@@ -32,6 +33,7 @@ function SiderC({
       }
     })
   }, []);
+
   // 左侧菜单栏点击事件
   const menuLeftClick = (e: any) => {
     setCurrent('0');
@@ -65,7 +67,7 @@ function SiderC({
   const leftMenuAuth = (arr: any[]) => {
     return arr.map(item => {
       if (!item.children) {
-        if (item.name === '权限管理'&&!isShowAuth()) {
+        if (item.name === '权限管理' && !auth) {
           return null;
         }
         return (<Menu.Item key={item.key}>{item.name}</Menu.Item>)
@@ -86,7 +88,7 @@ function SiderC({
         defaultOpenKeys={[testKeyObj.f_key]}
         mode="inline"
       >
-        {leftMenuAuth(userMenu)}
+        {auth === null ? null : leftMenuAuth(userMenu)}
       </Menu>
     </div>
   )

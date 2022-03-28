@@ -114,9 +114,9 @@ function Index() {
             align: "center",
             width: 190,
             render: (value) => (
-                <Tooltip title={`${value.cpu_limit}核/${value.memory_limit}G/${value.olap_namespace}`}>
+                <Tooltip title={`${value?.cpu_limit}核/${value?.memory_limit}G/${value?.olap_namespace}`}>
                     <p style={{ overflow: 'hidden', whiteSpace: "nowrap", textOverflow: "ellipsis" }}>
-                        {`${value.compute_cpu_limit}核/${value.compute_memory_limit}G/${value.olap_namespace}`}
+                        {`${value?.compute_cpu_limit}核/${value?.compute_memory_limit}G/${value?.olap_namespace}`}
                     </p>
                 </Tooltip>
             )
@@ -133,10 +133,10 @@ function Index() {
             title: '管理员',
             dataIndex: 'graphspace_admin',
             align: "center",
-            width:125,
+            width: 125,
             render: (value) => (
-                <Tooltip title={value.join(",")}>
-                    <span style={{ overflow: 'hidden', whiteSpace: "nowrap", textOverflow: "ellipsis" }}>{value.join(",")}</span>
+                <Tooltip title={value?.join(",")}>
+                    <span style={{ overflow: 'hidden', whiteSpace: "nowrap", textOverflow: "ellipsis" }}>{value?.join(",") }</span>
                 </Tooltip>
             )
         },
