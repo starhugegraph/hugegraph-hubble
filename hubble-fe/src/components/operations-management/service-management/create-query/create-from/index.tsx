@@ -146,9 +146,9 @@ const CreateFrom = ({
 
   // 验证
   const serviceValidator = (_: any, value: string) => {
-    let res = /^(?!_)(?!.*?_$)[a-zA-Z0-9_\u4e00-\u9fa5]+$/.test(value);
+    let res = /^[a-zA-Z][a-zA-Z0-9\-]*$/.test(value);
     if (!res) {
-      return Promise.reject('格式错误,只可包含中英文,下划线,不能以下划线结尾');
+      return Promise.reject('以字母开头,只能包含字母、数字、-');
     } else {
       return Promise.resolve();
     }
