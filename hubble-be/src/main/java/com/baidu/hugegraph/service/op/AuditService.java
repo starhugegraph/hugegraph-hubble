@@ -180,7 +180,7 @@ public class AuditService extends ESService {
             Query.Builder builder = new Query.Builder();
 
             MatchQuery.Builder mBuilder = new MatchQuery.Builder();
-            mBuilder.field("json.userId").query(FieldValue.of(auditReq.user));
+            mBuilder.field("json.audit_user").query(FieldValue.of(auditReq.user));
 
             querys.add(builder.match(mBuilder.build()).build());
         }
