@@ -37,7 +37,6 @@ import HeaderC from './header/header';
 import SiderC from './sider'
 import Not404Find from '../404'
 import api from '../../api/api';
-import { toJS } from 'mobx';
 
 import {
     TaskErrorLogs,
@@ -53,7 +52,9 @@ import axios from 'axios'
 
 axios.interceptors.response.use(
     (response) => {
-        if (response.data.status === 401) {
+        if (response.data.status !== 200 && response.data.status !== 401) {
+            message.error(response.data.message);
+        } else if (response.data.status === 401) {
             message.error("授权过期");
             storageFn.removeStorage(['lg', 'userInfo', 'tenant'])
             setTimeout(() => {
@@ -115,7 +116,7 @@ const Home = () => {
         if (
             (/(\/0\/role)|(\/resources)|(\/user)/.test(_) && !graphspaceAuth)
         ) {
-            setLocation("/graph-management/0/data-analyze")
+            // setLocation("/graph-management/0/data-analyze")
         }
     }, [graphspaceAuth]);
 

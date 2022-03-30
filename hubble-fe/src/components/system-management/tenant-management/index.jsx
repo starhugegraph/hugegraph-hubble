@@ -40,11 +40,6 @@ function Index() {
             setLoading(false)
         })
     }
-    /*     // 默认排序
-        const reverseDataWithUpdateTime = useMemo(() => {
-            if (listData.records) return listData.records.sort((a, b) => (+b.update_time.split("/").join("")) - (+a.update_time.split("/").join("")))
-            return []
-        }, [listData]) */
 
     // 创建租户
     const createHandle = () => {

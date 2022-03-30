@@ -133,7 +133,7 @@ function Index() {
             render: (tag) => (
                 <Space size="middle">
                     <Button onClick={() => changeHandle(tag)}>编辑</Button>
-                    <Button disabled={tag.id === "DEFAULT_SPACE_GROUP" && appStore.graphspacesAuthBoolean} onClick={() => associatedHandle(tag)}>关联资源</Button>
+                    <Button disabled={tag.id === "DEFAULT_SPACE_GROUP"} onClick={() => associatedHandle(tag)}>关联资源</Button>
                     <Button onClick={() => userHandle(tag)}>关联用户</Button>
                     <Popconfirm
                         title={`你确定要删除角色${tag.group_name}吗?`}
@@ -141,7 +141,7 @@ function Index() {
                         okText="确定"
                         cancelText="取消"
                     >
-                        <Button disabled={tag.id === "DEFAULT_SPACE_GROUP" && appStore.graphspacesAuthBoolean} type='ghost' danger>删除</Button>
+                        <Button disabled={tag.id === "DEFAULT_SPACE_GROUP"} type='ghost' danger>删除</Button>
                     </Popconfirm>
                 </Space>
             ),

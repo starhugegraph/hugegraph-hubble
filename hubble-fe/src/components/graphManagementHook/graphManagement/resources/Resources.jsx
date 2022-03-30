@@ -187,7 +187,7 @@ export default function Resources() {
     // 资源三维数据
     const [collapseList, setCollapseList] = useState(collapseListDefault);
     // 当前点击添加的key名
-    const [switchKey, setSwitchKey] = useState('');
+    const [switchKey, setSwitchKey] = useState(null);
 
     const [addKey, setAddKey] = useState(false);
     const [addLabelKey, setAddLabelKey] = useState(false);
@@ -202,7 +202,7 @@ export default function Resources() {
         'EDGE',
         'VAR',
         'GREMLIN',
-        'TASK',
+        'TASK'
     ];
     // 存放折叠面板所有的key名
     const [collapseKeyList, setCollapseKeyList] = useState(collapseKeyListDefault);
@@ -270,6 +270,7 @@ export default function Resources() {
                 let arr = mapNewData(res.data.target_resources);
                 setEditId(res.data.id);
                 setCollapseList(arr);
+                console.log(arr);
                 setEidtKey(true);
                 setCreateKey(true);
             }
@@ -329,8 +330,10 @@ export default function Resources() {
             obj.target_resources = [{ type: 'ALL' }];
         } else {
             let dataList = JSON.parse(JSON.stringify(collapseList));
+            console.log(dataList);
             obj.target_resources = mapData(dataList);
         }
+        console.log(obj.target_resources);
         if (!eidtKey) {
             api.createResources(appStore.tenant, obj).then((res) => {
                 if (res.status === 200) {
@@ -375,8 +378,10 @@ export default function Resources() {
     };
     // 确认添加操作
     const addDom = (data) => {
-        let key = switchKey;
-        let indexKey = data.key ? collapseKeyList.indexOf(data.key) : collapseKeyList.indexOf(data.label);
+        let key = switchKey.key;
+        console.log(switchKey);
+        data.only = (switchKey.only ? switchKey.only : switchKey.key) + (data.key ? data.key : data.label)
+        let indexKey = collapseKeyList.indexOf(data.only);
         if (indexKey !== -1) {
             message.error('key命名重复!');
             return;
@@ -390,9 +395,10 @@ export default function Resources() {
                     checked: false,
                     isAdd: true,
                     key: data.label,
-                    type: 'label'
+                    type: 'label',
+                    only: data.only
                 });
-                setCollapseKeyList([...collapseKeyList, data.label]);
+                setCollapseKeyList([...collapseKeyList, data.only]);
                 setCollapseList(arr);
                 setAddLabelKey(false);
                 form2.setFieldsValue({ label: '' });
@@ -407,9 +413,10 @@ export default function Resources() {
                             checked: false,
                             isAdd: false,
                             key: data.key,
-                            type: 'properties'
+                            type: 'properties',
+                            only: data.only
                         })
-                        setCollapseKeyList([...collapseKeyList, data.key]);
+                        setCollapseKeyList([...collapseKeyList, data.only]);
                         setCollapseList(arr);
                         setAddKey(false);
                         form1.setFieldsValue({ key: '', value: '' });
@@ -427,12 +434,13 @@ export default function Resources() {
             return;
         }
         let arr = JSON.parse(JSON.stringify(collapseList));
+        console.log(arr);
         if (arr[1].children && arr[1].children.length) {
             let mapList = arr[1].children;
             for (let i = 0; i < mapList.length; i++) {
                 if (mapList[i].children && mapList[i].children.length > 0) {
                     for (let j = 0; j < mapList[i].children.length; j++) {
-                        if (mapList[i].children[j].key === mykey) {
+                        if (mapList[i].children[j].only ? mapList[i].children[j].only : mapList[i].children[j].key === mykey) {
                             mapList[i].children.splice(j, 1);
                             setCollapseList(arr);
                             return;
@@ -448,7 +456,7 @@ export default function Resources() {
         for (let i = 0; i < mapList.length; i++) {
             if (mapList[i].children && mapList[i].children.length > 0) {
                 for (let j = 0; j < mapList[i].children.length; j++) {
-                    if (mapList[i].children[j].key === mykey) {
+                    if (mapList[i].children[j].only? mapList[i].children[j].only : mapList[i].children[j].key === mykey) {
                         mapList[i].children.splice(j, 1);
                         setCollapseList(arr);
                         return;
@@ -460,7 +468,7 @@ export default function Resources() {
     // 选中时修改三维数组，修改checked值
     const setChecked = (key, value, allCheck, isChildren) => {
         let arr = JSON.parse(JSON.stringify(collapseList));
-
+        console.log(key, value, arr);
         // 针对于元数组的选中处理
         if (key === 'SCHEMA' || (allCheck && value && !arr[0].checked && !isChildren)) {
             arr[0].children.forEach((item) => {
@@ -539,7 +547,8 @@ export default function Resources() {
                                     danger
                                     onClick={(e) => {
                                         e.stopPropagation();
-                                        deleteDom(item.key);
+                                        console.log(item, "xxx");
+                                        deleteDom(item.only || item.key);
                                     }}
                                 >
                                     -
@@ -588,10 +597,10 @@ export default function Resources() {
                                 onClick={(e) => {
                                     e.stopPropagation();
                                     if (item.type === 'type') {
-                                        openAddPDom(item.key);
+                                        openAddPDom(item);
                                         return;
                                     }
-                                    openAddDom(item.key);
+                                    openAddDom(item);
                                 }}
                             >
                                 +
@@ -644,14 +653,14 @@ export default function Resources() {
                             type="primary"
                             size="small"
                             shape="circle"
-                            disabled={see}
+                            disabled={item.checked||see}
                             onClick={(e) => {
                                 e.stopPropagation();
                                 if (item.type === 'type') {
-                                    openAddPDom(item.key);
+                                    openAddPDom(item);
                                     return;
                                 }
-                                openAddDom(item.key);
+                                openAddDom(item);
                             }}
                         >
                             +
@@ -748,6 +757,14 @@ export default function Resources() {
         } else if (arr[1].children && arr[1].children.length) {
             arr[1].children.forEach((item) => {
                 if (item.checked) {
+                    list.push(
+                        {
+                            type: 'VERTEX',
+                            label: item.key
+                        }
+                    )
+                    return;
+                } else {
                     if (item.children && item.children.length) {
                         let obj = {
                             type: 'VERTEX',
@@ -758,11 +775,6 @@ export default function Resources() {
                             obj.properties[myItem.key] = myItem.title.split('=')[1];
                         });
                         list.push(obj);
-                    } else {
-                        list.push({
-                            type: 'VERTEX',
-                            label: item.key
-                        });
                     }
                 }
             });
@@ -775,6 +787,13 @@ export default function Resources() {
         } else if (arr[2].children && arr[2].children.length) {
             arr[2].children.forEach((item) => {
                 if (item.checked) {
+                    list.push(
+                        {
+                            type: 'EDGE',
+                            label: item.key
+                        }
+                    )
+                } else {
                     if (item.children && item.children.length) {
                         let obj = {
                             type: 'EDGE',
@@ -785,11 +804,6 @@ export default function Resources() {
                             obj.properties[myItem.key] = myItem.title.split('=')[1];
                         });
                         list.push(obj);
-                    } else {
-                        list.push({
-                            type: 'EDGE',
-                            label: item.key
-                        });
                     }
                 }
             });
@@ -864,7 +878,7 @@ export default function Resources() {
                 myData.children = myData.children ? myData.children : [];
                 myData.children.push({
                     title: arr[i].label,
-                    checked: true,
+                    checked: false,
                     isAdd: true,
                     key: arr[i].label,
                     type: 'label'
@@ -873,6 +887,7 @@ export default function Resources() {
                 if (arr[i].properties) {
                     let myArr = myData.children;
                     myArr[myArr.length - 1].children = [];
+                    let propArr=[]
                     for (let prop in arr[i].properties) {
                         myArr[myArr.length - 1].children.push({
                             title: prop + '=' + arr[i].properties[prop],
@@ -881,8 +896,9 @@ export default function Resources() {
                             key: prop,
                             type: 'properties'
                         })
-                        setCollapseKeyList([...collapseKeyListDefault, prop]);
+                        propArr.push(prop)
                     }
+                    setCollapseKeyList([...collapseKeyListDefault, ...propArr]);
                 }
                 continue;
             }
@@ -1048,19 +1064,19 @@ export default function Resources() {
                                     return (
                                         <div className='table_btndiv'>
                                             <Button
-                                                disabled={record.id === "DEFAULT_SPACE_TARGET" && appStore.graphspacesAuthBoolean}
+                                                disabled={record.id === "DEFAULT_SPACE_TARGET"}
                                                 onClick={() => { openSeeModal(record) }}
                                             >
                                                 查看
                                             </Button>
                                             <Button
-                                                disabled={record.id === "DEFAULT_SPACE_TARGET" && appStore.graphspacesAuthBoolean}
+                                                disabled={record.id === "DEFAULT_SPACE_TARGET"}
                                                 onClick={() => { openEditModal(record) }}
                                             >
                                                 编辑
                                             </Button>
                                             <Button
-                                                disabled={record.id === "DEFAULT_SPACE_TARGET" && appStore.graphspacesAuthBoolean}
+                                                disabled={record.id === "DEFAULT_SPACE_TARGET"}
                                                 onClick={() => { openDeleteConfirm(record) }}
                                             >
                                                 删除
