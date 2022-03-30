@@ -81,21 +81,11 @@ function Index(props) {
             title: '资源ID',
             dataIndex: 'target_id',
             align: "center",
-            /*  render: (array) => (
-                 <Tooltip title={array.map(item => item + ' ')}>
-                     <p style={textStyle}>{array.map(item => item + " ")}</p>
-                 </Tooltip>
-             ) */
         },
         {
             title: '资源名',
             dataIndex: 'target_name',
             align: "center",
-            /*  render: (array) => (
-                 <Tooltip title={array.map(item => item + ' ')}>
-                     <p style={textStyle}>{array.map(item => item + " ")}</p>
-                 </Tooltip>
-             ) */
         },
         {
             title: '操作',

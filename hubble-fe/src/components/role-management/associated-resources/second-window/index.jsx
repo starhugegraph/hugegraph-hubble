@@ -16,6 +16,7 @@ export default function Index(props) {
     const [targetList, setTargetList] = useState([])//资源名称下拉菜单数据
     const [permission, setPermission] = useState([])//permission选择框
     const [selectId, setSelectId] = useState("")//资源Id
+    const [targetGraph, setTargetGraph] = useState("")//资源Id
     const [form] = Form.useForm();//表单
     const appStore = useContext(AppStoreContext)
     // 三维数组配置结构
@@ -129,15 +130,16 @@ export default function Index(props) {
 
     // 回显
     useEffect(() => {
+        if (!visible) return;
         if (targetDetail.target_id) {
             form.setFieldsValue({ target_id: targetDetail.target_id })
             setPermission(targetDetail.permissions ? targetDetail.permissions : [])
             getTargetDetail(targetDetail.target_id)
         } else {
-            setPermission(["READ", "WRITE", "DELETE", "EXECUTE"])
             form.resetFields()
+            setPermission(["READ", "WRITE", "DELETE", "EXECUTE"])
         }
-    }, [targetDetail])
+    }, [targetDetail, visible])
     // 获取资源信息
     useEffect(() => {
         setallKey(false);
@@ -147,6 +149,7 @@ export default function Index(props) {
     const getTargetDetail = (id) => {
         api.getTargetDetailData(appStore.tenant, id ? id : selectId).then(res => {
             if (res.status === 200) {
+                setTargetGraph(res.data.target_graph)
                 setCollapseKeyList(collapseKeyListDefault);
                 let arr = mapNewData(res.data.target_resources);
                 setCollapseList(arr);
@@ -371,7 +374,7 @@ export default function Index(props) {
     return (
         <Modal
             visible={visible}
-            forceRender
+            forceRender={true}
             onCancel={handleCancel}
             width={"700px"}
             footer={null}
@@ -391,7 +394,9 @@ export default function Index(props) {
                         {targetList ? targetList.map(item => (<Option key={item.id} value={item.id}>{item.target_name}</Option>)) : null}
                     </Select>
                 </Form.Item>
+
                 <div style={{ marginBottom: '20px' }}>
+                    <p style={{marginBottom:"20px"}}>当前选择资源图名:{targetGraph}</p>
                     所有资源：
                     <Switch
                         checked={allKey}
