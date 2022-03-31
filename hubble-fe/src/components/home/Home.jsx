@@ -114,9 +114,9 @@ const Home = () => {
 
     useEffect(() => {
         if (
-            (/(\/0\/role)|(\/resources)|(\/user)/.test(_) && !graphspaceAuth)
+            (/(\/0\/role)|(\/resources)|(\/user)/.test(_) && !graphspaceAuth && graphspaceAuth !== null)
         ) {
-            // setLocation("/graph-management/0/data-analyze")
+            setLocation("/graph-management/0/data-analyze")
         }
     }, [graphspaceAuth]);
 
