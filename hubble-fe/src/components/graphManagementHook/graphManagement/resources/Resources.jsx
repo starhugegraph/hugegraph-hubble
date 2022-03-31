@@ -366,7 +366,6 @@ export default function Resources() {
 
     // 打开新增属性弹窗
     const openAddDom = (key) => {
-        console.log(key);
         setSwitchKey(key);
         setAddKey(true);
     };
@@ -379,14 +378,12 @@ export default function Resources() {
     const addDom = (data) => {
         let key = switchKey.key;
         data.only = (switchKey.only ? switchKey.only : switchKey.key) + (data.key ? data.key : data.label)
-        console.log(data,collapseKeyList);
         let indexKey = collapseKeyList.indexOf(data.only);
         if (indexKey !== -1) {
             message.error('key命名重复!');
             return;
         }
         let arr = JSON.parse(JSON.stringify(collapseList));
-        console.log(data, arr);
         for (let i = 0; i < arr.length; i++) {
             if (arr[i].key === key) {
                 arr[i].children = arr[i].children ? arr[i].children : [];
@@ -548,7 +545,6 @@ export default function Resources() {
                                     danger
                                     onClick={(e) => {
                                         e.stopPropagation();
-                                        console.log(item);
                                         deleteDom(item.only || item.key);
                                     }}
                                 >
