@@ -461,6 +461,4 @@ export function timeSort(array: any[], type: string) {
     return (+(arrB[0].split("-").join("") + arrB[1].split(":").join("")) - +(arrA[0].split("-").join("") + arrA[1].split(":").join("")))
   });
   return res
-  // let res = array.sort((a,b)=>+(a[type]))
-  // console.log(res);
 }

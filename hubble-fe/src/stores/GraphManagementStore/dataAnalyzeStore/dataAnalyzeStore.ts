@@ -535,7 +535,6 @@ export class DataAnalyzeStore {
             remove(selectedGraphDataPropertKeys, (key) => key === name);
           }
         });
-        console.log((selectedLabel as EdgeType).sort_keys,this.editedSelectedGraphDataProperties.primary);
       }
 
       selectedLabel.properties

@@ -25,8 +25,8 @@ import { AppStoreContext } from '../../../../stores';
 import api from '../../../../api/api';
 
 const container_style = { padding: '8px 0px', display: "flex" }
-const span_style = { margin: '0 20px', display: "inline-block", width: "70px" }
-const div_style = { width: "100px", display: "flex", justifyContent: "flex-start" }
+const span_style = { margin: '0 20px', display: "inline-block", flex: 1 }
+const div_style = { width: "100px", display: "flex", flex: 2 }
 export default function Resources() {
 
     let appStore = useContext(AppStoreContext);
@@ -270,7 +270,6 @@ export default function Resources() {
                 let arr = mapNewData(res.data.target_resources);
                 setEditId(res.data.id);
                 setCollapseList(arr);
-                console.log(arr);
                 setEidtKey(true);
                 setCreateKey(true);
             }
@@ -330,10 +329,8 @@ export default function Resources() {
             obj.target_resources = [{ type: 'ALL' }];
         } else {
             let dataList = JSON.parse(JSON.stringify(collapseList));
-            console.log(dataList);
             obj.target_resources = mapData(dataList);
         }
-        console.log(obj.target_resources);
         if (!eidtKey) {
             api.createResources(appStore.tenant, obj).then((res) => {
                 if (res.status === 200) {
@@ -366,8 +363,10 @@ export default function Resources() {
             }
         });
     };
-    // 打开新增label弹窗
+
+    // 打开新增属性弹窗
     const openAddDom = (key) => {
+        console.log(key);
         setSwitchKey(key);
         setAddKey(true);
     };
@@ -379,14 +378,15 @@ export default function Resources() {
     // 确认添加操作
     const addDom = (data) => {
         let key = switchKey.key;
-        console.log(switchKey);
         data.only = (switchKey.only ? switchKey.only : switchKey.key) + (data.key ? data.key : data.label)
+        console.log(data,collapseKeyList);
         let indexKey = collapseKeyList.indexOf(data.only);
         if (indexKey !== -1) {
             message.error('key命名重复!');
             return;
         }
         let arr = JSON.parse(JSON.stringify(collapseList));
+        console.log(data, arr);
         for (let i = 0; i < arr.length; i++) {
             if (arr[i].key === key) {
                 arr[i].children = arr[i].children ? arr[i].children : [];
@@ -404,7 +404,7 @@ export default function Resources() {
                 form2.setFieldsValue({ label: '' });
                 return;
             }
-            if (arr[i].isAdd && arr[i].children) {
+            if (arr[i].isAdd && arr[i].children && data.only.includes(arr[i].key)) {
                 for (let j = 0; j < arr[i].children.length; j++) {
                     if (arr[i].children[j].key === key) {
                         arr[i].children[j].children = arr[i].children[j].children ? arr[i].children[j].children : [];
@@ -428,19 +428,21 @@ export default function Resources() {
     };
     // properties删除操作（仅顶点和边下有properties）
     const deleteDom = (mykey) => {
-        let indexKey = collapseKeyList.indexOf(mykey);
+        let collList = collapseKeyList
+        let indexKey = collList.indexOf(mykey);
         if (indexKey === -1) {
             message.error('未找到该key!');
             return;
         }
+        collList.splice(indexKey, 1)
+        setCollapseKeyList(collList)
         let arr = JSON.parse(JSON.stringify(collapseList));
-        console.log(arr);
         if (arr[1].children && arr[1].children.length) {
             let mapList = arr[1].children;
             for (let i = 0; i < mapList.length; i++) {
                 if (mapList[i].children && mapList[i].children.length > 0) {
                     for (let j = 0; j < mapList[i].children.length; j++) {
-                        if (mapList[i].children[j].only ? mapList[i].children[j].only : mapList[i].children[j].key === mykey) {
+                        if ((mapList[i].children[j].only ? mapList[i].children[j].only : mapList[i].children[j].key) === mykey) {
                             mapList[i].children.splice(j, 1);
                             setCollapseList(arr);
                             return;
@@ -456,7 +458,7 @@ export default function Resources() {
         for (let i = 0; i < mapList.length; i++) {
             if (mapList[i].children && mapList[i].children.length > 0) {
                 for (let j = 0; j < mapList[i].children.length; j++) {
-                    if (mapList[i].children[j].only? mapList[i].children[j].only : mapList[i].children[j].key === mykey) {
+                    if ((mapList[i].children[j].only ? mapList[i].children[j].only : mapList[i].children[j].key) === mykey) {
                         mapList[i].children.splice(j, 1);
                         setCollapseList(arr);
                         return;
@@ -468,7 +470,6 @@ export default function Resources() {
     // 选中时修改三维数组，修改checked值
     const setChecked = (key, value, allCheck, isChildren) => {
         let arr = JSON.parse(JSON.stringify(collapseList));
-        console.log(key, value, arr);
         // 针对于元数组的选中处理
         if (key === 'SCHEMA' || (allCheck && value && !arr[0].checked && !isChildren)) {
             arr[0].children.forEach((item) => {
@@ -547,7 +548,7 @@ export default function Resources() {
                                     danger
                                     onClick={(e) => {
                                         e.stopPropagation();
-                                        console.log(item, "xxx");
+                                        console.log(item);
                                         deleteDom(item.only || item.key);
                                     }}
                                 >
@@ -653,7 +654,7 @@ export default function Resources() {
                             type="primary"
                             size="small"
                             shape="circle"
-                            disabled={item.checked||see}
+                            disabled={item.checked || see}
                             onClick={(e) => {
                                 e.stopPropagation();
                                 if (item.type === 'type') {
@@ -842,6 +843,7 @@ export default function Resources() {
         *   5. 返回处理好的结果
         */
         let list = JSON.parse(JSON.stringify(collapseListDefault));
+        let colKeyList = collapseKeyListDefault;
         for (let i = 0; i < arr.length; i++) {
             if (arr[i].type === 'ALL') {
                 form.setFieldsValue({
@@ -876,30 +878,35 @@ export default function Resources() {
                     continue;
                 }
                 myData.children = myData.children ? myData.children : [];
+                let only = arr[i].type + arr[i].label
                 myData.children.push({
                     title: arr[i].label,
                     checked: false,
                     isAdd: true,
                     key: arr[i].label,
-                    type: 'label'
+                    type: 'label',
+                    only: arr[i].type + arr[i].label
                 });
-                setCollapseKeyList([...collapseKeyListDefault, arr[i].label]);
+                colKeyList = [...colKeyList, only]
                 if (arr[i].properties) {
                     let myArr = myData.children;
                     myArr[myArr.length - 1].children = [];
-                    let propArr=[]
+                    let propArr = []
                     for (let prop in arr[i].properties) {
+                        let onlyProp = only + prop
                         myArr[myArr.length - 1].children.push({
                             title: prop + '=' + arr[i].properties[prop],
                             checked: true,
                             isAdd: false,
                             key: prop,
-                            type: 'properties'
+                            type: 'properties',
+                            only: onlyProp
                         })
-                        propArr.push(prop)
+                        propArr.push(onlyProp)
                     }
-                    setCollapseKeyList([...collapseKeyListDefault, ...propArr]);
+                    colKeyList = [...colKeyList, ...propArr];
                 }
+                setCollapseKeyList(colKeyList)
                 continue;
             }
             if (arr[i].type === 'VAR') {
