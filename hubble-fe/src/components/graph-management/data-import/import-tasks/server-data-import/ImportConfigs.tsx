@@ -532,7 +532,6 @@ const ImportConfigs: React.FC<ImportConfigsProps> = observer(({ height }) => {
                 isEmpty(serverDataImportStore.importTasks))
             }
             onClick={async () => {
-              console.log(dataImportRootStore.currentStatus, "xxx");
               if (
                 dataImportRootStore.currentStatus === 'SUCCESS' ||
                 dataImportRootStore.currentStatus === 'FAILED' ||
