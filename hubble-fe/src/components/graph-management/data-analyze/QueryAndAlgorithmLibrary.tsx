@@ -18,7 +18,7 @@ import 'codemirror/addon/display/placeholder';
 
 import { Tooltip as CustomTooltip } from '../../common';
 import Favorite from './common/Favorite';
-import { DataAnalyzeStoreContext } from '../../../stores';
+import { AppStoreContext, DataAnalyzeStoreContext } from '../../../stores';
 import { useMultiKeyPress } from '../../../hooks';
 
 import LoopDetection from './algorithm/LoopDetection';
@@ -41,6 +41,7 @@ import PersonalRank from './algorithm/PersonalRank';
 import ArrowIcon from '../../../assets/imgs/ic_arrow_16.svg';
 import QuestionMarkIcon from '../../../assets/imgs/ic_question_mark.svg';
 import { Algorithm } from '../../../stores/factory/dataAnalyzeStore/algorithmStore';
+import { message } from 'antd';
 
 export const styles = {
   primaryButton: {
@@ -117,6 +118,7 @@ const QueryAndAlgorithmLibrary: React.FC = observer(() => {
 
 export const GremlinQuery: React.FC = observer(() => {
   const dataAnalyzeStore = useContext(DataAnalyzeStoreContext);
+  const appStore = useContext(AppStoreContext)
   const [isFavoritePop, switchFavoritePop] = useState(false);
   const [isCodeExpand, switchCodeExpand] = useState(true);
   const codeContainer = useRef<HTMLTextAreaElement>(null);
@@ -325,9 +327,11 @@ export const GremlinQuery: React.FC = observer(() => {
               }
             }}
             tooltipWrapper={
-              dataAnalyzeStore.codeEditorText.length === 0
-                ? '查询语句不能为空'
-                : '⌘ + Enter'
+              appStore.graphs === "null"
+                ? '当前图为空'
+                : dataAnalyzeStore.codeEditorText.length === 0
+                  ? '查询语句不能为空'
+                  : '⌘ + Enter'
             }
           >
             <Dropdown.Button
@@ -340,8 +344,8 @@ export const GremlinQuery: React.FC = observer(() => {
                 dataAnalyzeStore.requestStatus.fetchGraphs === 'pending'
                   ? '执行中　'
                   : dataAnalyzeStore.queryMode === 'query'
-                  ? '执行查询'
-                  : '执行任务'
+                    ? '执行查询'
+                    : '执行任务'
               }
               onHandleMenuClick={(e: any) => {
                 dataAnalyzeStore.setQueryMode(e.key);
@@ -353,7 +357,8 @@ export const GremlinQuery: React.FC = observer(() => {
               disabled={
                 dataAnalyzeStore.codeEditorText.length === 0 ||
                 !codeRegexp.test(dataAnalyzeStore.codeEditorText) ||
-                dataAnalyzeStore.requestStatus.fetchGraphs === 'pending'
+                dataAnalyzeStore.requestStatus.fetchGraphs === 'pending' ||
+                appStore.graphs === "null"
               }
             />
           </CustomTooltip>
@@ -386,7 +391,10 @@ export const GremlinQuery: React.FC = observer(() => {
             >
               <Button
                 style={styles.primaryButton}
-                disabled={!codeRegexp.test(dataAnalyzeStore.codeEditorText)}
+                disabled={
+                  !codeRegexp.test(dataAnalyzeStore.codeEditorText) ||
+                  appStore.graphs === "null"
+                }
                 onClick={() => {
                   dataAnalyzeStore.setFavoritePopUp('addFavorite');
                   dataAnalyzeStore.resetFavoriteRequestStatus('add');
@@ -401,9 +409,11 @@ export const GremlinQuery: React.FC = observer(() => {
             <Tooltip
               placement="bottom"
               title={
-                dataAnalyzeStore.codeEditorText.length === 0
-                  ? '查询语句不能为空'
-                  : ''
+                appStore.graphs==="null"
+                  ? '当前图为空'
+                  : dataAnalyzeStore.codeEditorText.length === 0
+                    ? '查询语句不能为空'
+                    : ''
               }
               type="dark"
             >
