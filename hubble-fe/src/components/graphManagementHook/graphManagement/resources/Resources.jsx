@@ -580,7 +580,7 @@ export default function Resources() {
                                     disabled={see}
                                     onClick={(checked, e) => {
                                         e.stopPropagation();
-                                        setChecked(item.key, checked, true, item.isChildren);
+                                        setChecked(item.key, checked, true, item.isChildren, item.only);
                                     }}
                                 />
                             </div>
@@ -597,7 +597,7 @@ export default function Resources() {
                                 disabled={see}
                                 onClick={(checked, e) => {
                                     e.stopPropagation();
-                                    setChecked(item.key, checked, true, item.isChildren);
+                                    setChecked(item.key, checked, true, item.isChildren, item.only);
                                 }}
                             />
                             <Button
@@ -633,7 +633,7 @@ export default function Resources() {
                                     disabled={see}
                                     onClick={(checked, e) => {
                                         e.stopPropagation();
-                                        setChecked(item.key, checked, false, item.isChildren);
+                                        setChecked(item.key, checked, false, item.isChildren, item.only);
                                     }}
                                 />
                             </div>
@@ -892,7 +892,7 @@ export default function Resources() {
                 let only = arr[i].type + arr[i].label
                 myData.children.push({
                     title: arr[i].label,
-                    checked: false,
+                    checked: !arr[i].properties,
                     isAdd: true,
                     key: arr[i].label,
                     type: 'label',
