@@ -465,7 +465,7 @@ export default function Resources() {
         }
     };
     // 选中时修改三维数组，修改checked值
-    const setChecked = (key, value, allCheck, isChildren) => {
+    const setChecked = (key, value, allCheck, isChildren, only) => {
         let arr = JSON.parse(JSON.stringify(collapseList));
         // 针对于元数组的选中处理
         if (key === 'SCHEMA' || (allCheck && value && !arr[0].checked && !isChildren)) {
@@ -473,7 +473,6 @@ export default function Resources() {
                 item.checked = value;
             });
             arr[0].checked = value;
-            setCollapseList(arr);
         }
         if (key === 'VERTEX') {
             if (value && arr[1].children && arr[1].children.length) {
@@ -501,7 +500,24 @@ export default function Resources() {
             setCollapseList(arr);
             return;
         }
-        for (let i = 0; i < arr.length; i++) {
+        arr.forEach(item => {
+            if (item.key === key) {
+                item.checked = value;
+            }
+            if (item.children && item.children.length) {
+                item.children.forEach(children => {
+                    if (children.only === only) {
+                        children.checked = value;
+                        if (isChildren) {
+                            const res = arr[0].children.every(item => item.checked)
+                            arr[0].checked = res
+                        }
+                    }
+                })
+            }
+        })
+        setCollapseList(arr);
+        /* for (let i = 0; i < arr.length; i++) {
             if (arr[i].key === key) {
                 arr[i].checked = value;
                 setCollapseList(arr);
@@ -509,7 +525,7 @@ export default function Resources() {
             }
             if (arr[i].children && arr[i].children.length) {
                 for (let j = 0; j < arr[i].children.length; j++) {
-                    if (arr[i].children[j].key === key) {
+                    if (arr[i].children[j].only === only) {
                         arr[i].children[j].checked = value;
                         if (isChildren) {
                             const res = arr[0].children.every(item => item.checked)
@@ -520,8 +536,7 @@ export default function Resources() {
                     }
                 }
             }
-        }
-        return;
+        } */
     };
     // 渲染折叠面板（三维数组）
     const renderCollapse = (arr) => {
@@ -533,7 +548,7 @@ export default function Resources() {
                 // properties级别渲染
                 if (item.type === 'properties') {
                     return (
-                        <div style={container_style}>
+                        <div style={container_style} key={item.title}>
                             <span style={span_style}>{item.title}:</span>
                             <div style={div_style}>
                                 <Button
@@ -557,7 +572,7 @@ export default function Resources() {
                 // 没有children且不可添加渲染
                 if (!item.isAdd) {
                     return (
-                        <div style={container_style}>
+                        <div style={container_style} key={item.title}>
                             <span style={span_style}>{item.title}:</span>
                             <div style={div_style}>
                                 <Switch
@@ -574,7 +589,7 @@ export default function Resources() {
                 }
                 // 没有children且可添加渲染
                 return (
-                    <div style={container_style}>
+                    <div style={container_style} key={item.title}>
                         <span style={span_style}>{item.title}:</span>
                         <div style={div_style}>
                             <Switch
@@ -642,7 +657,7 @@ export default function Resources() {
                             disabled={see}
                             onClick={(checked, e) => {
                                 e.stopPropagation();
-                                setChecked(item.key, checked, false, item.isChildren);
+                                setChecked(item.key, checked, false, item.isChildren, item.only);
                             }}
                         />
                         <Button
@@ -1000,7 +1015,7 @@ export default function Resources() {
                         name="target_graph"
                         rules={[{ required: true, message: '请选择图!' }]}
                     >
-                        <Select placeholder="请选择图" disabled={see}>
+                        <Select placeholder="请选择图" disabled={see || eidtKey}>
                             <Option
                                 value={"*"}
                             >
