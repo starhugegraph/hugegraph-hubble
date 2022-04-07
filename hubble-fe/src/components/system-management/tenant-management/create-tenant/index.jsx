@@ -84,9 +84,9 @@ const Index = ({ visible, setVisible, detailData }) => {
     };
     // 验证
     const serviceValidator = (_, value) => {
-        let res = /^[5A-Za-z0-9\-]+$/.test(value)
+        let res = /^[a-zA-Z][A-Za-z0-9\-]+$/.test(value)
         if (!res) {
-            return Promise.reject("格式错误,只可包含英文、数字、-")
+            return Promise.reject("格式错误,以字母开头,只能包含字母、数字、-")
         } else {
             return Promise.resolve()
         }
@@ -121,7 +121,7 @@ const Index = ({ visible, setVisible, detailData }) => {
                                 [
                                     { required: true, message: "此项为必填项" },
                                     { max: 48, message: "字符长度最多48位" },
-                                    { validator: k8sValidator }
+                                    { validator: serviceValidator }
                                 ]
                             }
                         >
