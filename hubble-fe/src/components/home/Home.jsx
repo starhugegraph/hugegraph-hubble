@@ -52,7 +52,8 @@ import axios from 'axios'
 
 axios.interceptors.response.use(
     (response) => {
-        if (response.data.status !== 200 && response.data.status !== 401) {
+        console.log(response.data,"xxxx");
+        if (response.data.status && response.data.status !== 200 && response.data.status !== 401) {
             message.error(response.data.message);
         } else if (response.data.status === 401) {
             message.error("授权过期");
