@@ -22,13 +22,13 @@ const getUser = (data) => {
 };
 // 登出
 const outLogin = (data) => {
-        return new Promise((resolve, reject) => {
-            myaxios.get('/auth/logout').then(res => {
-                resolve(res);
-            }, error => {
-                reject(error);
-            });
+    return new Promise((resolve, reject) => {
+        myaxios.get('/auth/logout').then(res => {
+            resolve(res);
+        }, error => {
+            reject(error);
         });
+    });
 };
 // 获取图列表
 const getGraphs = (graphspace, data) => {
@@ -88,7 +88,7 @@ const deleteSchema = (graphspace, graph, data) => {
     });
 };
 // 清空图
-const deleteGraphs= (graphspace, graph) => {
+const deleteGraphs = (graphspace, graph) => {
     return new Promise((resolve, reject) => {
         myaxios.delete(`graphspaces/${graphspace}/graphs/${graph}`).then(res => {
             resolve(res);
@@ -723,19 +723,20 @@ const getPdTableData = () => {
 const outTheData = (url, data) => {
     message.warning("正在下载中,请稍等......")
     axios.post(myaxios.baseURL + url, data, {
-        responseType: 'arraybuffer',
+        // responseType: 'arraybuffer',
         "Content-Type": "application/json"
     }).then(response => {
-       /*  const fileType = [
-            'application/vnd.ms-excel;charset=utf-8', // xls
-            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8' // xlsx
-        ] */
+        /*  const fileType = [
+             'application/vnd.ms-excel;charset=utf-8', // xls
+             'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8' // xlsx
+         ] */
         const blob = new Blob([response.data])
         const downloadElement = document.createElement('a')
         const href = window.URL.createObjectURL(blob);
         const contentDisposition = response.headers['content-disposition']
         const patt = new RegExp('filename=([^;]+\\.[^\\.;]+);*')
         const result = patt.exec(contentDisposition)
+        if (!result) result = ['out','out'];
         const filename = decodeURI(escape(result[1])) // 处理文件名,解决中文乱码问题
         downloadElement.style.display = 'none'
         downloadElement.href = href
@@ -760,7 +761,7 @@ const configsList = (graphspace) => {
     });
 };
 // 服务启动
-const queryStart = (graphspace,service) => {
+const queryStart = (graphspace, service) => {
     return new Promise((resolve, reject) => {
         myaxios.get(`graphspaces/${graphspace}/services/oltp/${service}/start`).then(res => {
             resolve(res);
@@ -770,7 +771,7 @@ const queryStart = (graphspace,service) => {
     });
 };
 // 服务启动
-const queryEnd = (graphspace,service) => {
+const queryEnd = (graphspace, service) => {
     return new Promise((resolve, reject) => {
         myaxios.get(`graphspaces/${graphspace}/services/oltp/${service}/stop`).then(res => {
             resolve(res);
@@ -802,7 +803,7 @@ const StorageClusterSplit = () => {
 // 上线
 const StorageLine = (node) => {
     return new Promise((resolve, reject) => {
-        myaxios.post(`/services/storage/nodes/startup`,node).then(res => {
+        myaxios.post(`/services/storage/nodes/startup`, node).then(res => {
             resolve(res);
         }, error => {
             reject(error);
@@ -812,7 +813,7 @@ const StorageLine = (node) => {
 // 下线
 const StorageOutline = (node) => {
     return new Promise((resolve, reject) => {
-        myaxios.post(`/services/storage/nodes/shutdown`,node).then(res => {
+        myaxios.post(`/services/storage/nodes/shutdown`, node).then(res => {
             resolve(res);
         }, error => {
             reject(error);

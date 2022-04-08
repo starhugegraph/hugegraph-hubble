@@ -1008,7 +1008,7 @@ export default function Resources() {
                             { max: 48, message: '最大长度为48个字符!' }
                         ]}
                     >
-                        <Input disabled={see} placeholder="请输入资源名称" />
+                        <Input disabled={see || eidtKey} placeholder="请输入资源名称" />
                     </Form.Item>
                     <Form.Item
                         label="图"

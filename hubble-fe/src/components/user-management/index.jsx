@@ -10,7 +10,7 @@ let textStyle = {
     textOverflow: "ellipsis",
     overflow: "hidden",
     whiteSpace: "nowrap",
-    width: "250px",
+    width: "100%",
 }
 export default function Index() {
     const [page, setPage] = useState(null)//分页条件
