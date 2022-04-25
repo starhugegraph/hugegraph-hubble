@@ -146,9 +146,12 @@ const CreateFrom = ({
 
   // 验证
   const serviceValidator = (_: any, value: string) => {
-    let res = /^[a-zA-Z][a-zA-Z0-9\-]*$/.test(value);
+    if (value === 'DEFAULT') {
+      return Promise.resolve();
+    }
+    let res = /^[a-z][a-z0-9_]{0,47}$/.test(value);
     if (!res) {
-      return Promise.reject('以字母开头,只能包含字母、数字、-');
+      return Promise.reject('以字母开头,只能包含字母、数字、_, 最长48位');
     } else {
       return Promise.resolve();
     }
