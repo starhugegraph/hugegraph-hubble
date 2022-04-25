@@ -423,6 +423,13 @@ export function compKeyObj(path: string) {
         },
         headerCurrentKey: "0"
       }
+    case "/k8stoken":
+      return {
+        menuObj: {
+          c_key: "10"
+        },
+        headerCurrentKey: "0"
+      }
 
     default:
       return {

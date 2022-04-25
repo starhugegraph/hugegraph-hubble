@@ -1,7 +1,7 @@
-import React, { useEffect, useMemo, useState, useContext } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useLocation } from 'wouter';
 import api from '../../../api/api'
-import { Menu, Spin } from 'antd'
+import { Menu } from 'antd'
 import { SnippetsOutlined } from '@ant-design/icons';
 import { userAuthArray } from '../../../configs/userAuth';
 
@@ -60,6 +60,8 @@ function SiderC({
           window.open(res.data.url)
         }
       })
+    } else if (e.key === '10') {
+      setLocation(`/k8stoken`)
     }
   };
 

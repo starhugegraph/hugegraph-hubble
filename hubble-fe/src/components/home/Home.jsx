@@ -6,7 +6,7 @@
  * @Description: 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  * @FilePath: /hubble-fe/src/components/home/home.js
  */
-import React, { useState, useContext, useEffect, useMemo, useCallback } from 'react';
+import React, { useState, useContext, useEffect, useMemo } from 'react';
 import './Home.less';
 import { Select, Layout, message } from 'antd';
 import {
@@ -22,6 +22,7 @@ import {
 import GraphData from '../graphManagementHook/graphManagement/graphData/GraphData';
 import GraphSchema from '../graphManagementHook/graphManagement/graphSchema/GraphSchema';
 import Resources from '../graphManagementHook/graphManagement/resources/Resources';
+import K8sToken from '../k8sToken'
 import {
     QueryServiceList,
     StorageService,
@@ -52,7 +53,6 @@ import axios from 'axios'
 
 axios.interceptors.response.use(
     (response) => {
-        console.log(response.data,"xxxx");
         if (response.data.status && response.data.status !== 200 && response.data.status !== 401) {
             message.error(response.data.message);
         } else if (response.data.status === 401) {
@@ -323,6 +323,10 @@ const Home = () => {
                                     <Route
                                         path="/operations-management/1/pd"
                                         component={PdService}
+                                    />
+                                    <Route
+                                        path="/k8stoken"
+                                        component={K8sToken}
                                     />
                                     <Route
                                         path="/"

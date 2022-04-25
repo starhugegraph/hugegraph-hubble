@@ -86,35 +86,30 @@ function Index() {
             dataIndex: 'description',
             align: "center",
             width: 150,
-            render: (value) => (
-                <Tooltip title={value}>
-                    <p style={{ overflow: 'hidden', whiteSpace: "nowrap", textOverflow: "ellipsis" }}>{value}</p>
-                </Tooltip>
-            )
+            ellipsis: true,
         },
         {
             title: '图服务',
             align: "center",
             width: 190,
             render: (value) => (
-                <Tooltip title={`${value.cpu_limit}核/${value.memory_limit}G/${value.oltp_namespace}`}>
-                    <p style={{ overflow: 'hidden', whiteSpace: "nowrap", textOverflow: "ellipsis" }}>
-                        {`${value.cpu_limit}核/${value.memory_limit}G/${value.oltp_namespace}`}
-                    </p>
-                </Tooltip>
-            )
+                <p style={{ overflow: 'hidden', whiteSpace: "nowrap", textOverflow: "ellipsis" }}>
+                    {`${value.cpu_limit}核/${value.memory_limit}G/${value.oltp_namespace}`}
+                </p>
+            ),
+            ellipsis: true,
+
         },
         {
             title: '计算任务',
             align: "center",
             width: 190,
             render: (value) => (
-                <Tooltip title={`${value?.cpu_limit}核/${value?.memory_limit}G/${value?.olap_namespace}`}>
-                    <p style={{ overflow: 'hidden', whiteSpace: "nowrap", textOverflow: "ellipsis" }}>
-                        {`${value?.compute_cpu_limit}核/${value?.compute_memory_limit}G/${value?.olap_namespace}`}
-                    </p>
-                </Tooltip>
-            )
+                <p style={{ overflow: 'hidden', whiteSpace: "nowrap", textOverflow: "ellipsis" }}>
+                    {`${value?.compute_cpu_limit}核/${value?.compute_memory_limit}G/${value?.olap_namespace}`}
+                </p>
+            ),
+            ellipsis: true,
         },
         {
             title: '存储服务',
@@ -131,7 +126,7 @@ function Index() {
             width: 125,
             render: (value) => (
                 <Tooltip title={value?.join(",")}>
-                    <span style={{ overflow: 'hidden', whiteSpace: "nowrap", textOverflow: "ellipsis" }}>{value?.join(",") }</span>
+                    <span style={{ overflow: 'hidden', whiteSpace: "nowrap", textOverflow: "ellipsis" }}>{value?.join(",")}</span>
                 </Tooltip>
             )
         },

@@ -1,98 +1,104 @@
-export const userAuthArray = [{
+export const userAuthArray = [
+    {
         name: "ADMIN",
-        authArray: [{
+        authArray: [
+            {
                 key: "sub1",
                 name: "数据管理",
                 children: [{
-                        key: "1",
-                        name: "数据分析"
-                    },
-                    {
-                        key: "2",
-                        name: "数据维护"
-                    },
-                    {
-                        key: "3",
-                        name: "权限管理"
-                    },
+                    key: "1",
+                    name: "数据分析"
+                },
+                {
+                    key: "2",
+                    name: "数据维护"
+                },
+                {
+                    key: "3",
+                    name: "权限管理"
+                },
                 ]
             },
             {
                 key: "sub2",
                 name: "运维管理",
                 children: [{
-                        key: "4",
-                        name: "服务"
-                    },
-                    {
-                        key: "7",
-                        name: "日志"
-                    },
-                    {
-                        key: "8",
-                        name: "审计"
-                    },
-                    {
-                        key: "9",
-                        name: "监控"
-                    }
+                    key: "4",
+                    name: "服务"
+                },
+                {
+                    key: "7",
+                    name: "日志"
+                },
+                {
+                    key: "8",
+                    name: "审计"
+                },
+                {
+                    key: "9",
+                    name: "监控"
+                }
                 ]
             },
             {
                 key: "sub3",
                 name: "系统管理",
                 children: [{
-                        key: "5",
-                        name: "图空间管理"
-                    },
-                    {
-                        key: "6",
-                        name: "用户管理"
-                    },
+                    key: "5",
+                    name: "图空间管理"
+                },
+                {
+                    key: "6",
+                    name: "用户管理"
+                },
                 ]
+            },
+            {
+                key: "10",
+                name: "K8S Token",
             },
         ]
     },
     {
         name: "SPACEADMIN",
         authArray: [{
-                key: "sub1",
-                name: "数据管理",
-                children: [{
-                        key: "1",
-                        name: "数据分析"
-                    },
-                    {
-                        key: "2",
-                        name: "数据维护"
-                    },
-                    {
-                        key: "3",
-                        name: "权限管理"
-                    },
-                ]
+            key: "sub1",
+            name: "数据管理",
+            children: [{
+                key: "1",
+                name: "数据分析"
             },
             {
-                key: "sub2",
-                name: "运维管理",
-                children: [{
-                        key: "4",
-                        name: "服务"
-                    },
-                    {
-                        key: "7",
-                        name: "日志"
-                    },
-                    {
-                        key: "8",
-                        name: "审计"
-                    },
-                    {
-                        key: "9",
-                        name: "监控"
-                    }
-                ]
+                key: "2",
+                name: "数据维护"
             },
+            {
+                key: "3",
+                name: "权限管理"
+            },
+            ]
+        },
+        {
+            key: "sub2",
+            name: "运维管理",
+            children: [{
+                key: "4",
+                name: "服务"
+            },
+            {
+                key: "7",
+                name: "日志"
+            },
+            {
+                key: "8",
+                name: "审计"
+            },
+            {
+                key: "9",
+                name: "监控"
+            }
+            ]
+        },
         ]
     },
     {
@@ -101,15 +107,15 @@ export const userAuthArray = [{
             key: "sub1",
             name: "数据管理",
             children: [{
-                    key: "1",
-                    name: "数据分析"
-                },
-                {
-                    key: "2",
-                    name: "数据维护"
-                },
+                key: "1",
+                name: "数据分析"
+            },
+            {
+                key: "2",
+                name: "数据维护"
+            },
             ]
-        }, ]
+        },]
     },
 ]
 export const defaultMenuList = [
@@ -218,6 +224,17 @@ export const defaultMenuList = [
             {
                 key: '0',
                 name: '审计'
+            }
+        ]
+    },
+    {
+        data: null
+    },
+    {
+        data: [
+            {
+                key: '0',
+                name: 'Token详情'
             }
         ]
     }
