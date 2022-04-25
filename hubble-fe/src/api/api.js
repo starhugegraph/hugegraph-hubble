@@ -830,8 +830,19 @@ const graphspaceAuth = (graphspace) => {
         });
     });
 };
+//k8sToken
+const getK8sToken = (graphspace) => {
+    return new Promise((resolve, reject) => {
+        myaxios.get(`k8s/token`).then(res => {
+            resolve(res);
+        }, error => {
+            reject(error);
+        });
+    });
+};
 
 export default {
+    getK8sToken,
     graphspaceAuth,
     queryEnd,
     queryStart,

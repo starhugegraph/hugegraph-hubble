@@ -290,7 +290,7 @@ export default function GraphSchema() {
                             { max: 48, message: '最大长度为48个字符!' }
                         ]}
                     >
-                        <Input placeholder="请输入schema名称" />
+                        <Input placeholder="请输入schema名称" disabled={eidtKey}/>
                     </Form.Item>
                     <Form.Item
                         label="schema"
