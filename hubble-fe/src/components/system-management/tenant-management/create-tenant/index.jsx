@@ -96,9 +96,9 @@ const Index = ({ visible, setVisible, detailData }) => {
     }
     // 验证
     const k8sValidator = (_, value) => {
-        let res = /^[a-z][a-z0-9\-]*$/.test(value)
+        let res = /^[a-z][a-z0-9\-]{0,47}$/.test(value)
         if (!res) {
-            return Promise.reject("以字母开头,只能包含小写字母、数字、-")
+            return Promise.reject("以字母开头,只能包含小写字母、数字、-,最长48位")
         } else {
             return Promise.resolve()
         }
