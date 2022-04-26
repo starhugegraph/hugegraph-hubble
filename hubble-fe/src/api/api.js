@@ -831,7 +831,7 @@ const graphspaceAuth = (graphspace) => {
     });
 };
 //k8sToken
-const getK8sToken = (graphspace) => {
+const getK8sToken = () => {
     return new Promise((resolve, reject) => {
         myaxios.get(`k8s/token`).then(res => {
             resolve(res);

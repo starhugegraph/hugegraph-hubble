@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import api from '../../api/api.js';
-type Props = {};
 
-function Index({}: Props) {
+function Index() {
   const [data, setData] = useState({ token: '' });
   useEffect(() => {
     api.getK8sToken().then((res) => {
-      setData(res.data);
+      if (res.status === "200") {
+        setData(res.data);
+      }
     });
   }, []);
   return (
