@@ -5,7 +5,7 @@ function Index() {
   const [data, setData] = useState({ token: '' });
   useEffect(() => {
     api.getK8sToken().then((res) => {
-      if (res.status === "200") {
+      if (res.status === 200) {
         setData(res.data);
       }
     });
