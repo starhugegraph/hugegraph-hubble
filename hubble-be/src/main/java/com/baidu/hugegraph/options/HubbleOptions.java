@@ -269,6 +269,22 @@ public class HubbleOptions extends OptionHolder {
                     ""
             );
 
+    public static final ConfigOption<String> ES_USER =
+            new ConfigOption<>(
+                    "es.user",
+                    "The user of Elasticsearch Cluster",
+                    null,
+                    ""
+            );
+
+    public static final ConfigOption<String> ES_PASSWORD =
+            new ConfigOption<>(
+                    "es.password",
+                    "The password of Elasticsearch Cluster",
+                    null,
+                    ""
+            );
+
     public static final ConfigOption<String> LOG_AUDIT_PATTERN =
             new ConfigOption<>(
                     "log.audit.pattern",

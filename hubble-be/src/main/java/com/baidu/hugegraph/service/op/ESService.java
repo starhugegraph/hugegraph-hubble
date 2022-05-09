@@ -10,7 +10,12 @@ import com.baidu.hugegraph.util.E;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpHost;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.CredentialsProvider;
+import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.elasticsearch.client.RestClient;
+import org.elasticsearch.client.RestClientBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Arrays;
@@ -64,7 +69,25 @@ public abstract class ESService {
                                  .toArray(HttpHost[]::new);
         log.debug("es.hosts:{}", Arrays.toString(hosts));
 
-        RestClient restClient = RestClient.builder(hosts).build();
+        RestClientBuilder restClientBuidler = RestClient.builder(hosts);
+
+        String esUser = config.get(HubbleOptions.ES_USER);
+        String esPassword = config.get(HubbleOptions.ES_PASSWORD);
+        if (StringUtils.isNotEmpty(esUser)) {
+            final CredentialsProvider credentialsProvider =
+                    new BasicCredentialsProvider();
+            credentialsProvider.setCredentials(AuthScope.ANY,
+                                               new UsernamePasswordCredentials(
+                                                       esUser,
+                                                       esPassword));
+
+            restClientBuidler.setHttpClientConfigCallback(
+                    httpClientBuilder -> httpClientBuilder
+                            .setDefaultCredentialsProvider(credentialsProvider)
+            );
+        }
+
+        RestClient restClient = restClientBuidler.build();
 
         return restClient;
     }
