@@ -129,7 +129,7 @@ public class LogService extends ESService {
                 new SortOptions.Builder().field(sort).build();
 
         SearchResponse<Map> search = esClient().search((s) ->
-             s.index(indexes).from(0).size(5000)
+             s.index(indexes).from(0).size(10000)
               .query(q -> q.bool( boolQuery -> boolQuery.must(querys))
               ).sort(sortKeyOption), Map.class);
 
