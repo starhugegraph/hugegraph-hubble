@@ -95,4 +95,8 @@ public abstract class ESService {
     protected String logAuditPattern() {
         return config.get(HubbleOptions.LOG_AUDIT_PATTERN);
     }
+
+    protected int exportCountLimit() {
+        return config.get(HubbleOptions.LOG_EXPORT_COUNT);
+    }
 }
