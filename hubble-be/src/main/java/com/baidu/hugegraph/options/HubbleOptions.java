@@ -292,4 +292,12 @@ public class HubbleOptions extends OptionHolder {
                     null,
                     "hugegraphaudit"
             );
+
+    public static final ConfigOption<Integer> LOG_EXPORT_COUNT =
+            new ConfigOption<>(
+                    "log.export.count",
+                    "max export item count of audit/log",
+                    positiveInt(),
+                    10000
+            );
 }
