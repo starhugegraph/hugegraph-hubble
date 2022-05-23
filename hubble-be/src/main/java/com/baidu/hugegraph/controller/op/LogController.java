@@ -85,7 +85,6 @@ public class LogController extends BaseController {
         String fileName = String.format("log.txt", logReq.startDatetime,
                                         logReq.endDatetime);
 
-        logReq.level = "";
         response.setCharacterEncoding("UTF-8");
         response.setContentType("application/octet-stream");
         response.setHeader("Access-Control-Expose-Headers",
