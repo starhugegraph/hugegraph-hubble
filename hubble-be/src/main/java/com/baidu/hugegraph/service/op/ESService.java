@@ -99,4 +99,8 @@ public abstract class ESService {
     protected int exportCountLimit() {
         return config.get(HubbleOptions.LOG_EXPORT_COUNT);
     }
+
+    protected int maxResultWindow() {
+        return config.get(HubbleOptions.MAX_RESULT_WINDOW);
+    }
 }
