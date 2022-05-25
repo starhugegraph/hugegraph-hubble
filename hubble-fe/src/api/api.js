@@ -730,6 +730,9 @@ const outTheData = (url, data) => {
              'application/vnd.ms-excel;charset=utf-8', // xls
              'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8' // xlsx
          ] */
+        if (typeof response.data !== 'string') {
+            response.data = JSON.stringify(response.data)
+        }
         const blob = new Blob([response.data])
         const downloadElement = document.createElement('a')
         const href = window.URL.createObjectURL(blob);
