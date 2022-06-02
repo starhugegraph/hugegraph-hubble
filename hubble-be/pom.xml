@@ -18,7 +18,6 @@
         <app.host>localhost</app.host>
         <app.port>36320</app.port>
         <es.version>7.16.1</es.version>
-        <jackson.version>2.12.7</jackson.version>
     </properties>
 
     <dependencies>
