@@ -89,7 +89,7 @@ const Index = ({ visible, setVisible, detailData }) => {
         }
         let res = /^[a-z][a-z0-9_]{0,47}$/.test(value);
         if (!res) {
-            return Promise.reject('以字母开头,只能包含字母、数字、_, 最长48位');
+            return Promise.reject('以字母开头,只能包含小写字母、数字、_, 最长48位');
         } else {
             return Promise.resolve()
         }
@@ -270,7 +270,8 @@ const Index = ({ visible, setVisible, detailData }) => {
                             label="Operator镜像地址"
 							rules={
 								[
-									{ required: true, message: "此项为必填项" }
+									{ required: true, message: "此项为必填项" },
+									{ pattern: /^[a-zA-Z0-9\-\.]+\/[a-zA-Z0-9\-_]+\/[a-zA-Z0-9\-_]+(\:[a-z0-9\.]+)*$/, message: '请输入正确的镜像地址格式(ie: example.com/org_1/xx_img:1.0.0)!' }
 								]
 							}
                         >
@@ -282,7 +283,8 @@ const Index = ({ visible, setVisible, detailData }) => {
                             label="算法镜像地址"
 							rules={
 								[
-									{ required: true, message: "此项为必填项" }
+									{ required: true, message: "此项为必填项" },
+									{ pattern: /^[a-zA-Z0-9\-\.]+\/[a-zA-Z0-9\-_]+\/[a-zA-Z0-9\-_]+(\:[a-z0-9\.]+)*$/, message: '请输入正确的镜像地址格式(ie: example.com/org_1/xx_img:1.0.0)!' }
 								]
 							}
                         >
