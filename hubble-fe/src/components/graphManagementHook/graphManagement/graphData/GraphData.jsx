@@ -229,6 +229,14 @@ export default function GraphData() {
             }, 1000);
         });
     };
+    const graphnameValidator = (_, value) => {
+        let res = /^[a-z][a-z0-9_]{0,47}$/.test(value);
+        if (!res) {
+            return Promise.reject('以字母开头,只能包含小写字母、数字、_, 最长48位');
+        } else {
+            return Promise.resolve()
+        }
+    };
     const inputChange = (e) => {
         setInpValue(e.target.value);
     };
@@ -335,8 +343,8 @@ export default function GraphData() {
                         name="graph"
                         rules={[
                             { required: true, message: '请输入图名!' },
-                            { pattern: /^[a-zA-Z0-9_\u4e00-\u9fa5]+$/, message: '请输入正确的格式!' },
-                            { max: 48, message: '最大长度为48个字符!' }
+                            { max: 48, message: '最大长度为48个字符!' },
+                            { validator: graphnameValidator }
                         ]}
                     >
                         <Input placeholder="请输入图名" />
