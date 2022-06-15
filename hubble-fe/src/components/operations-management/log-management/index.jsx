@@ -126,7 +126,7 @@ export default () => {
                     }
                     setParams(apiParams)
                     let res = await api.getLogTableData(apiParams)
-                    let records = timeSort(res.data.records,"log_datetime")
+                    let records = res.data.records
                     if (res.status === 200) {
                         return {
                             data: records,
