@@ -14,7 +14,7 @@ function Index() {
     <div className="query_list_container graphData_wrapper">
       <div className="topDiv"></div>
       <div style={{ fontSize: '22px' }}>K8s Token:</div>
-      <div style={{ fontSize: '16px', backgroundColor: 'white', width: "100%", wordWrap: "break-word" }}>{data.token}</div>
+      <p style={{ fontSize: '16px', backgroundColor: 'white', width: "100%"}}>{data.token}</p>
     </div>
   );
 }
