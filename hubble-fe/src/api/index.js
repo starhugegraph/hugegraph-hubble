@@ -18,7 +18,7 @@ import qs from 'qs';
 // });
 // axios.defaults.baseURL = 'http://yq01-esm-bu-esm35.yq01.baidu.com:8666/baseline/web';
 const instance = axios.create({
-    baseURL: `http://10.14.139.6:8089/api/v1.3`,
+    baseURL: `/api/v1.3`,
     // baseURL: '/api/v1.3',
     withCredentials: true,
     timeout: 60000

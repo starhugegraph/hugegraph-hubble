@@ -12,6 +12,7 @@ function Index() {
     const [visible, setVisible] = useState(false)//编辑与创建的模态框
     const [query, setQuery] = useState("")//搜索值
     const [loading, setLoading] = useState("")//table加载
+    const [user_name, setName] = useState(JSON.parse(localStorage.getItem('userInfo')).user_name)
 
     // 获取数据
     useEffect(() => {
@@ -61,14 +62,18 @@ function Index() {
     }
     // 删除
     function confirm(value) {
-        api.deleteUser(value.id).then(res => {
-            if (res && res.status === 200) {
-                message.success('删除成功');
-                getUserData()
-            } else {
-                message.success("删除失败")
-            }
-        })
+        if (value.user_name === user_name) {
+            message.warning("无法删除本账号");
+        } else {
+            api.deleteUser(value.id).then(res => {
+                if (res && res.status === 200) {
+                    message.success('删除成功');
+                    getUserData()
+                } else {
+                    message.success("删除失败");
+                }
+            })
+        }
     }
     const columns = [
         {
@@ -145,7 +150,8 @@ function Index() {
                         pageSizeOptions: ['5', '10', '15', '20'],
                         defaultPageSize: 10,
                         defaultCurrent: 1,
-                        showSizeChanger: true
+                        showSizeChanger: true,
+                        total: listData.total
                     }
                 }
                 onChange={pageChange}
