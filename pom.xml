@@ -25,6 +25,7 @@
         修改springboot 绑定的ES版本
         -->
         <elasticsearch.version>7.16.1</elasticsearch.version>
+        <jackson.version>2.12.7</jackson.version>
     </properties>
 
 </project>

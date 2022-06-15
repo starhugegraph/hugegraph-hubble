@@ -128,13 +128,27 @@ public class LogService extends ESService {
         SortOptions sortKeyOption =
                 new SortOptions.Builder().field(sort).build();
 
-        SearchResponse<Map> search = esClient().search((s) ->
-             s.index(indexes).from(0).size(exportCountLimit())
-              .query(q -> q.bool( boolQuery -> boolQuery.must(querys))
-              ).sort(sortKeyOption), Map.class);
+        int batchSize = maxResultWindow();
+        int countLimit = exportCountLimit();
 
-        for (Hit<Map> hit: search.hits().hits()) {
-            logs.add(LogEntity.fromMap((Map<String, Object>) hit.source()));
+        int times = (int) Math.ceil((double) countLimit / batchSize);
+
+        for (int i = 0; i < times; i++) {
+            int start = i * batchSize;
+
+            SearchResponse<Map> search = esClient().search((s) ->
+               s.index(indexes).from(start).size(batchSize)
+                .query(q -> q.bool( boolQuery -> boolQuery.must(querys))
+                ).sort(sortKeyOption), Map.class);
+
+            for (Hit<Map> hit: search.hits().hits()) {
+                logs.add(LogEntity.fromMap((Map<String, Object>) hit.source()));
+            }
+
+            int resultCount = (int) (search.hits().total().value());
+            if (resultCount < batchSize) {
+                break;
+            }
         }
 
         return logs;

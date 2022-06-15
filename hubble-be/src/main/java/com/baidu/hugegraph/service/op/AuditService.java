@@ -48,6 +48,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.cache.annotation.Cacheable;
@@ -56,6 +57,7 @@ import org.springframework.stereotype.Service;
 import com.baidu.hugegraph.util.PageUtil;
 import com.baidu.hugegraph.entity.op.AuditEntity;
 
+@Log4j2
 @Service
 public class AuditService extends ESService {
 
@@ -74,7 +76,7 @@ public class AuditService extends ESService {
         } else {
             services.addAll(listServices());
         }
-        services.forEach(s -> indexes.add(s + "_hugegraphaudit-*"));
+        services.forEach(s -> indexes.add(auditIndexName(s)));
 
         if (CollectionUtils.isNotEmpty(indexes)) {
             FieldSort sort =
@@ -126,13 +128,30 @@ public class AuditService extends ESService {
 
         List<Query> querys = buildESQuery(auditReq);
 
-        SearchResponse<Map> search = esClient().search((s) ->
-                 s.index(indexes).from(0).size(exportCountLimit())
-                  .query(q -> q.bool( boolQuery -> boolQuery.must(querys))
-                  ).sort(sortKeyOption), Map.class);
+        int batchSize = maxResultWindow();
+        int countLimit = exportCountLimit();
 
-        for (Hit<Map> hit: search.hits().hits()) {
-            audits.add(AuditEntity.fromMap((Map<String, Object>) hit.source()));
+        int times = (int) Math.ceil((double) countLimit / batchSize);
+
+        for (int i = 0; i < times; i++) {
+            int start = i * batchSize;
+            SearchResponse<Map> search = esClient().search((s) ->
+                   s.index(indexes).from(start).size(batchSize)
+                    .query(q -> q.bool( boolQuery -> boolQuery.must(querys))
+                    ).sort(sortKeyOption), Map.class);
+
+            for (Hit<Map> hit: search.hits().hits()) {
+                String service = hit.index().split("_")[0];
+                AuditEntity auditEntity =
+                        AuditEntity.fromMap((Map<String, Object>) hit.source());
+                auditEntity.setService(service);
+                audits.add(auditEntity);
+            }
+
+            int resultCount = (int) (search.hits().total().value());
+            if (resultCount < batchSize) {
+                break;
+            }
         }
 
         return audits;

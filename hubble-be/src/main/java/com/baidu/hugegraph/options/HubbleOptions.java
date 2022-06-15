@@ -285,6 +285,15 @@ public class HubbleOptions extends OptionHolder {
                     ""
             );
 
+    // ES查询: max_result_window
+    public static final ConfigOption<Integer> MAX_RESULT_WINDOW=
+            new ConfigOption<>(
+                    "es.max_result_window",
+                    "es config info: max_result_window",
+                    positiveInt(),
+                    10000
+            );
+
     public static final ConfigOption<String> LOG_AUDIT_PATTERN =
             new ConfigOption<>(
                     "log.audit.pattern",

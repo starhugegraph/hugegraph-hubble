@@ -84,7 +84,8 @@ public class LicenseVerifyManager extends CommonLicenseManager {
         List<ExtraParam> extraParams;
         try {
             TypeReference<?> type = new TypeReference<List<ExtraParam>>() {};
-            extraParams = MAPPER.readValue((String) content.getExtra(), type);
+            extraParams = (List<ExtraParam>)
+                    MAPPER.readValue((String) content.getExtra(), type);
         } catch (IOException e) {
             throw new ExternalException("license.read.failed", e);
         }
