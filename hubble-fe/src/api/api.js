@@ -723,13 +723,8 @@ const getPdTableData = () => {
 const outTheData = (url, data) => {
     message.warning("正在下载中,请稍等......")
     axios.post(myaxios.baseURL + url, data, {
-        // responseType: 'arraybuffer',
         "Content-Type": "application/json"
     }).then(response => {
-        /*  const fileType = [
-             'application/vnd.ms-excel;charset=utf-8', // xls
-             'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8' // xlsx
-         ] */
         if (typeof response.data !== 'string') {
             response.data = JSON.stringify(response.data)
         }
@@ -739,7 +734,7 @@ const outTheData = (url, data) => {
         const contentDisposition = response.headers['content-disposition']
         const patt = new RegExp('filename=([^;]+\\.[^\\.;]+);*')
         const result = patt.exec(contentDisposition)
-        if (!result) result = ['out','out'];
+        if (!result) result = ['out', 'out'];
         const filename = decodeURI(escape(result[1])) // 处理文件名,解决中文乱码问题
         downloadElement.style.display = 'none'
         downloadElement.href = href
