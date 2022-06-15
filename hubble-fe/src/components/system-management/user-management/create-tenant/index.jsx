@@ -80,19 +80,19 @@ const Index = ({ visible, setVisible, detailData, getUserData }) => {
 
     // 验证
     const serviceValidator = (rule, value) => {
-        let res = /^[a-zA-Z][a-zA-Z0-9_]*$/.test(value)
+        let res = /^[a-zA-Z][a-zA-Z0-9_]{0,47}$/.test(value)
         if (!res && value !== "") {
-            return Promise.reject("格式错误,不能包含特殊字符和中文")
+            return Promise.reject("以字母开头,只能包含大小写字母、数字、-,最长48位")
         } else {
             return Promise.resolve()
         }
     }
     const passwordValidator = (_, value) => {
-        const res = /^[-\w+@]{5,16}$/
+        const res = /^[\w+@]{5,16}$/
         if (res.test(value) || isDisabled) {
             return Promise.resolve()
         } else {
-            return Promise.reject("格式错误,并且长度为5-16位")
+            return Promise.reject("密码格式错误")
         }
     }
     const phoneValidator = (_, value) => {
@@ -107,7 +107,7 @@ const Index = ({ visible, setVisible, detailData, getUserData }) => {
         } else if (value.length > 48) {
             return Promise.reject("最长48位")
         } else {
-            return Promise.reject("域名格式错误");
+            return Promise.reject("邮箱格式错误");
         }
     }
     return (

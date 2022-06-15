@@ -117,7 +117,7 @@ export default () => {
                     }
                     setParams(apiParams);
                     let res = await api.getAuditTableData(apiParams);
-                    let records = timeSort(res.data.records, "audit_datetime")
+                    let records = res.data.records;
                     if (res.status === 200) {
                         return {
                             data: records,
