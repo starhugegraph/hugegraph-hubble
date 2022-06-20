@@ -31,7 +31,7 @@ public class GlobalCorsConfig {
     @Bean
     public CorsFilter corsFilter() {
         CorsConfiguration config = new CorsConfiguration();
-        config.addAllowedOriginPattern("*");
+        config.addAllowedOrigin("*");
         config.setAllowCredentials(true);
         config.addAllowedMethod("*");
         config.addAllowedHeader("*");
