@@ -50,14 +50,14 @@ public class LogEntity {
     @JsonProperty("log_message")
     private String message;
 
-    public static LogEntity fromMap(Map<String, Object> map, String index) {
+    public static LogEntity fromMap(Map<String, Object> map, String service) {
         LogEntity logEntity = new LogEntity();
         logEntity.setDatetime(
                 ESUtil.parseTimestamp(
                         (String) ESUtil.getValueByPath(map, "@timestamp".split("\\."))));
         logEntity.setHost(
                 (String) ESUtil.getValueByPath(map, "host.name".split("\\.")));
-        logEntity.setService(index);
+        logEntity.setService(service);
         logEntity.setLevel(
                 (String) ESUtil.getValueByPath(map, "level".split("\\.")));
         logEntity.setMessage(
