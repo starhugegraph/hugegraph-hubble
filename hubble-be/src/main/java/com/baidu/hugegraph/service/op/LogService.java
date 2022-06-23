@@ -100,7 +100,8 @@ public class LogService extends ESService {
              ).sort(sortKeyOption), Map.class);
 
         for (Hit<Map> hit: search.hits().hits()) {
-            logs.add(LogEntity.fromMap((Map<String, Object>) hit.source()));
+            logs.add(LogEntity.fromMap((Map<String, Object>) hit.source(),
+                                       hit.index().split("-")[0]));
         }
 
         return PageUtil.newPage(logs, logReq.pageNo, logReq.pageSize,
@@ -142,7 +143,8 @@ public class LogService extends ESService {
                 ).sort(sortKeyOption), Map.class);
 
             for (Hit<Map> hit: search.hits().hits()) {
-                logs.add(LogEntity.fromMap((Map<String, Object>) hit.source()));
+                logs.add(LogEntity.fromMap((Map<String, Object>) hit.source(),
+                        hit.index().split("-")[0]));
             }
 
             int resultCount = (int) (search.hits().total().value());
