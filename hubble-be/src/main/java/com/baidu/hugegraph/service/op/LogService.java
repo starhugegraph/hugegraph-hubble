@@ -37,11 +37,7 @@ import co.elastic.clients.elasticsearch._types.SortOrder;
 import co.elastic.clients.elasticsearch._types.aggregations.Aggregation;
 import co.elastic.clients.elasticsearch._types.aggregations.Buckets;
 import co.elastic.clients.elasticsearch._types.aggregations.StringTermsBucket;
-import co.elastic.clients.elasticsearch._types.query_dsl.MatchQuery;
-import co.elastic.clients.elasticsearch._types.query_dsl.Query;
-import co.elastic.clients.elasticsearch._types.query_dsl.RangeQuery;
-import co.elastic.clients.elasticsearch._types.query_dsl.TermsQuery;
-import co.elastic.clients.elasticsearch._types.query_dsl.TermsQueryField;
+import co.elastic.clients.elasticsearch._types.query_dsl.*;
 import co.elastic.clients.elasticsearch.core.SearchResponse;
 import co.elastic.clients.elasticsearch.core.search.Hit;
 import co.elastic.clients.elasticsearch.indices.GetAliasResponse;
@@ -181,6 +177,7 @@ public class LogService extends ESService {
 
             MatchQuery.Builder mBuilder = new MatchQuery.Builder();
             mBuilder.field("message").query(FieldValue.of(logReq.query));
+            mBuilder.operator(Operator.And);
 
             querys.add(builder.match(mBuilder.build()).build());
         }
