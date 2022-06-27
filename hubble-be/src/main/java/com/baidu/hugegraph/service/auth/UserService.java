@@ -55,9 +55,13 @@ public class UserService extends AuthService{
 
         List<User> users = auth.listUsers();
         List<UserEntity> ues= new ArrayList<>(users.size());
+
+        // only super admin could check if some id is super admin
+        boolean adminListable = isSuperAdmin(hugeClient);
         users.forEach(u -> {
             UserEntity ue = convert(hugeClient, u);
-            ue.setSuperadmin(isSuperAdmin(hugeClient, ue.getId()));
+            ue.setSuperadmin(adminListable &&
+                             isSuperAdmin(hugeClient, ue.getId()));
             ues.add(ue);
         });
 
