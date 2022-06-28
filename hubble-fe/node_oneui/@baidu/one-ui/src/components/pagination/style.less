@@ -1,0 +1,93 @@
+@import "../../style/themes/default.less";
+@import "../../style/mixins/index.less";
+
+@icon-prefix-cls:  ~"@{one-prefix}-icon";
+@pagination-prefix-cls: ~"@{one-prefix}-pagination";
+@pagination-prefix-cls-select: ~"@{pagination-prefix-cls}-select";
+@pagination-prefix-cls-pager: ~"@{pagination-prefix-cls}-pager";
+@pagination-prefix-cls-input: ~"@{pagination-prefix-cls}-input";
+
+.pagination-size(@size, @width, @font-size) {
+    .@{pagination-prefix-cls}-@{size} {
+        font-size: @font-size;
+        .@{pagination-prefix-cls-pager} {
+            &-item {
+                min-width: @width;
+            }
+            &-item-dot {
+                width: @width;
+                height: @width;
+            }
+        }
+    }
+}
+
+.pagination-size(xsmall, @dls-pagination-page-item-min-width-xs, @dls-pagination-font-size-xs);
+.pagination-size(small, @dls-pagination-page-item-min-width-s, @dls-pagination-font-size-s);
+.pagination-size(medium, @dls-pagination-page-item-min-width-m, @dls-pagination-font-size-m);
+
+.@{pagination-prefix-cls} {
+    .clearfix();
+    .@{pagination-prefix-cls-select} {
+        float: left;
+        margin-right: @dls-pagination-page-items-margin-before;
+        &-title {
+            color: @dls-color-gray-10;
+            margin-right: @dls-pagination-spacing-2;
+        }
+    }
+    .@{pagination-prefix-cls-pager} {
+        float: right;
+        &-item {
+            margin: 0 @dls-padding-unit;
+            padding: 0;
+            > span {
+                padding: 0 @dls-padding-unit;
+            }
+            .@{icon-prefix-cls}-angle-right,
+            .@{icon-prefix-cls}-angle-left {
+                display: inline-block;
+                transform: scale(0.8);
+            }
+            &-dot {
+                cursor: pointer;
+                margin: 0;
+                display: inline-block;
+                text-align: center;
+                vertical-align: bottom;
+            }
+        }
+        &-item-active {
+            background: @dls-pagination-page-item-background-color-current;
+            border-color: @dls-pagination-selected-border-color;
+            color: @dls-pagination-page-item-font-color-current;
+            > span {
+                font-weight: @dls-pagination-page-item-font-weight-current;
+            }
+        }
+    }
+    &-jumper {
+        display: inline-block;
+        margin-left: @dls-pagination-page-items-margin-after;
+        .@{pagination-prefix-cls-input} {
+            margin: 0 @dls-pagination-spacing-1;
+            input {
+                padding: 0 @dls-padding-unit;
+            }
+        }
+        &-confirm {
+            margin-left: @dls-pagination-spacing-2;
+        }
+    }
+    &-pager-item-jumper {
+        > span {
+            position: relative;
+            > .one-ui-icon-svg {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+            }
+        }
+    }
+}

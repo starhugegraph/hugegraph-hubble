@@ -1,0 +1,160 @@
+@import "../../style/themes/default.less";
+@import "../../style/mixins/index.less";
+
+@textline-prefix-cls: ~"@{one-prefix}-textline";
+
+.@{textline-prefix-cls} {
+    display: inline-block;
+    &-main {
+        border-top: @textline-border-style;
+        &-title {
+            border-left: @textline-border-style;
+            border-right: @textline-border-style;
+            line-height: @textline-title-height;
+            height: @textline-title-height;
+            font-size: @font-size-base;
+            background-color: @textline-background;
+            padding-left: @margin-padding-size-2;
+            position: relative;
+            &-operate-area {
+                position: absolute;
+                right: @margin-padding-size-2;
+                .hover();
+            }
+        }
+        &-content {
+            border: @textline-border-style;
+            position: relative;
+            font-size: 0;
+            overflow-y: auto;
+            &-table {
+                width: 100%;
+                height: 100%;
+                position: absolute;
+                border-collapse: collapse;
+                border-spacing: 0;
+                &-no-list {
+                    .text-t6;
+                    width: @textline-no-list-min-width;
+                    vertical-align: top;
+                    background-color: @textline-no-list-background;
+                    text-align: center;
+                    &-no {
+                        line-height: @textline-line-height;
+                        padding: (@textline-line-height - @textline-error-no-height)/2 @margin-padding-size-1;
+                        .textline-real-no {
+                            position: relative;
+                            height: @textline-error-no-height;
+                            line-height: @textline-error-no-height;
+                            padding: 0 @margin-padding-size-1;
+                        }
+                        .textline-real-no-error {
+                            background: @error-color;
+                            color: @white-color-1;
+                            &:after {
+                                right: -(2 * @textline-triangle-width);
+                                content: "";
+                                width: 0;
+                                height: 0;
+                                border: @textline-triangle-width solid transparent;
+                                border-left-color: @error-color;
+                                top: @margin-padding-size-1;
+                                position: absolute;
+                            }
+                        }
+                    }
+                }
+                &-content {
+                    .text-t6;
+                    background-color: white;
+                    position: relative;
+                    vertical-align: top;
+                    overflow: hidden;
+                    line-height: @textline-line-height;
+                    &-container {
+                        margin-bottom: 3 * @textline-line-height;
+                    }
+                    &-opt {
+                        height: @textline-line-height;
+                        padding-left: @margin-padding-size-1;
+                        position: relative;
+                        .textline-del-single {
+                            display: none;
+                            padding-right: @margin-padding-size-1;
+                            line-height: @textline-line-height;
+                            float: right;
+                            .hover(@primary-color-1, @primary-color-5);
+                        }
+                        .textline-text-count {
+                            margin-right: @margin-padding-size-1;
+                            float: right;
+                            z-index: 1;
+                        }
+                        .textline-error-message {
+                            .base-border;
+                            .text-t6;
+                            line-height: 100%;
+                            z-index: 2;
+                            box-shadow: @box-shadow-style-1;
+                            background: @white-color-1;
+                            position: absolute;
+                            top: @textline-line-height;
+                            display: inline-block;
+                            padding: @margin-padding-size-4;
+                            color: @error-color;
+                            &:before {
+                                content: "";
+                                width: 0;
+                                height: 0;
+                                border: 8px solid transparent;
+                                left: @margin-padding-size-4;
+                                border-bottom-color: @white-color-1;
+                                top: -(@margin-padding-size-5 / 2);
+                                position: absolute;
+                            }
+                        }
+                    }
+                    &-opt-active {
+                        background-color: @textline-background;
+                        .textline-del-single {
+                            display: block;
+                        }
+                    }
+                }
+            }
+            &-text-area {
+                .text-t6;
+                resize: none;
+                outline: none;
+                cursor: pointer;
+                border: 0;
+                line-height: @textline-line-height;
+                position: absolute;
+                top: 0;
+                height: 100%;
+                white-space: pre;
+                padding: 0 @margin-padding-size-1;
+                background-color: transparent;
+            }
+        }
+        &-content-error {
+            border: @error-border-style;
+        }
+    }
+    &-error {
+        line-height: 100%;
+        margin-top: @margin-padding-size-2;
+        color: @error-color;
+        font-size: @font-size-sm;
+        > div + div {
+            margin-top: @margin-padding-size-1;
+        }
+    }
+    &-pure-error {
+        color: @error-color;
+    }
+    &-error-link {
+        margin-left: @margin-padding-size-2;
+        .hover();
+    }
+}

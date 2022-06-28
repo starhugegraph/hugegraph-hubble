@@ -1,0 +1,291 @@
+@plugin '../mixins/colorPalette.lessPlugin.js';
+
+@import "~less-plugin-dls/tokens/index.less";
+@import './button.less';
+@import './radioAndCheckbox.less';
+@import './switch.less';
+@import './progress.less';
+@import './textArea.less';
+@import './inputAndSearch.less';
+@import './numberbox.less';
+@import "./slider.less";
+@import "./carousel.less";
+@import "./steps.less";
+@import "./breadcrumb.less";
+@import "./pagination.less";
+@import "./select.less";
+@import "./badge.less";
+@import "./loading.less";
+@import "./alert.less";
+@import "./timePicker.less";
+@import "./dropdown.less";
+@import "./menu.less";
+@import "./anchor.less";
+@import "./popover.less";
+@import "./collapse.less";
+@import "./embedded.less";
+@import "./modal.less";
+@import "./tooltip.less";
+@import "./message.less";
+@import "./backTop.less";
+@import "./datePicker.less";
+@import "./tabs.less";
+// color 是颜色、size 是长度、style 是样式；目前只有这几种
+
+@one-prefix: new-fc-one;
+@dls-border-width: 1px;
+@dls-border-style: solid;
+
+@success-color: #5bc49f;
+@error-color: #ff5b5b;
+@warning-color: #fe9700;
+
+@primary-color-1: #333;
+@primary-color-2: #666;
+@primary-color-3: #999;
+@primary-color-4: #b8b8b8;
+@primary-color-5: #000;
+@primary-color-6: #111;
+@primary-color-7: #dbdbdb;
+@primary-color-8: #eee;
+@primary-color-9: #e7e7e7;
+@primary-color-10: #3998fc;
+@primary-color-11: #3389e2;
+@primary-color-12: #2e7aca;
+@primary-color-13: #f7f7f7;
+@primary-color-17: #e9f4fd;
+@primary-color-18: #fff4e6;
+@primary-color-19: #daf4ed;
+@primary-color-20: #fcfcfc;
+
+@disabled-color-1: #dbdbdb;
+@disable-grey-color: #eee;
+
+@white-color-1: #fff;
+
+@font-size-lg: 16px;
+@font-size-base: 14px;
+@font-size-sm: 12px;
+
+@line-height-base: 1;
+@border-radius-base: 0;
+// Border color
+@border-color-base: hsv(0, 0, 85%); // base border outline a component
+@border-color-split: hsv(0, 0, 91%); // split border inside a component
+@border-color-inverse: @white-color-1;
+@border-width-base: 1px; // width of the border for a component
+@border-style-base: solid; // style of a components border
+
+@margin-padding-size-1: 5px;
+@margin-padding-size-2: 10px;
+@margin-padding-size-3: 15px;
+@margin-padding-size-4: 20px;
+@margin-padding-size-5: 30px;
+@margin-padding-size-6: 50px;
+
+@line-border-style-1: 1px solid #eee;
+@line-border-style-2: 1px solid #e7e7e7;
+@error-border-style: 1px solid #ff5b5b;
+
+@box-shadow-style-1: 0 1px 4px 0 rgba(0, 0, 0, 0.15);
+@box-shadow-style-2: 3px 0 4px 0 rgba(0, 0, 0, 0.1);
+
+// Animation
+@common-duration: 0.1s;
+@ease-base-out: cubic-bezier(0.7, 0.3, 0.1, 1);
+@ease-base-in: cubic-bezier(0.9, 0, 0.3, 0.7);
+@ease-out: cubic-bezier(0.215, 0.61, 0.355, 1);
+@ease-in: cubic-bezier(0.55, 0.055, 0.675, 0.19);
+@ease-in-out: cubic-bezier(0.645, 0.045, 0.355, 1);
+@ease-out-back: cubic-bezier(0.12, 0.4, 0.29, 1.46);
+@ease-in-back: cubic-bezier(0.71, -0.46, 0.88, 0.6);
+@ease-in-out-back: cubic-bezier(0.71, -0.46, 0.29, 1.46);
+@ease-out-circ: cubic-bezier(0.08, 0.82, 0.17, 1);
+@ease-in-circ: cubic-bezier(0.6, 0.04, 0.98, 0.34);
+@ease-in-out-circ: cubic-bezier(0.78, 0.14, 0.15, 0.86);
+@ease-out-quint: cubic-bezier(0.23, 1, 0.32, 1);
+@ease-in-quint: cubic-bezier(0.755, 0.05, 0.855, 0.06);
+@ease-in-out-quint: cubic-bezier(0.86, 0, 0.07, 1);
+
+@iconfont-css-prefix: ~"new-fc-one-icon";
+
+// -------textLine start
+@textline-border-style: 1px solid #e7e7e7;
+
+@textline-title-height: 45px;
+@textline-background: #f7f7f7;
+
+// 行号区
+@textline-no-list-background: #eee;
+@textline-no-list-min-width: 25px;
+@textline-line-height: 28px;
+@textline-error-no-height: 16px;
+@textline-layer-color: #fff;
+@textline-triangle-width: 3px;
+
+// select
+@select-height-sm: 28px;
+@select-menu-max-height: 250px;
+@select-default-width: 120px;
+@select-multiple-item-height: 24px;
+@select-zindex: 1051;
+@select-height-base: 32px;
+@select-border-color: 1px solid @primary-color-3;
+
+// cascader
+@cascader-label-min-width: 140px;
+@cascader-item-height-sm: 22px;
+@cascader-clear-width: 12px;
+@cascader-menu-min-width: 111px;
+@cascader-menu-height: 180px;
+@cascader-border-width: 2px;
+@cascader-zindex: 1051;
+@cascader-item-padding-right: 28px;
+@cascader-item-expand-icon-width: 20px;
+@cascader-item-expand-icon-height: 20px;
+@cascader-item-expand-icon-top: 6px;
+
+// tree
+@tree-node-padding-1: 18px;
+@tree-node-content-padding: 3px 5px;
+@tree-node-checkbox-margin: 0 4px 0 2px;
+@tree-node-icon-size: 24px;
+@tree-node-icon-margin: 2px;
+@tree-node-first-child-padding: 7px;
+
+// transfer
+@transfer-min-width: 200px;
+@transfer-title-height: 36px;
+@transfer-select-title-width: 120px;
+@transfer-select-item-height: 28px;
+@transfer-select-item-default-width: 160px;
+@transfer-main-height-1: 250px;
+@transfer-main-height-2: @transfer-main-height-1 - 28px;
+@transfer-main-height-3: @transfer-main-height-1 + 28px;
+@transfer-separator-height: @transfer-main-height-1 + @transfer-title-height + 28px;
+
+// calendar
+@calendar-switch-width: 112px;
+@calendar-normal-switch-list-item: 30px;
+@calendar-button-min-width: 200px;
+@calendar-input-width: 14px;
+@calendar-input-large-width: 30px;
+@calendar-header-item-height: 18px;
+@calendar-month-head-item-height: 30px;
+@calendar-month-list-item-height: 28px;
+@calendar-month-list-item-width: 28px;
+@calendar-month-list-height: 260px;
+@calendar-month-list-main-width: 232px;
+@calendar-month-item-height: 22px;
+@calendar-single-layer-width: 225px;
+@calendar-time-input-width: 94px;
+@calendar-time-input-height: 312px;
+@calendar-time-body-item-height: 28px;
+@calendar-input-width: 16px;
+@calendar-single-month-height: 294px;
+@calendar-single-layer-height: 365px;
+@calendar-single-layer-height-has-comfirm: 406px;
+@calendar-main-panel-width: 218px;
+@calendar-compare-month-list: 288px;
+@calendar-month-button-bg: @primary-color-8;
+@calendar-selected-bg: @primary-color-11;
+@calendar-compared-selected-bg: @warning-color;
+@calendar-cross-bg: @primary-color-19;
+@calendar-compare-hover-bg: @primary-color-18;
+@calendar-hover-bg: @primary-color-17;
+@calendar-item-text-color: @primary-color-2;
+
+// cross select
+@cross-select-default-width: 160px;
+@cross-select-base-height: 28px;
+@cross-select-border: 1px solid @select-border-color;
+
+//affix
+@affix-zindex: 1;
+
+//region
+@region-panel-height: 260px;
+@region-item-height: 28px;
+@region-select-height: 28px;
+@region-select-width: 170px;
+@region-select-width-medium: 200px;
+@region-select-width-large: 250px;
+@region-button-height: 48px;
+@region-item-padding-right: 20px;
+@region-item-icon-right: 8px;
+@region-item-icon-top: 8px;
+
+//table
+// @table-text-line: @primary-color-1;
+@table-header-bg: @dls-table-header-background-color;
+@table-body-bg: @dls-table-cell-background-color;
+@table-header-border: 1px solid @dls-table-border-color;
+@table-bottom-border: 1px solid @dls-table-border-color;
+// @table-eading-color: @primary-color-1;
+@table-row-hover-bg: @dls-table-cell-background-color-hover;
+// @table-padding-vertical: @margin-padding-size-2;
+// @table-padding-horizontal: @margin-padding-size-2;
+@table-selection-column-width: 64px;
+@table-head-border: 1px solid @dls-table-border-color;
+@table-checkbox-all-arrow-width: 96px;
+@table-filter-dropdown-min-width: 96px;
+// @table-filter-dropdown-background: @white-color-1;
+@table-filter-dropdown-radius: 0;
+@table-filter-dropdown-menu-without-submenu-max-height: 400px;
+// @table-has-icon-hovor-bg: @primary-color-13;
+// @table-has-icon-height: 48px;
+@table-expand-icon-width: 17px;
+@table-expand-icon-height: 17px;
+@table-expand-icon-bg: @white-color-1;
+@table-expand-icon-border: 1px solid @primary-color-1;
+@table-expand-hover-bg: @primary-color-20;
+// @table-header-row-height: 40px;
+@table-footer-bg: @primary-color-13;
+@table-scroll-bar-height: 17px;
+@table-scroll-bar-width: 200px;
+@table-scroll-bar-outer-width: 400px;
+@table-scroll-bar-zindex: 6;
+@table-header-border: 1px solid @dls-table-border-color;
+@table-trigger-down-icon-left: 18px;
+@table-column-header-icon-top: 6px;
+@table-column-header-icon-right: 5px;
+@table-expanded-row-pagination-padding: @margin-padding-size-2;
+@table-scroll-header-padding: 20px;
+
+// Media queries breakpoints
+// Extra small screen / phone
+@screen-xs: 480px;
+@screen-xs-min: @screen-xs;
+// Small screen / tablet
+@screen-sm: 768px;
+@screen-sm-min: @screen-sm;
+// Medium screen / desktop
+@screen-md: 992px;
+@screen-md-min: @screen-md;
+// Large screen / wide desktop
+@screen-lg: 1200px;
+@screen-lg-min: @screen-lg;
+// Extra Large screen / full hd
+@screen-xl: 1600px;
+@screen-xl-min: @screen-xl;
+// provide a maximum
+@screen-xs-max: (@screen-sm-min - 1px);
+@screen-sm-max: (@screen-md-min - 1px);
+@screen-md-max: (@screen-lg-min - 1px);
+@screen-lg-max: (@screen-xl-min - 1px);
+
+//grid
+@grid-columns: 24;
+@grid-gutter-width: 0;
+
+// poplayer
+@pop-layer-base-width: 120px;
+
+// 去除firefox内核引起的按钮和input的一些黑线
+button::-moz-focus-inner,
+input[type="reset"]::-moz-focus-inner,
+input[type="button"]::-moz-focus-inner,
+input[type="submit"]::-moz-focus-inner,
+input[type="file"] > input[type="button"]::-moz-focus-inner {
+    border: none;
+}

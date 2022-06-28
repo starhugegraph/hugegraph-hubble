@@ -1,0 +1,46 @@
+@import "../../style/themes/default.less";
+@import "../../style/mixins/index.less";
+
+@popLayer-prefix-cls: ~"@{one-prefix}-popLayer";
+
+.@{popLayer-prefix-cls} {
+    .reset-component();
+    font-variant: initial;
+    &.slide-up-enter.slide-up-enter-active&-placement-bottomLeft,
+    &.slide-up-appear.slide-up-appear-active&-placement-bottomLeft {
+        @animation-name: oneUISlideUpInEffect;
+    }
+    &.slide-up-enter.slide-up-enter-active&-placement-topLeft,
+    &.slide-up-appear.slide-up-appear-active&-placement-topLeft {
+        animation-name: oneUISlideDownInEffect;
+    }
+    &.slide-up-leave.slide-up-leave-active&-placement-bottomLeft {
+        animation-name: oneUISlideUpOutEffect;
+    }
+    &.slide-up-leave.slide-up-leave-active&-placement-topLeft {
+        animation-name: oneUISlideDownOutEffect;
+    }
+    &-hidden {
+        display: none;
+    }
+    background-color: @white-color-1;
+    box-shadow: @box-shadow-style-1;
+    border-radius: 0;
+    box-sizing: border-box;
+    z-index: @dls-dropdown-z-index;
+    position: absolute;
+    outline: none;
+}
+.@{popLayer-prefix-cls}-header {
+    display: inline-block;
+    > button {
+        position: relative;
+        padding-right: 8 * @dls-padding-unit;
+        > .anchor {
+            position: absolute;
+            right: 2 * @dls-padding-unit;
+            transform: scale(0.8) translateY(-50%);
+            top: 50%;
+        }
+    }
+}

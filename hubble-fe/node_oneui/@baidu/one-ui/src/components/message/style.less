@@ -1,0 +1,180 @@
+@import "../../style/themes/default.less";
+@import "../../style/mixins/index.less";
+
+@message-prefix-cls: ~"@{one-prefix}-message";
+
+.message-size(@size, @content-font-size, @border-radius, @height, @header-font-size) {
+    .@{message-prefix-cls}-@{size} {
+        border-radius: @border-radius;
+        .@{message-prefix-cls}-container-content {
+            font-size: @content-font-size;
+        }
+        .@{message-prefix-cls}-close-icon {
+            height: @height;
+            line-height: @height;
+        }
+    }
+    .@{message-prefix-cls}-@{size}.@{message-prefix-cls}-header {
+        font-size: @header-font-size;
+    }
+}
+
+.message-icon-color(@type, @icon-color, @icon-type) {
+    .@{message-prefix-cls}-@{type} {
+        .@{iconfont-css-prefix}-@{icon-type} {
+            color: @icon-color;
+        }
+    }
+}
+
+.message-size(small, @dls-toast-font-size-s, @dls-toast-border-radius-s, @dls-height-m, @dls-toast-title-font-size-s);
+.message-size(medium, @dls-toast-font-size-m, @dls-toast-border-radius-m, @dls-height-l, @dls-toast-title-font-size-m);
+
+.message-icon-color(info, @dls-toast-icon-color-info, info);
+.message-icon-color(success, @dls-toast-icon-color-success, success);
+.message-icon-color(warning, @dls-toast-icon-color-warning, warning);
+.message-icon-color(error, @dls-toast-icon-color-error, fail);
+.message-icon-color(loading, @dls-loading-color-normal, loading);
+
+.@{message-prefix-cls} {
+    .reset-component();
+    position: fixed;
+    z-index: @dls-toast-z-index;
+    left: 0;
+    pointer-events: none;
+    width: 100%;
+    &-notice {
+        text-align: center;
+        margin-bottom: 2 * @dls-padding-unit;
+    }
+    &-notice-content {
+        display: inline-block;
+        pointer-events: all;
+    }
+    &-custom-content {
+        position: relative;
+        max-width: @dls-toast-max-width;
+        text-align: left;
+        padding: @dls-toast-padding-y @dls-toast-padding-x;
+        box-shadow: @dls-toast-shadow;
+        background-color: @dls-background-color-normal;
+        padding-left: @dls-toast-padding-x + @dls-toast-content-spacing-before + 12px;
+        padding-right: @dls-toast-padding-x + @dls-toast-content-spacing-before + 12px;
+        line-height: @dls-toast-line-height;
+        .@{iconfont-css-prefix}-warning,
+        .@{iconfont-css-prefix}-fail,
+        .@{iconfont-css-prefix}-info,
+        .@{iconfont-css-prefix}-success {
+            position: absolute;
+            font-size: @dls-toast-icon-size;
+            display: inline-block;
+            // top: 2 * @dls-toast-padding-y;
+            // transform: scale(0.8);
+            left: @dls-toast-padding-x;
+        }
+        .@{message-prefix-cls}-close-icon {
+            position: absolute;
+            right: @dls-toast-padding-x - @dls-padding-unit;
+            top: @dls-toast-padding-y - @dls-padding-unit;
+            font-size: @dls-toast-icon-size;
+            transform: scale(0.6);
+            cursor: pointer;
+            color: @dls-font-color-weak;
+        }
+    }
+    &-loading {
+        .@{iconfont-css-prefix}-loading {
+            position: absolute;
+            font-size: @dls-toast-icon-size;
+            display: inline-block;
+            top: 4 * @dls-toast-padding-y;
+            transform: scale(0.8);
+            left: @dls-toast-padding-x;
+            margin-top: -(@dls-padding-unit * 2);
+            margin-left: -@dls-padding-unit;
+            animation: rotating 1s linear infinite;
+        }
+    }
+}
+
+.@{message-prefix-cls}-medium {
+    .@{message-prefix-cls}-close-icon {
+        transform: scale(0.7);
+    }
+}
+
+.@{message-prefix-cls}-widthout-header&:not(.@{message-prefix-cls}-multiple-line) {
+    .@{iconfont-css-prefix}-warning,
+    .@{iconfont-css-prefix}-fail,
+    .@{iconfont-css-prefix}-info,
+    .@{iconfont-css-prefix}-success {
+        top: 50%;
+        transform: translateY(-50%);
+    }
+}
+
+.@{message-prefix-cls}-header {
+    padding-top: @dls-toast-padding-y-titled;
+    padding-bottom: @dls-toast-padding-y-titled;
+    .@{iconfont-css-prefix}-warning,
+    .@{iconfont-css-prefix}-fail,
+    .@{iconfont-css-prefix}-info,
+    .@{iconfont-css-prefix}-success {
+        top: @dls-toast-padding-y-titled + 2px;
+        font-size: @dls-toast-icon-size-titled;
+    }
+    .@{message-prefix-cls}-close-icon {
+        top: @dls-toast-padding-y-titled -  2 * @dls-padding-unit;
+        font-size: @dls-toast-icon-size-titled;
+    }
+    .@{message-prefix-cls}-container-header {
+        margin-bottom: @dls-toast-title-spacing-after;
+        font-weight: @dls-toast-title-font-weight;
+        line-height: @dls-toast-title-line-height;
+        color: @dls-toast-title-font-color;
+    }
+    .@{iconfont-css-prefix}-loading {
+        top: 7 * @dls-padding-unit;
+    }
+}
+
+.@{message-prefix-cls}-multiple-line {
+    .@{iconfont-css-prefix}-warning,
+    .@{iconfont-css-prefix}-fail,
+    .@{iconfont-css-prefix}-info,
+    .@{iconfont-css-prefix}-success {
+        top: @dls-toast-padding-y-titled + 4px;
+    }
+    .@{iconfont-css-prefix}-loading {
+        top: 7 * @dls-padding-unit + 2px;
+    }
+    .@{message-prefix-cls}-close-icon {
+        top: @dls-toast-padding-y-titled -  2 * @dls-padding-unit + 2px;
+    }
+}
+
+.@{message-prefix-cls}-multiple-line.@{message-prefix-cls}-widthout-header {
+    padding-top: @dls-toast-padding-y-multiline;
+    padding-bottom: @dls-toast-padding-y-multiline;
+    .@{iconfont-css-prefix}-warning,
+    .@{iconfont-css-prefix}-fail,
+    .@{iconfont-css-prefix}-info,
+    .@{iconfont-css-prefix}-success {
+        top: @dls-toast-padding-y-multiline + @dls-padding-unit + 2px;
+    }
+    .@{iconfont-css-prefix}-loading {
+        top: 5 * @dls-padding-unit;
+    }
+    .@{message-prefix-cls}-close-icon {
+        top: @dls-toast-padding-y-multiline - @dls-padding-unit;
+    }
+}
+
+@keyframes rotating {
+    from {
+        transform: rotate(0);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}

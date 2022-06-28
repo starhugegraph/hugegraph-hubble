@@ -1,0 +1,148 @@
+@import "../../style/themes/default.less";
+@import "../../style/mixins/index.less";
+
+@progress-prefix-cls: ~'@{one-prefix}-progress';
+
+.text-style(@font-size) {
+    font-size: @font-size;
+    display: inline-block;
+    max-width: @dls-progress-line-text-max-width;
+    margin-left: @dls-progress-track-spacing-bar;
+    color: @dls-progress-font-color;
+    white-space: nowrap;
+    text-align: left;
+    vertical-align: middle;
+    word-break: normal;
+
+    .@{iconfont-css-prefix} {
+        font-size: @font-size;
+    }
+}
+.operation-style(@font-size) {
+    cursor: pointer;
+    display: inline-block;
+    font-size: @dls-progress-font-size-m;
+    max-width: @dls-progress-line-operation-max-width;
+    margin-left: @dls-progress-icon-spacing-bar;
+    color: @dls-progress-font-color;
+    white-space: nowrap;
+    text-align: left;
+    vertical-align: middle;
+    word-break: normal;
+    > .one-ui-icon-svg {
+        height: 10px;
+        width: 10px;
+    }
+    .icon-refresh {
+        position: relative;
+        top: -1px;
+    }
+}
+.status-color(@color) {
+    .@{progress-prefix-cls}-text {
+        color: @color;
+    }
+    .@{progress-prefix-cls}-bg {
+        background-color: @color;
+    }
+    .@{progress-prefix-cls}-circle-path {
+        stroke: @color;
+    }
+}
+
+.@{progress-prefix-cls} {
+    display: inline-block;
+    &-line {
+        position: relative;
+        width: 100%;
+    }
+    &-medium&-line &-text {
+        .text-style(@dls-progress-font-size-m);
+    }
+    &-small&-line &-text {
+        .text-style(@dls-progress-font-size-s);
+    }
+    &-line &-operation {
+        .operation-style(@dls-progress-font-size-m);
+    }
+    &-small&-line &-operation {
+        .operation-style(@dls-progress-font-size-s);
+    }
+    &-outer {
+        box-sizing: border-box;
+        display: inline-block;
+        width: 100%;
+        @show-info-offset: @dls-progress-line-text-max-width + @dls-progress-icon-spacing-bar;
+        @show-operation-offset: @dls-progress-line-operation-max-width + @dls-progress-icon-spacing-bar;
+        .@{progress-prefix-cls}-show-info & {
+            margin-right: -@show-info-offset;
+            padding-right: @show-info-offset;
+        }
+        .@{progress-prefix-cls}-show-operation & {
+            margin-right: -@show-operation-offset;
+            padding-right: @show-operation-offset;
+        }
+        .@{progress-prefix-cls}-show-info.@{progress-prefix-cls}-show-operation & {
+            margin-right: -@show-info-offset - @show-operation-offset;
+            padding-right: @show-info-offset + @show-operation-offset;
+        }
+    }
+
+    &-inner {
+        position: relative;
+        display: inline-block;
+        width: 100%;
+        vertical-align: middle;
+    }
+
+    &-line &-inner {
+        background-color: @dls-progress-track-color;
+        border-radius: @dls-progress-border-radius-m;
+    }
+
+    &-line &-bg {
+        position: relative;
+        background-color: @dls-progress-indicator-color;
+        transition: all 0.4s @ease-out-circ 0s;
+        border-radius: @dls-progress-border-radius-m;
+    }
+
+    &-circle &-inner {
+        width: @dls-progress-size-circular;
+        height: @dls-progress-size-circular;
+    }
+
+    &-circle-trail {
+        stroke: @dls-progress-track-color;
+    }
+
+    &-circle-path {
+        stroke: @dls-progress-indicator-color;
+    }
+
+    &-circle &-text {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        font-size: @dls-progress-font-size-circular;
+        color: @dls-progress-font-color;
+        line-height: 1;
+        white-space: normal;
+        text-align: center;
+        transform: translate(-50%, -50%);
+        .@{iconfont-css-prefix} {
+            font-size: @dls-progress-icon-size-circular;
+        }
+    }
+
+    &&-status-exception {
+        .status-color(@dls-progress-indicator-color-error);
+    }
+
+    &&-status-success {
+        .status-color(@dls-progress-indicator-color-success);
+    }
+}

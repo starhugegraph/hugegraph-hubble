@@ -1,0 +1,37 @@
+.iconfont-font(@content) {
+    font-family: 'new-fc-one-icon', sans-serif;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    content: @content;
+}
+
+.ie-rotate-via-degrees(@degrees) {
+    /* IE6-IE8 */
+    @radians: ~`parseInt("@{degrees}") * Math.PI * 2 / 360`;
+    @costheta: ~`Math.cos("@{radians}")`;
+    @sintheta: ~`Math.sin("@{radians}")`;
+    @negsintheta: ~`"@{sintheta}" * -1`;
+    -ms-filter: "progid:DXImageTransform.Microsoft.Matrix(sizingMethod='auto expand', M11=@{costheta}, M12=@{negsintheta}, M21=@{sintheta}, M22=@{costheta})";
+    zoom: 1;
+    :root & {
+        filter: none;
+    }
+}
+
+.iconfont-size-under-12px(@size, @rotate: 0deg) {
+    display: inline-block;
+    @font-scale: unit(@size / 12px);
+    font-size: @font-size-base;
+    // ie8-9
+    font-size: ~"@{size} \9";
+    transform: scale(@font-scale) rotate(@rotate);
+    .ie-rotate-via-degrees(@rotate);
+    :root & {
+        font-size: @font-size-base;
+    }
+}
+
+.ie-rotate(@rotation) {
+    -ms-filter: "progid:DXImageTransform.Microsoft.BasicImage(rotation=@{rotation})";
+}

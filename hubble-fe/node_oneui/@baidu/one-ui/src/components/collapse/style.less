@@ -1,0 +1,165 @@
+@import "../../style/themes/default.less";
+@import "../../style/mixins/index.less";
+
+@collapse-prefix-cls: ~"@{one-prefix}-collapse";
+
+.collapse-header-interaction(@boder-color, @background-color) {
+    border-color: @boder-color;
+    background-color: @background-color;
+}
+
+.collapse-header-interaction-not-active(@boder-color) {
+    + .@{collapse-prefix-cls}-item {
+        border-top-color: @boder-color;
+    }
+}
+
+.collapse-header-interaction-active(@border-color) {
+    .@{collapse-prefix-cls}-item-header {
+        border-bottom-color: @border-color;
+    }
+    .@{collapse-prefix-cls}-item-content {
+        background-color: @dls-collapse-content-background-color;
+    }
+}
+
+.collapse-size(@size, @border-radius, @font-size-header, @font-size-content) {
+    .@{collapse-prefix-cls}-@{size} {
+        .@{collapse-prefix-cls}-item {
+            &-header {
+                font-size: @font-size-header;
+                padding-left: @dls-collapse-header-padding-x + @dls-collapse-header-content-spacing + @font-size-header - 4px;
+                > .one-ui-icon-svg {
+                    width: @font-size-header - 4px;
+                    height: @font-size-header - 4px;
+                }
+            }
+            &-content {
+                font-size: @font-size-content;
+            }
+            &:first-of-type {
+                border-top-right-radius: @border-radius;
+                border-top-left-radius: @border-radius;
+            }
+            &:last-of-type {
+                border-bottom-right-radius: @border-radius;
+                border-bottom-left-radius: @border-radius;
+                .@{collapse-prefix-cls}-item-content {
+                    border-bottom-right-radius: @border-radius;
+                    border-bottom-left-radius: @border-radius;
+                }
+            }
+        }
+    }
+}
+
+.collapse-size(small, @dls-border-radius-s, @dls-collapse-header-font-size-s, @dls-collapse-body-font-size-s);
+.collapse-size(medium, @dls-border-radius-m, @dls-collapse-header-font-size-m, @dls-collapse-body-font-size-m);
+
+.@{collapse-prefix-cls} {
+    .reset-component();
+    &-item {
+        border: 1px solid @dls-collapse-border-color;
+        background-color: @dls-collapse-header-background-color;
+        &-header {
+            padding: @dls-collapse-header-padding-y @dls-collapse-header-padding-x;
+            // padding-left: @dls-collapse-header-padding-x + @dls-collapse-header-content-spacing + 10px;
+            position: relative;
+            color: @dls-collapse-header-font-color;
+            line-height: 1.5;
+            cursor: pointer;
+            > .one-ui-icon-svg {
+                // width: 10px;
+                // height: 10px;
+                position: absolute;
+                left: @dls-collapse-header-padding-x;
+                fill: @dls-icon-color-aux;
+                top: @dls-collapse-header-padding-y * @dls-collapse-header-line-height;
+            }
+        }
+        &:not(:last-of-type) {
+            border-bottom: none;
+        }
+        &:last-of-type {
+            .@{collapse-prefix-cls}-item-content {
+                border-bottom: 1px solid @dls-collapse-border-color;
+            }
+        }
+        &-content {
+            color: @dls-collapse-body-font-color;
+            background-color: @dls-collapse-content-background-color;
+            padding: @dls-collapse-body-padding-y @dls-collapse-body-padding-x;
+            border-left: 1px solid @dls-collapse-border-color;
+            border-right: 1px solid @dls-collapse-border-color;
+            .@{collapse-prefix-cls}-item {
+                border: 0;
+            }
+        }
+        &-content-not-active {
+            display: none;
+        }
+    }
+    &-item-not-active:not(&-item-disabled) {
+        outline: none;
+        .@{collapse-prefix-cls}-item-header {
+            outline: none;
+            &:hover {
+                .collapse-header-interaction(@dls-collapse-border-color, @dls-collapse-header-background-color-hover);
+                .collapse-header-interaction-not-active(@dls-collapse-border-color);
+            }
+            &:active {
+                .collapse-header-interaction(@dls-collapse-border-color, @dls-collapse-header-background-color-active);
+                .collapse-header-interaction-not-active(@dls-collapse-border-color);
+            }
+            &.focus-visible {
+                .collapse-header-interaction(@dls-collapse-border-color-focus, @dls-collapse-header-background-color-focus);
+                .collapse-header-interaction-not-active(@dls-collapse-border-color-focus);
+            }
+        }
+    }
+    &-item-active:not(&-item-disabled) {
+        border: none;
+        &:focus, &:active, &:hover {
+            border: none;
+            outline: none;
+        }
+        .@{collapse-prefix-cls}-item-header {
+            border: 1px solid @dls-collapse-border-color;
+            outline: none;
+            &:hover {
+                .collapse-header-interaction(@dls-collapse-border-color,  @dls-collapse-header-background-color-hover);
+                .collapse-header-interaction-active(@dls-collapse-border-color);
+            }
+            &:active {
+                .collapse-header-interaction(@dls-collapse-border-color,  @dls-collapse-header-background-color-active);
+                .collapse-header-interaction-active(@dls-collapse-border-color);
+            }
+            &.focus-visible {
+                .collapse-header-interaction(@dls-collapse-border-color-focus,  @dls-collapse-header-background-color-focus);
+                .collapse-header-interaction-active(@dls-collapse-border-color-focus);
+            }
+        }
+    }
+    &-item-disabled {
+        outline: none;
+        &.focus-visible, &:focus, &:active, &:hover {
+            border-color: @dls-collapse-border-color-disabled;
+            + .@{collapse-prefix-cls}-item {
+                border-top-color: @dls-collapse-border-color-disabled;
+            }
+        }
+        .@{collapse-prefix-cls}-item-header {
+            background-color: @dls-collapse-header-background-color-disabled;
+            color: @dls-collapse-header-font-color-disabled;
+            cursor: not-allowed;
+            outline: none;
+            &:hover, &:active, &:focus, &.focus-visible {
+                .collapse-header-interaction(@dls-collapse-border-color-disabled,  @dls-collapse-header-background-color-disabled);
+                .collapse-header-interaction-active(@dls-collapse-border-color-disabled);
+            }
+            > .one-ui-icon-svg {
+                fill: @dls-icon-color-aux-disabled;
+            }
+        }
+    }
+}

@@ -1,0 +1,272 @@
+@import "../../style/themes/default.less";
+@import "../../style/mixins/index.less";
+
+@slider-prefix-cls: ~'@{one-prefix}-slider';
+
+.slider-size(@size, @track-height, @border-radius, @dot-height, @font-size, @thumb-height) {
+    .@{slider-prefix-cls}-@{size} {
+        margin: @thumb-height 0;
+        .@{slider-prefix-cls}-step,
+        .@{slider-prefix-cls}-rail,
+        .@{slider-prefix-cls}-track {
+            height: @track-height;
+            border-top-left-radius: @border-radius;
+            border-bottom-left-radius: @border-radius;
+        }
+        .@{slider-prefix-cls}-dot {
+            height: @dot-height;
+            width: @dot-height;
+            top: -@dot-height / 4;
+            &:first-child {
+                margin-left: -@dot-height / 2;
+            }
+            &:last-child {
+                margin-left: -@dot-height / 2;
+            }
+        }
+        .@{slider-prefix-cls}-mark {
+            top: @thumb-height + @dls-tooltip-arrow-spacing;
+            font-size: @font-size;
+        }
+    }
+}
+.slider-thumb-size(@size, @height, @inner-height) {
+    .@{slider-prefix-cls}-@{size} {
+        .@{slider-prefix-cls}-handle {
+            height: @height;
+            width: @height;
+            border: 1px solid transparent;
+            margin-left: -1px;
+        }
+    }
+}
+
+.@{slider-prefix-cls} {
+    .reset-component;
+
+    position: relative;
+    margin: 0;
+    padding: @dls-padding-unit 0;
+    cursor: pointer;
+    touch-action: none;
+
+    .vertical();
+
+    &-with-marks {
+        margin-bottom: 6 * @dls-padding-unit;
+    }
+
+    &-rail {
+        position: absolute;
+        width: 100%;
+        background-color: @dls-slider-track-color;
+        transition: background-color 0.3s;
+    }
+
+    &-track {
+        position: absolute;
+        background-color: @dls-slider-track-progress-color;
+        transition: background-color 0.3s ease;
+    }
+
+    &-handle {
+        position: absolute;
+        background-color: @dls-slider-thumb-background-color;
+        border-radius: 50%;
+        box-shadow: 0;
+        cursor: pointer;
+        transition: background-color 0.3s, box-shadow 0.6s, transform 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+        box-sizing: border-box;
+        top: 0;
+        outline: none;
+        &:before {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            content: "";
+            min-width: @dls-slider-track-min-width;
+            min-height: @dls-slider-track-min-width;
+            background-color: @dls-slider-thumb-dot-color;
+            border-radius: 50%;
+        }
+    }
+
+    &-mark {
+        position: absolute;
+        left: 0;
+        width: 100%;
+        color: @dls-slider-font-color;
+    }
+
+    &-mark-text {
+        position: absolute;
+        display: inline-block;
+        text-align: center;
+        word-break: keep-all;
+        cursor: pointer;
+    }
+
+    &-step {
+        position: absolute;
+        width: 100%;
+        background-color: transparent;
+    }
+
+    &-dot {
+        position: absolute;
+        margin-left: -@dls-padding-unit;
+        background-color: @dls-slider-thumb-background-color;
+        border-radius: 50%;
+        cursor: pointer;
+    }
+
+    &-disabled {
+        cursor: not-allowed;
+
+        .@{slider-prefix-cls}-track {
+            background-color: @dls-slider-track-progress-color-disabled;
+        }
+
+        .@{slider-prefix-cls}-rail {
+            background-color: @dls-slider-track-color-disabled;
+        }
+
+        .@{slider-prefix-cls}-handle,
+        .@{slider-prefix-cls}-dot {
+            box-shadow: none;
+            cursor: not-allowed;
+        }
+
+        .@{slider-prefix-cls}-handle {
+            // background-color: @dls-slider-thumb-dot-color;
+            background-color: @dls-slider-thumb-background-color-disabled;
+        }
+
+        .@{slider-prefix-cls}-dot {
+            background-color: @dls-slider-track-progress-color-disabled;
+        }
+        .@{slider-prefix-cls}-mark-text,
+        .@{slider-prefix-cls}-dot {
+            cursor: not-allowed;
+        }
+    }
+}
+
+.slider-size(small, @dls-slider-track-width-s, @dls-slider-track-border-radius-s, @dls-slider-mark-size-s, @dls-slider-font-size-s, @dls-slider-thumb-size-s);
+.slider-size(medium, @dls-slider-track-width-m, @dls-slider-track-border-radius-m, @dls-slider-mark-size-m, @dls-slider-font-size-m, @dls-slider-thumb-size-m);
+
+.slider-thumb-size(small, @dls-slider-thumb-size-s, @dls-slider-thumb-dot-size-s);
+.slider-thumb-size(medium, @dls-slider-thumb-size-m, @dls-slider-thumb-dot-size-m);
+
+.@{slider-prefix-cls}-small {
+    .@{slider-prefix-cls}-handle {
+        top: 1px;
+    }
+}
+
+.@{slider-prefix-cls}&:not(.@{slider-prefix-cls}-disabled) {
+    &:hover {
+        .@{slider-prefix-cls}-rail {
+            background-color: @dls-slider-track-color-hover;
+        }
+        .@{slider-prefix-cls}-track {
+            background-color: @dls-slider-track-progress-color-hover;
+        }
+    }
+    .@{slider-prefix-cls}-handle {
+        background-color: @dls-slider-thumb-background-color;
+        &:hover {
+            background-color: @dls-slider-thumb-background-color-hover;
+        }
+        &:active {
+            background-color: @dls-slider-thumb-background-color-active;
+        }
+        &.focus-visible,
+        &[data-focus-visible-added],
+        &-click-focused {
+            background-color: @dls-slider-thumb-background-color-focus;
+            border-color: @dls-slider-thumb-border-color-focus;
+            box-shadow: @dls-slider-thumb-shadow-focus;
+        }
+    }
+}
+
+.@{slider-prefix-cls}.@{slider-prefix-cls}-readOnly {
+    &:hover {
+        .@{slider-prefix-cls}-rail {
+            background-color: @dls-slider-track-color-read-only;
+        }
+        .@{slider-prefix-cls}-track {
+            background-color: @dls-slider-track-progress-color-read-only;
+        }
+    }
+    .@{slider-prefix-cls}-handle {
+        background-color: @dls-slider-thumb-background-color-read-only;
+        &:hover {
+            background-color: @dls-slider-thumb-background-color-read-only-hover;
+        }
+        &.focus-visible,
+        &[data-focus-visible-added],
+        &-click-focused {
+            background-color: @dls-slider-thumb-background-color-read-only-focus;
+            border-color: @dls-slider-thumb-border-color-read-only-focus;
+            box-shadow: @dls-slider-thumb-border-color-read-only-focus;
+        }
+    }
+}
+
+// 一期不支持垂直slider，代码暂时不注释
+.vertical() {
+    &-vertical {
+        width: @slider-height;
+        height: 100%;
+        margin: @margin-padding-size-1 @margin-padding-size-2;
+        padding: 0 @margin-padding-size-1;
+
+        .@{slider-prefix-cls}-rail {
+            width: @margin-padding-size-1;
+            height: 100%;
+        }
+
+        .@{slider-prefix-cls}-track {
+            width: @margin-padding-size-1;
+        }
+
+        .@{slider-prefix-cls}-handle {
+            margin: @slider-handle-vertical-margin;
+        }
+
+        .@{slider-prefix-cls}-mark {
+            top: 0;
+            left: @margin-padding-size-2;
+            width: @margin-padding-size-4;
+            height: 100%;
+        }
+
+        .@{slider-prefix-cls}-mark-text {
+            left: @slider-step-height;
+            white-space: nowrap;
+        }
+
+        .@{slider-prefix-cls}-step {
+            width: @slider-step-height;
+            height: 100%;
+        }
+
+        .@{slider-prefix-cls}-dot {
+            top: auto;
+            left: @slider-step-height / 2;
+            margin-bottom: -@slider-step-height;
+        }
+    }
+}
+
+.@{slider-prefix-cls}-medium {
+    .@{slider-prefix-cls}-handle {
+        &:before {
+            height: @dls-slider-track-width-m;
+            width: @dls-slider-track-width-m;
+        }
+    }
+}

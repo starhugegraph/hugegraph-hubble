@@ -1,0 +1,485 @@
+@import "../../style/themes/default.less";
+@import "../../style/mixins/index.less";
+
+@datePicker-prefix-cls: ~"@{one-prefix}-date-picker";
+
+.interactive-color(
+    @background-color-hover,
+    @background-color-active,
+    @background-color-focus,
+    @font-color-hover,
+    @font-color-active,
+    @font-color-focus
+) {
+    &:hover {
+        background-color: @background-color-hover;
+        color: @font-color-hover;
+    }
+    &:active {
+        background-color: @background-color-active;
+        color: @font-color-active;
+    }
+    &:focus {
+        background-color: @background-color-focus;
+        color: @font-color-focus;
+    }
+}
+
+.@{datePicker-prefix-cls} {
+    &-overlay-has-shortcuts {
+        .@{datePicker-prefix-cls} {
+            display: flex;
+            &-short-cut {
+                border-right: 1px solid @dls-border-color-normal;
+                padding: 2 * @dls-padding-unit 0;
+                // height: @dls-date-picker-short-cut-panel-height;
+                overflow: auto;
+                &-item {
+                    height: @dls-date-picker-list-item-height-s;
+                    line-height: @dls-date-picker-list-item-height-s;
+                    padding: 0 4 * @dls-padding-unit;
+                    color: @dls-font-color-normal;
+                    font-size: @dls-date-picker-font-size-s;
+                    margin-bottom: @dls-padding-unit;
+                    cursor: pointer;
+                    .interactive-color(
+                        @dls-date-picker-list-background-color-hover,
+                        @dls-date-picker-list-background-color-active,
+                        @dls-date-picker-list-background-color-focus,
+                        @dls-date-picker-list-font-color-hover,
+                        @dls-date-picker-list-font-color-active,
+                        @dls-date-picker-list-font-color-focus
+                    );
+                }
+            }
+        }
+    }
+    &-title {
+        padding-right: @dls-padding-unit * 10;
+        position: relative;
+        > span {
+            margin-left: 0 !important;
+        }
+        &-text-empty {
+            color: @dls-input-placeholder-color;
+        }
+        .icon-times-circle,
+        .icon-calendar {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            color: @dls-input-placeholder-color;
+        }
+        .icon-times-circle {
+            display: none;
+        }
+        .icon-calendar {
+            display: inline-block;
+        }
+    }
+    &-title.@{one-prefix}-btn-medium {
+        .icon-times-circle,
+        .icon-calendar {
+            right: @dls-button-padding-m;
+        }
+    }
+    &-title.@{one-prefix}-btn-small {
+        .icon-times-circle,
+        .icon-calendar {
+            right: @dls-button-padding-s;
+        }
+    }
+    &-title-header {
+        padding: @dls-date-picker-header-padding-y @dls-date-picker-header-padding-y;
+        text-align: center;
+        border-bottom: 1px solid @dls-border-color-normal;
+        &-link-year,
+        &-link-month {
+            cursor: pointer;
+            color: @dls-color-gray-8;
+            font-size: @dls-icon-size-aux;
+            position: relative;
+            width: 20px;
+            height: 15px;
+            > svg {
+                transform: translateY(-50%) scale(0.8);
+                position: absolute;
+                top: 50%;
+            }
+            &-prev {
+                float: left;
+                > svg {
+                    left: 0;
+                }
+            }
+            &-next {
+                float: right;
+                > svg {
+                    right: 0;
+                }
+            }
+        }
+        &-content {
+            cursor: pointer;
+            font-size: @dls-font-size-s;
+            color: @dls-color-gray-9;
+            > span {
+                font-weight: @dls-font-weight-3;
+            }
+            > .anchor {
+                margin-left: @dls-padding-unit;
+                transform: scale(0.8);
+                display: inline-block;
+            }
+        }
+    }
+    &-multiple-header {
+        > span {
+            display: inline-block;
+            width: 50%;
+        }
+    }
+    &-input {
+        height: @dls-input-height-s;
+        input {
+            height: 100%;
+            width: 100%;
+            outline: none;
+            border: 0;
+            padding: 0 3 * @dls-padding-unit;
+            box-sizing: border-box;
+            font-size: @dls-date-picker-font-size-s;
+        }
+        .@{datePicker-prefix-cls}-input-multiple {
+            height: 100%;
+            width: 100%;
+            border-bottom: 1px solid @dls-border-color-normal;
+            .@{datePicker-prefix-cls}-input-container {
+                width: calc(50% - 24px);
+                border-bottom: none;
+            }
+            > span {
+                margin: 0 @dls-date-picker-range-connector-padding-x;
+            }
+        }
+        .@{datePicker-prefix-cls}-input-container {
+            box-sizing: border-box;
+            display: inline-block;
+            height: 100%;
+            width: 100%;
+            border-bottom: 1px solid @dls-border-color-normal;
+            > span {
+                display: inline-block;
+                width: 20px;
+                text-align: center;
+            }
+            &:hover {
+                border-bottom: 1px solid @dls-date-picker-cell-border-color-range-end-hover;
+            }
+            &:focus {
+                border-bottom: 1px solid @dls-date-picker-cell-border-color-range-end-active;
+            }
+        }
+    }
+    &-empty-target {
+        position: relative;
+        left: -2px;
+        top: -6px;
+        width: 0;
+    }
+    &-panel-container {
+        display: flex;
+        height: @dls-date-picker-panel-height;
+        box-sizing: border-box;
+        .@{datePicker-prefix-cls}-year-container {
+            overflow: auto;
+            height: 100%;
+            flex: 1;
+            width: @dls-date-picker-year-scroller-width;
+            text-align: center;
+            border-right: 1px solid @dls-border-color-normal;
+            padding: @dls-date-picker-year-body-padding-top / 2 0;
+            box-sizing: border-box;
+            &-item {
+                height: @dls-date-picker-list-item-height-s;
+                line-height: @dls-date-picker-list-item-height-s;
+                font-size: @dls-date-picker-font-size-s;
+                margin-bottom: @dls-padding-unit;
+                cursor: pointer;
+                .interactive-color(
+                    @dls-date-picker-list-background-color-hover,
+                    @dls-date-picker-list-background-color-active,
+                    @dls-date-picker-list-background-color-focus,
+                    @dls-date-picker-list-font-color-hover,
+                    @dls-date-picker-list-font-color-active,
+                    @dls-date-picker-list-font-color-focus
+                );
+                &-selected {
+                    color: @dls-date-picker-list-font-color-selected;
+                    .interactive-color(
+                        @dls-date-picker-list-background-color-hover,
+                        @dls-date-picker-list-background-color-active,
+                        @dls-date-picker-list-background-color-focus,
+                        @dls-date-picker-list-font-color-selected-hover,
+                        @dls-date-picker-list-font-color-selected-active,
+                        @dls-date-picker-list-font-color-selected-focus
+                    );
+                }
+            }
+        }
+    }
+    &-day-container {
+        padding: 2 * @dls-padding-unit;
+    }
+    &-year-container-is-month-render,
+    &-month-container {
+        flex-flow: column;
+        box-sizing: border-box;
+        width: 7 * @dls-date-picker-cell-height-s + 2 * @dls-padding-unit * 6 + 4 * @dls-padding-unit - @dls-date-picker-year-scroller-width;
+        padding: @dls-date-picker-panel-padding-x @dls-date-picker-panel-padding-x / 2;
+        .@{datePicker-prefix-cls}-year-container-item,
+        &-item {
+            display: inline-block;
+            text-align: center;
+            height: @dls-date-picker-list-item-height-s;
+            line-height: @dls-date-picker-list-item-height-s;
+            font-size: @dls-font-size-s;
+            cursor: pointer;
+            margin-bottom: 5 * @dls-padding-unit;
+            margin-left: 2 * @dls-padding-unit;
+            margin-right: 2 * @dls-padding-unit;
+            width: calc(33% - 4 * @dls-padding-unit);
+            .interactive-color(
+                @dls-date-picker-cell-background-color-hover,
+                @dls-date-picker-cell-background-color-active,
+                @dls-date-picker-cell-background-color-focus,
+                @dls-date-picker-cell-font-color,
+                @dls-date-picker-cell-font-color,
+                @dls-date-picker-cell-font-color
+            );
+            border-radius: @dls-date-picker-cell-border-radius-s;
+            &-selected {
+                background-color: @dls-date-picker-cell-background-color-selected;
+                color: @dls-date-picker-cell-font-color-selected;
+                .interactive-color(
+                    @dls-date-picker-cell-background-color-selected-hover,
+                    @dls-date-picker-cell-background-color-selected-active,
+                    @dls-date-picker-cell-background-color-selected-focus,
+                    @dls-date-picker-cell-font-color-selected,
+                    @dls-date-picker-cell-font-color-selected,
+                    @dls-date-picker-cell-font-color-selected
+                );
+            }
+            &-disabled {
+                background-color: @dls-date-picker-cell-background-color-disabled;
+                color: @dls-date-picker-cell-font-color-disabled;
+                cursor: not-allowed;
+                .interactive-color(
+                    @dls-date-picker-cell-background-color-disabled,
+                    @dls-date-picker-cell-background-color-disabled,
+                    @dls-date-picker-cell-background-color-disabled,
+                    @dls-date-picker-cell-font-color-disabled,
+                    @dls-date-picker-cell-font-color-disabled,
+                    @dls-date-picker-cell-font-color-disabled
+                );
+            }
+            &-last-row {
+                margin-bottom: 0;
+            }
+        }
+    }
+    &-body-month {
+        &-item {
+            display: inline-block;
+            line-height: @dls-date-picker-cell-height-s;
+            text-align: center;
+            font-size: @dls-font-size-s;
+            padding: 0 @dls-padding-unit;
+            > span {
+                display: inline-block;
+                height: @dls-date-picker-cell-height-s;
+                width: @dls-date-picker-cell-height-s;
+                .interactive-color(
+                    @dls-date-picker-cell-background-color-hover,
+                    @dls-date-picker-cell-background-color-active,
+                    @dls-date-picker-cell-background-color-focus,
+                    @dls-date-picker-cell-font-color,
+                    @dls-date-picker-cell-font-color,
+                    @dls-date-picker-cell-font-color
+                );
+            }
+            cursor: pointer;
+            color: @dls-date-picker-cell-font-color;
+            &-read-only {
+                color: @dls-font-color-weak;
+            }
+            margin-bottom: @dls-padding-unit;
+            &-today {
+                color: @dls-date-picker-cell-font-color-current;
+            }
+            &-selected {
+                > span {
+                    background-color: @dls-date-picker-cell-background-color-selected;
+                    color: @dls-date-picker-cell-font-color-selected;
+                    border-radius: @dls-date-picker-cell-border-radius-s;
+                    .interactive-color(
+                        @dls-date-picker-cell-background-color-selected-hover,
+                        @dls-date-picker-cell-background-color-selected-active,
+                        @dls-date-picker-cell-background-color-selected-focus,
+                        @dls-date-picker-cell-font-color-selected,
+                        @dls-date-picker-cell-font-color-selected,
+                        @dls-date-picker-cell-font-color-selected
+                    );
+                }
+            }
+            &-disabled {
+                > span {
+                    background-color: @dls-date-picker-cell-background-color-disabled;
+                    color: @dls-date-picker-cell-font-color-disabled;
+                    cursor: not-allowed;
+                    .interactive-color(
+                        @dls-date-picker-cell-background-color-disabled,
+                        @dls-date-picker-cell-background-color-disabled,
+                        @dls-date-picker-cell-background-color-disabled,
+                        @dls-date-picker-cell-font-color-disabled,
+                        @dls-date-picker-cell-font-color-disabled,
+                        @dls-date-picker-cell-font-color-disabled
+                    );
+                }
+                cursor: not-allowed;
+            }
+            &-range {
+                > span {
+                    color: @dls-date-picker-cell-font-color;
+                    background-color: @dls-color-brand-2;
+                    .interactive-color(
+                        @dls-color-brand-2,
+                        @dls-color-brand-2,
+                        @dls-color-brand-2,
+                        @dls-date-picker-cell-font-color,
+                        @dls-date-picker-cell-font-color,
+                        @dls-date-picker-cell-font-color
+                    );
+                }
+                background-color: @dls-color-brand-2;
+            }
+        }
+        &-week {
+            > span:first-child {
+                padding-left: 0;
+            }
+            > span:last-child {
+                padding-right: 0;
+            }
+        }
+    }
+    &-week {
+        display: flex;
+        &-week {
+            flex: 1;
+            font-size: @dls-font-size-s;
+            color: @dls-font-color-normal;
+            text-align: center;
+            height: @dls-date-picker-cell-height-s;
+            line-height: @dls-date-picker-cell-height-s;
+        }
+    }
+    &-range {
+        display: flex;
+        &-item {
+            display: inline-block;
+            box-sizing: border-box;
+        }
+    }
+    &-error-message {
+        font-size: @dls-font-size-s;
+        color: @dls-color-error;
+        margin-left: 2 * @dls-padding-unit;
+    }
+    &-year-container-is-month-render {
+        height: 5 * 3 * @dls-padding-unit + 4 * @dls-date-picker-cell-height-s + 4 * 2 * @dls-padding-unit;
+        box-sizing: border-box;
+        overflow: auto;
+        .@{datePicker-prefix-cls}-year-container-item {
+            margin-left: @dls-padding-unit;
+            margin-right: @dls-padding-unit;
+            width: calc(33% - 8px);
+        }
+    }
+    &-multiple {
+        .@{datePicker-prefix-cls}-body-month-item-selected {
+            border-radius: 0;
+            &-prev {
+                border-top-left-radius: @dls-date-picker-cell-border-radius-s;
+                border-bottom-left-radius: @dls-date-picker-cell-border-radius-s;
+            }
+            &-next {
+                border-top-right-radius: @dls-date-picker-cell-border-radius-s;
+                border-bottom-right-radius: @dls-date-picker-cell-border-radius-s;
+            }
+        }
+    }
+    &-showDeleteIcon:not(&-empty) {
+        >.@{datePicker-prefix-cls}-title {
+            &:hover {
+                .icon-calendar {
+                    display: none;
+                }
+                .icon-times-circle {
+                    display: inline-block;
+                }
+            }
+        }
+    }
+}
+
+.@{datePicker-prefix-cls}-panel-medium {
+    .@{datePicker-prefix-cls}-week-week {
+        height: @dls-date-picker-cell-height-m;
+        line-height: @dls-date-picker-cell-height-m;
+        font-size: @dls-font-size-m;
+    }
+    .@{datePicker-prefix-cls}-body-month-item {
+        line-height: @dls-date-picker-cell-height-m;
+        font-size: @dls-font-size-m;
+        > span {
+            height: @dls-date-picker-cell-height-m;
+            width: @dls-date-picker-cell-height-m;
+        }
+    }
+    .@{datePicker-prefix-cls}-panel-container {
+        height: @dls-date-picker-panel-height-m;
+    }
+    .@{datePicker-prefix-cls}-month-container {
+        flex-flow: column;
+        box-sizing: border-box;
+        width: 7 * @dls-date-picker-cell-height-m + 2 * @dls-padding-unit * 6 + 4 * @dls-padding-unit - @dls-date-picker-year-scroller-width;
+    }
+    .@{datePicker-prefix-cls}-year-container-is-month-render {
+        width: 7 * @dls-date-picker-cell-height-m + 2 * @dls-padding-unit * 6 + 4 * @dls-padding-unit - @dls-date-picker-year-scroller-width;
+    }
+    .@{datePicker-prefix-cls}-title-header-content {
+        font-size: @dls-font-size-m;
+    }
+    .@{datePicker-prefix-cls}-input {
+        height: @dls-input-height-m;
+        input {
+            font-size: @dls-font-size-m;
+        }
+    }
+    .@{datePicker-prefix-cls}-year-container-item {
+        font-size: @dls-font-size-m;
+        height: @dls-date-picker-cell-height-m;
+        line-height: @dls-date-picker-cell-height-m;
+    }
+    .@{datePicker-prefix-cls}-month-container-item {
+        font-size: @dls-font-size-m;
+        height: @dls-date-picker-cell-height-m;
+        line-height: @dls-date-picker-cell-height-m;
+    }
+    .@{datePicker-prefix-cls}-short-cut-item {
+        font-size: @dls-font-size-m;
+        height: @dls-date-picker-list-item-height-m;
+        line-height: @dls-date-picker-list-item-height-m;
+    }
+}

@@ -1,0 +1,194 @@
+@import "../../style/themes/default.less";
+@import "../../style/mixins/index.less";
+
+@tag-prefix-cls: ~"@{one-prefix}-tag";
+
+.tag-size(@size, @height, @border-radius, @font-size) {
+    .@{tag-prefix-cls}-@{size} {
+        height: @height;
+        line-height: @height;
+        border-radius: @border-radius;
+        font-size: @font-size;
+    }
+}
+
+.tag-color-normal(@color, @border-color, @background-color) {
+    color: @color;
+    border: @dls-border-width @dls-border-style @border-color;
+    background: @background-color;
+}
+
+.tag-color-interaction(
+    @dls-tag-font-color,
+    @dls-tag-border-color,
+    @dls-tag-border-color-focus,
+    @dls-tag-background-color,
+    @dls-tag-background-color,
+    @dls-tag-background-color,
+    @dls-tag-background-color
+) {
+    .tag-color-normal(@dls-tag-font-color, @dls-tag-border-color, @dls-tag-background-color);
+    &:hover {
+        .tag-color-normal(@dls-tag-font-color, @dls-tag-border-color,  @dls-tag-background-color);
+    }
+    &:focus-visible {
+        .tag-color-normal(@dls-tag-font-color, @dls-tag-border-color-focus,  @dls-tag-background-color);
+        box-shadow: @dls-tag-shadow-focus;
+    }
+    &:active {
+        .tag-color-normal(@dls-tag-font-color, @dls-tag-border-color,  @dls-tag-background-color);
+    }
+}
+
+.@{tag-prefix-cls} {
+    display: inline-block;
+    padding: 0 @dls-tag-padding;
+    &-checkable {
+        cursor: pointer;
+    }
+    .tag-color-interaction(
+        @dls-tag-font-color,
+        @dls-tag-border-color,
+        @dls-tag-border-color-focus,
+        @dls-tag-background-color,
+        @dls-tag-background-color,
+        @dls-tag-background-color,
+        @dls-tag-background-color
+    );
+    &-disabled {
+        cursor: not-allowed;
+        .tag-color-interaction(
+            @dls-tag-font-color-disabled,
+            @dls-tag-border-color-disabled,
+            @dls-tag-border-color-disabled,
+            @dls-tag-background-color-disabled,
+            @dls-tag-background-color-disabled,
+            @dls-tag-background-color-disabled,
+            @dls-tag-background-color-disabled
+        );
+    }
+    &-inverse {
+        .tag-color-interaction(
+            @dls-tag-font-color-selected,
+            @dls-tag-border-color-selected,
+            @dls-tag-border-color-selected-focus,
+            @dls-tag-background-color-selected,
+            @dls-tag-background-color-selected,
+            @dls-tag-background-color-selected,
+            @dls-tag-background-color-selected
+        );
+    }
+    &-inverse&-disabled {
+        .tag-color-interaction(
+            @dls-tag-font-color-disabled,
+            @dls-tag-border-color-selected-disabled,
+            @dls-tag-border-color-selected-disabled,
+            @dls-tag-background-color-selected-disabled,
+            @dls-tag-background-color-selected-disabled,
+            @dls-tag-background-color-selected-disabled,
+            @dls-tag-background-color-selected-disabled
+        );
+    }
+    margin: @dls-tag-list-spacing;
+    white-space: nowrap;
+    position: relative;
+    .@{iconfont-css-prefix}-close {
+        cursor: pointer;
+        margin-left: @dls-tag-padding;
+        transform: scale(0.8, 0.8);
+        display: inline-block;
+    }
+    &-has-color {
+        border-color: transparent;
+        &,
+        a,
+        a:hover,
+        .@{iconfont-css-prefix}-close,
+        .@{iconfont-css-prefix}-close:hover {
+            color: @dls-tag-font-color-reversed !important;
+            border: @dls-border-width @dls-border-style transparent !important;
+        }
+    }
+    @colors: pink, red, orange, yellow, cyan, green, blue, purple;
+
+    // 基本原色的定义
+    .make-color-classes(@i: length(@colors)) when (@i > 0) {
+        .make-color-classes(@i - 1);
+        @color: extract(@colors, @i);
+        // 文字状态
+        @lightFontColor: colorPalette(@color, 6);
+        // 背景色的四种状态
+        @lightBackgroundColor: colorPalette(@color, 1);
+        @lightBackgroundColorHover: colorPalette(@color, 2);
+        @lightBackgroundColorFocus: @lightBackgroundColorHover;
+        @lightBackgroundColorActive: colorPalette(@color, 3);
+        // 边框状态
+        @lightBorderColor: colorPalette(@color, 4);
+        // 禁用色
+        @lightFontDisabledColor: @lightBackgroundColorActive;
+        @lightFontDisbaledBorderColor: @lightBackgroundColorHover;
+        @lightFontDisabledBackgroundColor: @lightBackgroundColor;
+        @darkColor: colorPalette(@color, 6);
+        &-@{color} {
+            .tag-color-interaction(
+                @lightFontColor,
+                @lightBorderColor,
+                @dls-color-brand-6,
+                @lightBackgroundColor,
+                @lightBackgroundColorHover,
+                @lightBackgroundColorFocus,
+                @lightBackgroundColorActive
+            );
+        }
+        &-@{color}.@{tag-prefix-cls}-disabled {
+            .tag-color-interaction(
+                @lightFontDisabledColor,
+                @lightFontDisbaledBorderColor,
+                @lightFontDisbaledBorderColor,
+                @lightFontDisabledBackgroundColor,
+                @lightFontDisabledBackgroundColor,
+                @lightFontDisabledBackgroundColor,
+                @lightFontDisabledBackgroundColor
+            );
+        }
+        // 背景色的四种状态
+        @darkBackgroundColor: colorPalette(@color, 6);
+        @darkBackgroundColorHover: colorPalette(@color, 5);
+        @darkBackgroundColorFocus: @darkBackgroundColorHover;
+        @darkBackgroundColorActive: colorPalette(@color, 7);
+        // 禁用色
+        @darkFontDisabledBackgroundColor: colorPalette(@color, 2);
+
+        &-@{color}-inverse {
+            .tag-color-interaction(
+                @dls-tag-font-color-reversed,
+                transparent,
+                @dls-color-brand-6,
+                @darkBackgroundColor,
+                @darkBackgroundColorHover,
+                @darkBackgroundColorFocus,
+                @darkBackgroundColorActive
+            );
+        }
+        &-@{color}-inverse.@{tag-prefix-cls}-disabled {
+            .tag-color-interaction(
+                @dls-tag-font-color-reversed,
+                transparent,
+                transparent,
+                @darkFontDisabledBackgroundColor,
+                @darkFontDisabledBackgroundColor,
+                @darkFontDisabledBackgroundColor,
+                @darkFontDisabledBackgroundColor
+            );
+        }
+    }
+    .make-color-classes();
+    &-group-wrapper {
+        .@{tag-prefix-cls}-add-tag {
+            cursor: pointer;
+        }
+    }
+}
+
+.tag-size(medium, @dls-tag-height-m, @dls-tag-border-radius-m, @dls-tag-font-size-m);
+.tag-size(small, @dls-tag-height-s, @dls-tag-border-radius-s, @dls-tag-font-size-s);

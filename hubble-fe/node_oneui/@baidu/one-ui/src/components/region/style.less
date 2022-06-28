@@ -1,0 +1,218 @@
+@import "../../style/themes/default.less";
+@import "../../style/mixins/index.less";
+
+@region-checkbox-cls: ~"@{one-prefix}-checkbox";
+@region-prefix-cls: ~"@{one-prefix}-region";
+@select-region-layer-prefix-cls: ~"@{one-prefix}-select-region-layer";
+@checkbox-prefix-cls: ~"@{one-prefix}-checkbox";
+@select-region-prefix-cls: ~"@{one-prefix}-select-region";
+@select-region-button-prefix-cls: ~"@{one-prefix}-btn";
+
+.@{region-prefix-cls},
+.@{select-region-layer-prefix-cls} {
+    &-prefix-render,
+    &-suffix-render {
+        display: inline-block;
+    }
+    &-panel {
+        height: @region-panel-height;
+        overflow: auto;
+        border: 1px solid @primary-color-8;
+        border-top: none;
+        box-sizing: border-box;
+        display: flex;
+        .@{one-prefix}-icon-angle-right {
+            float: right;
+            transform: scale(0.6);
+            position: absolute;
+            right: @region-item-icon-right;
+            top: @region-item-icon-top;
+        }
+        &-search {
+            &-container {
+                position: relative;
+                width: 100%;
+            }
+            &-item {
+                height: @region-item-height;
+                line-height: @region-item-height;
+                padding-left: @margin-padding-size-2;
+                font-size: @font-size-sm;
+                cursor: pointer;
+                &:hover, &:focus {
+                    background: @primary-color-13;
+                }
+                &-highlight {
+                    color: @warning-color;
+                }
+            }
+        }
+    }
+    &-level {
+        flex: 1;
+        border-right: 1px solid @primary-color-8;
+        overflow-x: hidden;
+        overflow-y: auto;
+        &:last-child {
+            border-right: none;
+        }
+    }
+    &-country {
+        &-checkbox {
+            height: @region-item-height;
+            line-height: @region-item-height;
+            padding-left: @margin-padding-size-1;
+        }
+        &-checkbox-disabled {
+            .@{region-checkbox-cls}-wrapper + span, .@{region-checkbox-cls} + span {
+                color: @primary-color-4;
+            }
+            cursor: not-allowed;
+        }
+    }
+    &-checkbox-list {
+        &-item {
+            padding-left: @margin-padding-size-4;
+            height: @region-item-height + 2px;
+            line-height: @region-item-height;
+            cursor: pointer;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            position: relative;
+            &-normal {
+                &:hover, &:focus {
+                    background: @primary-color-13;
+                }
+            }
+            &-text {
+                display: inline-block;
+                width: 60%;
+                overflow: hidden;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+            }
+            &-selected {
+                background: @primary-color-13;
+            }
+            &-disabled {
+                cursor: not-allowed;
+                .@{region-prefix-cls}-checkbox-list-item,
+                .@{select-region-layer-prefix-cls}-checkbox-list-item {
+                    &-text {
+                        color: @primary-color-4;
+                    }
+                    .new-fc-one-icon-angle-right {
+                        color: @primary-color-4;
+                    }
+                }
+            }
+        }
+    }
+    &-not-found-container {
+        position: absolute;
+        width: 100%;
+        top: 50%;
+        transform: translateY(-50%);
+        text-align: center;
+        font-size: @font-size-sm;
+    }
+    .@{checkbox-prefix-cls}-wrapper {
+        line-height: @region-item-height;
+        font-size: inherit;
+    }
+}
+
+.select-region-size(@size, @margin-right, @width) {
+    .@{select-region-prefix-cls}-button.@{select-region-button-prefix-cls}-@{size} {
+        padding-right: @margin-right;
+        width: @width;
+    }
+}
+
+.select-region-size(small, 5 * @dls-padding-unit, @region-select-width);
+.select-region-size(medium, 6 * @dls-padding-unit, @region-select-width-medium);
+.select-region-size(large, 7 * @dls-padding-unit, @region-select-width-large);
+
+.@{select-region-prefix-cls} {
+    &-button {
+        position: relative;
+        border-radius: 0;
+        text-align: left;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        > .@{one-prefix}-icon + span,
+        > span + .@{one-prefix}-icon {
+            margin-left: 0;
+        }
+        .@{one-prefix}-icon-angle-down,
+        .@{one-prefix}-icon-angle-up {
+            position: absolute;
+            right: @margin-padding-size-1;
+            top: 50%;
+            transform: translateY(-50%) scale(0.8, 0.8);
+        }
+    }
+    &-has-value {
+        .@{select-region-prefix-cls}-button-text {
+            color: @primary-color-1;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            width: 90%;
+            display: inline-block;
+        }
+    }
+}
+
+.@{select-region-layer-prefix-cls}-button {
+    padding: @margin-padding-size-2 0;
+    .@{select-region-layer-prefix-cls}-error-msg {
+        color: @error-color;
+        font-size: @font-size-sm;
+        padding: @margin-padding-size-2;
+        padding-top: 0;
+    }
+    button {
+        margin: 0 @margin-padding-size-2;
+    }
+}
+
+.@{region-prefix-cls}-search-box-has-render {
+    display: flex;
+}
+
+.@{region-prefix-cls}-search-box-has-prefix {
+    .@{region-prefix-cls}-prefix-render {
+        .@{one-prefix}-select {
+            border-top-right-radius: 0;
+            border-bottom-left-radius: 0;
+            border-bottom-right-radius: 0;
+        }
+        .@{one-prefix}-select:not(:hover) {
+            border-right: 1px solid transparent;
+        }
+    }
+    .@{one-prefix}-input-search-detail {
+        border-bottom-left-radius: 0;
+        border-top-left-radius: 0;
+    }
+}
+
+.@{region-prefix-cls}-search-box-has-suffix {
+    .@{region-prefix-cls}-suffix-render {
+        .@{one-prefix}-select {
+            border-top-left-radius: 0;
+            border-bottom-left-radius: 0;
+            border-bottom-right-radius: 0;
+        }
+        .@{one-prefix}-select:not(:hover) {
+            border-left: 1px solid transparent;
+        }
+    }
+    .@{one-prefix}-input-search-detail {
+        border-bottom-right-radius: 0;
+        border-top-right-radius: 0;
+    }
+}

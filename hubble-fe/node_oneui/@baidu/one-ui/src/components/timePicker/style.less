@@ -1,0 +1,158 @@
+@import "../../style/themes/default.less";
+@import "../../style/mixins/index.less";
+
+@time-picker-prefixClass: ~"@{one-prefix}-time-picker";
+@prefixClass-input: ~"@{time-picker-prefixClass}-input";
+@prefixClass-input-container: ~"@{time-picker-prefixClass}-input-container";
+@prefixClass-error: ~"@{time-picker-prefixClass}-error";
+@prefixClass-disabled-reason: ~"@{time-picker-prefixClass}-disabled-reason";
+
+.time-picker-size(@size, @font-size, @height) {
+  &-@{size} {
+    .@{prefixClass-error} {
+      font-size: @font-size;
+    }
+    .@{time-picker-prefixClass}-icon-close,
+    .@{time-picker-prefixClass}-icon-clock {
+      font-size: @font-size;
+      line-height: @height;
+    }
+  }
+  &-panel-@{size} {
+    .@{time-picker-prefixClass}-panel-inner {
+      font-size: @font-size;
+    }
+    .@{time-picker-prefixClass}-panel-select {
+      font-size: @font-size;
+      max-height: 10 * @height;
+      li {
+        height: @height;
+        line-height: @height;
+      }
+    }
+  }
+}
+
+.@{time-picker-prefixClass} {
+  display: inline-block;
+  position: relative;
+  box-sizing: border-box;
+  .time-picker-size(small, @dls-font-size-s, @dls-height-s);
+  .time-picker-size(medium, @dls-font-size-m, @dls-height-m);
+  .@{prefixClass-error} {
+    color: @dls-font-color-error;
+  }
+  .@{prefixClass-error}-bottom {
+    margin-top: @dls-padding-unit;
+  }
+  .@{prefixClass-error}-right {
+    display: inline-block;
+    margin-left: 2 * @dls-padding-unit;
+  }
+  &-panel {
+    z-index: @dls-time-picker-z-index;
+    min-width: @dls-time-picker-width;
+    position: absolute;
+    box-sizing: border-box;
+    &-combobox {
+      display: flex;
+    }
+    &-inner {
+      display: inline-block;
+      position: relative;
+      outline: none;
+      list-style: none;
+      text-align: left;
+      background-color: @dls-color-gray-1;
+      box-shadow: @dls-shadow;
+      background-clip: padding-box;
+      width: 100%;
+    }
+
+    &-select {
+      flex: 1;
+      border: 1px solid @dls-color-gray-4;
+      border-width: 0 1px;
+      margin-left: -1px;
+      box-sizing: border-box;
+      overflow-y: auto;
+      position: relative;
+
+      &-active {
+        overflow-y: auto;
+      }
+
+      &:first-child {
+        border-left: 0;
+        margin-left: 0;
+      }
+
+      &:last-child {
+        border-right: 0;
+      }
+
+      ul {
+        list-style: none;
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        width: 100%;
+      }
+
+      li {
+        list-style: none;
+        margin: 0;
+        padding: 0 3 * @dls-padding-unit;
+        text-align: center;
+        cursor: pointer;
+        user-select: none;
+        .option-color-normal();
+      }
+
+      li&-option-selected {
+        .option-color-normal-selected();
+      }
+
+      li&-option-disabled {
+        .option-color-normal-disabled();
+      }
+    }
+  }
+  .@{prefixClass-input-container} {
+    display: inline-block;
+  }
+  .@{prefixClass-input}-wrap {
+    box-sizing: border-box;
+    position: relative;
+    &-error {
+      .@{one-prefix}-input {
+        border: 1px solid @dls-font-color-error;
+      }
+    }
+    .@{prefixClass-input} {
+      width: 100%;
+      position: relative;
+      display: inline-block;
+      cursor: text;
+      &[disabled] {
+        color: @dls-font-color-disabled;
+        background: @dls-background-color-disabled;
+        cursor: not-allowed;
+      }
+      &-invalid {
+        border-color: @dls-font-color-error;
+      }
+    }
+  }
+  &-icon-close,
+  &-icon-clock {
+    position: absolute;
+    right: 3 * @dls-padding-unit;
+    text-align: center;
+    color: @dls-font-color-weak;
+  }
+
+  &-icon-close {
+    cursor: pointer;
+  }
+}

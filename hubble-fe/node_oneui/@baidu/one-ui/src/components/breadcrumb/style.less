@@ -1,0 +1,120 @@
+@import "../../style/themes/default.less";
+
+@breadcrumb-prefix-cls: ~"@{one-prefix}-breadcrumb";
+
+.breadcrumb-style(@color, @color-hover, @color-focus, @color-active, @text-decoration, @cursor) {
+    color: @color;
+    cursor: @cursor;
+    &:hover {
+        color: @color-hover;
+        text-decoration: @text-decoration;
+    }
+    &:focus {
+        color: @color-focus;
+        text-decoration: @text-decoration;
+    }
+    &:active {
+        color: @color-active;
+        text-decoration: @text-decoration;
+    }
+}
+
+.@{breadcrumb-prefix-cls} {
+    font-size: @dls-breadcrumb-font-size-m;
+    & > span:not(:last-of-type) {
+        .@{breadcrumb-prefix-cls}-link {
+            font-weight: @dls-breadcrumb-font-weight;
+            .breadcrumb-style(
+                @dls-breadcrumb-font-color,
+                @dls-breadcrumb-font-color-hover,
+                @dls-breadcrumb-font-color-focus,
+                @dls-breadcrumb-font-color-active,
+                @dls-breadcrumb-text-decoration,
+                pointer
+            );
+        }
+    }
+    & > span:last-of-type {
+        .@{breadcrumb-prefix-cls}-link {
+            font-weight: @dls-breadcrumb-item-current-font-weight;
+            .breadcrumb-style(
+                @dls-breadcrumb-font-color-current,
+                @dls-breadcrumb-font-color-current,
+                @dls-breadcrumb-font-color-current,
+                @dls-breadcrumb-font-color-current,
+                none,
+                auto
+            );
+        }
+    }
+    & > span:last-child &-separator {
+        display: none;
+    }
+    &-separator {
+        margin: 0 @dls-breadcrumb-separator-spacing;
+        color: @dls-breadcrumb-separator-color;
+        position: relative;
+        > .icon-angle-right {
+            height: 10px;
+            width: 10px;
+            fill: @dls-breadcrumb-separator-color;
+        }
+    }
+    &-link {
+        > .@{iconfont-css-prefix} + span {
+            margin-left: @dls-breadcrumb-separator-spacing;
+        }
+    }
+    & > span {
+        .@{breadcrumb-prefix-cls}-link-disabled {
+            font-weight: @dls-breadcrumb-font-weight;
+            .breadcrumb-style(
+                @dls-breadcrumb-font-color-disabled,
+                @dls-breadcrumb-font-color-disabled,
+                @dls-breadcrumb-font-color-disabled,
+                @dls-breadcrumb-font-color-disabled,
+                none,
+                not-allowed
+            );
+        }
+    }
+}
+
+.@{breadcrumb-prefix-cls}-small {
+    font-size: @dls-breadcrumb-font-size-s;
+    .@{breadcrumb-prefix-cls}-separator {
+        > .icon-angle-right {
+            width: 8px;
+            height: 8px;
+        }
+    }
+}
+
+.@{breadcrumb-prefix-cls}-strong {
+    & > span:not(:last-of-type) {
+        .@{breadcrumb-prefix-cls}-link {
+            font-weight: @dls-breadcrumb-font-weight;
+            .breadcrumb-style(
+                @dls-link-font-color-strong,
+                @dls-link-font-color-strong-hover,
+                @dls-link-font-color-strong-focus,
+                @dls-link-font-color-strong-active,
+                @dls-breadcrumb-text-decoration,
+                pointer
+            );
+        }
+    }
+    & > span {
+        .@{breadcrumb-prefix-cls}-link-disabled {
+            font-weight: @dls-breadcrumb-font-weight;
+            .breadcrumb-style(
+                @dls-link-font-color-strong-disabled,
+                @dls-link-font-color-strong-disabled,
+                @dls-link-font-color-strong-disabled,
+                @dls-link-font-color-strong-disabled,
+                none,
+                not-allowed
+            );
+        }
+    }
+}
