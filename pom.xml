@@ -29,7 +29,7 @@
     </properties>
     <dependencies>
         <!--
-       强制指定logback-classic和logback-core的版本为1.2.11，解决日志归档过程中文件句柄无法释放的问题，卡片链接：https://console.cloud.baidu-int.com/devops/icafe/issue/GraphPlatform-230/show?source=operation
+       强制指定logback-classic和logback-core的版本为1.2.11，解决日志归档过程中文件句柄无法释放的问题
        -->
         <dependency>
             <groupId>ch.qos.logback</groupId>
