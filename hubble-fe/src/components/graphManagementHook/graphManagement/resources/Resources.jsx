@@ -20,6 +20,7 @@ import {
     Collapse,
     Switch,
     message,
+    AutoComplete,
 } from 'antd';
 import { AppStoreContext } from '../../../../stores';
 import api from '../../../../api/api';
@@ -1015,14 +1016,13 @@ export default function Resources() {
                         name="target_graph"
                         rules={[{ required: true, message: '请选择图!' }]}
                     >
-                        <Select placeholder="请选择图" disabled={see || eidtKey}>
-                            <Option
-                                value={"*"}
-                            >
-                                所有
-                            </Option>
+                        <AutoComplete
+                            placeholder="请选择图"
+                            disabled={see || eidtKey}
+                            filterOption={(input, option) => option.children.includes(input)}
+                        >
                             {selectRender(graphsSelect)}
-                        </Select>
+                        </AutoComplete>
                     </Form.Item>
                     <Form.Item
                         label="所有资源"
