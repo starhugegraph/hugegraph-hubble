@@ -138,7 +138,7 @@ public class BelongService extends AuthService {
         } else {
             auth.listBelongsByGroup(gid, -1).forEach(b -> {
                 BelongEntity entity = convert(client, b);
-                if (entity != null) {
+                if (entity != null && entity.getUserId().equals(uid)) {
                     result.add(entity);
                 }
             });
