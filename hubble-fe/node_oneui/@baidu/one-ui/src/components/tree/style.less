@@ -1,0 +1,197 @@
+@import "../../style/themes/default";
+@import "../../style/mixins/index";
+@import "../../style/index";
+@import "../checkbox/style.less";
+
+@tree-prefix-cls: ~"@{one-prefix}-tree";
+
+.@{tree-prefix-cls} {
+  margin: 0;
+  padding: 0;
+  font-size: @dls-tree-font-size-s;
+  position: relative;
+  .@{tree-prefix-cls}-checkbox {
+    margin-right: @dls-tree-node-content-spacing;
+    line-height: 1;
+    font-size: inherit;
+  }
+  li {
+    margin: 0;
+    list-style: none;
+    white-space: nowrap;
+    outline: 0;
+    ul {
+      margin: 0;
+      padding: 0  @dls-tree-padding-x;
+    }
+    .@{tree-prefix-cls}-node-content-wrapper {
+      display: inline-block;
+      border-radius: 0;
+      margin: 0;
+      cursor: pointer;
+      text-decoration: none;
+      vertical-align: top;
+      transition: all .3s;
+      height: @dls-tree-node-height-s;
+      line-height: @dls-tree-node-height-s;
+      color: @dls-tree-node-font-color;
+      .@{tree-prefix-cls}-search-text-highlight {
+        color: @dls-tree-node-font-color-highlighted;
+      }
+      &:before {
+        content: '';
+        position: absolute;
+        width: 100%;
+        height: inherit;
+        transition-property: background-color;
+        transition-duration: 0.2s;
+        left: 0;
+        background-color: @dls-tree-node-background-color;
+        z-index: -1;
+      }
+      &:hover {
+        &:before {
+          background-color: @dls-tree-node-background-color-hover;
+        }
+      }
+      &:active {
+        &:before {
+          background-color: @dls-tree-node-background-color-active;
+        }
+      }
+      &:focus {
+        &:before {
+          background-color: @dls-tree-node-background-color-focus;
+        }
+      }
+      // &:hover {
+      //   background-color: @white-color-1;
+      // }
+      // &.@{tree-prefix-cls}-node-selected {
+      //   background-color: @white-color-1;
+      // }
+    }
+    .@{tree-prefix-cls}-node-selected {
+      color: @dls-tree-node-font-color-current;
+      font-weight: @dls-tree-node-font-weight-current;
+      &:before {
+        background-color: @dls-color-brand-1;
+      }
+      &:hover {
+        color: @dls-tree-node-font-color-current-hover;
+        &:before {
+          background-color: @dls-color-brand-1;
+        }
+      }
+      &:active {
+        color: @dls-tree-node-font-color-current-active;
+        &:before {
+          background-color: @dls-color-brand-2;
+        }
+      }
+      &:focus {
+        color: @dls-tree-node-font-color-current-focus;
+        &:before {
+          background-color: @dls-color-brand-1;
+        }
+      }
+    }
+    span {
+      &.@{tree-prefix-cls}-switcher,
+      &.@{tree-prefix-cls}-iconEle {
+        margin: 0;
+        height: @dls-tree-node-height-s;
+        line-height: @dls-tree-node-height-s;
+        border: 0 none;
+        cursor: pointer;
+        outline: none;
+        text-align: center;
+        display: inline-block;
+        margin-right: @dls-tree-node-content-spacing;
+      }
+      &.@{tree-prefix-cls}-switcher {
+        color: @dls-tree-icon-color-aux;
+        .@{tree-prefix-cls}-switcher-loading-icon,
+        .icon-chevron-down {
+          height: @dls-tree-icon-size-aux;
+          width: @dls-tree-icon-size-aux;
+        }
+        .@{tree-prefix-cls}-switcher-loading-icon {
+          animation: rotating 2s linear infinite;
+        }
+        &.@{tree-prefix-cls}-switcher-noop {
+          cursor: default;
+          display: inline-block;
+          width: @dls-tree-padding-x;
+          margin: 0;
+          text-align: center;
+          vertical-align: top;
+          border: 0 none;
+          outline: none;
+        }
+        &.@{tree-prefix-cls}-switcher_close {
+          transform: rotate(270deg);
+        }
+      }
+    }
+    &:last-child > span {
+      &.@{tree-prefix-cls}-switcher,
+      &.@{tree-prefix-cls}-iconEle {
+        &:before {
+          display: none;
+        }
+      }
+    }
+  }
+  li&-treenode-disabled {
+    >.@{tree-prefix-cls}-treenode-container {
+      .@{tree-prefix-cls}-node-content-wrapper {
+        cursor: not-allowed;
+        color: @dls-tree-node-font-color-disabled;
+        &:hover, &:active, &:focus {
+          color: @dls-tree-node-font-color-disabled;
+          &:before {
+            background-color: @dls-tree-node-background-color;
+          }
+        }
+      }
+    }
+  }
+  .@{tree-prefix-cls}-treenode-container {
+    display: flex;
+    align-items: center;
+    &-title {
+      display: flex;
+      align-items: center;
+      max-width: calc(100% - 16px);
+    }
+  }
+  &-child-tree {
+    display: none;
+    &-open {
+      display: block;
+    }
+  }
+}
+
+.@{tree-prefix-cls}-small,
+.@{tree-prefix-cls}-medium {
+  padding: 0  @dls-tree-padding-x;
+}
+
+.@{tree-prefix-cls}-medium {
+  font-size: @dls-tree-font-size-m;
+  li {
+    .@{tree-prefix-cls}-node-content-wrapper {
+      height: @dls-tree-node-height-m;
+      line-height: @dls-tree-node-height-m;
+    }
+    span {
+      &.@{tree-prefix-cls}-switcher,
+      &.@{tree-prefix-cls}-iconEle {
+        height: @dls-tree-node-height-m;
+        line-height: @dls-tree-node-height-m;
+      }
+    }
+  }
+}

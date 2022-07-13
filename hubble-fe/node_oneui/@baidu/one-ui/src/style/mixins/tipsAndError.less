@@ -1,0 +1,36 @@
+@import '../themes/default';
+
+.common-tips-and-error(
+    @prefix-cls,
+    @tip-color: @dls-color-gray-9,
+    @error-padding: @dls-padding-unit * 2
+) {
+    @prefix-cls-tip: ~"@{prefix-cls}-tip";
+    @popover-inner-contnet: ~"@{one-prefix}-popover-inner-content";
+
+    .@{prefix-cls}-error {
+        .@{prefix-cls} {
+            border-color: @dls-input-border-color-error !important;
+            &:focus {
+                box-shadow: @dls-shadow-error-focus;
+            }
+        }
+        .@{prefix-cls}-focus {
+            box-shadow: @dls-shadow-error-focus;
+        }
+    }
+    .@{prefix-cls-tip}, .@{prefix-cls-tip} .@{popover-inner-contnet} {
+        color: @tip-color;
+    }
+
+    .@{prefix-cls-tip}-error,  .@{prefix-cls-tip}-error .@{popover-inner-contnet} {
+        color: @dls-font-color-error !important;
+    }
+    .@{prefix-cls-tip}-bottom {
+        margin-top: @error-padding;
+    }
+    .@{prefix-cls-tip}-right {
+        display: inline-block;
+        margin-left: @error-padding;
+    }
+}

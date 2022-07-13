@@ -1,0 +1,133 @@
+@import "../../style/themes/default.less";
+
+@loading-prefix-cls: ~"@{one-prefix}-loading";
+
+.@{loading-prefix-cls} {
+    display: none;
+    position: absolute;
+    text-align: center;
+    vertical-align: middle;
+    opacity: 0;
+    transition: @dls-loading-transition;
+    padding: @dls-loading-padding;
+    &-vertical {
+        .@{loading-prefix-cls}-text {
+            display: block;
+            margin-top: @dls-loading-content-spacing;
+            margin-left: 0;
+        }
+    }
+    &-visible {
+        position: static;
+        display: inline-block;
+        opacity: 1;
+    }
+    &-medium {
+        font-size: @dls-loading-font-size-m;
+        .icon-loading {
+            height: @dls-loading-size-m;
+            width: @dls-loading-size-m;
+        }
+    }
+    &-small {
+        font-size: @dls-loading-font-size-s;
+        .icon-loading {
+            height: @dls-loading-size-s;
+            width: @dls-loading-size-s;
+        }
+    }
+    &-large {
+        font-size: @dls-loading-font-size-l;
+        .icon-loading {
+            height: @dls-loading-size-l;
+            width: @dls-loading-size-l;
+        }
+    }
+    &-type-normal {
+        .@{loading-prefix-cls}-text {
+            color: @dls-loading-font-color-normal;
+        }
+        .@{loading-prefix-cls}-loading-icon {
+            color: @dls-loading-color-normal;
+        }
+    }
+    &-type-strong {
+        .@{loading-prefix-cls}-text {
+            color: @dls-loading-font-color-strong;
+        }
+        .@{loading-prefix-cls}-loading-icon {
+            color: @dls-loading-color-strong;
+        }
+    }
+    &-type-reverse {
+        .@{loading-prefix-cls}-text {
+            color: @dls-loading-font-color-reverse;
+        }
+        .@{loading-prefix-cls}-loading-icon {
+            color: @dls-loading-color-reverse;
+        }
+    }
+    &-container {
+        transition: @dls-loading-transition;
+        &::after {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          opacity: 0;
+          background: @dls-loading-container-bg-shadow-color;
+          transition: @dls-loading-transition;
+          content: '';
+          pointer-events: none;
+        }
+    }
+    &-blur {
+        clear: both;
+        overflow: hidden;
+        user-select: none;
+        pointer-events: none;
+        &::after {
+            opacity: @dls-loading-blur-opacity;
+            pointer-events: auto;
+        }
+    }
+    &-nested-loading {
+        position: relative;
+        div > .@{loading-prefix-cls} {
+            position: absolute;
+            display: block;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            .@{loading-prefix-cls}-icon-element {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                z-index: @dls-loading-z-index;
+            }
+        }
+    }
+    &-text {
+        margin-left: @dls-loading-content-spacing;
+    }
+    &-loading-icon {
+        position: relative;
+        display: inline-block;
+        vertical-align: middle;
+        animation: rotating 2s linear infinite;
+        top: -1px;
+    }
+}
+
+@keyframes rotating {
+    from {
+        transform: rotate(0);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}

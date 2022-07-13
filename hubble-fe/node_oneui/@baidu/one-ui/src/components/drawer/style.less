@@ -1,0 +1,176 @@
+@import "../../style/themes/default.less";
+
+@drawer-prefix-cls: ~"@{one-prefix}-drawer";
+
+.drawer-size(@size, @header-font-size) {
+    .@{drawer-prefix-cls}-wrapper-body-@{size} {
+        .@{drawer-prefix-cls}-title {
+            font-size: @header-font-size;
+        }
+        .icon-close {
+            height: @header-font-size;
+            width: @header-font-size;
+            fill: @dls-icon-color-aux;
+        }
+    }
+}
+
+.drawer-size(small, @dls-drawer-title-font-size-s);
+.drawer-size(medium, @dls-drawer-title-font-size-m);
+
+.@{drawer-prefix-cls} {
+    position: fixed;
+    top: 0;
+    width: 0%;
+    height: 100%;
+    z-index: @dls-dialog-z-index;
+    > * {
+        transition: transform @common-duration;
+    }
+    &-content-wrapper {
+        position: fixed;
+    }
+    .@{drawer-prefix-cls}-content {
+        width: 100%;
+        height: 100%;
+    }
+    &-wrapper-body-container {
+        padding: @dls-dialog-padding-y @dls-dialog-padding-x;
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        display: flex;
+        flex-direction: column;
+    }
+    &-left,
+    &-right {
+        width: 0;
+        height: 100%;
+        .@{drawer-prefix-cls}-content-wrapper {
+            height: 100%;
+        }
+        &.@{drawer-prefix-cls}-open {
+            width: 100%;
+        }
+        &.@{drawer-prefix-cls}-open.no-mask {
+            width: 0;
+        }
+    }
+    &-left {
+        &.@{drawer-prefix-cls}-open {
+            .@{drawer-prefix-cls}-content-wrapper {
+                box-shadow: @dls-drawer-shadow-left;
+            }
+        }
+    }
+    &-right {
+        .@{drawer-prefix-cls} {
+            &-content-wrapper {
+                right: 0;
+            }
+        }
+        &.@{drawer-prefix-cls}-open {
+            .@{drawer-prefix-cls}-content-wrapper {
+                box-shadow: @dls-drawer-shadow-right;
+            }
+        }
+    }
+    &-top,
+    &-bottom {
+        width: 100%;
+        height: 0;
+        .@{drawer-prefix-cls}-content-wrapper {
+            width: 100%;
+        }
+        &.@{drawer-prefix-cls}-open {
+            height: 100%;
+        }
+        &.@{drawer-prefix-cls}-open.no-mask {
+            height: 0;
+        }
+    }
+    &-top {
+        &.@{drawer-prefix-cls}-open {
+            .@{drawer-prefix-cls}-content-wrapper {
+                box-shadow: @dls-drawer-shadow-top;
+            }
+        }
+    }
+    &-bottom {
+        .@{drawer-prefix-cls} {
+            &-content-wrapper {
+                bottom: 0;
+            }
+        }
+        &.@{drawer-prefix-cls}-open {
+            .@{drawer-prefix-cls}-content-wrapper {
+                box-shadow: @dls-drawer-shadow-bottom;
+            }
+        }
+    }
+    &.@{drawer-prefix-cls}-open {
+        .@{drawer-prefix-cls} {
+            &-mask {
+                opacity: @dls-dialog-mask-background-color-opacity;
+                height: 100%;
+            }
+        }
+    }
+    &-title {
+        margin: 0;
+        // font-size: @font-size-lg;
+        line-height: @dls-line-height-m;
+        font-weight: @dls-font-weight-3;
+        color: @dls-dialog-title-font-color;
+    }
+    &-content {
+        background-color: @dls-background-color-normal;
+        border: 0;
+        background-clip: padding-box;
+    }
+    &-header {
+        border-radius: 0;
+        background: @dls-background-color-normal;
+        position: relative;
+        flex-grow: 0;
+    }
+    &-close {
+        position: absolute;
+        right: @dls-dialog-padding-x;
+        top: @dls-dialog-padding-y;
+        cursor: pointer;
+        z-index: 1;
+        color: @dls-font-color-weak;
+    }
+    &-body {
+        line-height: @dls-line-height-m;
+        word-wrap: break-word;
+        margin-bottom: @dls-dialog-action-spacing-before;
+        margin-top: @dls-dialog-title-spacing-after;
+        flex-grow: 1;
+        overflow: auto;
+        &-has-footer {
+            bottom: @dls-dialog-padding-y;
+        }
+    }
+    &-mask {
+        position: fixed;
+        width: 100%;
+        height: 0;
+        opacity: @dls-dialog-mask-background-color-opacity;
+        background-color: @dls-dialog-mask-background-color;
+    }
+    &-open {
+        &-content {
+            box-shadow: @box-shadow-style-1;
+        }
+    }
+    &-footer {
+        flex-grow: 0;
+        > button {
+            margin-right: @dls-dialog-action-content-spacing;
+        }
+    }
+}

@@ -1,0 +1,74 @@
+@import "../../style/themes/default.less";
+
+@embedded-prefix-cls: ~"@{one-prefix}-embedded";
+
+.@{embedded-prefix-cls} {
+    padding: @dls-dialog-padding-x @dls-dialog-padding-y;
+    box-shadow: @dls-shadow;
+    position: relative;
+    background-color: @dls-color-gray-1;
+    border-radius: @dls-dialog-border-radius;
+    &-close {
+        position: absolute;
+        top: @dls-embedded-icon-close-top;
+        right: @dls-dialog-padding-x;
+        padding: 2 * @dls-padding-unit;
+        padding-right: 0;
+        cursor: pointer;
+        .icon-close {
+            height: @dls-font-size-m;
+            width: @dls-font-size-m;
+            fill: @dls-icon-color-aux;
+        }
+    }
+    &-header {
+        font-size: @dls-embedded-title-font-size-m;
+        font-weight: bolder;
+        margin-bottom: @dls-dialog-title-spacing-after;
+        padding-right: @dls-dialog-title-content-spacing + @dls-embedded-icon-close-width;
+        color: @dls-dialog-title-font-color;
+    }
+    &-footer {
+        margin-top: @dls-dialog-action-spacing-before;
+        display: flex;
+        button {
+            margin-right: @dls-dialog-action-content-spacing;
+        }
+    }
+    &-center {
+        justify-content: center;
+    }
+    &-left {
+        justify-content: flex-start;
+    }
+    &-right {
+        justify-content: flex-end;
+    }
+}
+
+.@{embedded-prefix-cls}-small {
+    .@{embedded-prefix-cls}-header {
+        font-size: @dls-embedded-title-font-size-s;
+    }
+}
+
+.@{embedded-prefix-cls}-horizon {
+    padding: @dls-dialog-padding-x @dls-dialog-padding-y;
+    background-color: @dls-color-gray-1;
+    box-shadow: @dls-shadow;
+    position: relative;
+    &-close {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        right: @dls-dialog-padding-x;
+        padding: 2 * @dls-padding-unit;
+        padding-right: 0;
+        cursor: pointer;
+        .icon-close {
+            height: @dls-font-size-s;
+            width: @dls-font-size-s;
+            fill: @dls-icon-color-aux;
+        }
+    }
+}

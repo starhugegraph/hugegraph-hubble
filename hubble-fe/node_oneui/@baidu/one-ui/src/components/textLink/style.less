@@ -1,0 +1,66 @@
+@import "../../style/themes/default.less";
+@import "../../style/mixins/index.less";
+
+.link-normal-style(
+    @font-color-normal,
+    @font-color-normal-hover,
+    @font-color-normal-active,
+    @font-color-normal-focus
+) {
+    color: @font-color-normal;
+    &:hover {
+        color: @font-color-normal-hover;
+    }
+    &:active {
+        color: @font-color-normal-active;
+    }
+    &:focus {
+        color: @font-color-normal-focus;
+    }
+}
+
+@link-prefix-cls: ~"@{one-prefix}-text-link";
+
+.@{link-prefix-cls} {
+    cursor: pointer;
+    text-decoration: @dls-link-text-decoration;
+    &:hover {
+        text-decoration: @dls-link-text-decoration-hover;
+    }
+    &:active {
+        text-decoration: @dls-link-text-decoration-active;
+    }
+    &:focus {
+        text-decoration: @dls-link-text-decoration-focus;
+    }
+}
+.@{link-prefix-cls}-normal {
+    .link-normal-style(@dls-link-font-color-normal, @dls-link-font-color-normal-hover, @dls-link-font-color-normal-active, @dls-link-font-color-normal-focus);
+}
+
+.@{link-prefix-cls}-strong {
+    .link-normal-style(@dls-link-font-color-strong, @dls-link-font-color-strong-hover, @dls-link-font-color-strong-active, @dls-link-font-color-strong-focus);
+}
+
+.@{link-prefix-cls}-small {
+    font-size: @dls-link-font-size-s;
+}
+
+.@{link-prefix-cls}-medium {
+    font-size: @dls-link-font-size-m;
+}
+
+.@{link-prefix-cls}-disabled {
+    cursor: not-allowed;
+    &:hover, &:active, &:focus {
+        text-decoration: @dls-link-text-decoration;
+    }
+}
+
+.@{link-prefix-cls}-normal.@{link-prefix-cls}-disabled {
+    .link-normal-style(@dls-link-font-color-normal-disabled, @dls-link-font-color-normal-disabled, @dls-link-font-color-normal-disabled, @dls-link-font-color-normal-disabled);
+}
+
+.@{link-prefix-cls}-strong.@{link-prefix-cls}-disabled {
+    .link-normal-style(@dls-link-font-color-strong-disabled, @dls-link-font-color-strong-disabled, @dls-link-font-color-strong-disabled, @dls-link-font-color-strong-disabled);
+}

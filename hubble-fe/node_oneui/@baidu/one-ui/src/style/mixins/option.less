@@ -1,0 +1,74 @@
+@import '../themes/default';
+
+.option-color-normal(
+    @background-color: @dls-option-background-color,
+    @font-color: @dls-option-font-color,
+    @background-color-hover: @dls-option-background-color-hover,
+    @font-color-hover: @dls-option-font-color-hover,
+    @background-color-active: @dls-option-background-color-active,
+    @font-color-active: @dls-option-font-color-active,
+    @background-color-focus: @dls-option-background-color-focus,
+    @font-color-focus: @dls-option-font-color-focus
+) {
+    background-color: @background-color;
+    color: @font-color;
+    &:hover {
+        background-color: @background-color-hover;
+        color: @font-color-hover;
+    }
+    &:active {
+        background-color: @background-color-active;
+        color: @font-color-active;
+    }
+    &:focus {
+        background-color: @background-color-focus;
+        color: @font-color-focus;
+    }
+}
+
+.option-color-normal-selected(
+    @background-color: @dls-option-background-color,
+    @font-color: @dls-option-font-color-selected,
+    @background-color-hover: @dls-option-background-color-hover,
+    @font-color-hover: @dls-option-font-color-selected-hover,
+    @background-color-active: @dls-option-background-color-active,
+    @font-color-active: @dls-option-font-color-selected-active,
+    @background-color-focus: @dls-option-background-color-focus,
+    @font-color-focus: @dls-option-font-color-selected-focus
+) {
+    background-color: @background-color;
+    color: @font-color;
+    &:hover {
+        background-color: @background-color-hover;
+        color: @font-color-hover;
+    }
+    &:active {
+        background-color: @background-color-active;
+        color: @font-color-active;
+    }
+    &:focus {
+        background-color: @background-color-focus;
+        color: @font-color-focus;
+    }
+}
+
+.option-color-normal-disabled(
+    @background-color: @dls-background-color-disabled,
+    @font-color: @dls-option-font-color-disabled
+) {
+    background-color: @background-color;
+    color: @font-color;
+    cursor: not-allowed;
+    &:hover {
+        background-color: @background-color;
+        color: @font-color;
+    }
+    &:active {
+        background-color: @background-color;
+        color: @font-color;
+    }
+    &:focus {
+        background-color: @background-color;
+        color: @font-color;
+    }
+}

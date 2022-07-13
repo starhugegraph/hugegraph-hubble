@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 34 35" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 59.1 (86144) - https://sketch.com -->
+    <title>icon-mess</title>
+    <desc>Created with Sketch.</desc>
+    <g id="-" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="icon-24x24" transform="translate(-79.000000, -17.000000)">
+            <g id="icon-mess" transform="translate(78.000000, 16.000000)">
+                <rect id="矩形" fill="#D8D8D8" opacity="0" x="0" y="0" width="36" height="36"></rect>
+                <path d="M11.5,29 C11.5,29.6740165 11.6031096,30.3359417 11.8035598,30.9676327 C12.6533936,33.6457668 15.147152,35.5 18,35.5 C20.8410801,35.5 23.3269965,33.6609368 24.1865698,30.9984697 C24.3934876,30.3575565 24.5,29.6850454 24.5,29 L21.5,29 C21.5,29.3711747 21.4427339,29.7327483 21.3316674,30.076769 C20.869208,31.5092039 19.5299195,32.5 18,32.5 C16.463769,32.5 15.1202329,31.5010142 14.6630457,30.0602517 C14.5554446,29.7211618 14.5,29.3652281 14.5,29 L11.5,29 Z" id="路径" fill="#000000" fill-rule="nonzero"></path>
+                <path d="M7.5,29 L7.5,19 C7.5,13.2010101 12.2010101,8.5 18,8.5 C23.7989899,8.5 28.5,13.2010101 28.5,19 L28.5,29 L31.5,29 L31.5,19 C31.5,11.5441559 25.4558441,5.5 18,5.5 C10.5441559,5.5 4.5,11.5441559 4.5,19 L4.5,29 L7.5,29 Z" id="路径" fill="#000000" fill-rule="nonzero"></path>
+                <rect id="矩形" fill="#000000" x="15" y="1" width="6" height="3" rx="1.5"></rect>
+                <rect id="矩形" fill="#000000" x="1" y="27" width="34" height="3" rx="1.5"></rect>
+            </g>
+        </g>
+    </g>
+</svg>

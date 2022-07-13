@@ -1,0 +1,230 @@
+/**
+ * Colors
+ */
+/* Brand colors */
+/* Contextual colors */
+/* Gray scale colors */
+/**
+ * Typography
+ */
+/**
+ * Spacing
+ */
+/**
+ * Background colors
+ */
+/**
+ * Borders
+ */
+/* Border colors */
+/* Separator colors */
+/* Border radii */
+/* Shadows */
+/* Icons */
+/* Font sizes */
+/* Metrics */
+/* Stylistic variants */
+/* Focus rings */
+/* Button group separator */
+/* Font sizes */
+/* Text decorations */
+/* Stylistic variants */
+/* Typography */
+/* Metrics */
+/* Colors */
+/* Focus ring */
+/* Checkbox group */
+/* Typography */
+/* Metrics */
+/* Colors */
+/* Focus ring */
+/* Strong variant */
+/* Checkbox group */
+/* Metrics */
+/* Colors */
+/* Typography */
+/* Font sizes */
+/* Metrics */
+/* Colors & states */
+/* Focus rings */
+/* Icons */
+/* Typography */
+/* Metrics */
+/* Character count */
+/* Metrics */
+/* Font sizes */
+/* Metrics */
+/* States */
+/* Option group title */
+/* Option dropdown */
+/* Widths */
+/* Icon */
+/* Metrics */
+/* Colors */
+/* Metrics */
+/* Colors */
+/* Typography */
+/* Markers */
+/* Metrics */
+/* Spacing */
+/* Statuses */
+/* Metrics */
+/* Colors */
+/* Typography */
+/* Metrics */
+/* Colors */
+/* Metrics */
+/* Colors & States */
+/* Metrics */
+/* Headers */
+/* Colors */
+/* Metrics */
+/* Typography */
+/* Container */
+/* Panel */
+/* Misc */
+/* Metrics */
+/* Colors */
+/* Indicators */
+/* Stylistic variants */
+/* Metrics */
+/* Colors */
+/* Metrics */
+/* Colors */
+/* Metrics */
+/* Stylistic variants */
+/* Metrics */
+/* Colors */
+/* Metrics */
+/* Colors */
+/* Pages */
+/* Indicators */
+/* Controls */
+/* Pages */
+/**
+ * DatePicker Dropdown
+ *  only has small and middle size
+ */
+/* Font size */
+/* Background color */
+/* Radius */
+/* Shadow */
+/**
+ * DatePicker input
+ */
+/* Icon color */
+/* Spacing */
+/**
+ * DatePicker panel
+ */
+/**
+ * DatePicker header
+ *  select year / month
+ */
+/* Icon sizes */
+/* Padding & spacing */
+/**
+ * DatePicker body,
+ * including weekdays, day/month/year body
+ */
+/**
+ * DatePicker cells,
+ * including date/month/year cells
+ */
+/* Sizes */
+/* Border radii */
+/* Focus rings */
+/* Font colors */
+/* Font weights */
+/* Spacing, except for start and end */
+/* Background */
+/* Border color */
+/**
+ * List: year scroller & shortcut list
+ */
+/**
+ * Year scroller
+ */
+/* Font size */
+/* Common */
+/* Cell */
+/* Header */
+/* Sub-row */
+/* Typography */
+/* Misc */
+/* Metrics */
+/* Typography */
+/* Container */
+button::-moz-focus-inner,
+input[type="reset"]::-moz-focus-inner,
+input[type="button"]::-moz-focus-inner,
+input[type="submit"]::-moz-focus-inner,
+input[type="file"] > input[type="button"]::-moz-focus-inner {
+  border: none;
+}
+.new-fc-one-embedded {
+  padding: 24px 24px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+  position: relative;
+  background-color: #fff;
+  border-radius: 4px;
+}
+.new-fc-one-embedded-close {
+  position: absolute;
+  top: 10px;
+  right: 24px;
+  padding: 8px;
+  padding-right: 0;
+  cursor: pointer;
+}
+.new-fc-one-embedded-close .icon-close {
+  height: 14px;
+  width: 14px;
+  fill: #999;
+}
+.new-fc-one-embedded-header {
+  font-size: 16px;
+  font-weight: bolder;
+  margin-bottom: 12px;
+  padding-right: 44px;
+  color: #000;
+}
+.new-fc-one-embedded-footer {
+  margin-top: 20px;
+  display: flex;
+}
+.new-fc-one-embedded-footer button {
+  margin-right: 12px;
+}
+.new-fc-one-embedded-center {
+  justify-content: center;
+}
+.new-fc-one-embedded-left {
+  justify-content: flex-start;
+}
+.new-fc-one-embedded-right {
+  justify-content: flex-end;
+}
+.new-fc-one-embedded-small .new-fc-one-embedded-header {
+  font-size: 14px;
+}
+.new-fc-one-embedded-horizon {
+  padding: 24px 24px;
+  background-color: #fff;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+  position: relative;
+}
+.new-fc-one-embedded-horizon-close {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  right: 24px;
+  padding: 8px;
+  padding-right: 0;
+  cursor: pointer;
+}
+.new-fc-one-embedded-horizon-close .icon-close {
+  height: 12px;
+  width: 12px;
+  fill: #999;
+}

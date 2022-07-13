@@ -1,0 +1,329 @@
+@import "../../style/themes/default.less";
+@import "../../style/mixins/index.less";
+
+@numberbox-prefix-cls: ~"@{one-prefix}-numberbox";
+@numberbox-prefix-cls-wrapper: ~"@{numberbox-prefix-cls}-wrapper";
+@numberbox-prefix-cls-wrapper-strong: ~"@{numberbox-prefix-cls-wrapper}-strong";
+@numberbox-prefix-cls-wrapper-basic: ~"@{numberbox-prefix-cls-wrapper}-basic";
+@numberbox-prefix-cls-main: ~"@{numberbox-prefix-cls}-main";
+@numberbox-prefix-cls-main-addon: ~"@{numberbox-prefix-cls-main}-addon";
+@numberbox-prefix-cls-tip: ~"@{numberbox-prefix-cls}-tip";
+@popover-inner-contnet: ~"@{one-prefix}-popover-inner-content";
+
+.number-box-input-height(@height) {
+    input {
+        height: @height - 2px;
+    }
+    .btn-container {
+        .@{one-prefix}-icon {
+            height: (@height - 2 * @dls-number-input-border-width) / 2;
+        }
+    }
+}
+.number-box-main-size(@width, @border-radius, @font-size) {
+    .@{numberbox-prefix-cls-main} {
+        .@{numberbox-prefix-cls} {
+            border-radius: @border-radius;
+            width: @width;
+        }
+    }
+    .@{numberbox-prefix-cls}-tail-label {
+        font-size: @font-size;
+    }
+}
+
+.number-box-size(@type, @height, @width, @border-radius, @font-size, @spin-width) {
+    .@{numberbox-prefix-cls}-@{type} {
+        .input-size-style(@font-size, @border-radius, @height);
+        .number-box-input-height(@height);
+        .number-box-main-size(@width, @border-radius, @font-size);
+        .btn-container {
+            width: @spin-width;
+        }
+        .@{numberbox-prefix-cls} {
+            height: @height;
+            input {
+                font-size: @font-size;
+            }
+        }
+        .@{numberbox-prefix-cls}-main-addon {
+            > span {
+                height: @height - 2px;
+                .one-ui-icon-svg {
+                    height: 10px;
+                    width: 10px;
+                    fill: @dls-icon-color-aux;
+                }
+            }
+        }
+    }
+    .@{numberbox-prefix-cls-tip}-layer-@{type} {
+        .@{popover-inner-contnet} {
+            font-size: @font-size;
+        }
+    }
+}
+
+.number-box-adpter-color(@background-color, @color) {
+    background: @background-color;
+    color: @color;
+}
+.number-box-icon-disabled-style() {
+    .@{iconfont-css-prefix}-disabled {
+        cursor: not-allowed;
+        background-color: @dls-number-input-adpter-background-color-disabled;
+        .@{one-prefix}-icon {
+            cursor: not-allowed !important;
+            color: @dls-number-input-adpter-text-color-disabled;
+        }
+        &:hover, &:active, &:focus {
+            background-color: @dls-number-input-adpter-background-color-disabled;
+        }
+    }
+};
+
+.number-box-strong-adpter-size(@type, @size, @border-radius) {
+    .@{numberbox-prefix-cls-wrapper-strong}.@{numberbox-prefix-cls}-@{type} {
+        .@{numberbox-prefix-cls-main} {
+            .@{numberbox-prefix-cls-main-addon} {
+                height: @size;
+                line-height: @size;
+                width: @size;
+            }
+            .@{numberbox-prefix-cls-main-addon}:first-of-type {
+                border-top-left-radius: @border-radius;
+                border-bottom-left-radius: @border-radius;
+            }
+            .@{numberbox-prefix-cls-main-addon}:last-of-type {
+                border-top-right-radius: @border-radius;
+                border-bottom-right-radius: @border-radius;
+            }
+        }
+    }
+}
+
+.@{numberbox-prefix-cls} {
+    position: relative;
+    width: 100%;
+    .input-color-normal-style();
+    display: flex;
+    flex: 1 1 auto;
+    align-items: stretch;
+    padding-left: 3 * @dls-padding-unit;
+    input {
+        width: 100%;
+        text-align: left;
+        outline: 0;
+        background-color: transparent;
+        border: 0;
+        padding: 0;
+        color: @dls-input-font-color;
+    }
+    .btn-container {
+        border-left: @dls-number-input-border-width @dls-number-input-border-style @dls-number-input-border-color-normal;
+        opacity: 0;
+        -webkit-transition: opacity 0.24s linear 0.1s;
+        transition: opacity 0.24s linear 0.1s;
+        margin-left: 3 * @dls-padding-unit;
+        position: absolute;
+        right: 0;
+        height: 100%;
+        >div {
+            cursor: pointer;
+            height: 50%;
+            >span {
+                display: inline-block;
+                height: 100%;
+                width: 100%;
+                text-align: center;
+            }
+            .number-box-adpter-color(@dls-number-input-adpter-background-color, @dls-number-input-adpter-text-color);
+        }
+        >div:hover {
+            .number-box-adpter-color(@dls-number-input-adpter-background-color-hover, @dls-number-input-adpter-text-color-hover);
+        }
+        >div:focus,
+        >div:active {
+            .number-box-adpter-color(@dls-number-input-adpter-background-color-active, @dls-number-input-adpter-text-color-active);
+        }
+        .one-ui-icon-svg {
+            height: @dls-number-input-spin-icon-size-normal;
+            color: @dls-icon-color-aux;
+        }
+        .number-box-icon-disabled-style();
+    }
+    .btn-container-focus {
+        opacity: 1;
+    }
+}
+
+.number-box-size(xsmall, @dls-number-input-height-xs, @dls-number-input-width-normal-xs, @dls-input-border-radius-xs, @dls-input-font-size-xs, @dls-number-input-spin-button-width-normal-xs);
+.number-box-size(small, @dls-number-input-height-s, @dls-number-input-width-normal-s, @dls-input-border-radius-s, @dls-input-font-size-s, @dls-number-input-spin-button-width-normal-s);
+.number-box-size(medium, @dls-number-input-height-m, @dls-number-input-width-normal-m, @dls-input-border-radius-m, @dls-input-font-size-m, @dls-number-input-spin-button-width-normal-m);
+
+.@{numberbox-prefix-cls}-focus {
+    // 会被hover覆盖，所以这里加上important
+    border-color: @dls-input-border-color-focus !important;
+    box-shadow: @dls-shadow-focus;
+}
+
+.@{numberbox-prefix-cls}-tail-label {
+    color: @dls-number-input-label-text-color !important;
+    margin-left: @dls-number-input-label-text-spacing;
+}
+
+.@{numberbox-prefix-cls}-readonly,
+.@{numberbox-prefix-cls}-disabled {
+    .input-color-disabled-style();
+    input {
+        cursor: not-allowed;
+    }
+    .btn-container {
+        display: none;
+    }
+}
+.@{numberbox-prefix-cls}-readonly {
+    .input-color-readonly-style();
+    input {
+        cursor: text;
+    }
+}
+
+.@{numberbox-prefix-cls-wrapper} {
+    display: inline-block;
+    line-height: 1;
+    position: relative;
+    .@{numberbox-prefix-cls-tip}-layer {
+        color: @dls-number-input-layer-text-color;
+    }
+    * {
+        box-sizing: border-box !important;
+    }
+    &:hover {
+        .btn-container {
+            opacity: 1;
+        }
+    }
+    .@{numberbox-prefix-cls-main} {
+        display: inline-block;
+        .@{numberbox-prefix-cls-main-addon} {
+            display: inline-block;
+            border: @dls-number-input-strong-addon-border-width @dls-number-input-strong-addon-border-style @dls-number-input-strong-addon-border-color;
+            vertical-align: top;
+            text-align: center;
+            cursor: pointer;
+            position: relative;
+            background-color: @dls-number-input-strong-addon-background-color;
+            &:hover {
+                background-color: @dls-number-input-strong-addon-background-color-hover;
+            }
+            &:active {
+                background-color: @dls-number-input-strong-addon-background-color-active;
+            }
+            span {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+            }
+        }
+        .@{numberbox-prefix-cls-main-addon}-before {
+            border: 0;
+            border-right: 1px solid @dls-input-border-color;
+        }
+        .@{numberbox-prefix-cls-main-addon}-after {
+            border: 0;
+            border-left: 1px solid @dls-input-border-color;
+        }
+        .number-box-icon-disabled-style();
+    }
+}
+
+.@{numberbox-prefix-cls-wrapper-strong} {
+    display: flex;
+    flex: 1 1 auto;
+    align-items: center;
+    .@{numberbox-prefix-cls}-main {
+        display: flex;
+        border: 1px solid @dls-input-border-color;
+        &:hover {
+            border-color: @dls-input-border-color-hover;
+        }
+        .@{numberbox-prefix-cls} {
+            width: @dls-number-input-strong-input-width;
+            border-radius: 0;
+            border: none;
+            &:hover {
+                border: none;
+            }
+        }
+        .@{numberbox-prefix-cls}-focus {
+            border: none;
+            box-shadow: none;
+        }
+    }
+    .btn-container {
+        display: none !important;
+    }
+}
+
+.@{numberbox-prefix-cls-wrapper-strong}.@{numberbox-prefix-cls-wrapper}-disabled {
+    .@{numberbox-prefix-cls}-main {
+        border: 1px solid @dls-input-border-color-disabled;
+        &:hover {
+            border-color: @dls-input-border-color-disabled;
+        }
+    }
+}
+
+.@{numberbox-prefix-cls-wrapper-strong}.@{numberbox-prefix-cls-wrapper}-focus {
+    .@{numberbox-prefix-cls}-main {
+        border-color: @dls-input-border-color-focus;
+        box-shadow: @dls-shadow-focus;
+    }
+}
+
+.@{numberbox-prefix-cls-wrapper-strong}.@{numberbox-prefix-cls}-small {
+    .@{numberbox-prefix-cls}-main {
+        border-radius: @dls-input-border-radius-s;
+        input {
+            height: @dls-input-height-s;
+        }
+    }
+}
+
+.@{numberbox-prefix-cls-wrapper-strong}.@{numberbox-prefix-cls}-xsmall {
+    .@{numberbox-prefix-cls}-main {
+        border-radius: @dls-input-border-radius-xs;
+        input {
+            height: @dls-input-height-xs;
+        }
+    }
+}
+
+.@{numberbox-prefix-cls-wrapper-strong}.@{numberbox-prefix-cls}-medium {
+    .@{numberbox-prefix-cls}-main {
+        border-radius: @dls-input-border-radius-m;
+        input {
+            height: @dls-input-height-m;
+        }
+    }
+}
+
+.number-box-strong-adpter-size(medium, @dls-number-input-height-m, @dls-border-radius-m);
+.number-box-strong-adpter-size(small, @dls-number-input-height-s, @dls-border-radius-s);
+.number-box-strong-adpter-size(xsmall, @dls-number-input-height-xs, @dls-border-radius-s);
+
+.@{numberbox-prefix-cls-wrapper-strong}.@{numberbox-prefix-cls-wrapper}-readonly,
+.@{numberbox-prefix-cls-wrapper-strong}.@{numberbox-prefix-cls-wrapper}-disabled {
+    .@{numberbox-prefix-cls-main-addon} {
+        border-color: @dls-input-border-color-disabled;
+    }
+}
+
+.@{numberbox-prefix-cls-wrapper-basic} {
+    .@{numberbox-prefix-cls-main-addon} {
+        display: none !important;
+    }
+}
+.common-tips-and-error(@numberbox-prefix-cls);

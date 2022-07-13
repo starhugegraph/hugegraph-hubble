@@ -1,0 +1,94 @@
+@import "../../style/themes/default.less";
+@import "../../style/mixins/index.less";
+
+@badge-prefix-cls: ~"@{one-prefix}-badge";
+
+.@{badge-prefix-cls} {
+    .reset-component();
+    position: relative;
+    display: inline-block;
+    color: unset;
+    &-count {
+        top: -@dls-badge-label-height / 2;
+        height: @dls-badge-label-height;
+        border-radius: @dls-badge-label-height / 2;
+        min-width: @dls-badge-label-min-width;
+        background: @dls-badge-background-color-error;
+        color: @dls-badge-font-color;
+        line-height: @dls-badge-label-height;
+        text-align: center;
+        padding: 0 @dls-badge-label-padding-x;
+        font-size: @dls-badge-font-size;
+        white-space: nowrap;
+        z-index: @dls-badge-zIndex;
+        box-sizing: border-box;
+    }
+    &-dot {
+        top: -@dls-badge-dot-size / 2;
+        height: @dls-badge-dot-size;
+        width: @dls-badge-dot-size;
+        border-radius: 50%;
+        background: @dls-badge-background-color-error;
+        z-index: @dls-badge-zIndex;
+    }
+    &-count,
+    &-dot {
+        position: absolute;
+        right: 0;
+        transform-origin: 100%;
+        opacity: 1;
+        transform: scale(1) translateX(50%);
+        transition: all 0.3s ease-in-out;
+    }
+    &-hidden {
+        opacity: 0;
+        transform: scale(0);
+    }
+    &-type {
+        line-height: inherit;
+        vertical-align: baseline;
+        &-dot {
+            width: @dls-badge-dot-size;
+            height: @dls-badge-dot-size;
+            display: inline-block;
+            border-radius: 50%;
+            vertical-align: middle;
+            position: relative;
+            margin-right: @dls-badge-label-spacing-status;
+        }
+        &-success {
+            background-color: @dls-badge-background-color-success;
+        }
+        &-processing {
+            background-color: @dls-badge-background-color-info;
+        }
+        &-default {
+            background-color: @dls-badge-background-color-aux;
+        }
+        &-error {
+            background-color: @dls-badge-background-color-error;
+        }
+        &-warning {
+            background-color: @dls-badge-background-color-warning;
+        }
+        &-text {
+            margin-left: @dls-badge-label-spacing-status;
+        }
+    }
+    &-not-a-wrapper {
+        vertical-align: middle;
+        .@{badge-prefix-cls}-count {
+          transform: none;
+        }
+    }
+}
+
+@keyframes OneZoomBadgeIn {
+    0% {
+      opacity: 0;
+      transform: scale(0) translateX(50%);
+    }
+    100% {
+      transform: scale(1) translateX(50%);
+    }
+}

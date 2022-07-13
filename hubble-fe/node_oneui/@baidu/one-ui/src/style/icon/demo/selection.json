@@ -1,0 +1,190 @@
+{
+  "IcoMoonType": "selection",
+  "icons": [
+    {
+      "icon": {
+        "paths": [
+          "M288 876.882l-0-834.216c0-23.564 19.103-42.667 42.667-42.667s42.667 19.103 42.667 42.667l0 832.202 214.67-221.87c16.385-16.935 43.397-17.38 60.332-0.995s17.38 43.397 0.995 60.332l-288.974 298.667c-16.769 17.331-44.558 17.331-61.327 0l-287.026-296.653c-16.385-16.935-15.94-43.946 0.995-60.332s43.946-15.94 60.332 0.995l214.67 221.87z"
+        ],
+        "attrs": [
+          {}
+        ],
+        "width": 661,
+        "isMulticolor": false,
+        "isMulticolor2": false,
+        "grid": 0,
+        "tags": [
+          "arrow-down"
+        ],
+        "colorPermutations": {
+          "11021021021219219219125415101255255255125591911911961591": [
+            {}
+          ]
+        }
+      },
+      "attrs": [
+        {}
+      ],
+      "properties": {
+        "order": 987,
+        "id": 47,
+        "name": "arrow-down",
+        "prevSize": 32,
+        "code": 59714
+      },
+      "setIdx": 0,
+      "setId": 0,
+      "iconIdx": 70
+    },
+    {
+      "icon": {
+        "paths": [
+          "M544 147.118v834.216c0 23.564-19.103 42.667-42.667 42.667s-42.667-19.103-42.667-42.667v-832.202l-214.67 221.87c-16.385 16.935-43.397 17.38-60.332 0.995s-17.38-43.397-0.995-60.332l288.974-298.667c16.769-17.331 44.558-17.331 61.327 0l287.026 296.653c16.385 16.935 15.94 43.946-0.995 60.332s-43.946 15.94-60.332-0.995l-214.67-221.87z"
+        ],
+        "attrs": [
+          {}
+        ],
+        "isMulticolor": false,
+        "isMulticolor2": false,
+        "grid": 0,
+        "tags": [
+          "arrow-up"
+        ],
+        "colorPermutations": {
+          "11021021021219219219125415101255255255125591911911961591": [
+            {}
+          ]
+        }
+      },
+      "attrs": [
+        {}
+      ],
+      "properties": {
+        "order": 988,
+        "id": 46,
+        "name": "arrow-up",
+        "prevSize": 32,
+        "code": 59715
+      },
+      "setIdx": 0,
+      "setId": 0,
+      "iconIdx": 71
+    },
+    {
+      "icon": {
+        "paths": [
+          "M165.246 104.49l195.121 349.363c3.479 6.23 5.306 13.246 5.306 20.382v270.567c0 23.083-18.71 41.796-41.79 41.796s-41.79-18.713-41.79-41.796v-259.685l-224.541-402.041c-15.56-27.86 4.577-62.178 36.485-62.178h835.808c31.907 0 52.044 34.318 36.485 62.178l-224.541 402.041v497.087c0 23.083-18.71 41.796-41.79 41.796s-41.79-18.713-41.79-41.796v-507.969c0-7.136 1.827-14.152 5.306-20.382l195.121-349.363h-693.386z"
+        ],
+        "attrs": [
+          {}
+        ],
+        "isMulticolor": false,
+        "isMulticolor2": false,
+        "grid": 0,
+        "tags": [
+          "filter"
+        ],
+        "colorPermutations": {
+          "11021021021219219219125415101255255255125591911911961591": [
+            {}
+          ]
+        }
+      },
+      "attrs": [
+        {}
+      ],
+      "properties": {
+        "order": 989,
+        "id": 30,
+        "name": "filter",
+        "prevSize": 32,
+        "code": 59731
+      },
+      "setIdx": 0,
+      "setId": 0,
+      "iconIdx": 87
+    },
+    {
+      "icon": {
+        "paths": [
+          "M331.707 1024v0c-11.176 0.016-22.344-4.332-30.73-12.998l-288.974-298.667c-16.385-16.935-15.94-43.946 0.995-60.332s43.946-15.94 60.332 0.995l215.737 222.973v-833.305c0-23.564 19.103-42.667 42.667-42.667s42.667 19.103 42.667 42.667v938.667c0 23.564-19.103 42.667-42.667 42.667l-0.026-0zM692.293 0v-0c11.176-0.016 22.344 4.332 30.73 12.998l288.974 298.667c16.385 16.935 15.94 43.946-0.995 60.332s-43.946 15.94-60.332-0.995l-215.737-222.973v833.305c0 23.564-19.103 42.667-42.667 42.667s-42.667-19.103-42.667-42.667v-938.667c0-23.564 19.103-42.667 42.667-42.667l0.026 0z"
+        ],
+        "attrs": [
+          {}
+        ],
+        "isMulticolor": false,
+        "isMulticolor2": false,
+        "grid": 0,
+        "tags": [
+          "sorting"
+        ],
+        "colorPermutations": {
+          "11021021021219219219125415101255255255125591911911961591": [
+            {}
+          ]
+        }
+      },
+      "attrs": [
+        {}
+      ],
+      "properties": {
+        "order": 986,
+        "id": 9,
+        "name": "sorting",
+        "prevSize": 32,
+        "code": 59752
+      },
+      "setIdx": 0,
+      "setId": 0,
+      "iconIdx": 108
+    }
+  ],
+  "height": 1024,
+  "preferences": {
+    "showGlyphs": true,
+    "showCodes": true,
+    "showQuickUse": true,
+    "showQuickUse2": true,
+    "showSVGs": true,
+    "fontPref": {
+      "prefix": "fenice-icon-",
+      "metadata": {
+        "fontFamily": "feniceIcon",
+        "majorVersion": 1,
+        "minorVersion": 0.36
+      },
+      "metrics": {
+        "emSize": 1024,
+        "baseline": 6.25,
+        "whitespace": 50
+      },
+      "includeMetadata": true,
+      "noie8": true,
+      "ie7": false,
+      "embed": true,
+      "cssVars": true,
+      "cssVarsFormat": "less",
+      "showSelector": true,
+      "selector": "class",
+      "classSelector": ".fenice-icon",
+      "showMetrics": true,
+      "showMetadata": true,
+      "showVersion": true
+    },
+    "imagePref": {
+      "prefix": "icon-",
+      "png": true,
+      "useClassSelector": true,
+      "color": 0,
+      "bgColor": 16777215,
+      "name": "icomoon",
+      "classSelector": ".icon",
+      "height": 32,
+      "columns": 16,
+      "margin": 16
+    },
+    "historySize": 50,
+    "gridSize": 16,
+    "showGrid": true
+  }
+}

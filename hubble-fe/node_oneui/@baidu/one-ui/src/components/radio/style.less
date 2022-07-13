@@ -1,0 +1,294 @@
+@import "../../style/themes/default.less";
+@import "../../style/mixins/index.less";
+
+@radio-prefix-cls: ~"@{one-prefix}-radio";
+@radio-group-prefix-cls: ~"@{radio-prefix-cls}-group";
+@radio-group-prefix-cls-column: ~"@{radio-group-prefix-cls}-column";
+@radio-inner-prefix-cls: ~"@{radio-prefix-cls}-inner";
+
+.inner-border-style(@border-color, @dot-color, @background-color) {
+    .@{radio-inner-prefix-cls} {
+        border-color: @border-color;
+    }
+    .@{radio-prefix-cls}-inner {
+        &:after {
+            background-color: @dot-color;
+        }
+        background-color: @background-color;
+    }
+}
+
+.border-disabled(@border-color, @dot-color, @background-color) {
+    .@{radio-inner-prefix-cls} {
+        border-color: @border-color;
+    }
+    .@{radio-prefix-cls}-inner {
+        &:after {
+            background-color: @dot-color;
+        }
+        background-color: @background-color;
+    }
+}
+
+.radio-size(@width, @dot-width) {
+    &-inner {
+        &:after {
+            .common-height-width(@dot-width);
+            left: (@width - @dot-width) / 2 - 1px;
+            top: (@width - @dot-width) / 2 - 1px;
+        }
+        .common-height-width(@width);
+    }
+}
+
+// 一般状态
+.@{radio-prefix-cls}-wrapper {
+    display: inline-block;
+    position: relative;
+    white-space: nowrap;
+    cursor: pointer;
+    margin-right: @dls-radio-and-checkbox-wrapper-margin-right;
+    * {
+        box-sizing: border-box !important;
+    }
+    &:last-of-type {
+        margin-right: @dls-radio-and-checkbox-wrapper-last-child-margin-right;
+    }
+}
+
+.@{radio-prefix-cls} {
+    white-space: nowrap;
+    outline: none;
+    display: inline-block;
+    position: relative;
+    vertical-align: middle;
+    .@{radio-prefix-cls}-wrapper:hover &,
+    &:hover {
+        .inner-border-style(
+            @dls-radio-border-color-hover,
+            @dls-radio-dot-color-hover,
+            @dls-radio-background-color-hover
+        );
+    }
+    .@{radio-prefix-cls}-wrapper:active &,
+    &:active {
+        .inner-border-style(
+            @dls-radio-border-color-active,
+            @dls-radio-dot-color-active,
+            @dls-radio-background-color-active
+        );
+    }
+    &:hover:after,
+    .@{radio-prefix-cls}-wrapper:hover &:after {
+        visibility: visible;
+        box-sizing: border-box;
+    }
+    &-inner {
+        &:after {
+            position: absolute;
+            border-radius: 0;
+            display: table;
+            border-top: 0;
+            border-left: 0;
+            content: ' ';
+            opacity: 0;
+            transform: scale(0);
+            box-sizing: border-box;
+        }
+        position: relative;
+        top: 0;
+        left: 0;
+        display: block;
+        border-width: @dls-radio-border-width;
+        border-style: @dls-radio-border-style;
+        border-radius: @dls-radio-size-m;
+        transition: all @common-duration;
+    }
+    .inner-border-style(@dls-radio-border-color, @dls-radio-dot-color, @dls-radio-background-color);
+    .radio-size(@dls-radio-size-m, @dls-radio-dot-size-m);
+    &-input {
+        position: absolute;
+        left: 0;
+        z-index: 1;
+        cursor: pointer;
+        opacity: 0;
+        top: 0;
+        bottom: 0;
+        right: 0;
+    }
+}
+
+.@{radio-prefix-cls}-wrapper-small {
+    .@{radio-prefix-cls} {
+        .radio-size(@dls-radio-size-s, @dls-radio-dot-size-s);
+    }
+    span.@{radio-prefix-cls} + * {
+        font-size: @dls-font-size-s;
+        padding-left: @dls-radio-and-checkbox-wrapper-text-padding-left;
+        display: inline-block;
+        vertical-align: middle;
+        color: @dls-radio-font-color;
+    }
+}
+
+// 选中状态
+.@{radio-prefix-cls}-checked {
+    .@{radio-prefix-cls}-wrapper:hover &,
+    &:hover {
+        .inner-border-style(
+            @dls-radio-border-color-checked-hover,
+            @dls-radio-dot-color-hover,
+            @dls-radio-background-color-checked-hover
+        );
+    }
+    .focus-visible + .@{radio-prefix-cls}-inner,
+    [data-focus-visible-added] + .@{radio-prefix-cls}-inner {
+        box-shadow: @dls-radio-shadow-focus;
+        border-color: @dls-radio-border-color-checked-focus;
+        &:after {
+            background-color: @dls-radio-dot-color-focus;
+        }
+    }
+    .@{radio-prefix-cls}-wrapper:active &,
+    &:active {
+        .inner-border-style(
+            @dls-radio-border-color-checked-active,
+            @dls-radio-dot-color-active,
+            @dls-radio-background-color-checked-active
+        );
+    }
+    .@{radio-inner-prefix-cls} {
+        &:after {
+            border-radius: 50%;
+            transform: scale(1);
+            opacity: 1;
+            box-sizing: border-box;
+        }
+    }
+
+    &:after {
+        .common-animation(@animation-name: oneUIRadioEffect);
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        // border: @dls-radio-border-width @dls-radio-border-style @dls-radio-border-color-checked;
+        content: '';
+        animation-fill-mode: both;
+        visibility: hidden;
+        box-sizing: border-box;
+    }
+    .inner-border-style(@dls-radio-border-color-checked, @dls-radio-dot-color, @dls-radio-background-color-checked);
+}
+
+span.@{radio-prefix-cls} + * {
+    font-size: @dls-font-size-m;
+    padding-left: @dls-radio-and-checkbox-wrapper-text-padding-left;
+    display: inline-block;
+    vertical-align: middle;
+    color: @dls-radio-font-color;
+}
+
+.@{radio-prefix-cls}-wrapper-disabled.@{radio-prefix-cls}-wrapper {
+    cursor: not-allowed;
+    .@{radio-inner-prefix-cls} {
+        &:after {
+            box-sizing: border-box;
+        }
+    }
+
+    .inner-border-style(@dls-radio-border-color-disabled, @dls-radio-dot-color-disabled, @dls-radio-background-color-disabled);
+    &:hover {
+        .border-disabled(@dls-radio-border-color-disabled, @dls-radio-dot-color-disabled, @dls-radio-background-color-disabled);
+    }
+    .@{radio-prefix-cls}-wrapper:active &,
+    &:active {
+        .border-disabled(@dls-radio-border-color-disabled, @dls-radio-dot-color-disabled, @dls-radio-background-color-disabled);
+    }
+    .@{radio-prefix-cls}-input {
+        cursor: not-allowed;
+    }
+
+    & + span {
+        cursor: not-allowed;
+    }
+}
+
+.@{radio-prefix-cls}-wrapper-checked.@{radio-prefix-cls}-wrapper-disabled {
+    .border-disabled(
+        @dls-radio-border-color-checked-disabled,
+        @dls-radio-dot-color-disabled,
+        @dls-radio-background-color-checked-disabled
+    );
+    &:hover {
+        .border-disabled(
+            @dls-radio-border-color-checked-disabled,
+            @dls-radio-dot-color-disabled,
+            @dls-radio-background-color-checked-disabled
+        );
+    }
+    .@{radio-prefix-cls}-wrapper:active &,
+    &:active {
+        .border-disabled(
+            @dls-radio-border-color-checked-disabled,
+            @dls-radio-dot-color-disabled,
+            @dls-radio-background-color-checked-disabled
+        );
+    }
+}
+
+.@{radio-prefix-cls}-group-medium {
+    .radio-and-checkbox-radius(@radio-prefix-cls, @dls-border-radius-m);
+}
+
+.@{radio-prefix-cls}-group-small {
+    .radio-and-checkbox-radius(@radio-prefix-cls, @dls-border-radius-s);
+}
+
+// 加强单选
+.radio-or-checkbox-button-mixins(
+    @radio-prefix-cls,
+    @dls-button-height-m,
+    @dls-button-height-s,
+    @dls-button-padding-m,
+    @dls-button-padding-s,
+    @dls-button-border-color-normal,
+    @dls-button-border-color-normal,
+    @dls-button-border-color-normal,
+    @dls-button-border-color-normal,
+    @dls-button-background-color-normal,
+    @dls-button-background-color-normal-hover,
+    @dls-button-background-color-normal-focus,
+    @dls-button-background-color-normal-active,
+    @dls-button-border-color-strong,
+    @dls-button-border-color-strong,
+    @dls-button-border-color-strong,
+    @dls-button-border-color-strong,
+    @dls-color-brand-1,
+    @dls-color-brand-2,
+    @dls-color-brand-2,
+    @dls-color-brand-3,
+    // @dls-button-background-color-strong,
+    // @dls-button-background-color-strong-hover,
+    // @dls-button-background-color-strong-focus,
+    // @dls-button-background-color-strong-active,
+    @dls-button-border-color-normal-disabled,
+    @dls-button-background-color-normal-disabled,
+    @dls-button-background-color-strong-disabled,
+    @dls-button-border-color-strong-disabled
+);
+
+@keyframes oneUIRadioEffect {
+    0% {
+        transform: scale(1);
+        opacity: 0.5;
+    }
+    100% {
+        transform: scale(1.6);
+        opacity: 0;
+    }
+}
+
+.radio-or-checkbox-column-mixins(@radio-prefix-cls, @dls-radio-and-checkbox-wrapper-column-margin);

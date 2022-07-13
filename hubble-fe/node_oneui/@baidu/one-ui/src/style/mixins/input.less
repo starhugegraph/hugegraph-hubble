@@ -1,0 +1,89 @@
+@import '../themes/default';
+
+.input-color-style(
+    @border-color,
+    @border-color-hover,
+    @border-color-focus,
+    @box-shadow-focus,
+    @background-color,
+    @font-color
+) {
+    border: @dls-input-border-width @dls-input-border-style @border-color;
+    background-color: @background-color;
+    color: @font-color;
+    &:hover {
+        outline: 0;
+        border-color: @border-color-hover;
+    }
+    &:focus, &:active {
+        outline: 0;
+        border-color: @border-color-focus;
+    }
+    &:focus {
+        box-shadow: @box-shadow-focus;
+    }
+}
+
+.input-size-style(@font-size, @border-radius, @height) {
+    height: @height;
+    border-radius: @border-radius;
+    font-size: @font-size;
+}
+
+.input-color-normal-style() {
+    .input-color-style(
+        @dls-input-border-color,
+        @dls-input-border-color-hover,
+        @dls-input-border-color-focus,
+        @dls-input-shadow-focus,
+        @dls-input-background-color,
+        @dls-input-font-color
+    );
+}
+
+.input-color-disabled-style() {
+    opacity: 1;
+    cursor: not-allowed;
+    .input-color-style(
+        @dls-input-border-color-disabled,
+        @dls-input-border-color-disabled,
+        @dls-input-border-color-disabled,
+        0,
+        @dls-input-background-color-disabled,
+        @dls-input-font-color-disabled
+    );
+}
+
+.input-color-readonly-style() {
+    opacity: 1;
+    cursor: text;
+    .input-color-style(
+        @dls-input-border-color-read-only,
+        @dls-input-border-color-read-only-hover,
+        @dls-input-border-color-read-only-focus,
+        0,
+        @dls-input-background-color-read-only,
+        @dls-input-font-color-read-only
+    );
+}
+
+.input-color-error-style() {
+    .input-color-style(
+        @dls-input-border-color-error,
+        @dls-input-border-color-error-hover,
+        @dls-input-border-color-error-focus,
+        @dls-input-shadow-error-focus,
+        @dls-input-background-color,
+        @dls-input-font-color
+    );
+}
+
+.input-color-package() {
+    .input-color-normal-style();
+    &-readOnly {
+        .input-color-readonly-style();
+    }
+    &-disabled {
+        .input-color-disabled-style();
+    }
+}

@@ -1,0 +1,240 @@
+@import '../themes/default';
+
+.radio-or-checkbox-wrapper-column-mixins(@margin) {
+    display: block !important;
+    margin: 0 0 @margin 0;
+    &:last-of-type {
+        margin-bottom: 0;
+    }
+}
+
+.radio-or-checkbox-column-mixins(@prefix-cls, @margin) {
+    .@{prefix-cls}-group-column {
+        .@{prefix-cls}-wrapper {
+            .radio-or-checkbox-wrapper-column-mixins(@margin);
+        }
+    }
+
+    .@{prefix-cls}-wrapper-column {
+        .radio-or-checkbox-wrapper-column-mixins(@margin);
+    }
+}
+
+.radio-or-checkbox-button-style(@border-color, @background-color, @font-color) {
+    position: relative;
+    border: 1px solid @border-color;
+    background-color: @background-color;
+    color: @font-color;
+}
+
+.radio-or-checkbox-button-size(@height, @font-size, @padding) {
+    .height(@height);
+    font-size: @font-size;
+    padding: 0 @padding;
+}
+
+.radio-and-checkbox-radius(@prefix-cls, @border-radius) {
+    .@{prefix-cls}-button-wrapper:last-of-type {
+        border-top-right-radius: @border-radius;
+        border-bottom-right-radius: @border-radius;
+    }
+    .@{prefix-cls}-button-wrapper:first-of-type {
+        border-top-left-radius: @border-radius;
+        border-bottom-left-radius: @border-radius;
+    }
+    // 避免被原来的border覆盖，加上important
+    // .@{prefix-cls}-button-wrapper:not(:first-of-type) {
+    //     border-left: 0 !important;
+    // }
+}
+
+.radio-or-checkbox-button-mixins(
+    @prefix-cls,
+    @button-height-m,
+    @button-height-s,
+    @button-padding-m,
+    @button-padding-s,
+    @button-border,
+    @button-border-hover,
+    @button-border-focus,
+    @button-border-active,
+    @button-background-color,
+    @button-background-color-hover,
+    @button-background-color-focus,
+    @button-background-color-active,
+    @button-border-checked,
+    @dls-radio-and-checkbox-button-border-checked-hover,
+    @dls-radio-and-checkbox-button-border-checked-focus,
+    @dls-radio-and-checkbox-button-border-checked-active,
+    @dls-radio-and-checkbox-button-background-color-checked,
+    @dls-radio-and-checkbox-button-background-color-checked-hover,
+    @dls-radio-and-checkbox-button-background-color-checked-focus,
+    @dls-radio-and-checkbox-button-background-color-checked-active,
+    @button-border-color-disabled,
+    @button-background-color-disabled,
+    @dls-radio-and-checkbox-button-background-color-checked-disabled,
+    @dls-radio-and-checkbox-button-border-color-checked-disabled
+) {
+    // 加强单选
+    .@{prefix-cls}-button-wrapper {
+        margin: 0;
+        display: inline-block;
+        cursor: pointer;
+        margin-left: -1px;
+        z-index: 2;
+        box-sizing: border-box;
+        &:focus {
+            outline: 0;
+        }
+        &:first-of-type {
+            margin-left: 0;
+        }
+        .radio-or-checkbox-button-style(
+            @button-border,
+            @button-background-color,
+            @dls-button-font-color-normal
+        );
+        &:hover {
+            .radio-or-checkbox-button-style(
+                @button-border-hover,
+                @button-background-color-hover,
+                @dls-button-font-color-normal
+            );
+        }
+        &[data-focus-visible-added],
+        &.focus-visible,
+        &-focus {
+            box-shadow: @dls-radio-and-checkbox-button-shadow-focus;
+            .radio-or-checkbox-button-style(
+                @button-border-focus,
+                @button-background-color-focus,
+                @dls-button-font-color-normal
+            );
+        }
+        &:active {
+            .radio-or-checkbox-button-style(
+                @button-border-active,
+                @button-background-color-active,
+                @dls-button-font-color-normal
+            );
+        }
+
+        // 没看到有a标签，也不太敢删
+        a {
+            color: @button-background-color;
+        }
+
+        > .@{prefix-cls}-button {
+            margin-left: 0;
+            display: block;
+            width: 0;
+            height: 0;
+        }
+
+        .@{prefix-cls}-group-medium & {
+            .radio-or-checkbox-button-size(
+                @button-height-m,
+                @dls-font-size-m,
+                @button-padding-m
+            );
+        }
+
+        .@{prefix-cls}-group-small & {
+            .radio-or-checkbox-button-size(
+                @button-height-s,
+                @dls-font-size-s,
+                @button-padding-s
+            );
+        }
+
+        .@{prefix-cls}-inner,
+        input[type="checkbox"],
+        input[type="radio"] {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        &-checked {
+            .radio-or-checkbox-button-style(
+                @button-border-checked,
+                @dls-radio-and-checkbox-button-background-color-checked,
+                @dls-button-font-color-strong
+            );
+            &:hover {
+                .radio-or-checkbox-button-style(
+                    @dls-radio-and-checkbox-button-border-checked-hover,
+                    @dls-radio-and-checkbox-button-background-color-checked-hover,
+                    @dls-button-font-color-strong
+                );
+            }
+            &:active {
+                .radio-or-checkbox-button-style(
+                    @dls-radio-and-checkbox-button-border-checked-active,
+                    @dls-radio-and-checkbox-button-background-color-checked-active,
+                    @dls-button-font-color-strong
+                );
+            }
+            &.focus-visible,
+            &[data-focus-visible-added] {
+                .radio-or-checkbox-button-style(
+                    @dls-radio-and-checkbox-button-border-checked-focus,
+                    @dls-radio-and-checkbox-button-background-color-checked-focus,
+                    @dls-button-font-color-strong
+                );
+            }
+        }
+        &-disabled {
+            cursor: not-allowed;
+            z-index: 0;
+            .radio-or-checkbox-button-style(
+                @button-border-color-disabled,
+                @button-background-color-disabled,
+                @dls-button-font-color-normal-disabled
+            );
+            &:hover,   &.focus-visible, &[data-focus-visible-added], &:active {
+                .radio-or-checkbox-button-style(
+                    @button-border-color-disabled,
+                    @button-background-color-disabled,
+                    @dls-button-font-color-normal-disabled
+                );
+            }
+        }
+        &-disabled&-checked {
+            z-index: 1;
+            .radio-or-checkbox-button-style(
+                @dls-radio-and-checkbox-button-border-color-checked-disabled,
+                @dls-radio-and-checkbox-button-background-color-checked-disabled,
+                @dls-button-font-color-strong-disabled
+            );
+            &:hover,   &.focus-visible, &[data-focus-visible-added], &:active {
+                .radio-or-checkbox-button-style(
+                    @dls-radio-and-checkbox-button-border-color-checked-disabled,
+                    @dls-radio-and-checkbox-button-background-color-checked-disabled,
+                    @dls-button-font-color-strong-disabled
+                );
+            }
+        }
+        &-checked:not(&-disabled) {
+            z-index: 3;
+        }
+    }
+}
+
+.checkbox-inner-after(@checkbox-size) {
+    @checkbox-width: (@checkbox-size / 14) * 5px;
+    @checkbox-height: (@checkbox-size / 14) * 8px;
+    left: (@checkbox-size - @checkbox-width) / 2 - 0.5px * (@checkbox-size / 14);
+    top: (@checkbox-size - @checkbox-height) / 2 - 2px * (@checkbox-size / 14);
+    width: @checkbox-width;
+    height: @checkbox-height;
+}
+
+.checkbox-inner-after-indeterminate(@checkbox-size) {
+    @checkbox-indeterminate-width: (@checkbox-size / 14) * 8px;
+    @checkbox-indeterminate-height: (@checkbox-size / 14) * 1px;
+    left: (@checkbox-size - 2 - @checkbox-indeterminate-width) / 2;
+    top: (@checkbox-size - 3 - @checkbox-indeterminate-height) / 2;
+    width: @checkbox-indeterminate-width;
+    height: @checkbox-indeterminate-height;
+}

@@ -1,0 +1,192 @@
+@import "../../style/themes/default.less";
+@import "../../style/mixins/index.less";
+
+// 开关尺寸分了small、medium、larget。
+// 变量名对应的后缀是xs、s、m
+@switch-prefix-cls: ~"@{one-prefix}-switch";
+
+.switch-inner-after(@switch-circle-size) {
+    .common-height-width(@switch-circle-size);
+    margin-top: -(@switch-circle-size / 2);
+}
+
+.switch-interaction-status(@focus-backgroud, @focus-box-shadow, @hover-backgroud, @active-background) {
+    &.focus-visible,
+    &[data-focus-visible-added] {
+        outline: 0;
+        background-color: @focus-backgroud;
+        box-shadow: @focus-box-shadow;
+    }
+    &:hover {
+        background-color: @hover-backgroud;
+    }
+    &:active {
+        background-color: @active-background;
+    }
+}
+
+.switch-checked-thumb-position(@dls-switch-height, @dls-switch-padding) {
+    &:before,
+    &:after {
+        left: 100%;
+        margin-left: -(@dls-switch-height - @dls-switch-padding);
+    }
+}
+
+.switch-size-function(@size, @dls-switch-height, @dls-switch-width, @dls-switch-thumb-size, @dls-switch-padding, @font-size) {
+    &-@{size} {
+        height: @dls-switch-height;
+        width: @dls-switch-width;
+        .@{switch-prefix-cls}-inner {
+            font-size: @font-size;
+            & >i {
+                line-height: @dls-switch-height;
+            }
+        }
+
+        &:before,
+        &:after {
+            .switch-inner-after(@dls-switch-thumb-size);
+        }
+    }
+
+    &-@{size}&-checked {
+        .switch-checked-thumb-position(@dls-switch-height, @dls-switch-padding);
+    }
+
+    &-@{size}&-loading:before {
+        font-size: @dls-switch-thumb-size;
+    }
+}
+
+.@{switch-prefix-cls} {
+    position: relative;
+    display: inline-block;
+    box-sizing: border-box;
+    height: @dls-switch-height-s;
+    width: @dls-switch-width-s;
+    vertical-align: middle;
+    border-radius: 2 * @dls-switch-width-s;
+    background-color: @dls-switch-track-color-off;
+    cursor: pointer;
+    user-select: none;
+    transition: all 0.3s ease-in-out;
+    border: 0;
+    outline: 0;
+    .switch-interaction-status(
+        @dls-switch-track-color-off-focus,
+        @dls-switch-track-shadow-off-focus,
+        @dls-switch-track-color-off-hover,
+        @dls-switch-track-color-off-active
+    );
+    &-inner {
+        color: @dls-switch-font-color;
+        display: block;
+        float: right;
+        margin-right: @dls-switch-font-icon-padding-m;
+        font-size: @dls-switch-font-size;
+        height: @dls-switch-height-m;
+        line-height: @dls-switch-height-m;
+        position: relative;
+        >.one-ui-icon-svg {
+            height: @dls-switch-font-size - 2px;
+            width: @dls-switch-font-size - 2px;
+            fill: @dls-switch-font-color;
+        }
+    }
+
+    &:before,
+    &:after { // 当为loading态时，使用&:before   &: after 白色的开关状态
+        .switch-inner-after(@dls-switch-thumb-size-s);
+        position: absolute;
+        left: @dls-switch-padding-s;
+        top: 50%;
+        border-radius: @dls-switch-thumb-size-s;
+        background-color: @dls-switch-thumb-color-on;
+        content: " ";
+        cursor: pointer;
+        transition: all 0.3s ease-in-out;
+    }
+
+    &:before {
+        content: @new-fc-one-icon-loading;
+        font-family: "new-fc-one-icon", sans-serif;
+        animation: oneUISwitchLoadingCircle 1s infinite linear;
+        text-align: center;
+        background: transparent;
+        z-index: 1;
+        display: none;
+        font-size: @dls-switch-thumb-size-s;
+    }
+
+    &-loading:before {
+        display: inline-block;
+        color: @dls-switch-track-color-off;
+    }
+
+    &-checked&-loading:before {
+        color: @dls-switch-thumb-color-on-loading;
+    }
+    &-checked {
+        background-color: @dls-switch-track-color-on;
+        .switch-checked-thumb-position(@dls-switch-height-s, @dls-switch-padding-s);
+        .@{switch-prefix-cls}-inner {
+            margin-left: @dls-switch-font-icon-padding-m;
+            float: left;
+        }
+        .switch-interaction-status(
+            @dls-switch-track-color-on-focus,
+            @dls-switch-track-shadow-on-focus,
+            @dls-switch-track-color-on-hover,
+            @dls-switch-track-color-on-active
+        );
+    }
+
+    &-loading,
+    &-disabled {
+        cursor: not-allowed;
+        pointer-events: none;
+        background-color: @dls-switch-track-color-off-disabled;
+    }
+    &-disabled&-checked, &-loading&-checked {
+        background-color: @dls-switch-track-color-on-disabled;
+    }
+
+    .switch-size-function(small, @dls-switch-height-xs, @dls-switch-width-xs, @dls-switch-thumb-size-xs, @dls-switch-padding-xs, @dls-switch-font-size-xs);
+    .switch-size-function(large, @dls-switch-height-m, @dls-switch-width-m, @dls-switch-thumb-size-m, @dls-switch-padding-m, @dls-switch-font-size-xs);
+    // 最小号loading做的特殊处理 start
+    &-small::before {
+        width: @dls-switch-thumb-size-s;
+        height: @dls-switch-thumb-size-s;
+        animation-name: oneUISwitchLoadingCircleSmall;
+        margin-top: -(@dls-switch-thumb-size-s / 2);
+        margin-left: -2px !important;
+    }
+    &-checked&-small::before {
+        margin-left: -12px !important;
+    }
+    // 最小号loading做的特殊处理 end
+}
+
+@keyframes oneUISwitchLoadingCircle {
+    0% {
+        transform-origin: 50% 50%;
+        transform: rotate(0deg) scale(0.66667);
+    }
+    100% {
+        transform-origin: 50% 50%;
+        transform: rotate(360deg) scale(0.66667);
+    }
+}
+// 最小号loading做的特殊处理 start
+@keyframes oneUISwitchLoadingCircleSmall {
+    0% {
+        transform-origin: 50% 50%;
+        transform: rotate(0deg) scale(0.44444);
+    }
+    100% {
+        transform-origin: 50% 50%;
+        transform: rotate(360deg) scale(0.44444);
+    }
+}
+// 最小号loading做的特殊处理 end

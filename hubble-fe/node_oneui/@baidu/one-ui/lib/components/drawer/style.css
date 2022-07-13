@@ -1,0 +1,315 @@
+/**
+ * Colors
+ */
+/* Brand colors */
+/* Contextual colors */
+/* Gray scale colors */
+/**
+ * Typography
+ */
+/**
+ * Spacing
+ */
+/**
+ * Background colors
+ */
+/**
+ * Borders
+ */
+/* Border colors */
+/* Separator colors */
+/* Border radii */
+/* Shadows */
+/* Icons */
+/* Font sizes */
+/* Metrics */
+/* Stylistic variants */
+/* Focus rings */
+/* Button group separator */
+/* Font sizes */
+/* Text decorations */
+/* Stylistic variants */
+/* Typography */
+/* Metrics */
+/* Colors */
+/* Focus ring */
+/* Checkbox group */
+/* Typography */
+/* Metrics */
+/* Colors */
+/* Focus ring */
+/* Strong variant */
+/* Checkbox group */
+/* Metrics */
+/* Colors */
+/* Typography */
+/* Font sizes */
+/* Metrics */
+/* Colors & states */
+/* Focus rings */
+/* Icons */
+/* Typography */
+/* Metrics */
+/* Character count */
+/* Metrics */
+/* Font sizes */
+/* Metrics */
+/* States */
+/* Option group title */
+/* Option dropdown */
+/* Widths */
+/* Icon */
+/* Metrics */
+/* Colors */
+/* Metrics */
+/* Colors */
+/* Typography */
+/* Markers */
+/* Metrics */
+/* Spacing */
+/* Statuses */
+/* Metrics */
+/* Colors */
+/* Typography */
+/* Metrics */
+/* Colors */
+/* Metrics */
+/* Colors & States */
+/* Metrics */
+/* Headers */
+/* Colors */
+/* Metrics */
+/* Typography */
+/* Container */
+/* Panel */
+/* Misc */
+/* Metrics */
+/* Colors */
+/* Indicators */
+/* Stylistic variants */
+/* Metrics */
+/* Colors */
+/* Metrics */
+/* Colors */
+/* Metrics */
+/* Stylistic variants */
+/* Metrics */
+/* Colors */
+/* Metrics */
+/* Colors */
+/* Pages */
+/* Indicators */
+/* Controls */
+/* Pages */
+/**
+ * DatePicker Dropdown
+ *  only has small and middle size
+ */
+/* Font size */
+/* Background color */
+/* Radius */
+/* Shadow */
+/**
+ * DatePicker input
+ */
+/* Icon color */
+/* Spacing */
+/**
+ * DatePicker panel
+ */
+/**
+ * DatePicker header
+ *  select year / month
+ */
+/* Icon sizes */
+/* Padding & spacing */
+/**
+ * DatePicker body,
+ * including weekdays, day/month/year body
+ */
+/**
+ * DatePicker cells,
+ * including date/month/year cells
+ */
+/* Sizes */
+/* Border radii */
+/* Focus rings */
+/* Font colors */
+/* Font weights */
+/* Spacing, except for start and end */
+/* Background */
+/* Border color */
+/**
+ * List: year scroller & shortcut list
+ */
+/**
+ * Year scroller
+ */
+/* Font size */
+/* Common */
+/* Cell */
+/* Header */
+/* Sub-row */
+/* Typography */
+/* Misc */
+/* Metrics */
+/* Typography */
+/* Container */
+button::-moz-focus-inner,
+input[type="reset"]::-moz-focus-inner,
+input[type="button"]::-moz-focus-inner,
+input[type="submit"]::-moz-focus-inner,
+input[type="file"] > input[type="button"]::-moz-focus-inner {
+  border: none;
+}
+.new-fc-one-drawer-wrapper-body-small .new-fc-one-drawer-title {
+  font-size: 14px;
+}
+.new-fc-one-drawer-wrapper-body-small .icon-close {
+  height: 14px;
+  width: 14px;
+  fill: #999;
+}
+.new-fc-one-drawer-wrapper-body-medium .new-fc-one-drawer-title {
+  font-size: 16px;
+}
+.new-fc-one-drawer-wrapper-body-medium .icon-close {
+  height: 16px;
+  width: 16px;
+  fill: #999;
+}
+.new-fc-one-drawer {
+  position: fixed;
+  top: 0;
+  width: 0%;
+  height: 100%;
+  z-index: 1040;
+}
+.new-fc-one-drawer > * {
+  transition: transform 0.1s;
+}
+.new-fc-one-drawer-content-wrapper {
+  position: fixed;
+}
+.new-fc-one-drawer .new-fc-one-drawer-content {
+  width: 100%;
+  height: 100%;
+}
+.new-fc-one-drawer-wrapper-body-container {
+  padding: 24px 24px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+}
+.new-fc-one-drawer-left,
+.new-fc-one-drawer-right {
+  width: 0;
+  height: 100%;
+}
+.new-fc-one-drawer-left .new-fc-one-drawer-content-wrapper,
+.new-fc-one-drawer-right .new-fc-one-drawer-content-wrapper {
+  height: 100%;
+}
+.new-fc-one-drawer-left.new-fc-one-drawer-open,
+.new-fc-one-drawer-right.new-fc-one-drawer-open {
+  width: 100%;
+}
+.new-fc-one-drawer-left.new-fc-one-drawer-open.no-mask,
+.new-fc-one-drawer-right.new-fc-one-drawer-open.no-mask {
+  width: 0;
+}
+.new-fc-one-drawer-left.new-fc-one-drawer-open .new-fc-one-drawer-content-wrapper {
+  box-shadow: 4px 0 8px rgba(0, 0, 0, 0.1);
+}
+.new-fc-one-drawer-right .new-fc-one-drawer-content-wrapper {
+  right: 0;
+}
+.new-fc-one-drawer-right.new-fc-one-drawer-open .new-fc-one-drawer-content-wrapper {
+  box-shadow: -4px 0 8px rgba(0, 0, 0, 0.1);
+}
+.new-fc-one-drawer-top,
+.new-fc-one-drawer-bottom {
+  width: 100%;
+  height: 0;
+}
+.new-fc-one-drawer-top .new-fc-one-drawer-content-wrapper,
+.new-fc-one-drawer-bottom .new-fc-one-drawer-content-wrapper {
+  width: 100%;
+}
+.new-fc-one-drawer-top.new-fc-one-drawer-open,
+.new-fc-one-drawer-bottom.new-fc-one-drawer-open {
+  height: 100%;
+}
+.new-fc-one-drawer-top.new-fc-one-drawer-open.no-mask,
+.new-fc-one-drawer-bottom.new-fc-one-drawer-open.no-mask {
+  height: 0;
+}
+.new-fc-one-drawer-top.new-fc-one-drawer-open .new-fc-one-drawer-content-wrapper {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+.new-fc-one-drawer-bottom .new-fc-one-drawer-content-wrapper {
+  bottom: 0;
+}
+.new-fc-one-drawer-bottom.new-fc-one-drawer-open .new-fc-one-drawer-content-wrapper {
+  box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.1);
+}
+.new-fc-one-drawer.new-fc-one-drawer-open .new-fc-one-drawer-mask {
+  opacity: 0.6;
+  height: 100%;
+}
+.new-fc-one-drawer-title {
+  margin: 0;
+  line-height: 1.5;
+  font-weight: 600;
+  color: #000;
+}
+.new-fc-one-drawer-content {
+  background-color: #fff;
+  border: 0;
+  background-clip: padding-box;
+}
+.new-fc-one-drawer-header {
+  border-radius: 0;
+  background: #fff;
+  position: relative;
+  flex-grow: 0;
+}
+.new-fc-one-drawer-close {
+  position: absolute;
+  right: 24px;
+  top: 24px;
+  cursor: pointer;
+  z-index: 1;
+  color: #999;
+}
+.new-fc-one-drawer-body {
+  line-height: 1.5;
+  word-wrap: break-word;
+  margin-bottom: 20px;
+  margin-top: 12px;
+  flex-grow: 1;
+  overflow: auto;
+}
+.new-fc-one-drawer-body-has-footer {
+  bottom: 24px;
+}
+.new-fc-one-drawer-mask {
+  position: fixed;
+  width: 100%;
+  height: 0;
+  opacity: 0.6;
+  background-color: #000;
+}
+.new-fc-one-drawer-open-content {
+  box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.15);
+}
+.new-fc-one-drawer-footer {
+  flex-grow: 0;
+}
+.new-fc-one-drawer-footer > button {
+  margin-right: 12px;
+}

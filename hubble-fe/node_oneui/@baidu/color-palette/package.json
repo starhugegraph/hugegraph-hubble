@@ -1,0 +1,63 @@
+{
+  "name": "@baidu/color-palette",
+  "version": "0.0.5",
+  "description": "采用[DLS色彩规则]色盘生成[less @plugin at-rules]. 输入一个color的less对象，生成对应的色阶",
+  "main": "lib/index.js",
+  "scripts": {
+    "clean": "rimraf lib es",
+    "build": "npm run clean && npm run build:cjs && npm run build:less",
+    "build:cjs": "cross-env BABEL_ENV=production NODE_ENV=production BUILD_TARGET=cjs babel src --out-dir lib",
+    "build:less": "cp -r src/styles lib/styles && lessc src/styles/index.less lib/styles/index.css",
+    "prepare": "npm run build",
+    "lint": "npm run lint:es",
+    "lint:es": "eslint src --ext '.js,.jsx'",
+    "lint-staged": "lint-staged",
+    "lint-staged:es": "eslint"
+  },
+  "repository": {
+    "type": "git",
+    "url": "ssh://mahaina@icode.baidu.com:8235/baidu/fc-fe/color-palette"
+  },
+  "files": [
+    "lib",
+    "src"
+  ],
+  "author": "mahaina",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "kolor": "^1.1.9"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.4.4",
+    "@babel/core": "^7.4.4",
+    "@babel/preset-env": "^7.4.4",
+    "babel-eslint": "^10.0.1",
+    "babel-plugin-add-module-exports": "^1.0.2",
+    "cross-env": "^5.2.0",
+    "eslint": "^5.16.0",
+    "eslint-config-airbnb": "^17.1.0",
+    "eslint-plugin-import": "^2.17.2",
+    "eslint-plugin-jsx-a11y": "^6.2.1",
+    "eslint-plugin-react": "^7.13.0",
+    "less": "^3.9.0",
+    "lint-staged": "^8.1.7",
+    "rimraf": "^2.6.3"
+  },
+  "lint-staged": {
+    "linters": {
+      "{src,lib}/**/*.{js,jsx}": [
+        "eslint"
+      ],
+      "src/**/*.less": [
+        "stylelint --syntax less"
+      ]
+    }
+  },
+  "pre-commit": [
+    "lint"
+  ],
+  "directories": {
+    "lib": "lib"
+  },
+  "keywords": []
+}

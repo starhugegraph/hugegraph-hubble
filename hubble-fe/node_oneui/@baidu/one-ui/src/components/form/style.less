@@ -1,0 +1,157 @@
+@import "../../style/themes/default.less";
+@import "../../style/mixins/index.less";
+
+@form-prefix-cls: ~"@{one-prefix}-form";
+
+.form-size(@size, @font-size, @height) {
+    .@{form-prefix-cls}-@{size} {
+        .@{form-prefix-cls}-item {
+            &-required::before {
+                font-size: @font-size;
+            }
+            &-label {
+                font-size: @font-size;
+                line-height: @height;
+            }
+        }
+        .@{form-prefix-cls}-explain,
+        .@{form-prefix-cls}-extra {
+            font-size: @font-size;
+            line-height: 1.5;
+            margin-top: @dls-padding-unit;
+            clear: both;
+            -webkit-transition: color .3s cubic-bezier(.215, .61, .355, 1);
+            transition: color .3s cubic-bezier(.215, .61, .355, 1);
+            color: rgba(0, 0, 0, 0.45);
+        }
+    }
+}
+
+.@{form-prefix-cls}-inline {
+    .@{form-prefix-cls}-item {
+        display: inline-block;
+        margin-right: 4 * @dls-padding-unit;
+        margin-bottom: 0;
+    }
+    .@{form-prefix-cls}-item-with-help {
+        margin-bottom: 6 * @dls-padding-unit;
+    }
+    .@{form-prefix-cls}-item > .@{form-prefix-cls}-item-control-wrapper,
+    .@{form-prefix-cls}-inline .@{form-prefix-cls}-item > .@{form-prefix-cls}-item-label {
+        display: inline-block;
+        vertical-align: top;
+    }
+}
+
+.@{form-prefix-cls} {
+    box-sizing: border-box;
+    &-hide-required-mark {
+        .@{form-prefix-cls}-item {
+            &-required::before {
+                content: ' ';
+            }
+        }
+    }
+}
+
+.@{form-prefix-cls}-item {
+    .reset-component();
+    vertical-align: top;
+    margin-bottom: 6 * @dls-padding-unit;
+    display: flex;
+    .@{form-prefix-cls}-has-error {
+        .format-style(@dls-color-error, @dls-shadow-error-focus);
+        .@{one-prefix}-input-all-container-has-focused {
+            .@{one-prefix}-input-affix-wrapper {
+                box-shadow: @dls-input-shadow-error-focus;
+            }
+        }
+        .@{one-prefix}-numberbox-focus {
+            border-color: @dls-color-error !important;
+            box-shadow: @dls-shadow-error-focus;
+        }
+    }
+
+    .@{form-prefix-cls}-has-warning {
+        .format-style(@dls-color-warning, none);
+    }
+    &-required::before {
+        display: inline-block;
+        margin-right: @dls-padding-unit;
+        color: @dls-color-error;
+        line-height: 1;
+        content: '*';
+    }
+    &-label > label {
+        &::after {
+            content: ':';
+            position: relative;
+            top: -0.5px;
+            margin: 0 2 * @dls-padding-unit 0 @dls-padding-unit / 2;
+        }
+        &.@{form-prefix-cls}-item-no-colon::after {
+            content: ' ';
+        }
+    }
+    &-label {
+        display: inline-block;
+        overflow: hidden;
+        white-space: nowrap;
+        text-align: right;
+        vertical-align: middle;
+        margin-right: @dls-padding-unit * 2;
+        &-left {
+            text-align: left;
+        }
+    }
+    &-control-wrapper {
+        flex: 1;
+        display: inline-block;
+    }
+}
+
+.format-style(@color, @focus-shadow) {
+    .@{form-prefix-cls}-explain {
+        line-height: @dls-height-s - @dls-padding-unit;
+        color: @color;
+    }
+    .@{one-prefix}-textarea,
+    .@{one-prefix}-select,
+    .@{one-prefix}-numberbox,
+    .@{one-prefix}-calendar-title,
+    .@{one-prefix}-input,
+    .@{one-prefix}-btn {
+        border-color: @color;
+        &:focus, &:active, &:hover {
+            border-color: @color;
+        }
+        &:focus {
+            box-shadow: @focus-shadow;
+        }
+    }
+    .@{one-prefix}-textarea-wrapper {
+        line-height: 1;
+    }
+    .@{one-prefix}-input-affix-wrapper {
+        border-color: @color;
+        &:focus, &:active, &:hover {
+            border-color: @color;
+        }
+        &:focus {
+            box-shadow: @focus-shadow;
+        }
+        .@{one-prefix}-input {
+            border: none;
+            &:focus, &:active, &:hover {
+                border: none;
+            }
+            &:focus {
+                box-shadow: none;
+            }
+        }
+    }
+}
+
+.form-size(small, @dls-font-size-s, @dls-height-s);
+.form-size(medium, @dls-font-size-m, @dls-height-m);
+.form-size(large, @dls-font-size-l, @dls-height-l);

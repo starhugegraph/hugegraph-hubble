@@ -1,0 +1,231 @@
+@import "../../style/themes/default.less";
+@import "../../style/mixins/index.less";
+
+.button-normal-style(
+    @background-color,
+    @color,
+    @border,
+    @hover-background-color,
+    @active-background-color,
+    @disabled-background-color,
+    @disabled-font-color,
+    @disabled-border-color
+) {
+    background-color: @background-color;
+    color: @color;
+    border: @border;
+    &:hover {
+        background-color: @hover-background-color;
+    }
+    &:active {
+        background-color: @active-background-color;
+    }
+    &.focus-visible,
+    &[data-focus-visible-added] {
+        border: @dls-button-border-focus;
+        box-shadow: @dls-button-shadow-focus;
+    }
+    &-disabled {
+        cursor: not-allowed;
+        background-color: @disabled-background-color;
+        color: @disabled-font-color;
+        border-color: @disabled-border-color;
+        &:hover, &:active, &:focus {
+            background-color: @disabled-background-color;
+        }
+    }
+}
+
+.button-normal-size(@type, @border-radius, @height, @font-size, @padding) {
+    .@{button-prefix-cls}-@{type} {
+        border-radius: @border-radius;
+        height: @height;
+        font-size: @font-size;
+        padding: 0 @padding;
+    }
+    .@{button-prefix-cls}-@{type}.@{button-prefix-cls}-icon-only {
+        .common-height-width(@height);
+    }
+}
+
+.button-loading-color(@type, @background-color, @icon-color) {
+    .@{button-prefix-cls}-@{type}.@{button-prefix-cls}-@{type}-loading {
+        .button-icon-loading(@background-color, @icon-color);
+    }
+}
+
+.button-icon-loading(@background-color, @loading-icon-color) {
+    cursor: not-allowed;
+    background-color: @background-color;
+    &:hover, &:active, &:focus {
+        background-color: @background-color;
+    }
+    .@{button-prefix-cls}-loading-icon {
+        color: @loading-icon-color;
+    }
+}
+
+@button-prefix-cls: ~"@{one-prefix}-btn";
+@icon-prefix-cls: ~"@{one-prefix}-icon";
+
+.@{button-prefix-cls} {
+    white-space: nowrap;
+    box-sizing: border-box;
+    outline: none;
+    :focus {
+        outline: none;
+    }
+    cursor: pointer;
+    border: 0;
+    &-loading-icon {
+        position: relative;
+        display: inline-block;
+        vertical-align: middle;
+        animation: rotating 2s linear infinite;
+        top: -1px;
+    }
+
+    &-readOnly,
+    &-readOnly:hover,
+    &-readOnly:active {
+        cursor: not-allowed;
+    }
+}
+
+.@{button-prefix-cls} > .@{one-prefix}-icon + span,
+.@{button-prefix-cls} > span + .@{one-prefix}-icon {
+    margin-left: @dls-button-content-spacing;
+}
+
+@keyframes rotating {
+    from {
+        transform: rotate(0);
+    }
+    to {
+        transform: rotate(-360deg);
+    }
+}
+
+// new DLS
+.@{button-prefix-cls}-normal {
+    .button-normal-style(
+        @dls-button-background-color-normal,
+        @dls-button-font-color-normal,
+        @dls-button-border-normal,
+        @dls-button-background-color-normal-hover,
+        @dls-button-background-color-normal-active,
+        @dls-button-background-color-normal-disabled,
+        @dls-button-font-color-normal-disabled,
+        @dls-button-border-color-normal-disabled
+    );
+}
+
+.@{button-prefix-cls}-strong {
+    .button-normal-style(
+        @dls-button-background-color-strong,
+        @dls-button-font-color-strong,
+        @dls-button-border-strong,
+        @dls-button-background-color-strong-hover,
+        @dls-button-background-color-strong-active,
+        @dls-button-background-color-strong-disabled,
+        @dls-button-font-color-strong-disabled,
+        @dls-button-border-color-strong-disabled
+    );
+}
+.@{button-prefix-cls}-primary {
+    .button-normal-style(
+        @dls-button-background-color-primary,
+        @dls-button-font-color-primary,
+        @dls-button-border-primary,
+        @dls-button-background-color-primary-hover,
+        @dls-button-background-color-primary-active,
+        @dls-button-background-color-primary-disabled,
+        @dls-button-font-color-primary-disabled,
+        @dls-button-border-color-primary-disabled
+    );
+}
+.@{button-prefix-cls}-translucent {
+    .button-normal-style(
+        @dls-button-background-color-translucent,
+        @dls-button-font-color-translucent,
+        @dls-button-border-translucent,
+        @dls-button-background-color-translucent-hover,
+        @dls-button-background-color-translucent-active,
+        @dls-button-background-color-translucent-disabled,
+        @dls-button-font-color-translucent-disabled,
+        @dls-button-border-color-translucent-disabled
+    );
+}
+.@{button-prefix-cls}-link {
+    color: @dls-button-font-color-text;
+    background-color: @dls-button-background-color-text;
+    &:hover {
+        color: @dls-button-font-color-text-hover;
+        background-color: @dls-button-background-color-text-hover;
+    }
+    &:active {
+        color: @dls-button-font-color-text-active;
+        background-color: @dls-button-background-color-text-active;
+    }
+    // &:focus {
+    //     color: @dls-button-font-color-text-focus;
+    //     background-color: @dls-button-background-color-text-focus;
+    // }
+    &[data-focus-visible-added],
+    &.focus-visible {
+        box-shadow: @dls-button-shadow-focus;
+        border: 1px solid @dls-button-border-color-focus;
+        color: @dls-button-font-color-text-focus;
+        background-color: @dls-button-background-color-text-focus;
+    }
+    &-disabled {
+        cursor: not-allowed;
+        color: @dls-button-font-color-text-disabled;
+        background-color: @dls-button-background-color-text-disabled;
+        &:hover, &:active, &:focus {
+            color: @dls-button-font-color-text-disabled;
+            background-color: @dls-button-background-color-text-disabled;
+        }
+    }
+}
+
+.button-normal-size(xlarge, @dls-button-border-radius-xl, @dls-button-height-xl, @dls-button-font-size-xl, @dls-button-padding-xl);
+.button-normal-size(large, @dls-button-border-radius-l, @dls-button-height-l, @dls-button-font-size-l, @dls-button-padding-l);
+.button-normal-size(medium, @dls-button-border-radius-m, @dls-button-height-m, @dls-button-font-size-m, @dls-button-padding-m);
+.button-normal-size(small, @dls-button-border-radius-s, @dls-button-height-s, @dls-button-font-size-s, @dls-button-padding-s);
+.button-normal-size(xsmall, @dls-button-border-radius-xs, @dls-button-height-xs, @dls-button-font-size-xs, @dls-button-padding-xs);
+
+.@{button-prefix-cls}-icon-only {
+    padding: 0;
+}
+
+.@{button-prefix-cls}-link.@{button-prefix-cls}-icon-only {
+    color: @dls-button-font-color-icon;
+    background-color: @dls-button-background-color-icon;
+    &:hover {
+        color: @dls-button-font-color-icon-hover;
+        background-color: @dls-button-background-color-icon-hover;
+    }
+    &:focus {
+        color: @dls-button-font-color-icon-focus;
+        background-color: @dls-button-background-color-icon-focus;
+    }
+    &:active {
+        color: @dls-button-font-color-icon-active;
+        background-color: @dls-button-background-color-icon-active;
+    }
+}
+
+.@{button-prefix-cls}-link.@{button-prefix-cls}-link-disabled.@{button-prefix-cls}-icon-only {
+    color: @dls-button-icon-color-text-disabled;
+    background-color: @dls-button-icon-background-color-text;
+    &:hover, &:active, &:focus {
+        background-color: @dls-button-icon-background-color-text;
+    }
+}
+
+.button-loading-color(normal, @dls-button-background-color-normal-active, @dls-button-loading-normal-color);
+.button-loading-color(strong, @dls-button-background-color-strong-active, @dls-button-font-color-strong);
+.button-loading-color(primary, @dls-button-background-color-primary-active, @dls-button-font-color-primary);
+.button-loading-color(translucent, @dls-button-background-color-translucent-active, @dls-button-font-color-translucent);
+.button-loading-color(link, @dls-button-icon-background-color-text, @dls-button-loading-text-color);

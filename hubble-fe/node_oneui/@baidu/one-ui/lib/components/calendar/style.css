@@ -1,0 +1,589 @@
+/**
+ * Colors
+ */
+/* Brand colors */
+/* Contextual colors */
+/* Gray scale colors */
+/**
+ * Typography
+ */
+/**
+ * Spacing
+ */
+/**
+ * Background colors
+ */
+/**
+ * Borders
+ */
+/* Border colors */
+/* Separator colors */
+/* Border radii */
+/* Shadows */
+/* Icons */
+/* Font sizes */
+/* Metrics */
+/* Stylistic variants */
+/* Focus rings */
+/* Button group separator */
+/* Font sizes */
+/* Text decorations */
+/* Stylistic variants */
+/* Typography */
+/* Metrics */
+/* Colors */
+/* Focus ring */
+/* Checkbox group */
+/* Typography */
+/* Metrics */
+/* Colors */
+/* Focus ring */
+/* Strong variant */
+/* Checkbox group */
+/* Metrics */
+/* Colors */
+/* Typography */
+/* Font sizes */
+/* Metrics */
+/* Colors & states */
+/* Focus rings */
+/* Icons */
+/* Typography */
+/* Metrics */
+/* Character count */
+/* Metrics */
+/* Font sizes */
+/* Metrics */
+/* States */
+/* Option group title */
+/* Option dropdown */
+/* Widths */
+/* Icon */
+/* Metrics */
+/* Colors */
+/* Metrics */
+/* Colors */
+/* Typography */
+/* Markers */
+/* Metrics */
+/* Spacing */
+/* Statuses */
+/* Metrics */
+/* Colors */
+/* Typography */
+/* Metrics */
+/* Colors */
+/* Metrics */
+/* Colors & States */
+/* Metrics */
+/* Headers */
+/* Colors */
+/* Metrics */
+/* Typography */
+/* Container */
+/* Panel */
+/* Misc */
+/* Metrics */
+/* Colors */
+/* Indicators */
+/* Stylistic variants */
+/* Metrics */
+/* Colors */
+/* Metrics */
+/* Colors */
+/* Metrics */
+/* Stylistic variants */
+/* Metrics */
+/* Colors */
+/* Metrics */
+/* Colors */
+/* Pages */
+/* Indicators */
+/* Controls */
+/* Pages */
+/**
+ * DatePicker Dropdown
+ *  only has small and middle size
+ */
+/* Font size */
+/* Background color */
+/* Radius */
+/* Shadow */
+/**
+ * DatePicker input
+ */
+/* Icon color */
+/* Spacing */
+/**
+ * DatePicker panel
+ */
+/**
+ * DatePicker header
+ *  select year / month
+ */
+/* Icon sizes */
+/* Padding & spacing */
+/**
+ * DatePicker body,
+ * including weekdays, day/month/year body
+ */
+/**
+ * DatePicker cells,
+ * including date/month/year cells
+ */
+/* Sizes */
+/* Border radii */
+/* Focus rings */
+/* Font colors */
+/* Font weights */
+/* Spacing, except for start and end */
+/* Background */
+/* Border color */
+/**
+ * List: year scroller & shortcut list
+ */
+/**
+ * Year scroller
+ */
+/* Font size */
+/* Common */
+/* Cell */
+/* Header */
+/* Sub-row */
+/* Typography */
+/* Misc */
+/* Metrics */
+/* Typography */
+/* Container */
+button::-moz-focus-inner,
+input[type="reset"]::-moz-focus-inner,
+input[type="button"]::-moz-focus-inner,
+input[type="submit"]::-moz-focus-inner,
+input[type="file"] > input[type="button"]::-moz-focus-inner {
+  border: none;
+}
+.new-fc-one-calendar-error {
+  font-size: 12px;
+  margin-bottom: 10px;
+  color: #ff5b5b;
+}
+.new-fc-one-calendar-empty .new-fc-one-calendar-title {
+  width: 200px;
+}
+.new-fc-one-calendar-empty .new-fc-one-calendar-title span {
+  color: #999;
+}
+.new-fc-one-calendar-title {
+  text-align: left;
+  position: relative;
+  padding-right: 30px;
+}
+.new-fc-one-calendar .new-fc-one-icon-calendar {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+.new-fc-one-calendar-box {
+  display: flex;
+  position: relative;
+}
+.new-fc-one-calendar-footer {
+  border-top: 1px solid #e7e7e7;
+  padding: 10px 10px 10px 20px;
+}
+.new-fc-one-calendar-footer button {
+  margin-right: 10px;
+}
+.new-fc-one-calendar-main {
+  width: 218px;
+  padding-left: 112px;
+  box-sizing: content-box;
+}
+.new-fc-one-calendar-main .new-fc-one-calendar-month-select {
+  height: 288px;
+}
+.new-fc-one-calendar-main .new-fc-one-calendar-month-select-item {
+  padding: 5px;
+}
+.new-fc-one-calendar-main .new-fc-one-calendar-month-select-item-year {
+  padding: 0 5px;
+  margin-top: 5px;
+}
+.new-fc-one-calendar-input {
+  border: 1px solid #eee;
+  padding: 2px;
+  margin: 10px 8px 10px 8px;
+  display: inline-block;
+}
+.new-fc-one-calendar-input-container {
+  border: none;
+  outline: none;
+  width: 16px;
+  text-align: right;
+  color: #333;
+}
+.new-fc-one-calendar-input-container::-webkit-input-placeholder {
+  color: #999;
+  font-size: 12px;
+  text-align: right;
+}
+.new-fc-one-calendar-input-large {
+  width: 30px;
+}
+.new-fc-one-calendar-input-seperate {
+  font-size: 12px;
+  color: #dbdbdb;
+}
+.new-fc-one-calendar-line-text {
+  font-size: 12px;
+  text-align: center;
+  color: #666;
+}
+.new-fc-one-calendar-header {
+  height: 18px;
+  line-height: 18px;
+  margin: 0 10px 8px 10px;
+  padding: 0;
+}
+.new-fc-one-calendar-header-container {
+  cursor: pointer;
+  font-size: 12px;
+  display: inline-block;
+}
+.new-fc-one-calendar-header-title {
+  color: #666;
+  font-size: 12px;
+  margin-right: 3px;
+}
+.new-fc-one-calendar-header-angle {
+  transform: scale(0.7, 0.7) rotate(0deg);
+  transition: transform 0.3s;
+  display: inline-block;
+}
+.new-fc-one-calendar-header-angle .new-fc-one-icon-angle-down {
+  font-weight: bolder;
+}
+.new-fc-one-calendar-header-angle-open {
+  transform: scale(0.7, 0.7) rotate(180deg);
+}
+.new-fc-one-calendar-header-page {
+  float: right;
+}
+.new-fc-one-calendar-header-page-prev {
+  display: inline-block;
+  background: #eee;
+  border: 1px solid #eee;
+  padding: 0;
+  margin-right: 5px;
+  height: 18px;
+  width: 18px;
+  position: relative;
+}
+.new-fc-one-calendar-header-page-prev .new-fc-one-icon-angle-left {
+  font-size: 12px;
+  left: 50%;
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%) scale(0.7, 0.7);
+  display: inline-block;
+  font-weight: bolder;
+}
+.new-fc-one-calendar-header-page-next {
+  display: inline-block;
+  background: #eee;
+  border: 1px solid #eee;
+  padding: 0;
+  height: 18px;
+  width: 18px;
+  position: relative;
+}
+.new-fc-one-calendar-header-page-next .new-fc-one-icon-angle-right {
+  font-size: 12px;
+  left: 50%;
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%) scale(0.7, 0.7);
+  display: inline-block;
+  font-weight: bolder;
+}
+.new-fc-one-calendar-date {
+  width: 100%;
+}
+.new-fc-one-calendar-date-head {
+  text-align: center;
+  display: flex;
+  border-bottom: 1px solid #eee;
+  padding: 5px 15px 10px 20px;
+  color: #666;
+}
+.new-fc-one-calendar-date-head-week {
+  flex: 1;
+  font-size: 12px;
+}
+.new-fc-one-calendar-date-body {
+  height: 260px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+.new-fc-one-calendar-date-body-head {
+  margin-top: 5px;
+  margin-bottom: 10px;
+  height: 30px;
+  line-height: 30px;
+  font-size: 12px;
+  text-align: center;
+}
+.new-fc-one-calendar-date-body-loading {
+  height: 20px;
+  text-align: center;
+  font-size: 12px;
+  line-height: 20px;
+  position: relative;
+  top: 6px;
+}
+.new-fc-one-calendar-date-body-month {
+  padding: 0 15px 0 20px;
+}
+.new-fc-one-calendar-date-body-month-week {
+  display: flex;
+  margin-bottom: 5px;
+}
+.new-fc-one-calendar-date-hidden {
+  display: none;
+}
+.new-fc-one-calendar-month-select {
+  height: 260px;
+  border-top: 1px solid #eee;
+  overflow: scroll;
+}
+.new-fc-one-calendar-month-select-item {
+  padding: 10px;
+}
+.new-fc-one-calendar-month-select-item-year {
+  font-size: 12px;
+  color: #666;
+  margin-bottom: 10px;
+}
+.new-fc-one-calendar-month-select-item-months-single {
+  display: inline-block;
+  height: 22px;
+  width: 28px;
+  line-height: 22px;
+  text-align: center;
+  cursor: pointer;
+  font-size: 12px;
+  color: #666;
+  border: 1px solid transparent;
+  margin: 2px;
+}
+.new-fc-one-calendar-month-select-item-months-single-normal:hover {
+  background: #e9f4fd;
+  border: 1px solid #3389e2;
+  color: #666;
+}
+.new-fc-one-calendar-month-select-item-months-single-disabled {
+  color: #b8b8b8;
+  cursor: not-allowed;
+}
+.new-fc-one-calendar-month-select-item-months-single-selected {
+  background: #3389e2;
+  color: #fff;
+}
+.new-fc-one-calendar-month-select-item-months-single-selected:hover {
+  background: #3389e2;
+  color: #fff;
+  border: 1px solid #fff;
+}
+.new-fc-one-calendar-item {
+  display: inline-block;
+  height: 28px;
+  width: 28px;
+  cursor: pointer;
+  line-height: 27px;
+  text-align: center;
+  font-size: 12px;
+  color: #666;
+  position: relative;
+  box-sizing: border-box;
+  border: 1px solid transparent;
+}
+.new-fc-one-calendar-item-between {
+  background: #e9f4fd;
+  color: #666;
+}
+.new-fc-one-calendar-item-compare-between {
+  background: #fff4e6;
+  color: #666;
+}
+.new-fc-one-calendar-item-active,
+.new-fc-one-calendar-item-hover,
+.new-fc-one-calendar-item-selected-title {
+  background: #e9f4fd;
+  border: 1px solid #2e7aca;
+  height: 28px;
+  width: 28px;
+  color: #666;
+}
+.new-fc-one-calendar-item-disabled {
+  cursor: not-allowed;
+  color: #dbdbdb;
+}
+.new-fc-one-calendar-item-selected {
+  background: #3389e2;
+  color: #fff;
+  border: 1px solid #3389e2;
+}
+.new-fc-one-calendar-item-selected-disabled {
+  cursor: not-allowed;
+  color: #dbdbdb;
+}
+.new-fc-one-calendar-item-compare-active,
+.new-fc-one-calendar-item-compare-hover {
+  background: #fff4e6;
+  border: 1px solid #fe9700;
+  color: #666;
+  height: 28px;
+  width: 28px;
+}
+.new-fc-one-calendar-item-compare-selected {
+  background: #fe9700;
+  color: #fff;
+  border: 1px solid #fe9700;
+}
+.new-fc-one-calendar-item-cross {
+  border: 1px solid #daf4ed;
+  background: #daf4ed;
+  color: #666;
+}
+.new-fc-one-calendar-item-empty {
+  cursor: auto;
+}
+.new-fc-one-calendar-item-tooltip {
+  display: inline-block;
+  position: absolute;
+  top: -25px;
+  left: 50%;
+  width: 120%;
+  transform: translateX(-50%);
+  background: white;
+  height: 20px;
+  line-height: 20px;
+  box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.15);
+  color: #666;
+  padding: 1px 3px;
+}
+.new-fc-one-calendar-single {
+  padding: 0;
+  width: 225px;
+}
+.new-fc-one-calendar-single .new-fc-one-calendar-month-select {
+  height: 294px;
+}
+.new-fc-one-calendar-single .new-fc-one-calendar-footer {
+  padding: 10px;
+}
+.new-fc-one-calendar-single .new-fc-one-calendar-footer-mode {
+  font-size: 12px;
+  color: #3998fc;
+  letter-spacing: 0;
+  cursor: pointer;
+}
+.new-fc-one-calendar-single-time {
+  padding: 0;
+}
+.new-fc-one-calendar-single-time .new-fc-one-calendar-footer {
+  padding: 10px;
+}
+.new-fc-one-calendar-switch {
+  width: 112px;
+  padding: 10px 0 10px 0;
+  border-right: 1px solid #e7e7e7;
+  position: absolute;
+  background-color: #fcfcfc;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  float: left;
+}
+.new-fc-one-calendar-switch-container {
+  padding: 0 10px 0 20px;
+  height: 30px;
+  line-height: 30px;
+}
+.new-fc-one-calendar-switch-container-text {
+  font-size: 12px;
+  margin-right: 10px;
+  color: #666;
+}
+.new-fc-one-calendar-switch-container .new-fc-one-switch {
+  position: relative;
+  top: -2px;
+}
+.new-fc-one-calendar-switch-list-title {
+  margin: 20px 20px 5px 20px;
+  font-size: 12px;
+  color: #999;
+}
+.new-fc-one-calendar-switch-list-item {
+  padding: 0 10px 0 20px;
+  height: 30px;
+  line-height: 30px;
+  font-size: 12px;
+  color: #666;
+  cursor: pointer;
+}
+.new-fc-one-calendar-switch-list-item:hover {
+  background: #eee;
+}
+.new-fc-one-calendar-switch-list-item-selected {
+  background: #eee;
+}
+.new-fc-one-calendar-switch-list-item:active {
+  background: #eee;
+}
+.new-fc-one-calendar-time-header {
+  padding: 10px;
+  border-bottom: 1px solid #dbdbdb;
+}
+.new-fc-one-calendar-time-header input {
+  outline: none;
+  color: #333;
+  width: 94px;
+  height: 22px;
+  line-height: 22px;
+  border: 1px solid #dbdbdb;
+  padding: 0 8px;
+}
+.new-fc-one-calendar-time-body {
+  display: flex;
+}
+.new-fc-one-calendar-time-body-container {
+  height: 312px;
+  flex: 1;
+  overflow: auto;
+  border-right: 1px solid #dbdbdb;
+}
+.new-fc-one-calendar-time-body-container-list-item {
+  height: 28px;
+  line-height: 28px;
+  text-align: left;
+  padding-left: 20px;
+  cursor: pointer;
+  font-size: 12px;
+  color: #333;
+}
+.new-fc-one-calendar-time-body-container-list-item:hover {
+  background: #f7f7f7;
+}
+.new-fc-one-calendar-time-body-container-list-item-selected {
+  background: #f7f7f7;
+}
+.new-fc-one-calendar-time-body-container:last-child {
+  border-right: none;
+}
+@-moz-document url-prefix() {
+  .new-fc-one-calendar-item-tooltip {
+    width: 140%;
+  }
+}
